@@ -17,16 +17,16 @@ The following domains needs to be redirected to this server:
 ## Compilation
 
 ```
-	mkdir build
-	cd build
-	cmake ..
-	make
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 ## Run
 
 ```
-	./bf2mc
+./bf2mc
 ```
 
 ## Database
