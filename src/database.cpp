@@ -24,77 +24,153 @@ DBUser Database::queryUserByUniquenick(const std::string &uniquenick)
 	
 	DBUser dbuser;
 	
-	this->_doQuery("SELECT * FROM Users WHERE uniquenick='" + uniquenick + "'");
+	unsigned long output_profileid = 0;
+	unsigned long output_userid = 0;
+	char          output_nick[46];
+	char          output_uniquenick[46];
+	char          output_email[46];
+	char          output_password[46];
 	
-	// Fetch and print the results
-    MYSQL_RES* result = mysql_use_result(this->_connection);
+    std::string query = "SELECT * FROM Users WHERE uniquenick = ?";
 	
-    if(result && mysql_num_fields(result) == 6)
-	{
-        MYSQL_ROW row;
-		
-		while((row = mysql_fetch_row(result)) != nullptr)
-		{
-			dbuser.profileid = (row[0]) ? std::stoi(row[0]) : -1;
-			dbuser.userid = (row[1]) ? std::stoi(row[1]) : -1;
-			dbuser.nick = (row[2]) ? row[2] : "";
-			dbuser.uniquenick = (row[3]) ? row[3] : "";
-			dbuser.email = (row[4]) ? row[4] : "";
-			dbuser.password = (row[5]) ? row[5] : "";
-        }
-		
-        mysql_free_result(result);
-    }
+	// Allocate input binds
+    MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+    input_bind[0].buffer_type = MYSQL_TYPE_STRING;
+    input_bind[0].buffer = const_cast<char*>(&(uniquenick[0]));
+    input_bind[0].buffer_length = uniquenick.size();
+    input_bind[0].is_null = nullptr;
+    input_bind[0].length = nullptr;
 	
-	/*
-	// Preperation for more secure sql query handling
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+    output_bind[0].buffer = &output_profileid;
+    output_bind[0].is_unsigned = false;	
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+    output_bind[1].buffer = &output_userid;
+    output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+    output_bind[2].buffer = output_nick;
+    output_bind[2].buffer_length = 46;
+    output_bind[2].length = nullptr;
+	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+    output_bind[3].buffer = output_uniquenick;
+    output_bind[3].buffer_length = 46;
+    output_bind[3].length = nullptr;
+	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
+    output_bind[4].buffer = output_email;
+    output_bind[4].buffer_length = 46;
+    output_bind[4].length = nullptr;
+	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
+    output_bind[5].buffer = output_password;
+    output_bind[5].buffer_length = 46;
+    output_bind[5].length = nullptr;
 	
 	// Prepare the statement
     MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-    std::string query = "SELECT * FROM Users WHERE uniquenick='?'";
 	
-    if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
+	// Prepare and execute with binds
+    if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
 	{
-        std::cerr << "Failed to prepare the statement: " << mysql_stmt_error(statement) << std::endl;
-        return dbuser;
-    }
+		return dbuser;
+	}
 	
-	// Bind parameters
-    std::string value = "IamLupo";
-    MYSQL_BIND bindParam;
-    bindParam.buffer_type = MYSQL_TYPE_STRING;
-    bindParam.buffer = (char*)&(value[0]);
-    bindParam.buffer_length = value.size();
-    bindParam.is_null = nullptr;
-    bindParam.length = nullptr;
-	
-	if (mysql_stmt_bind_param(statement, &bindParam) != 0) {
-        std::cerr << "Failed to bind the parameter: " << mysql_stmt_error(statement) << std::endl;
-        return dbuser;
-    }
-	
-	// Fetch and print the results
-    MYSQL_RES* result = mysql_stmt_result_metadata(statement);
-    if (result == nullptr)
+	// Fetch and process rows
+	while (true)
 	{
-        std::cerr << "Failed to get result set metadata: " << mysql_stmt_error(statement) << std::endl;
-        return dbuser;
-    }
-	
-	
-	std::cout << mysql_num_fields(result) << std::endl;
-	
-	MYSQL_ROW row;
-    while ((row = mysql_fetch_row(result)) != nullptr) {
-        // Process the row data
-        // ...
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		dbuser.profileid  = output_profileid;
+		dbuser.userid     = output_userid;
+		dbuser.nick       = output_nick;
+		dbuser.uniquenick = output_uniquenick;
+		dbuser.email      = output_email;
+		dbuser.password   = output_password;
+	}
 
-        // Example: Print the values
-        std::cout << "Column1: " << row[0] << ", Column2: " << row[1] << std::endl;
-    }
-	*/
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
 	
 	return dbuser;
+}
+
+bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
+{
+	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
+	{
+        std::cerr << "Failed to prepare the statement: " << mysql_stmt_error(statement) << std::endl;
+		
+		// Cleanup
+		mysql_stmt_free_result(statement);
+		
+		return false;
+    }
+	
+	return true;
+}
+
+bool Database::_prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BIND* input_bind)
+{
+	if(!this->_prepare(statement, query))
+	{
+		return false;
+	}
+	
+	if (mysql_stmt_bind_param(statement, input_bind) != 0)
+	{
+        std::cerr << "Failed to bind the input parameter: " << mysql_stmt_error(statement) << std::endl;
+		
+		// Cleanup
+		mysql_stmt_close(statement);
+		
+        return false;
+    }
+	
+	return true;
+}
+
+bool Database::_execute(MYSQL_STMT* statement)
+{
+	if(mysql_stmt_execute(statement))
+	{
+		std::cerr << "Failed to execute the statement: " << mysql_stmt_error(statement) << std::endl;
+		
+		// Cleanup
+		mysql_stmt_close(statement);
+		
+        return false;
+    }
+	
+	return true;
+}
+
+bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
+{
+	if(!this->_execute(statement))
+	{
+		return false;
+	}
+	
+	// Bind the result buffers to the statement
+	if (mysql_stmt_bind_result(statement, output_bind))
+	{
+		std::cerr << "Failed to bind the output parameter: " << mysql_stmt_error(statement) << std::endl;
+        
+		// Cleanup
+		mysql_stmt_free_result(statement);
+		mysql_stmt_close(statement);
+
+		return false;
+	}
+	
+	return true;
 }
 
 void Database::_doQuery(const std::string &query)
