@@ -29,6 +29,7 @@ class Database
 		/*
 			Queries
 		*/
+		bool queryDBUserByProfileid(DBUser& dbuser, const std::string profileid);
 		bool queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
 		bool queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::string &email);
 		bool insertDBUser(const DBUser& dbuser, int &profileid);

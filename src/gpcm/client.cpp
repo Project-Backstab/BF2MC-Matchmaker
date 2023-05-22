@@ -179,10 +179,10 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 		\bdy\7\list\10036271,10036113,10036585,10036492,10036029,10036444,10037053\final\
 */
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
-{	
+{
 	std::string response = GameSpy::Parameter2Response({
-		"bdy", "7",
-		"list", "10036271,10036113,10036585,10036492,10036029,10036444,10037053",
+		"bdy", "1",
+		"list", "10037049",
 		"final"
 	});
 	this->Send(response);
@@ -217,72 +217,65 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	if(parameter[5] == "10036819")
+	std::string profileid = parameter[5];
+	std::string id = parameter[7];
+	std::string response;
+	
+	DBUser dbuser;
+	
+	std::cout << "profileid = " << profileid << std::endl;
+	
+	if(!g_database->queryDBUserByProfileid(dbuser, profileid))
 	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036819", "userid", "64679", "nick", "IamLupo@6507BAD7", "uniquenick", "IamLupo", "email", "help0001@gmail.com", "sex", "0",
-			"birthday", "0", "countrycode", "", "aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036492")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036492", "userid", "64397", "nick", "Tha_j0k3r@B9708875", "uniquenick", "Tha_j0k3r", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036271")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036271", "userid", "64222", "nick", "BostonBrew@7F291349", "uniquenick", "BostonBrew", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036029")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036271", "userid", "64015", "nick", "Shikamaru@93753F85", "uniquenick", "Shikamaru", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036444")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036271", "userid", "64362", "nick", "CHURRU-GP@BDFB5921", "uniquenick", "CHURRU-GP", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036113")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036113", "userid", "64089", "nick", "Scram@E3883FAF", "uniquenick", "Scram", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10036585")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10036585", "userid", "64473", "nick", "NPC@A15FEDF3", "uniquenick", "NPC", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
-	}
-	else if(parameter[5] == "10037053")
-	{
-		this->Send(GameSpy::Parameter2Response({
-			"pi", "", "profileid", "10037053", "userid", "64872", "nick", "-Gh0sTeD-@7DE1959D", "uniquenick", "-Gh0sTeD-", 
-			"aim", "", "videocard1string", "", "videocard2string", "", "osstring", "", "id", parameter[7], "sig", "d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		}));
+		return; // No Database user found with uniquenick
 	}
 	
-	this->_LogTransaction("<--", "\\pi\\\\profileid\\" + parameter[5] + "\\ ...");
+	if(dbuser.profileid != -1)
+	{
+		response = GameSpy::Parameter2Response({
+			"pi", "",
+			"profileid", std::to_string(dbuser.profileid),
+			"userid", std::to_string(dbuser.userid),
+			"nick", dbuser.nick,
+			"uniquenick", dbuser.uniquenick,
+			"email", dbuser.email,
+			"sex", "0",
+			"birthday", "0",
+			"countrycode", "",
+			"aim", "",
+			"videocard1string", "",
+			"videocard2string", "",
+			"osstring", "",
+			"id", parameter[7],
+			"sig", "d41d8cd98f00b204e9800998ecf8427e",
+			"final"
+		});
+	}
+	else	
+	{
+		response = GameSpy::Parameter2Response({
+			"pi", "",
+			"profileid", profileid,
+			"userid", std::to_string(-1),
+			"nick", "<Unknown>",
+			"uniquenick", "<Unknown>",
+			"email", "<Unknown>",
+			"sex", "0",
+			"birthday", "0",
+			"countrycode", "",
+			"aim", "",
+			"videocard1string", "",
+			"videocard2string", "",
+			"osstring", "",
+			"id", parameter[7],
+			"sig", "d41d8cd98f00b204e9800998ecf8427e",
+			"final"
+		});
+	}
+	
+	this->Send(response);
+	
+	this->_LogTransaction("<--", response);
 }
 
 /*
@@ -304,13 +297,14 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036271", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036113", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036585", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036492", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036029", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036444", "msg", "|s|0|ss|Offline", "final" }));
-	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10037053", "msg", "|s|0|ss|Offline", "final" }));
+	std::string response = GameSpy::Parameter2Response({
+		"bm", "100",
+		"f", "10037049",
+		"msg", "|s|0|ss|Offline",
+		"final"
+	});
+	
+	this->Send(response);
 }
 
 /*
