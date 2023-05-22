@@ -65,13 +65,6 @@ std::string GameSpy::Parameter2Response(const GameSpy::Parameter &parameter)
 
 std::string GameSpy::LoginProof(const std::string &password, const std::string &username, const std::string &client_challenge, const std::string &server_challenge)
 {
-	std::string password_hash;
-	const std::string space = "                                                ";
-	
-	// Generate password hash
-	password_hash = Util::MD5hash(password);
-	
-	// Generate proof
-	return Util::MD5hash(password_hash + space + username + server_challenge + client_challenge + password_hash);
+	return Util::MD5hash(password + "                                                " + username + server_challenge + client_challenge + password);
 }
 
