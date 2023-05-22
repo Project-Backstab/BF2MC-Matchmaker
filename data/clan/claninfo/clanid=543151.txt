@@ -1,0 +1,13 @@
+OK
+clanID,543151
+name,AT-STARS
+tag,SOS
+homepage,UMBRELLA
+info,G%2dVIRUS
+region,2
+lastreportdate,1%2f16%2f2013+3%3a10%3a41+AM
+rating,1851
+wins,1671
+losses,10
+draws,40
+membercount,6

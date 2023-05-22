@@ -1,0 +1,126 @@
+#######################################################################
+
+GS login server emulator
+by Luigi Auriemma
+e-mail: aluigi@autistici.org
+web:    aluigi.org
+
+#######################################################################
+
+
+1) Introduction
+2) How to use
+3) Feedback
+
+
+#######################################################################
+
+===============
+1) Introduction
+===============
+
+
+This tool is a very basic and simple emulator of the Gamespy login
+protocol, just like that used for gpcm.gamespy.com, gpsp.gamespy.com
+and gamestats.gamespy.com.
+
+It has been created for a friend of mine for the Dreamcast game PBA2001
+but naturally it can be used for ANY existent game that uses the
+Gamespy login and stat server.
+
+As already said this tool is very very basic (for example it uses the
+same "engine" for all the 3 services and uses some work-arounds for
+compatibility and performances) so do NOT think to it like a real
+server emulator, it is just a funny experiment.
+Anyway it does its good job and I think the compatibility problems in
+it are enough limited, in fact at the moment the only known problem is
+that the PBA2001 client freezes if you click on the View Stats button
+but you can bypass this problem uncommenting the "break;" instruction
+in the source code (search for the "uncomment" pattern to find it).
+
+I have also had tons of fun with Toca Race Driver 2 where you can go
+online (create a new user or use an existent one, naturally all
+invented since it is sent only to your local server emulator) using ANY
+registered or unregistered nickname... really very very fun to play
+online with any nickname!
+And then that avoids to register everytime an e-mail address or the
+same one (some games want re-registration although the account already
+exists) on the Gamespy server which is a thing I personally hate, sure
+registration is free but I hate to "be controlled" moreover when this
+is not needed (look to the above example) and who controls is Gamespy.
+
+But this is only one example, I think this tool can have many other
+interesting or useless usages but at the moment I still don't know
+them and leave everything in the hands of your fantasy.
+
+
+#######################################################################
+
+=============
+2) How to use
+=============
+
+
+The tool requires that you specify the local TCP port to bind which can
+be 29900, 29901, 29920 or any other which uses a similar protocol.
+In the package is also contained the launch.bat file which
+automatically starts the tool on all the 3 ports with the login
+password pass (this is the password that all the clients MUST use to
+login on this emulated server), so all with only a simple double-click
+on this file.
+
+Remember that the clients MUST point to your server emulator for using
+it.
+For example, if you want to test the nickname trick of Toca Race Driver
+2 or ANY other existent game which uses the Gamespy login protocol
+click on launch.bat and add the following lines to your hosts file:
+
+  127.0.0.1   gpcm.gamespy.com
+  127.0.0.1   gpsp.gamespy.com
+  127.0.0.1   gamestats.gamespy.com
+
+127.0.0.1 is the localhost IP address and so is only an example.
+If you want to use the server emulator of your friend which has the IP
+1.2.3.4 you must use this IP and not 127.0.0.1.
+
+The hosts file is usually contained in the following folders, in any
+case check the manual or the configuration of your operating system:
+
+ Windows 95/98/Me       c:\windows\hosts
+ Windows NT/2000        c:\winnt\system32\drivers\etc\hosts
+ Windows XP             c:\windows\system32\drivers\etc\hosts
+ *nix                   /etc/hosts
+
+If after the above changes the game crashes (some users reported this
+problem with Battlefield 2) there are at least two solutions to try:
+- instead of modifying the above hosts file try to create/modify the
+  file hosts.ics in the same folder (suggested by Josue Monteiro)
+- add also the following entries in your hosts file:
+  127.0.0.1 battlefield2.available.gamespy.com
+  127.0.0.1 bf2web.gamespy.com
+
+Note that if in the game you don't have a new account or want to create
+a new one you must simply use the "retrieve account" option of the game
+because if you choose "create account" the game will first verify the
+presence of the account you choosed and obviously gs_login_server
+says that it exists (this is the job of the project) and so the game
+will not continue.
+
+For compiling the tool on Linux:
+gcc -o gs_login_server gs_login_server.c md5.c -lpthread
+
+
+#######################################################################
+
+===========
+3) Feedback
+===========
+
+
+This tool has been written for fun in a small amount of time and with a
+look to the resources (no database, fixed buffers and so on).
+If you have suggestions for expanding it and its features you are
+welcome.
+
+
+#######################################################################
