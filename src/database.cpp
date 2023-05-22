@@ -18,7 +18,7 @@ Database::Database()
 	this->OnDatabaseStart();
 }
 
-bool Database::queryUserByUniquenick(DBUser& dbuser, const std::string &uniquenick)
+bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 	
@@ -36,8 +36,6 @@ bool Database::queryUserByUniquenick(DBUser& dbuser, const std::string &uniqueni
     input_bind[0].buffer_type = MYSQL_TYPE_STRING;
     input_bind[0].buffer = const_cast<char*>(&(uniquenick[0]));
     input_bind[0].buffer_length = uniquenick.size();
-    input_bind[0].is_null = nullptr;
-    input_bind[0].length = nullptr;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));

@@ -6,7 +6,8 @@
 
 #include <mysql/mysql.h>
 
-struct DBUser {
+struct DBUser
+{
 	int profileid = -1;
 	int userid = -1;
 	std::string nick = "";
@@ -28,7 +29,7 @@ class Database
 		/*
 			Queries
 		*/
-		bool queryUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
+		bool queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
 		
 		/*
 			Events

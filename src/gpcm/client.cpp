@@ -136,12 +136,18 @@ void GPCM::Client::requestChallenge() const
 */
 void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 {
-	std::string uniquenick = parameter[5].c_str();
-	std::string client_challenge = parameter[3].c_str();
-	DBUser dbuser;
+	if(parameter.size() != 21)
+	{
+		return;
+	}
 	
-	// Query db user
-	if(!g_database->queryUserByUniquenick(dbuser, uniquenick))
+	std::string uniquenick = parameter[5];
+	std::string client_challenge = parameter[3];
+	
+
+	// Query Database user
+	DBUser dbuser;
+	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
 	{
 		// No Database user found with uniquenick
 		return;
@@ -207,6 +213,11 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 9)
+	{
+		return;
+	}
+	
 	if(parameter[5] == "10036819")
 	{
 		this->Send(GameSpy::Parameter2Response({
@@ -289,6 +300,11 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 9)
+	{
+		return;
+	}
+	
 	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036271", "msg", "|s|0|ss|Offline", "final" }));
 	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036113", "msg", "|s|0|ss|Offline", "final" }));
 	this->Send(GameSpy::Parameter2Response({ "bm", "100", "f", "10036585", "msg", "|s|0|ss|Offline", "final" }));
@@ -310,8 +326,6 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter) const
 {
 	
 }
-
-
 
 /*
 	Private functions

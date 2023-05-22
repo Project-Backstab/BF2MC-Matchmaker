@@ -11,19 +11,13 @@ std::vector<std::string> GameSpy::RequestToRequests(const std::string &request)
 	
 	size_t found = t.find("final\\");
 	
-	//std::cout << t << std::endl;
-	
 	while(found != std::string::npos)
-	{
-		//std::cout << found << std::endl;
-		
+	{	
 		requests.push_back(t.substr(0, found + 6));
 		
 		t = t.substr(found + 6, t.size());
 		
 		found = t.find("final\\");
-		
-		//std::cout << t << std::endl;
 	}
 	
 	return requests;
