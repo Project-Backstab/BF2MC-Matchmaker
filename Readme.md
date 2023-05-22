@@ -1,3 +1,5 @@
+![http://bf2mc.com](images/b2mconlinelogo.png)
+
 # Battlefield 2: Modern Combat Matchmaker server
 
 This is a project to revive the online matchmaking services. This allows you to create a account and go online again. 
