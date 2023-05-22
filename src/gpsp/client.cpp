@@ -8,6 +8,7 @@
 #include <gamespy.h>
 #include <globals.h>
 #include <util.h>
+#include <database.h>
 
 #include <gpsp/client.h>
 
@@ -118,24 +119,45 @@ void GPSP::Client::onRequest(const std::string &request)
 */
 void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 {
-	/*
-		To do: Check here the email, pass, namespaceid and gamename in database
-	*/
+	if(parameter.size() != 11)
+	{
+		return;
+	}
 	
-	std::string response = GameSpy::Parameter2Response({
-		"nr", "0",
-		// Account 1
-		"nick", "IamLupo@6507BAD7",
-		"uniquenick", "IamLupo",
-		// Account 2
-		"nick",	"IamLupo3@3BEAA015",
-		"uniquenick", "IamLupo3",
-		// Final
-		"ndone", "", "final"
-	});
+	std::string email = parameter[3];
+	GameSpy::Parameter response_parameter;
 	
+	std::vector<DBUser> dbusers;
+	
+	if(!g_database->queryDBUsersByEmail(dbusers, email))
+	{
+		return; // No Database user found with uniquenick
+	}
+	
+	std::cout << dbusers.size() << std::endl;
+	
+	response_parameter = { "nr", "0" };
+	
+	for(DBUser dbuser : dbusers)
+	{
+		response_parameter.push_back("nick");
+		response_parameter.push_back(dbuser.nick);
+		
+		response_parameter.push_back("uniquenick");
+		response_parameter.push_back(dbuser.uniquenick);
+	}
+	
+	response_parameter.push_back("ndone");
+	response_parameter.push_back("");
+	response_parameter.push_back("final");
+	
+	// Convert parameter to string response
+	std::string response = GameSpy::Parameter2Response(response_parameter);
+	
+	// Send
 	this->Send(response);
 	
+	// Log
 	this->_LogTransaction("<--", response);
 }
 
@@ -155,9 +177,10 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 */
 void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 {
-	/*
-		To do: Check here the email
-	*/
+	if(parameter.size() != 7)
+	{
+		return;
+	}
 	
 	std::string response = GameSpy::Parameter2Response({
 		"vr", "1", "final"
@@ -190,13 +213,36 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 */
 void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 {
-	/*
-		To do: Check here the information and store account on database
-	*/
+	if(parameter.size() != 17)
+	{
+		return;
+	}
+	
+	std::string password = parameter[7];
+	std::string uniquenick = parameter[13];
+	int profileid;
+	
+	DBUser dbuser;
+	
+	dbuser.nick = parameter[3];
+	dbuser.email = parameter[5];
+	dbuser.uniquenick = uniquenick;
+	dbuser.password = Util::MD5hash(password);
+	
+	// Insert user in database
+	if(!g_database->insertDBUser(dbuser, profileid))
+	{
+		return; // Oeps something went wrong?!
+	}
+	
+	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
+	{
+		return; // No Database user found with uniquenick
+	}
 	
 	std::string response = GameSpy::Parameter2Response({
 		"nur", "0",
-		"pid", "10037049",
+		"pid", std::to_string(dbuser.profileid),
 		"final"
 	});
 	

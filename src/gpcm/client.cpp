@@ -143,7 +143,6 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	
 	std::string uniquenick = parameter[5];
 	std::string client_challenge = parameter[3];
-	
 
 	// Query Database user
 	DBUser dbuser;
