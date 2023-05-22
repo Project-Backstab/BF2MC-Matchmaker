@@ -138,9 +138,14 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 {
 	std::string uniquenick = parameter[5].c_str();
 	std::string client_challenge = parameter[3].c_str();
+	DBUser dbuser;
 	
-	// Query Database
-	DBUser dbuser = g_database->queryUserByUniquenick(uniquenick);
+	// Query db user
+	if(!g_database->queryUserByUniquenick(dbuser, uniquenick))
+	{
+		// No Database user found with uniquenick
+		return;
+	}
 	
 	// Generate proof
 	std::string proof = GameSpy::LoginProof(dbuser.password, uniquenick, client_challenge, "Thc3BZFhfv");

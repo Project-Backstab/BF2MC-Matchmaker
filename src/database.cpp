@@ -18,11 +18,9 @@ Database::Database()
 	this->OnDatabaseStart();
 }
 
-DBUser Database::queryUserByUniquenick(const std::string &uniquenick)
+bool Database::queryUserByUniquenick(DBUser& dbuser, const std::string &uniquenick)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
-	
-	DBUser dbuser;
 	
 	unsigned long output_profileid = 0;
 	unsigned long output_userid = 0;
@@ -75,7 +73,7 @@ DBUser Database::queryUserByUniquenick(const std::string &uniquenick)
 		!this->_execute(statement, output_bind)
 	)
 	{
-		return dbuser;
+		return false;
 	}
 	
 	// Fetch and process rows
@@ -98,7 +96,7 @@ DBUser Database::queryUserByUniquenick(const std::string &uniquenick)
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
 	
-	return dbuser;
+	return true;
 }
 
 bool Database::_prepare(MYSQL_STMT* statement, const std::string query)

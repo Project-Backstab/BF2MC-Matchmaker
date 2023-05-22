@@ -28,7 +28,7 @@ class Database
 		/*
 			Queries
 		*/
-		DBUser queryUserByUniquenick(const std::string &uniquenick);
+		bool queryUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
 		
 		/*
 			Events
