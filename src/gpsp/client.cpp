@@ -125,18 +125,39 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	}
 	
 	std::string email = parameter[3];
-	GameSpy::Parameter response_parameter;
+	std::string password = Util::MD5hash(parameter[5]);
+	bool correct_password = false;
 	
+	// Get all database users with email
 	std::vector<DBUser> dbusers;
-	
 	if(!g_database->queryDBUsersByEmail(dbusers, email))
 	{
 		return; // No Database user found with uniquenick
 	}
 	
-	std::cout << dbusers.size() << std::endl;
+	// Check password
+	for(DBUser dbuser : dbusers)
+	{
+		if(dbuser.password == password)
+		{
+			correct_password = true;
+		}
+	}
 	
-	response_parameter = { "nr", "0" };
+	// If no database user exist or password isn't correct
+	if(dbusers.size() == 0 || !correct_password)
+	{
+		// Convert parameter to string response
+		std::string response = GameSpy::Parameter2Response({"nr", "260", "ndone", "", "final"});
+	
+		// Send
+		this->Send(response);
+		
+		// Log
+		this->_LogTransaction("<--", response);
+	}
+	
+	GameSpy::Parameter response_parameter = { "nr", "0" };
 	
 	for(DBUser dbuser : dbusers)
 	{
@@ -218,31 +239,71 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
+	std::string nick = parameter[3];
+	std::string email = parameter[5];
 	std::string password = parameter[7];
 	std::string uniquenick = parameter[13];
-	int profileid;
 	
-	DBUser dbuser;
+	std::vector<DBUser> dbusers;
 	
-	dbuser.nick = parameter[3];
-	dbuser.email = parameter[5];
-	dbuser.uniquenick = uniquenick;
-	dbuser.password = Util::MD5hash(password);
-	
-	// Insert user in database
-	if(!g_database->insertDBUser(dbuser, profileid))
+	if(!g_database->queryDBUsersByEmail(dbusers, email))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
-	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
+	// Check User exist with same email and uniquename already
+	for(DBUser dbuser : dbusers)
 	{
-		return; // No Database user found with uniquenick
+		// Check uniquenick
+		if(dbuser.uniquenick == uniquenick)
+		{
+			std::string response = GameSpy::Parameter2Response({
+				"nur", "516",
+				"pid", std::to_string(dbuser.profileid),
+				"final"
+			});
+			
+			this->Send(response);
+			
+			this->_LogTransaction("<--", response);
+			
+			return;
+		}
+	}
+	
+	// Create new dbuser
+	DBUser new_dbuser;
+	new_dbuser.nick = nick;
+	new_dbuser.email = email;
+	new_dbuser.uniquenick = uniquenick;
+	new_dbuser.password = Util::MD5hash(password);
+	
+	// Check if dbuser exist with same email
+	if(dbusers.size() >= 1)
+	{
+		// Copy there userid
+		new_dbuser.userid = dbusers[0].userid;
+	}
+	else
+	{
+		// New userid
+		g_database->queryDBUserNewUserID(new_dbuser.userid);
+	}
+	
+	// Insert user in database
+	if(!g_database->insertDBUser(new_dbuser))
+	{
+		return; // Oeps something went wrong?!
+	}
+	
+	if(!g_database->queryDBUserByUniquenick(new_dbuser, uniquenick))
+	{
+		return; // Oeps something went wrong?!
 	}
 	
 	std::string response = GameSpy::Parameter2Response({
 		"nur", "0",
-		"pid", std::to_string(dbuser.profileid),
+		"pid", std::to_string(new_dbuser.profileid),
 		"final"
 	});
 	

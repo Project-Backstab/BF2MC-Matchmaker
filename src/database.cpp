@@ -250,7 +250,40 @@ bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::stri
 	return true;
 }
 
-bool Database::insertDBUser(const DBUser& dbuser, int &profileid)
+bool Database::queryDBUserNewUserID(int &userid)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+	
+    std::string query = "Select MAX(userid) + 1 as `maxuserid` FROM Users;";
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+    output_bind[0].buffer = &userid;
+    output_bind[0].is_unsigned = false;	
+	
+	// Prepare the statement
+    MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+	
+	// Prepare and execute with binds
+    if(
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		return false;
+	}
+
+	int status = mysql_stmt_fetch(statement);
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	
+	return true;
+}
+
+bool Database::insertDBUser(const DBUser& dbuser)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 	
