@@ -16,12 +16,15 @@ typedef void (GPCM::Client::*RequestActionFunc)(const GameSpy::Parameter&) const
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
-	{ "login",      &GPCM::Client::requestLogin },
-	{ "inviteto",   &GPCM::Client::requestInviteTo },
-	{ "getprofile", &GPCM::Client::requestGetProfile },
-	{ "status",     &GPCM::Client::requestStatus },
-	{ "bm",         &GPCM::Client::requestBm },
-	{ "logout",     &GPCM::Client::requestLogout },
+	{ "login",      &GPCM::Client::requestLogin },       // Working, but need to do extra investigation for client variable response
+	{ "inviteto",   &GPCM::Client::requestInviteTo },    // Done
+	{ "getprofile", &GPCM::Client::requestGetProfile },  // Done
+	{ "status",     &GPCM::Client::requestStatus },      // Working, but need to do investigation in msg value
+	{ "bm",         &GPCM::Client::requestBm },          // Needs to do wireshark network cap
+	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Needs to do wireshark network cap
+	{ "revoke",     &GPCM::Client::requestRevoke },      // Needs to do wireshark network cap
+	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy }, // Needs to do wireshark network cap
+	{ "logout",     &GPCM::Client::requestLogout },      // Done
 };
 
 GPCM::Client::Client(int socket, struct sockaddr_in address)
@@ -133,6 +136,9 @@ void GPCM::Client::requestChallenge() const
 		\login\\challenge\otMLwtUZyLCV85ERGzg5mVER8nknWX0B\uniquenick\IamLupo\response\b836c6a19b240bb9fb2a31179b28062b\firewall\1\port\0\productid\10307\gamename\bfield1942ps2\namespaceid\13\id\1\final\
 	Response:
 		\lc\2\sesskey\1\userid\64679\profileid\10036819\uniquenick\IamLupo\lt\ee5540bbd764b321378ccedd\proof\70eabd6f5b004fc0b42056ac3cef5c7b\id\1\final\
+		
+	To do:
+		- The client sends in the login request parameter "response". We have to figure out how this response is been generated.
 */
 void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 {
@@ -143,7 +149,8 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	
 	std::string uniquenick = parameter[5];
 	std::string client_challenge = parameter[3];
-
+	std::string id = parameter[19];
+	
 	// Query Database user
 	DBUser dbuser;
 	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
@@ -163,9 +170,12 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 		"uniquenick", dbuser.uniquenick,
 		"lt", "ee5540bbd764b321378ccedd",
 		"proof", proof,
-		"id", "1",
+		"id", id,
 		"final"
 	});
+	
+	// Save session profileid
+	this->_session_profileid = dbuser.profileid;
 	
 	this->Send(response);
 	
@@ -180,11 +190,25 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
 {
+	std::vector<DBUserFriend> dbuserfriends;
+	std::vector<int> profileids;
+	
+	if(!g_database->queryDBUsersFriendsByProfileid(dbuserfriends, std::to_string(this->_session_profileid)))
+	{
+		return; // Oeps something went wrong?!
+	}
+	
+	for(DBUserFriend dbuserfriend : dbuserfriends)
+	{
+		profileids.push_back((dbuserfriend.profileid == this->_session_profileid) ? dbuserfriend.target_profileid : dbuserfriend.profileid);
+	}
+	
 	std::string response = GameSpy::Parameter2Response({
-		"bdy", "1",
-		"list", "10037049",
+		"bdy", std::to_string(dbuserfriends.size()),
+		"list", Util::ToString(profileids),
 		"final"
 	});
+	
 	this->Send(response);
 	
 	this->_LogTransaction("<--", response);
@@ -284,11 +308,13 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 	Response:
 		\bm\100\f\10036271\msg\|s|0|ss|Offline\final\
 		\bm\100\f\10036029\msg\|s|0|ss|Offline\final\
-		\bm\100\f\10036113\msg\|s|0|ss|Offline\final\
-		\bm\100\f\10036444\msg\|s|0|ss|Offline\final\
-		\bm\100\f\10036492\msg\|s|0|ss|Offline\final\
-		\bm\100\f\10036585\msg\|s|0|ss|Offline\final\
-		\bm\100\f\10037053\msg\|s|0|ss|Offline\final\
+	
+	
+	???
+	Request:
+		\status\2\sesskey\1\statstring\Playing\locstring\bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659\final\
+	Rsponse:
+		\ka\\final\
 */
 void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 {
@@ -297,24 +323,94 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	std::string response = GameSpy::Parameter2Response({
-		"bm", "100",
-		"f", "10037049",
-		"msg", "|s|0|ss|Offline",
-		"final"
-	});
+	std::vector<DBUserFriend> dbuserfriends;
+	std::vector<int> profileids;
+	
+	if(!g_database->queryDBUsersFriendsByProfileid(dbuserfriends, std::to_string(this->_session_profileid)))
+	{
+		return; // Oeps something went wrong?!
+	}
+	
+	for(DBUserFriend dbuserfriend : dbuserfriends)
+	{
+		profileids.push_back((dbuserfriend.profileid == this->_session_profileid) ? dbuserfriend.target_profileid : dbuserfriend.profileid);
+	}
+	
+	std::string response;
+	
+	for(int profileid : profileids)
+	{
+		 response += GameSpy::Parameter2Response({
+			"bm", "100",
+			"f", std::to_string(profileid),
+			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+			"final"
+		});
+	}
 	
 	this->Send(response);
 }
 
 /*
-	\bm\1\sesskey\1\t\10036271\msg\aaa\final\
+	Request:
+		\bm\1\sesskey\1\t\10036271\msg\aaa\final\
+	
+	Response to target:
+		\bm\1\f\10037318\msg\awesome\final\
 */
 void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 {
 	
 }
 
+/*
+	Request:
+		\addbuddy\\sesskey\1\newprofileid\10037827\reason\\final\
+	Response:
+		<none>
+	
+		\error\\err\1539\errmsg\The profile requested is already a buddy.\final\
+
+
+	On the other client this will be send:
+		\bm\4\f\10037318\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\	
+		\bm\2\f\10037318\msg\BFMCB-AUTO.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+		\authadd\\sesskey\1\fromprofileid\10037318\sig\d41d8cd98f00b204e9800998ecf8427e\final\
+		
+		\bm\100\f\10037318\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710\final\
+		\bm\100\f\10037810\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|2970240317|p|44223\final\
+		
+		\addbuddy\\sesskey\1\newprofileid\10037318\reason\BFMCB-AUTO.\final\	
+*/
+void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
+{
+	
+}
+
+/*
+	Request:
+		
+*/
+void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
+{
+	
+}
+
+/*
+	Request:
+		
+*/
+void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter) const
+{
+	
+}
+
+/*
+	Request:
+		\logout\\sesskey\1\final\
+	Response:
+		<none>
+*/
 void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter) const
 {
 	

@@ -50,6 +50,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/disband.aspx",                             &EASports::Client::requestEmpty },
 	{ "/BFMC/Clans/changerank.aspx",                          &EASports::Client::requestEmpty },
 	{ "/BFMC/Clans/addmember.aspx",                           &EASports::Client::requestEmpty },
+	{ "/BFMC/Clans/deletemember.aspx",                        &EASports::Client::requestEmpty },
 	{ "/BFMC/Clans/clanmessage.aspx",                         &EASports::Client::requestEmpty },
 };
 

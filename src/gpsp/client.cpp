@@ -16,10 +16,10 @@ typedef void (GPSP::Client::*RequestActionFunc)(const GameSpy::Parameter&) const
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
-	{ "nicks",   &GPSP::Client::requestNicks   },
-	{ "valid",   &GPSP::Client::requestValid   },
-	{ "newuser", &GPSP::Client::requestNewUser },
-	{ "search",  &GPSP::Client::requestSearch },
+	{ "nicks",   &GPSP::Client::requestNicks   }, // Done
+	{ "valid",   &GPSP::Client::requestValid   }, // Done
+	{ "newuser", &GPSP::Client::requestNewUser }, // Done
+	{ "search",  &GPSP::Client::requestSearch  }, // Done
 };
 
 GPSP::Client::Client(int socket, struct sockaddr_in address)
@@ -241,7 +241,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	
 	std::string nick = parameter[3];
 	std::string email = parameter[5];
-	std::string password = parameter[7];
+	std::string password = Util::MD5hash(parameter[7]);
 	std::string uniquenick = parameter[13];
 	
 	std::vector<DBUser> dbusers;
@@ -276,7 +276,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	new_dbuser.nick = nick;
 	new_dbuser.email = email;
 	new_dbuser.uniquenick = uniquenick;
-	new_dbuser.password = Util::MD5hash(password);
+	new_dbuser.password = password;
 	
 	// Check if dbuser exist with same email
 	if(dbusers.size() >= 1)
@@ -296,6 +296,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		return; // Oeps something went wrong?!
 	}
 	
+	// Get missing profileid
 	if(!g_database->queryDBUserByUniquenick(new_dbuser, uniquenick))
 	{
 		return; // Oeps something went wrong?!

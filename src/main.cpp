@@ -51,59 +51,6 @@ void start_easports_server()
 	g_easports_server->Listen();
 }
 
-/*
-#include <mysql/mysql.h>
-
-void example_mysql()
-{
-	// Initialize the MySQL library
-    mysql_library_init(0, nullptr, nullptr);
-	
-	MYSQL* connection = mysql_init(nullptr);
-    
-	if (!mysql_real_connect(connection, "localhost", "root", "", "BF2MC", 0, nullptr, 0))
-	{
-        std::cerr << "Failed to connect to the database: " << mysql_error(connection) << std::endl;
-    
-		return;
-    }
-	
-	// Execute a query
-    if (mysql_query(connection, "SELECT * FROM Users"))
-	{
-        std::cerr << "Failed to execute the query: " << mysql_error(connection) << std::endl;
-        
-		return;
-    }
-	
-    // Fetch and print the results
-    MYSQL_RES* result = mysql_use_result(connection);
-    if (result)
-	{
-        MYSQL_ROW row;
-		std::string line;
-		
-		while ((row = mysql_fetch_row(result)) != nullptr) {
-            for (unsigned int i = 0; i < mysql_num_fields(result); ++i) {
-				
-				if (row[i])
-				{
-					line += row[i];
-					line += " ";
-				}
-            }
-			
-			std::cout << line << std::endl;
-        }
-		
-        mysql_free_result(result);
-    }
-	
-    mysql_close(connection);
-    mysql_library_end();
-}
-*/
-
 void signal_callback(int signum)
 {
 	std::unique_lock<std::mutex> guard(g_mutex_io);

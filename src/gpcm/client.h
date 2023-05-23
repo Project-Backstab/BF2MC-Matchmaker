@@ -7,7 +7,10 @@
 namespace GPCM
 {
 	class Client : public Net::Socket
-	{	
+	{
+		private:
+			mutable int _session_profileid;
+		
 		public:
 			Client(int socket, struct sockaddr_in address);
 			~Client();
@@ -30,6 +33,9 @@ namespace GPCM
 			void requestGetProfile(const GameSpy::Parameter& parameter) const;
 			void requestStatus(const GameSpy::Parameter& parameter) const;
 			void requestBm(const GameSpy::Parameter& parameter) const;
+			void requestAddBuddy(const GameSpy::Parameter& parameter) const;
+			void requestRevoke(const GameSpy::Parameter& parameter) const;
+			void requestDeleteBuddy(const GameSpy::Parameter& parameter) const;
 			void requestLogout(const GameSpy::Parameter& parameter) const;
 			
 		private:

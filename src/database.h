@@ -16,6 +16,12 @@ struct DBUser
 	std::string password = "";
 };
 
+struct DBUserFriend
+{
+	int profileid = -1;
+	int target_profileid = -1;
+};
+
 class Database
 {
 	private:
@@ -29,11 +35,15 @@ class Database
 		/*
 			Queries
 		*/
+		// DBUser
 		bool queryDBUserByProfileid(DBUser& dbuser, const std::string profileid);
 		bool queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
 		bool queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::string &email);
 		bool queryDBUserNewUserID(int &userid);
 		bool insertDBUser(const DBUser& dbuser);
+		
+		// DBUserFriends
+		bool queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserfriends, const std::string profileid);
 		
 		/*
 			Events

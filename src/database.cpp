@@ -286,33 +286,33 @@ bool Database::queryDBUserNewUserID(int &userid)
 bool Database::insertDBUser(const DBUser& dbuser)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
-	
-    std::string query = "INSERT INTO `Users` (userid, nick, uniquenick, email, password) VALUES (?, ?, ?, ?, ?);";
-	
+
+	std::string query = "INSERT INTO `Users` (userid, nick, uniquenick, email, password) VALUES (?, ?, ?, ?, ?);";
+
 	// Allocate input binds
-    MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-    input_bind[0].buffer = const_cast<int*>(&(dbuser.userid));
-    input_bind[0].is_unsigned = false;
+	input_bind[0].buffer = const_cast<int*>(&(dbuser.userid));
+	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
-    input_bind[1].buffer = const_cast<char*>(&(dbuser.nick[0]));
-    input_bind[1].buffer_length = dbuser.nick.size();
-    input_bind[1].length = nullptr;
+	input_bind[1].buffer = const_cast<char*>(&(dbuser.nick[0]));
+	input_bind[1].buffer_length = dbuser.nick.size();
+	input_bind[1].length = nullptr;
 	input_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
-    input_bind[2].buffer = const_cast<char*>(&(dbuser.uniquenick[0]));
-    input_bind[2].buffer_length = dbuser.uniquenick.size();
-    input_bind[2].length = nullptr;
+	input_bind[2].buffer = const_cast<char*>(&(dbuser.uniquenick[0]));
+	input_bind[2].buffer_length = dbuser.uniquenick.size();
+	input_bind[2].length = nullptr;
 	input_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
-    input_bind[3].buffer = const_cast<char*>(&(dbuser.email[0]));
-    input_bind[3].buffer_length = dbuser.email.size();
-    input_bind[3].length = nullptr;
+	input_bind[3].buffer = const_cast<char*>(&(dbuser.email[0]));
+	input_bind[3].buffer_length = dbuser.email.size();
+	input_bind[3].length = nullptr;
 	input_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
-    input_bind[4].buffer = const_cast<char*>(&(dbuser.password[0]));
-    input_bind[4].buffer_length = dbuser.password.size();
-    input_bind[4].length = nullptr;
-	
+	input_bind[4].buffer = const_cast<char*>(&(dbuser.password[0]));
+	input_bind[4].buffer_length = dbuser.password.size();
+	input_bind[4].length = nullptr;
+
 	// Prepare the statement
-    MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
 	
 	// Prepare and execute with binds
     if(
@@ -330,12 +330,72 @@ bool Database::insertDBUser(const DBUser& dbuser)
 	return true;
 }
 
+bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserfriends, const std::string profileid)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	unsigned long output_profileid = 0;
+	unsigned long output_target_profileid = 0;
+
+	std::string query = "SELECT * FROM UsersFriends WHERE profileid = ? OR target_profileid = ?";
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(profileid[0]));
+	input_bind[0].buffer_length = profileid.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
+	input_bind[1].buffer = const_cast<char*>(&(profileid[0]));
+	input_bind[1].buffer_length = profileid.size();
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_profileid;
+	output_bind[0].is_unsigned = false;	
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = &output_target_profileid;
+	output_bind[1].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		return false;
+	}
+	
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		DBUserFriend dbuserfriend;		
+		dbuserfriend.profileid  = output_profileid;
+		dbuserfriend.target_profileid = output_target_profileid;
+		
+		dbuserfriends.push_back(dbuserfriend);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+
+	return true;
+}
+
 bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 {
 	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
-	{
-        std::cerr << "Failed to prepare the statement: " << mysql_stmt_error(statement) << std::endl;
-		
+		{
+		std::cerr << "Failed to prepare the statement: " << mysql_stmt_error(statement) << std::endl;
+
 		// Cleanup
 		mysql_stmt_free_result(statement);
 		
@@ -354,13 +414,13 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BI
 	
 	if (mysql_stmt_bind_param(statement, input_bind) != 0)
 	{
-        std::cerr << "Failed to bind the input parameter: " << mysql_stmt_error(statement) << std::endl;
-		
+		std::cerr << "Failed to bind the input parameter: " << mysql_stmt_error(statement) << std::endl;
+
 		// Cleanup
 		mysql_stmt_close(statement);
-		
-        return false;
-    }
+
+		return false;
+	}
 	
 	return true;
 }
@@ -373,9 +433,9 @@ bool Database::_execute(MYSQL_STMT* statement)
 		
 		// Cleanup
 		mysql_stmt_close(statement);
-		
-        return false;
-    }
+
+		return false;
+	}
 	
 	return true;
 }
@@ -391,7 +451,7 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 	if (mysql_stmt_bind_result(statement, output_bind))
 	{
 		std::cerr << "Failed to bind the output parameter: " << mysql_stmt_error(statement) << std::endl;
-        
+
 		// Cleanup
 		mysql_stmt_free_result(statement);
 		mysql_stmt_close(statement);
