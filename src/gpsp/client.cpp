@@ -314,22 +314,51 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 
 /*
 	Request:
-		\search\\sesskey\1\profileid\10036819\namespaceid\13\uniquenick\rank_name\gamename\bfield1942ps2\final\
+		\search\\sesskey\1\profileid\10036819\namespaceid\13\uniquenick\IamLupo\gamename\bfield1942ps2\final\
 	Response:
-		???
+		\bsr\10036819\nick\IamLupo@6507BAD7\firstname\\lastname\\email\[hidden]\uniquenick\IamLupo\namespaceid\13\bsrdone\\final\
+
+		\bsrdone\\final\
 */
 void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
-{	
-	std::string response = GameSpy::Parameter2Response({
-		"bsr", "1",
-		"nick", "LooooL",
-		"firstname", "rank_name",
-		"lastname", "lol",
-		"email", "lol@lol.lol",
-		"uniquenick", "rank_name",
-		"namespaceid", "13",
-		"bsrdone", "final"
-	});
+{
+	if(parameter.size() != 13)
+	{
+		return;
+	}
+	
+	std::string uniquenick = parameter[9];
+	
+	DBUser dbuser;
+	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
+	{
+		return; // Oeps something went wrong?!
+	}
+	
+	std::string response;
+	GameSpy::Parameter response_parameter;
+	
+	// User found
+	if(dbuser.profileid != -1)
+	{
+		response_parameter = {
+			"bsr", std::to_string(dbuser.profileid),
+			"nick", dbuser.nick,
+			"firstname", "",
+			"lastname", "",
+			"email", "[hidden]",
+			"uniquenick", dbuser.uniquenick,
+			"namespaceid", "13",
+			"bsrdone", "",
+			"final"
+		};
+	}
+	
+	response_parameter.push_back("bsrdone");
+	response_parameter.push_back("");
+	response_parameter.push_back("final");
+	
+	response = GameSpy::Parameter2Response(response_parameter);
 	
 	this->Send(response);
 	
