@@ -1,10 +1,10 @@
-#ifndef EASPORTS_CLIENT_H
-#define EASPORTS_CLIENT_H
+#ifndef WEBSERVER_CLIENT_H
+#define WEBSERVER_CLIENT_H
 
 #include <net/socket.h>
 #include <urlrequest.h>
 
-namespace EASports
+namespace Webserver
 {
 	class Client : public Net::Socket
 	{	
@@ -45,4 +45,4 @@ namespace EASports
 	};
 }
 
-#endif // EASPORTS_CLIENT_H
+#endif // WEBSERVER_CLIENT_H

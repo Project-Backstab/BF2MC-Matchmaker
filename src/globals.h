@@ -10,8 +10,8 @@ class Database;
 extern Database*  g_database;
 extern Server*    g_gpsp_server;
 extern Server*    g_gpcm_server;
+extern Server*    g_webserver_server;
 extern Server*    g_browsing_server;
-extern Server*    g_easports_server;
 
 extern std::mutex g_mutex_io;
 

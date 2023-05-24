@@ -14,8 +14,8 @@
 #include <globals.h>
 #include <gpsp/client.h>
 #include <gpcm/client.h>
+#include <webserver/client.h>
 #include <browsing/client.h>
-#include <easports/client.h>
 
 Server::Server(Server::Type type, int port)
 {
@@ -106,13 +106,13 @@ void Server::Listen()
 				this->_clients.push_back(client);
 			}	
 			break;
-			case Server::Type::EASports:
+			case Server::Type::Webserver:
 			{
-				Net::Socket* client = new EASports::Client(client_socket, client_address);
+				Net::Socket* client = new Webserver::Client(client_socket, client_address);
 				
 				this->onClientConnect(*client);
 				
-				std::thread t(&EASports::Client::Listen, (EASports::Client*)client);
+				std::thread t(&Webserver::Client::Listen, (Webserver::Client*)client);
 				t.detach();
 				
 				this->_clients.push_back(client);
@@ -164,7 +164,5 @@ void Server::onClientDisconnect(const Net::Socket &client)
 		this->_clients.erase(position);
 	
 	//std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
-	
-	//std::cout << "Total Clients = " << this->_clients.size() << std::endl;
 }
 

@@ -568,6 +568,6 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 

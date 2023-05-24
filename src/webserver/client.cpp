@@ -10,62 +10,62 @@
 #include <util.h>
 #include <urlrequest.h>
 
-#include <easports/client.h>
+#include <webserver/client.h>
 
-typedef void (EASports::Client::*RequestActionFunc)(const UrlRequest::Parameter&, const UrlRequest::UrlVariables &);
+typedef void (Webserver::Client::*RequestActionFunc)(const UrlRequest::Parameter&, const UrlRequest::UrlVariables &);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
-	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &EASports::Client::requestNews  },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews  },
 	
 	// Licenses
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &EASports::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestEmpty },
 	
 	// Configs
-	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &EASports::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestEmpty },
 	
 	// Local
-	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &EASports::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestEmpty },
 	
 	// Advertisements
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &EASports::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &EASports::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestEmpty },
 	
 	// Stats
-	{ "/BFMC/Stats/getplayerinfo.aspx",                       &EASports::Client::requestGetPlayerInfo },
-	{ "/BFMC/Stats/stats.aspx",                               &EASports::Client::requestStats },
+	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },
+	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },
 	
 	// Clan
-	{ "/BFMC/Clans/claninfo.aspx",                            &EASports::Client::requestClanInfo },
-	{ "/BFMC/Clans/clanmembers.aspx",                         &EASports::Client::requestClanMembers },
-	{ "/BFMC/Clans/leaderboard.aspx",                         &EASports::Client::requestLeaderboard },
-	{ "/BFMC/Clans/createclan.aspx",                          &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/updateclan.aspx",                          &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/disband.aspx",                             &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/changerank.aspx",                          &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/addmember.aspx",                           &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/deletemember.aspx",                        &EASports::Client::requestEmpty },
-	{ "/BFMC/Clans/clanmessage.aspx",                         &EASports::Client::requestEmpty },
+	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },
+	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },
+	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },
+	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestEmpty },
 };
 
-EASports::Client::Client(int socket, struct sockaddr_in address)
+Webserver::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
 }
 
-EASports::Client::~Client()
+Webserver::Client::~Client()
 {
 	this->Disconnect();
 }
 
-void EASports::Client::Listen()
+void Webserver::Client::Listen()
 {
 	while(true)
 	{
@@ -91,13 +91,13 @@ void EASports::Client::Listen()
 	this->Disconnect();
 }
 
-void EASports::Client::Disconnect()
+void Webserver::Client::Disconnect()
 {
 	close(this->_socket);
-	g_easports_server->onClientDisconnect(*this);
+	g_webserver_server->onClientDisconnect(*this);
 }
 
-void EASports::Client::Send(const std::string &msg) const
+void Webserver::Client::Send(const std::string &msg) const
 {
 	send(this->_socket, msg.c_str(), msg.size(), 0);
 }
@@ -105,7 +105,7 @@ void EASports::Client::Send(const std::string &msg) const
 /*
 	Events
 */
-void EASports::Client::onRequest(const std::string &request)
+void Webserver::Client::onRequest(const std::string &request)
 {
 	UrlRequest::Parameter parameter = UrlRequest::Request2Parameter(request);
 	
@@ -143,7 +143,7 @@ void EASports::Client::onRequest(const std::string &request)
 /*
 	
 */
-void EASports::Client::requestNews(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestNews(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/news.txt");
 }
@@ -196,12 +196,12 @@ void EASports::Client::requestNews(const UrlRequest::Parameter& parameter, const
 		mv			Total mayor victories
 		ngp			Total Parcipated game sessions
 */
-void EASports::Client::requestGetPlayerInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestGetPlayerInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/getplayerinfo/pid=75559074&getarg=score,rank,pph,kills,suicides,time,lavd,mavd,havd,hed,pld,bod,k1,s1,k2,s2,k3,s3,k4,s4,k5,s5,tk,medals,ttb,mv,ngp.txt");
 }
 
-void EASports::Client::requestStats(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestStats(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	try
 	{
@@ -328,22 +328,22 @@ void EASports::Client::requestStats(const UrlRequest::Parameter& parameter, cons
 	this->Disconnect();
 }
 
-void EASports::Client::requestClanInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/clan/claninfo/clanid=543151.txt");
 }
 
-void EASports::Client::requestClanMembers(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanMembers(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {	
 	this->_SendFile("data/clan/clanmembers/clanid=561717.txt");
 }
 
-void EASports::Client::requestLeaderboard(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestLeaderboard(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/leaderboard/startrank=1&endrank=7.txt");
 }
 
-void EASports::Client::requestCreateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestCreateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	for(std::string v : parameter)
 	{
@@ -351,7 +351,7 @@ void EASports::Client::requestCreateClan(const UrlRequest::Parameter& parameter,
 	}
 }
 
-void EASports::Client::requestUpdateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestUpdateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	for(std::string v : parameter)
 	{
@@ -359,7 +359,7 @@ void EASports::Client::requestUpdateClan(const UrlRequest::Parameter& parameter,
 	}
 }
 
-void EASports::Client::requestDisband(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestDisband(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {
 	for(std::string v : parameter)
 	{
@@ -367,7 +367,7 @@ void EASports::Client::requestDisband(const UrlRequest::Parameter& parameter, co
 	}
 }
 
-void EASports::Client::requestEmpty(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestEmpty(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
 {	
 	std::string response;
 	
@@ -386,14 +386,14 @@ void EASports::Client::requestEmpty(const UrlRequest::Parameter& parameter, cons
 /*
 	Private functions
 */
-void EASports::Client::_LogTransaction(const std::string &direction, const std::string &response) const
+void Webserver::Client::_LogTransaction(const std::string &direction, const std::string &response) const
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
 	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 
-std::string EASports::Client::_readFile(const std::string &file_name) const
+std::string Webserver::Client::_readFile(const std::string &file_name) const
 {
 	std::ifstream input("../" + file_name, std::ifstream::in);
 	
@@ -404,7 +404,7 @@ std::string EASports::Client::_readFile(const std::string &file_name) const
 	return data;
 }
 
-void EASports::Client::_SendFile(const std::string &file_name) const
+void Webserver::Client::_SendFile(const std::string &file_name) const
 {
 	std::string response;
 	

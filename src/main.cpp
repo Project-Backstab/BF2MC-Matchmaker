@@ -14,8 +14,8 @@
 Database*  g_database;
 Server*    g_gpsp_server;
 Server*    g_gpcm_server;
+Server*    g_webserver_server;
 Server*    g_browsing_server;
-Server*    g_easports_server;
 
 std::mutex g_mutex_io;
 
@@ -39,16 +39,16 @@ void start_gpcm_server()
 	g_gpcm_server->Listen();
 }
 
+void start_webserver_server()
+{
+	g_webserver_server = new Server(Server::Type::Webserver, 80);	
+	g_webserver_server->Listen();
+}
+
 void start_browsing_server()
 {
 	g_browsing_server = new Server(Server::Type::Browsing, 28910);	
 	g_browsing_server->Listen();
-}
-
-void start_easports_server()
-{
-	g_easports_server = new Server(Server::Type::EASports, 80);	
-	g_easports_server->Listen();
 }
 
 void signal_callback(int signum)
@@ -61,7 +61,9 @@ void signal_callback(int signum)
 	
 	// Close services
 	g_gpsp_server->Close();
-	g_easports_server->Close();
+	g_gpcm_server->Close();
+	g_webserver_server->Close();
+	g_browsing_server->Close();
 	
 	// Exit application
 	exit(signum);
@@ -80,14 +82,14 @@ int main(int argc, char const* argv[])
 	std::thread t_db(&start_db);
 	std::thread t_gpsp(&start_gpsp_server);
 	std::thread t_gpcm(&start_gpcm_server);
+	std::thread t_webserver(&start_webserver_server);
 	std::thread t_browsing(&start_browsing_server);
-	std::thread t_easports(&start_easports_server);
 	
 	t_db.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
+	t_webserver.detach();
 	t_browsing.detach();
-	t_easports.detach();
 	
 	// Sleep ZZZZZZzzzzzZZZZZ
 	while(true)

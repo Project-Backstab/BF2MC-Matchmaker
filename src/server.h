@@ -19,8 +19,8 @@ class Server : public Net::Socket
 		{
 			GPSP,			// gpsp.gamespy.com
 			GPCM,			// gpcm.gamespy.com
-			EASports,		// www.easports.com
-			Browsing,
+			Webserver,		// www.easports.com and bfmc.gamespy.com
+			Browsing,       // bfield1942ps2.available.gamespy.com and bfield1942ps2.ms7.gamespy.com
 		};
 	
 	public:

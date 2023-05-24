@@ -9,8 +9,8 @@ add_executable(bf2mc
 	src/server.cpp
 	src/gpsp/client.cpp
 	src/gpcm/client.cpp
+	src/webserver/client.cpp
 	src/browsing/client.cpp
-	src/easports/client.cpp
 	src/net/socket.cpp
 	src/database.cpp
 	src/util.cpp
