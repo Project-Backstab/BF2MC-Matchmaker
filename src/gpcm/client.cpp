@@ -21,7 +21,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "getprofile", &GPCM::Client::requestGetProfile },  // Done
 	{ "status",     &GPCM::Client::requestStatus },      // Working, but need to do investigation in msg value
 	{ "bm",         &GPCM::Client::requestBm },          // Needs to do wireshark network cap
-	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Needs to do wireshark network cap
+	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Working, but needs to add in database
+	{ "authadd",    &GPCM::Client::requestAuthAdd },     // Done
 	{ "revoke",     &GPCM::Client::requestRevoke },      // Needs to do wireshark network cap
 	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy }, // Needs to do wireshark network cap
 	{ "logout",     &GPCM::Client::requestLogout },      // Done
@@ -212,6 +213,8 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
 	this->Send(response);
 	
 	this->_LogTransaction("<--", response);
+	
+	
 }
 
 /*
@@ -305,16 +308,13 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 /*
 	Request:
 		\status\1\sesskey\1\statstring\Resting\locstring\bfield1942ps2:/\final\
+		\status\2\sesskey\1\statstring\Playing\locstring\bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659\final\
+		\status\1\sesskey\1\statstring\Online\locstring\bfield1942ps2:/\final\
+	
 	Response:
 		\bm\100\f\10036271\msg\|s|0|ss|Offline\final\
 		\bm\100\f\10036029\msg\|s|0|ss|Offline\final\
-	
-	
-	???
-	Request:
-		\status\2\sesskey\1\statstring\Playing\locstring\bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659\final\
-	Rsponse:
-		\ka\\final\
+		\bm\100\f\10037810\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|2970240317|p|44223\final\
 */
 void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 {
@@ -340,7 +340,7 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 	
 	for(int profileid : profileids)
 	{
-		 response += GameSpy::Parameter2Response({
+		response += GameSpy::Parameter2Response({
 			"bm", "100",
 			"f", std::to_string(profileid),
 			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
@@ -349,6 +349,8 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 	}
 	
 	this->Send(response);
+	
+	this->_LogTransaction("<--", response);
 }
 
 /*
@@ -360,31 +362,120 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 {
+	int profileid = std::stoi(parameter[5]);
+	std::string msg = parameter[7];
 	
+	std::cout << profileid << std::endl;
+	
+	for(Net::Socket* client : g_gpcm_server->_clients)
+	{
+		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		
+		if(gpcm_client->_session_profileid == profileid)
+		{
+			std::string response = GameSpy::Parameter2Response({
+				"bm", "1",
+				"f", std::to_string(this->_session_profileid),
+				"msg", msg,
+				"final"
+			});
+			
+			gpcm_client->Send(response);
+			
+			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+		}
+	}
 }
 
 /*
 	Request:
 		\addbuddy\\sesskey\1\newprofileid\10037827\reason\\final\
-	Response:
-		<none>
 	
+	Response:
+		\bm\2\f\10037049\msg\|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+	
+	Extra:
 		\error\\err\1539\errmsg\The profile requested is already a buddy.\final\
-
-
-	On the other client this will be send:
-		\bm\4\f\10037318\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\	
-		\bm\2\f\10037318\msg\BFMCB-AUTO.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
-		\authadd\\sesskey\1\fromprofileid\10037318\sig\d41d8cd98f00b204e9800998ecf8427e\final\
-		
-		\bm\100\f\10037318\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710\final\
-		\bm\100\f\10037810\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|2970240317|p|44223\final\
-		
-		\addbuddy\\sesskey\1\newprofileid\10037318\reason\BFMCB-AUTO.\final\	
 */
 void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 9 || parameter[7] == "BFMCB-AUTO.")
+	{
+		return;
+	}
 	
+	int profileid = std::stoi(parameter[5]);
+	
+	std::cout << "profileid = " << profileid << std::endl;
+	
+	for(Net::Socket* client : g_gpcm_server->_clients)
+	{
+		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		
+		if(gpcm_client->_session_profileid == profileid)
+		{
+			std::string response = GameSpy::Parameter2Response({
+				"bm", "2",
+				"f", std::to_string(this->_session_profileid),
+				"msg", "|signed|d41d8cd98f00b204e9800998ecf8427e",
+				"final"
+			});
+			
+			gpcm_client->Send(response);
+			
+			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+		}
+	}
+}
+
+/*
+	Request:
+		\authadd\\sesskey\1\fromprofileid\10037049\sig\d41d8cd98f00b204e9800998ecf8427e\final\
+	Response:
+		\bm\4\f\10037318\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+
+*/
+void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
+{
+	if(parameter.size() != 9)
+	{
+		return;
+	}
+	
+	int profileid = std::stoi(parameter[5]);
+	std::string sig = parameter[7];
+	
+	for(Net::Socket* client : g_gpcm_server->_clients)
+	{
+		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		
+		if(gpcm_client->_session_profileid == profileid)
+		{
+			// Send friendlist update to friendship sender
+			std::string response = GameSpy::Parameter2Response({
+				"bm", "100",
+				"f", std::to_string(this->_session_profileid),
+				"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+				"final"
+			});
+			
+			gpcm_client->Send(response);
+			
+			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+			
+			// Send friendlist update to friendship reciever
+			response = GameSpy::Parameter2Response({
+				"bm", "100",
+				"f", std::to_string(profileid),
+				"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+				"final"
+			});
+			
+			this->Send(response);
+			
+			this->_LogTransaction("<--", response);
+		}
+	}
 }
 
 /*

@@ -15,6 +15,7 @@ namespace Browsing
 			void Listen();
 			void Disconnect();
 			void Send(const std::string &msg) const;
+			void Send(const std::vector<unsigned char> &msg) const;
 			
 			/*
 				Events
@@ -24,9 +25,7 @@ namespace Browsing
 			/*
 				Requests
 			*/
-			void requestNicks(const GameSpy::Parameter &parameter) const;
-			void requestValid(const GameSpy::Parameter &parameter) const;
-			void requestNewUser(const GameSpy::Parameter &parameter) const;
+			void requestServerList(const GameSpy::Parameter &parameter);
 			
 		private:
 			void _LogTransaction(const std::string &direction, const std::string &response) const;

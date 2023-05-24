@@ -390,7 +390,7 @@ void EASports::Client::_LogTransaction(const std::string &direction, const std::
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 
 std::string EASports::Client::_readFile(const std::string &file_name) const

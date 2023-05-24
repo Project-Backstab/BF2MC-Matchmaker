@@ -23,8 +23,9 @@ class Server : public Net::Socket
 			Browsing,
 		};
 	
-	private:
+	public:
 		std::vector<Net::Socket*> _clients;
+	private:
 		Server::Type              _type;
 	
 	public:
@@ -36,7 +37,7 @@ class Server : public Net::Socket
 		void onServerListen() const;
 		void onServerShutdown() const;
 		void onClientConnect(const Net::Socket &client) const;
-		void onClientDisconnect(const Net::Socket &client) const;
+		void onClientDisconnect(const Net::Socket &client);
 };
 
 #endif // SERVER_H

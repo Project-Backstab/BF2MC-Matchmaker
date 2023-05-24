@@ -8,7 +8,8 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <thread>
-
+#include <algorithm>
+ 
 #include <server.h>
 #include <globals.h>
 #include <gpsp/client.h>
@@ -77,6 +78,8 @@ void Server::Listen()
 				
 				std::thread t(&GPSP::Client::Listen, (GPSP::Client*)client);
 				t.detach();
+				
+				this->_clients.push_back(client);
 			}	
 			break;
 			case Server::Type::GPCM:
@@ -87,7 +90,9 @@ void Server::Listen()
 				
 				std::thread t(&GPCM::Client::Listen, (GPCM::Client*)client);
 				t.detach();
-			}	
+				
+				this->_clients.push_back(client);
+			}
 			break;
 			case Server::Type::Browsing:
 			{
@@ -97,6 +102,8 @@ void Server::Listen()
 				
 				std::thread t(&Browsing::Client::Listen, (Browsing::Client*)client);
 				t.detach();
+				
+				this->_clients.push_back(client);
 			}	
 			break;
 			case Server::Type::EASports:
@@ -107,6 +114,8 @@ void Server::Listen()
 				
 				std::thread t(&EASports::Client::Listen, (EASports::Client*)client);
 				t.detach();
+				
+				this->_clients.push_back(client);
 			}
 			break;
 		}
@@ -144,10 +153,18 @@ void Server::onClientConnect(const Net::Socket &client) const
 	//std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
 }
 
-void Server::onClientDisconnect(const Net::Socket &client) const
+void Server::onClientDisconnect(const Net::Socket &client)
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
+	std::vector<Net::Socket*>::iterator position;
+
+	position = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
+	if (position != this->_clients.end()) // == myVector.end() means the element was not found
+		this->_clients.erase(position);
+	
 	//std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
+	
+	//std::cout << "Total Clients = " << this->_clients.size() << std::endl;
 }
 
