@@ -337,7 +337,7 @@ bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserf
 	unsigned long output_profileid = 0;
 	unsigned long output_target_profileid = 0;
 
-	std::string query = "SELECT * FROM UsersFriends WHERE profileid = ? OR target_profileid = ?";
+	std::string query = "SELECT `profileid`, `target_profileid` FROM UsersFriends WHERE profileid = ? OR target_profileid = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -387,6 +387,80 @@ bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserf
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
 
+	return true;
+}
+
+bool Database::insertDBUserFriend(const DBUserFriend& dbuserfriend)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "INSERT INTO `UsersFriends` (profileid, target_profileid) VALUES (?, ?);";
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[1].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+	
+	// Prepare and execute with binds
+    if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	
+	return true;
+}
+
+bool Database::removeDBUserFriend(const DBUserFriend& dbuserfriend)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "DELETE FROM `UsersFriends` WHERE (profileid = ? and target_profileid = ?) OR (profileid = ? and target_profileid = ?);";
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[1].is_unsigned = false;
+	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[2].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[2].is_unsigned = false;
+	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[3].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[3].is_unsigned = false;
+	
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+	
+	// Prepare and execute with binds
+    if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	
 	return true;
 }
 

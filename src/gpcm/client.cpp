@@ -20,11 +20,11 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "inviteto",   &GPCM::Client::requestInviteTo },    // Done
 	{ "getprofile", &GPCM::Client::requestGetProfile },  // Done
 	{ "status",     &GPCM::Client::requestStatus },      // Working, but need to do investigation in msg value
-	{ "bm",         &GPCM::Client::requestBm },          // Needs to do wireshark network cap
-	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Working, but needs to add in database
+	{ "bm",         &GPCM::Client::requestBm },          // Done
+	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Done
 	{ "authadd",    &GPCM::Client::requestAuthAdd },     // Done
-	{ "revoke",     &GPCM::Client::requestRevoke },      // Needs to do wireshark network cap
-	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy }, // Needs to do wireshark network cap
+	{ "revoke",     &GPCM::Client::requestRevoke },      // Done
+	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy }, // Done
 	{ "logout",     &GPCM::Client::requestLogout },      // Done
 };
 
@@ -362,8 +362,18 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 9)
+	{
+		return;
+	}
+	
 	int profileid = std::stoi(parameter[5]);
 	std::string msg = parameter[7];
+	
+	if(msg.find("BFMCB-REMOVEDFROMBUDDYLIST") != std::string::npos)
+	{
+		return;
+	}
 	
 	std::cout << profileid << std::endl;
 	
@@ -382,7 +392,7 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 			
 			gpcm_client->Send(response);
 			
-			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+			gpcm_client->_LogTransaction("<--", response);
 		}
 	}
 }
@@ -423,7 +433,7 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 			
 			gpcm_client->Send(response);
 			
-			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+			gpcm_client->_LogTransaction("<--", response);
 		}
 	}
 }
@@ -445,6 +455,15 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 	int profileid = std::stoi(parameter[5]);
 	std::string sig = parameter[7];
 	
+	DBUserFriend dbuserfriend;
+	dbuserfriend.profileid =  profileid;
+	dbuserfriend.target_profileid = this->_session_profileid;
+	
+	if(!g_database->insertDBUserFriend(dbuserfriend))
+	{
+		return;
+	}
+	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
@@ -461,7 +480,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 			
 			gpcm_client->Send(response);
 			
-			this->_LogTransaction("profileid: " + std::to_string(gpcm_client->_session_profileid) + " <--", response);
+			gpcm_client->_LogTransaction("<--", response);
 			
 			// Send friendlist update to friendship reciever
 			response = GameSpy::Parameter2Response({
@@ -480,16 +499,53 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 
 /*
 	Request:
-		
+		\revoke\\sesskey\1\profileid\10036819\final\
+	Response:
+		\bm\6\f\10036819\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+		\bm\6\f\10037049\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
 */
 void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 7)
+	{
+		return;
+	}
 	
+	int profileid = std::stoi(parameter[5]);
+	
+	DBUserFriend dbuserfriend;
+	dbuserfriend.profileid =  profileid;
+	dbuserfriend.target_profileid = this->_session_profileid;
+	
+	if(!g_database->removeDBUserFriend(dbuserfriend))
+	{
+		return;
+	}
+	
+	for(Net::Socket* client : g_gpcm_server->_clients)
+	{
+		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		
+		if(gpcm_client->_session_profileid == profileid)
+		{
+			// Send friendlist update to friendship sender
+			std::string response = GameSpy::Parameter2Response({
+				"bm", "100",
+				"f", std::to_string(this->_session_profileid),
+				"msg", "|s|0|ss|Offline",
+				"final"
+			});
+			
+			gpcm_client->Send(response);
+			
+			gpcm_client->_LogTransaction("<--", response);
+		}
+	}
 }
 
 /*
 	Request:
-		
+		\delbuddy\\sesskey\1\delprofileid\10036819\final\
 */
 void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter) const
 {
@@ -499,8 +555,6 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter) const
 /*
 	Request:
 		\logout\\sesskey\1\final\
-	Response:
-		<none>
 */
 void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter) const
 {
@@ -516,3 +570,4 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 	
 	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
+

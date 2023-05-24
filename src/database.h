@@ -44,6 +44,8 @@ class Database
 		
 		// DBUserFriends
 		bool queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserfriends, const std::string profileid);
+		bool insertDBUserFriend(const DBUserFriend& dbuserfriend);
+		bool removeDBUserFriend(const DBUserFriend& dbuserfriend);
 		
 		/*
 			Events

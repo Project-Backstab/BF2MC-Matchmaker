@@ -23,9 +23,12 @@ DROP TABLE IF EXISTS `UsersFriends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UsersFriends` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `profileid` int unsigned NOT NULL,
-  `target_profileid` int unsigned NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `target_profileid` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -34,7 +37,7 @@ CREATE TABLE `UsersFriends` (
 
 LOCK TABLES `UsersFriends` WRITE;
 /*!40000 ALTER TABLE `UsersFriends` DISABLE KEYS */;
-INSERT INTO `UsersFriends` VALUES (10036819,10037049),(10036819,10037054);
+INSERT INTO `UsersFriends` VALUES (5,10037049,10036819);
 /*!40000 ALTER TABLE `UsersFriends` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -47,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-23 21:36:51
+-- Dump completed on 2023-05-24 23:10:54
