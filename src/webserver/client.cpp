@@ -16,6 +16,8 @@ typedef void (Webserver::Client::*RequestActionFunc)(const UrlRequest::Parameter
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
+	// www.easports.com
+	// News
 	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews  },
 	
 	// Licenses
@@ -37,6 +39,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestEmpty },
 	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestEmpty },
 	
+	// bfmc.gamespy.com
 	// Stats
 	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },
 	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },
