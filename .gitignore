@@ -1,5 +1,6 @@
 build/
 reverse/
+third-party/
 
 tools/hashcracker
 tools/openspy-core-v2

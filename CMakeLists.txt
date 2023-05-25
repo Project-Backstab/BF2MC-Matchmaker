@@ -19,6 +19,6 @@ add_executable(bf2mc
 	src/main.cpp
 )
 
-include_directories(bf2mc src)
+include_directories(bf2mc src src/include)
 
 target_link_libraries (bf2mc mysqlclient ssl crypto zstd)

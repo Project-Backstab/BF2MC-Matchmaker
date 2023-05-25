@@ -3,28 +3,6 @@
 
 #include <urlrequest.h>
 
-UrlRequest::Parameter UrlRequest::Request2Parameter(const std::string &request)
-{
-	std::stringstream input;
-	std::string value;
-	UrlRequest::Parameter parameter;
-	
-	input.str(request);
-	
-	// Split between spaces
-	while(std::getline(input, value, ' '))
-	{
-	   parameter.push_back(value);
-	}
-	
-	return parameter;
-}
-
-std::string UrlRequest::Parameter2Response(const UrlRequest::Parameter &parameter)
-{
-	return "";
-}
-
 void UrlRequest::GetUrlElements(const std::string &url, std::string &url_base, std::map<std::string, std::string> &url_variables)
 {
 	std::stringstream input, input2;

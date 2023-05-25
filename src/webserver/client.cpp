@@ -12,7 +12,9 @@
 
 #include <webserver/client.h>
 
-typedef void (Webserver::Client::*RequestActionFunc)(const UrlRequest::Parameter&, const UrlRequest::UrlVariables &);
+using namespace atomizes;
+
+typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const UrlRequest::UrlVariables&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
@@ -86,9 +88,14 @@ void Webserver::Client::Listen()
 		// Resize buffer
 		buffer.resize(v);
 		
-		request = Util::Buffer2String(buffer);
+		HTTPMessageParser http_parser;
+		HTTPMessage http_request;
+
+		http_parser.Parse(&http_request, &(buffer[0]));
+
+		//std::cout << http_request.ToString() << std::endl;
 		
-		this->onRequest(request);
+		this->onRequest(http_request);
 	}
 	
 	this->Disconnect();
@@ -108,19 +115,17 @@ void Webserver::Client::Send(const std::string &msg) const
 /*
 	Events
 */
-void Webserver::Client::onRequest(const std::string &request)
+void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 {
-	UrlRequest::Parameter parameter = UrlRequest::Request2Parameter(request);
-	
-	if(parameter.size() >= 2 && parameter[0] == "GET")
+	if(http_request.GetMethod() == MessageMethod::GET)
 	{
 		std::string url_base;
 		UrlRequest::UrlVariables url_variables;
 		
-		this->_LogTransaction("-->", parameter[1]);
+		this->_LogTransaction("-->", http_request.GetPath());
 		
 		// Split url into url base and variables
-		UrlRequest::GetUrlElements(parameter[1], url_base, url_variables);
+		UrlRequest::GetUrlElements(http_request.GetPath(), url_base, url_variables);
 		
 		if (mRequestActions.find(url_base) != mRequestActions.end())
 		{
@@ -128,7 +133,7 @@ void Webserver::Client::onRequest(const std::string &request)
 			RequestActionFunc func = mRequestActions[url_base];
 		
 			// Execute action function with class object.
-			(this->*(func))(parameter, url_variables);
+			(this->*(func))(http_request, url_variables);
 		}
 		else
 		{
@@ -146,7 +151,7 @@ void Webserver::Client::onRequest(const std::string &request)
 /*
 	
 */
-void Webserver::Client::requestNews(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/news.txt");
 }
@@ -199,12 +204,12 @@ void Webserver::Client::requestNews(const UrlRequest::Parameter& parameter, cons
 		mv			Total mayor victories
 		ngp			Total Parcipated game sessions
 */
-void Webserver::Client::requestGetPlayerInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/getplayerinfo/pid=75559074&getarg=score,rank,pph,kills,suicides,time,lavd,mavd,havd,hed,pld,bod,k1,s1,k2,s2,k3,s3,k4,s4,k5,s5,tk,medals,ttb,mv,ngp.txt");
 }
 
-void Webserver::Client::requestStats(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	try
 	{
@@ -331,57 +336,47 @@ void Webserver::Client::requestStats(const UrlRequest::Parameter& parameter, con
 	this->Disconnect();
 }
 
-void Webserver::Client::requestClanInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/clan/claninfo/clanid=543151.txt");
 }
 
-void Webserver::Client::requestClanMembers(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {	
 	this->_SendFile("data/clan/clanmembers/clanid=561717.txt");
 }
 
-void Webserver::Client::requestLeaderboard(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	this->_SendFile("data/leaderboard/startrank=1&endrank=7.txt");
 }
 
-void Webserver::Client::requestCreateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	for(std::string v : parameter)
-	{
-		std::cout << v << std::endl;
-	}
-}
-
-void Webserver::Client::requestUpdateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
-{
-	for(std::string v : parameter)
-	{
-		std::cout << v << std::endl;
-	}
-}
-
-void Webserver::Client::requestDisband(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
-{
-	for(std::string v : parameter)
-	{
-		std::cout << v << std::endl;
-	}
-}
-
-void Webserver::Client::requestEmpty(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables)
-{	
-	std::string response;
 	
-	response += "HTTP/1.1 200 OK\r\n";
-	response += "Server: BF2-MC\r\n";
-	response += "Accept-Ranges: bytes\r\n";
-	response += "Content-Type: text/plain\r\n";
-	response += "Content-Length: 0\r\n";
-	response += "\r\n";
+}
+
+void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
 	
-	this->Send(response);
+}
+
+void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	
+}
+
+void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response;
+	
+	http_response.SetStatusCode(200);
+	http_response.SetHeader("Accept-Ranges", "bytes");
+	http_response.SetHeader("Content-Type", "text/plain");
+	http_response.SetHeader("Host", "BF2-MC");
+	http_response.SetMessageBody("\r\n");
+	
+	this->Send(http_response.ToString());
 	
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -393,7 +388,7 @@ void Webserver::Client::_LogTransaction(const std::string &direction, const std:
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 
 std::string Webserver::Client::_readFile(const std::string &file_name) const
@@ -409,20 +404,17 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 
 void Webserver::Client::_SendFile(const std::string &file_name) const
 {
-	std::string response;
+	HTTPMessage http_response;
 	
-	response += "HTTP/1.1 200 OK\r\n";
-	response += "Server: BF2-MC\r\n";
-	response += "Accept-Ranges: bytes\r\n";
-	response += "Content-Type: text/plain\r\n";
+	http_response.SetStatusCode(200);
+	http_response.SetHeader("Accept-Ranges", "bytes");
+	http_response.SetHeader("Content-Type", "text/plain");
+	http_response.SetHeader("Host", "BF2-MC");
 	
-	std::string data = this->_readFile(file_name);
+	// Set file data
+	http_response.SetMessageBody(this->_readFile(file_name));
 	
-	response += "Content-Length: " + std::to_string(data.size()) + "\r\n";
-	response += "\r\n";
-	response += data;
-	
-	this->Send(response);
+	this->Send(http_response.ToString());
 	
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }

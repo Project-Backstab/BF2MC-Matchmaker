@@ -416,8 +416,6 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 	
 	int profileid = std::stoi(parameter[5]);
 	
-	std::cout << "profileid = " << profileid << std::endl;
-	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
@@ -568,6 +566,6 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 

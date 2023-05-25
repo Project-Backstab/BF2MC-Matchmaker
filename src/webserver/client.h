@@ -3,6 +3,7 @@
 
 #include <net/socket.h>
 #include <urlrequest.h>
+#include <atomizes.hpp>
 
 namespace Webserver
 {
@@ -19,24 +20,24 @@ namespace Webserver
 			/*
 				Events
 			*/
-			void onRequest(const std::string &msg);
+			void onRequest(const atomizes::HTTPMessage &http_request);
 			
 			/*
 				Requests
 			*/
-			void requestNews(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestGetPlayerInfo(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestStats(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
+			void requestNews(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			//Clan			
-			void requestClanInfo(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestClanMembers(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestLeaderboard(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestCreateClan(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestUpdateClan(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables);
-			void requestDisband(const UrlRequest::Parameter& parameter, const UrlRequest::UrlVariables &url_variables);
+			void requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			
 			//Empty
-			void requestEmpty(const UrlRequest::Parameter &parameter, const UrlRequest::UrlVariables &url_variables);
+			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 		
 		private:
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
