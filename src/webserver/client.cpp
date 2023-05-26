@@ -119,7 +119,6 @@ void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 	this->Send(http_response.ToString());
 }
 
-
 /*
 	Events
 */
@@ -368,15 +367,12 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 
 void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	HTTPMessage http_response;
+	HTTPMessage http_response = this->_defaultResponseHeader();
 	
 	http_response.SetStatusCode(200);
-	http_response.SetHeader("Accept-Ranges", "bytes");
-	http_response.SetHeader("Content-Type", "text/plain");
-	http_response.SetHeader("Host", "BF2-MC");
 	http_response.SetMessageBody("\r\n");
 	
-	this->Send(http_response.ToString());
+	this->Send(http_response);
 	
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
