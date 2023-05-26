@@ -16,6 +16,7 @@ namespace Webserver
 			void Listen();
 			void Disconnect();
 			void Send(const std::string &msg) const;
+			void Send(const atomizes::HTTPMessage &http_response) const;
 			
 			/*
 				Events
@@ -40,6 +41,7 @@ namespace Webserver
 			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 		
 		private:
+			atomizes::HTTPMessage _defaultRequestHeader() const;
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
 			std::string _readFile(const std::string &file_name) const;
 			void _SendFile(const std::string &file_name) const;

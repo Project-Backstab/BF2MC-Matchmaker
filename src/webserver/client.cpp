@@ -9,6 +9,8 @@
 #include <globals.h>
 #include <util.h>
 #include <urlrequest.h>
+#include <battlefield.h>
+#include <battlefield/playerstats.h>
 
 #include <webserver/client.h>
 
@@ -112,6 +114,12 @@ void Webserver::Client::Send(const std::string &msg) const
 	send(this->_socket, msg.c_str(), msg.size(), 0);
 }
 
+void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
+{
+	this->Send(http_response.ToString());
+}
+
+
 /*
 	Events
 */
@@ -161,7 +169,6 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 	getarg:		this argument defines the parameters it needs to return
 		score:		Total score
 		ran:		Rank
-			This value can be ranged between 1 and 20
 		pph:		Point per Hour
 		kills:		Total kills
 		suicides:	Total suicides
@@ -184,29 +191,22 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 		s5:			??
 		tk:			
 		medals:		Earned medals.
-			This integer value can be read as binairy and can be explained like this:
-			??????????????x		Service Cross
-			?????????????x?		The Bronse Star
-			????????????x??		Air Forse Cross
-			???????????x???		The Silver star
-			??????????x????		The Service Cross, 1st Class
-			?????????x?????		The Bronse Star, 1st Class
-			????????x??????		Air Force Cross, 1st Class
-			???????x???????		Expert Killing
-			??????x????????		Expert Shooting
-			?????x?????????		Expert Demolition
-			????x??????????		Expert Repair
-			???x???????????		Expert Healer
-			??x????????????		Navy Cross
-			?x?????????????		Legion of Merit
-			x??????????????		Legion of Merit, 1st Class
 		ttb			Total times been the top player in the game
 		mv			Total mayor victories
 		ngp			Total Parcipated game sessions
 */
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	this->_SendFile("data/getplayerinfo/pid=75559074&getarg=score,rank,pph,kills,suicides,time,lavd,mavd,havd,hed,pld,bod,k1,s1,k2,s2,k3,s3,k4,s4,k5,s5,tk,medals,ttb,mv,ngp.txt");
+	Battlefield::PlayerStats stats;
+	stats.useExample();
+	
+	atomizes::HTTPMessage http_response = this->_defaultRequestHeader();
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody(stats.ToString());
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
@@ -391,6 +391,17 @@ void Webserver::Client::_LogTransaction(const std::string &direction, const std:
 	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 
+atomizes::HTTPMessage Webserver::Client::_defaultRequestHeader() const
+{
+	HTTPMessage http_response;
+	
+	http_response.SetHeader("Accept-Ranges", "bytes");
+	http_response.SetHeader("Content-Type", "text/plain");
+	http_response.SetHeader("Host", "BF2-MC");
+	
+	return http_response;
+}
+
 std::string Webserver::Client::_readFile(const std::string &file_name) const
 {
 	std::ifstream input("../" + file_name, std::ifstream::in);
@@ -404,17 +415,14 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 
 void Webserver::Client::_SendFile(const std::string &file_name) const
 {
-	HTTPMessage http_response;
+	atomizes::HTTPMessage http_response = this->_defaultRequestHeader();
+	
+	std::string data = this->_readFile(file_name);
 	
 	http_response.SetStatusCode(200);
-	http_response.SetHeader("Accept-Ranges", "bytes");
-	http_response.SetHeader("Content-Type", "text/plain");
-	http_response.SetHeader("Host", "BF2-MC");
+	http_response.SetMessageBody(data);
 	
-	// Set file data
-	http_response.SetMessageBody(this->_readFile(file_name));
-	
-	this->Send(http_response.ToString());
+	this->Send(http_response);
 	
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
