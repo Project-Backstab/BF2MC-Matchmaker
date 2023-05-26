@@ -200,7 +200,7 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 	Battlefield::PlayerStats stats;
 	stats.useExample();
 	
-	atomizes::HTTPMessage http_response = this->_defaultRequestHeader();
+	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	http_response.SetStatusCode(200);
 	http_response.SetMessageBody(stats.ToString());
 	
@@ -391,7 +391,7 @@ void Webserver::Client::_LogTransaction(const std::string &direction, const std:
 	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 
-atomizes::HTTPMessage Webserver::Client::_defaultRequestHeader() const
+atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
 {
 	HTTPMessage http_response;
 	
@@ -415,7 +415,7 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 
 void Webserver::Client::_SendFile(const std::string &file_name) const
 {
-	atomizes::HTTPMessage http_response = this->_defaultRequestHeader();
+	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	
 	std::string data = this->_readFile(file_name);
 	
