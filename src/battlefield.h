@@ -46,7 +46,7 @@ namespace Battlefield
 		Navy_Cross                  = 1 << 12,
 		Legion_of_Merit             = 1 << 13,
 		Legion_of_Merit_1st_Class   = 1 << 14,
-		All_Medals                  = (1 << 14) - 1,
+		All_Medals                  = (1 << 15) - 1,
 	};
 }
 
