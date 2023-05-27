@@ -19,7 +19,7 @@
 
 Server::Server(Server::Type type, int port)
 {
-	int opt = 1;
+	int opt = 10; // After 10 seconds time out socket
 	
 	this->_type = type;
 	
@@ -150,7 +150,7 @@ void Server::onClientConnect(const Net::Socket &client) const
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	//std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
+	std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
 }
 
 void Server::onClientDisconnect(const Net::Socket &client)
@@ -160,9 +160,9 @@ void Server::onClientDisconnect(const Net::Socket &client)
 	std::vector<Net::Socket*>::iterator position;
 
 	position = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
-	if (position != this->_clients.end()) // == myVector.end() means the element was not found
+	if (position != this->_clients.end())
 		this->_clients.erase(position);
 	
-	//std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
+	std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
 }
 

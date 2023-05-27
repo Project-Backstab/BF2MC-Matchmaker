@@ -76,9 +76,11 @@ void Webserver::Client::Listen()
 {
 	while(true)
 	{
-		std::string request;
 		std::vector<char> buffer(4096, 0);
+		HTTPMessageParser http_parser;
+		HTTPMessage http_request;
 		
+		// Read socket
 		int v = read(this->_socket, &(buffer[0]), 4096);
 		
 		// If error or no data is recieved we end the connection
@@ -90,13 +92,10 @@ void Webserver::Client::Listen()
 		// Resize buffer
 		buffer.resize(v);
 		
-		HTTPMessageParser http_parser;
-		HTTPMessage http_request;
-
+		// Parse buffer to http header
 		http_parser.Parse(&http_request, &(buffer[0]));
-
-		//std::cout << http_request.ToString() << std::endl;
 		
+		// Trigger onRequest event
 		this->onRequest(http_request);
 	}
 	
@@ -150,7 +149,7 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 			
 			guard.unlock();
 			
-			this->Disconnect();
+			//this->Disconnect();
 		}
 	}
 }
@@ -197,7 +196,20 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	Battlefield::PlayerStats stats;
-	stats.useExample();
+	
+	try
+	{
+		std::string profileid = url_variables.at("pid");
+		
+		if(profileid == "10036819")
+		{
+			stats.useExample();
+		}
+	}
+	catch(const std::out_of_range &e)
+	{
+		
+	}
 	
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	http_response.SetStatusCode(200);
@@ -393,7 +405,7 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
 	
 	http_response.SetHeader("Accept-Ranges", "bytes");
 	http_response.SetHeader("Content-Type", "text/plain");
-	http_response.SetHeader("Host", "BF2-MC");
+	http_response.SetHeader("Server", "BF2-MC");
 	
 	return http_response;
 }

@@ -8,7 +8,7 @@
 namespace Webserver
 {
 	class Client : public Net::Socket
-	{	
+	{
 		public:
 			Client(int socket, struct sockaddr_in address);
 			~Client();

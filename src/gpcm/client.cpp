@@ -40,7 +40,7 @@ GPCM::Client::~Client()
 }
 
 void GPCM::Client::Listen()
-{
+{	
 	// Initialize connection send challenge
 	this->requestChallenge();
 	
@@ -250,8 +250,6 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 	
 	DBUser dbuser;
 	
-	std::cout << "profileid = " << profileid << std::endl;
-	
 	if(!g_database->queryDBUserByProfileid(dbuser, profileid))
 	{
 		return; // No Database user found with uniquenick
@@ -336,21 +334,43 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 		profileids.push_back((dbuserfriend.profileid == this->_session_profileid) ? dbuserfriend.target_profileid : dbuserfriend.profileid);
 	}
 	
-	std::string response;
-	
 	for(int profileid : profileids)
 	{
+		std::string response;
+		
 		response += GameSpy::Parameter2Response({
 			"bm", "100",
 			"f", std::to_string(profileid),
 			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
 			"final"
 		});
+		
+		this->Send(response);
+
+		this->_LogTransaction("<--", response);
 	}
 	
-	this->Send(response);
-	
-	this->_LogTransaction("<--", response);
+	/*
+	// Stress test: Test a lot of friends
+	if(profileids.size())
+	{
+		for(int i = 0; i < 100; i++)
+		{
+			std::string response;
+			
+			response += GameSpy::Parameter2Response({
+				"bm", "100",
+				"f", std::to_string(profileids[profileids.size() - 1] + i + 1),
+				"msg", "|s|2|ss|Offline",
+				"final"
+			});
+			
+			this->Send(response);
+
+			this->_LogTransaction("<--", response);
+		}
+	}
+	*/
 }
 
 /*
@@ -374,8 +394,6 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 	{
 		return;
 	}
-	
-	std::cout << profileid << std::endl;
 	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
