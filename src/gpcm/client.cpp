@@ -153,22 +153,22 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	std::string id = parameter[19];
 	
 	// Query Database user
-	DBUser dbuser;
-	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
+	Battlefield::Player player;
+	if(!g_database->queryPlayerByUniquenick(player, uniquenick))
 	{
 		// No Database user found with uniquenick
 		return;
 	}
 	
 	// Generate proof
-	std::string proof = GameSpy::LoginProof(dbuser.password, uniquenick, client_challenge, "Thc3BZFhfv");
+	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, "Thc3BZFhfv");
 	
 	std::string response = GameSpy::Parameter2Response({
 		"lc", "2",
 		"sesskey", "1",
-		"userid", std::to_string(dbuser.userid),
-		"profileid", std::to_string(dbuser.profileid),
-		"uniquenick", dbuser.uniquenick,
+		"userid", std::to_string(player.GetUserId()),
+		"profileid", std::to_string(player.GetProfileId()),
+		"uniquenick", player.GetUniquenick(),
 		"lt", "ee5540bbd764b321378ccedd",
 		"proof", proof,
 		"id", id,
@@ -176,7 +176,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	});
 	
 	// Save session profileid
-	this->_session_profileid = dbuser.profileid;
+	this->_session_profileid = player.GetProfileId();
 	
 	this->Send(response);
 	
@@ -191,22 +191,20 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
 {
-	std::vector<DBUserFriend> dbuserfriends;
-	std::vector<int> profileids;
+	Battlefield::Player player;
 	
-	if(!g_database->queryDBUsersFriendsByProfileid(dbuserfriends, std::to_string(this->_session_profileid)))
+	player.SetProfileId(this->_session_profileid);
+	
+	if(!g_database->queryPlayerFriends(player))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
-	for(DBUserFriend dbuserfriend : dbuserfriends)
-	{
-		profileids.push_back((dbuserfriend.profileid == this->_session_profileid) ? dbuserfriend.target_profileid : dbuserfriend.profileid);
-	}
+	std::vector<int> player_friends = player.GetFriends();
 	
 	std::string response = GameSpy::Parameter2Response({
-		"bdy", std::to_string(dbuserfriends.size()),
-		"list", Util::ToString(profileids),
+		"bdy", std::to_string(player_friends.size()),
+		"list", Util::ToString(player_friends),
 		"final"
 	});
 	
@@ -246,24 +244,25 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 	
 	std::string profileid = parameter[5];
 	std::string id = parameter[7];
-	std::string response;
 	
-	DBUser dbuser;
+	Battlefield::Player player;
 	
-	if(!g_database->queryDBUserByProfileid(dbuser, profileid))
+	if(!g_database->queryPlayerByProfileid(player, profileid))
 	{
 		return; // No Database user found with uniquenick
 	}
 	
-	if(dbuser.profileid != -1)
+	std::string response;
+	
+	if(player.GetProfileId() != -1)
 	{
 		response = GameSpy::Parameter2Response({
 			"pi", "",
-			"profileid", std::to_string(dbuser.profileid),
-			"userid", std::to_string(dbuser.userid),
-			"nick", dbuser.nick,
-			"uniquenick", dbuser.uniquenick,
-			"email", dbuser.email,
+			"profileid", std::to_string(player.GetProfileId()),
+			"userid", std::to_string(player.GetUserId()),
+			"nick", player.GetNick(),
+			"uniquenick", player.GetUniquenick(),
+			"email", player.GetEmail(),
 			"sex", "0",
 			"birthday", "0",
 			"countrycode", "",
@@ -271,7 +270,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 			"videocard1string", "",
 			"videocard2string", "",
 			"osstring", "",
-			"id", parameter[7],
+			"id", id,
 			"sig", "d41d8cd98f00b204e9800998ecf8427e",
 			"final"
 		});
@@ -292,7 +291,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 			"videocard1string", "",
 			"videocard2string", "",
 			"osstring", "",
-			"id", parameter[7],
+			"id", id,
 			"sig", "d41d8cd98f00b204e9800998ecf8427e",
 			"final"
 		});
@@ -321,26 +320,24 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	std::vector<DBUserFriend> dbuserfriends;
-	std::vector<int> profileids;
+	Battlefield::Player player;
 	
-	if(!g_database->queryDBUsersFriendsByProfileid(dbuserfriends, std::to_string(this->_session_profileid)))
+	player.SetProfileId(this->_session_profileid);
+	
+	if(!g_database->queryPlayerFriends(player))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
-	for(DBUserFriend dbuserfriend : dbuserfriends)
-	{
-		profileids.push_back((dbuserfriend.profileid == this->_session_profileid) ? dbuserfriend.target_profileid : dbuserfriend.profileid);
-	}
+	std::vector<int> player_friends = player.GetFriends();
 	
-	for(int profileid : profileids)
+	for(int friend_profileid : player_friends)
 	{
 		std::string response;
 		
 		response += GameSpy::Parameter2Response({
 			"bm", "100",
-			"f", std::to_string(profileid),
+			"f", std::to_string(friend_profileid),
 			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
 			"final"
 		});
@@ -387,8 +384,11 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	int profileid = std::stoi(parameter[5]);
+	std::string profileid = parameter[5];
 	std::string msg = parameter[7];
+	
+	Battlefield::Player target_player;
+	target_player.SetProfileId(profileid);
 	
 	if(msg.find("BFMCB-REMOVEDFROMBUDDYLIST") != std::string::npos)
 	{
@@ -399,7 +399,7 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
 		
-		if(gpcm_client->_session_profileid == profileid)
+		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
 			std::string response = GameSpy::Parameter2Response({
 				"bm", "1",
@@ -432,13 +432,16 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	int profileid = std::stoi(parameter[5]);
+	std::string target_profileid = parameter[5];
 	
+	Battlefield::Player target_player;
+	target_player.SetProfileId(target_profileid);
+		
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
 		
-		if(gpcm_client->_session_profileid == profileid)
+		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
 			std::string response = GameSpy::Parameter2Response({
 				"bm", "2",
@@ -468,14 +471,13 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	int profileid = std::stoi(parameter[5]);
+	std::string target_profileid = parameter[5];
 	std::string sig = parameter[7];
 	
-	DBUserFriend dbuserfriend;
-	dbuserfriend.profileid =  profileid;
-	dbuserfriend.target_profileid = this->_session_profileid;
+	Battlefield::Player target_player;
+	target_player.SetProfileId(target_profileid);
 	
-	if(!g_database->insertDBUserFriend(dbuserfriend))
+	if(!g_database->insertPlayerFriend(this->_session_profileid, target_player.GetProfileId()))
 	{
 		return;
 	}
@@ -484,7 +486,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
 		
-		if(gpcm_client->_session_profileid == profileid)
+		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
 			// Send friendlist update to friendship sender
 			std::string response = GameSpy::Parameter2Response({
@@ -501,7 +503,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 			// Send friendlist update to friendship reciever
 			response = GameSpy::Parameter2Response({
 				"bm", "100",
-				"f", std::to_string(profileid),
+				"f", target_profileid,
 				"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
 				"final"
 			});
@@ -527,13 +529,12 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	int profileid = std::stoi(parameter[5]);
+	std::string target_profileid = parameter[5];
 	
-	DBUserFriend dbuserfriend;
-	dbuserfriend.profileid =  profileid;
-	dbuserfriend.target_profileid = this->_session_profileid;
+	Battlefield::Player target_player;
+	target_player.SetProfileId(target_profileid);
 	
-	if(!g_database->removeDBUserFriend(dbuserfriend))
+	if(!g_database->removePlayerFriend(this->_session_profileid, target_player.GetProfileId()))
 	{
 		return;
 	}
@@ -542,7 +543,7 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
 		
-		if(gpcm_client->_session_profileid == profileid)
+		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
 			// Send friendlist update to friendship sender
 			std::string response = GameSpy::Parameter2Response({
@@ -584,6 +585,6 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 

@@ -28,7 +28,7 @@ void Battlefield::PlayerStats::useExample()
 
 bool Battlefield::PlayerStats::SetScore(uint32_t score)
 {
-	this->score = score;
+	this->_score = score;
 	return true;
 }
 
@@ -36,7 +36,7 @@ bool Battlefield::PlayerStats::SetRank(uint32_t ran)
 {
 	if(ran >= 1 && ran <= 20)
 	{
-		this->ran = ran;
+		this->_ran = ran;
 		
 		return true;
 	}
@@ -46,85 +46,85 @@ bool Battlefield::PlayerStats::SetRank(uint32_t ran)
 
 bool Battlefield::PlayerStats::SetPPH(uint32_t pph)
 {
-	this->pph = pph;
+	this->_pph = pph;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKills(uint32_t kills)
 {
-	this->kills = kills;
+	this->_kills = kills;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetSuicides(uint32_t suicides)
 {
-	this->suicides = suicides;
+	this->_suicides = suicides;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetTime(uint32_t time)
 {
-	this->time = time;
+	this->_time = time;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetLAVsDestroyed(uint32_t lavd)
 {
-	this->lavd = lavd;
+	this->_lavd = lavd;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetMAVsDestroyed(uint32_t mavd)
 {
-	this->mavd = mavd;
+	this->_mavd = mavd;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetHAVsDestroyed(uint32_t havd)
 {
-	this->havd = havd;
+	this->_havd = havd;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetHelicoptersDestroyed(uint32_t hed)
 {
-	this->hed = hed;
+	this->_hed = hed;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetBoatsDestroyed(uint32_t bod)
 {
-	this->bod = bod;
+	this->_bod = bod;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKillsAssualtKit(uint32_t kills)
 {
-	this->k1 = kills;
+	this->_k1 = kills;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKillsSniperKit(uint32_t kills)
 {
-	this->k2 = kills;
+	this->_k2 = kills;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKillsSpecialOpKit(uint32_t kills)
 {
-	this->k3 = kills;
+	this->_k3 = kills;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKillsCombatEngineerKit(uint32_t kills)
 {
-	this->k4 = kills;
+	this->_k4 = kills;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetKillsSupportKit(uint32_t kills)
 {
-	this->k5 = kills;
+	this->_k5 = kills;
 	return true;
 }
 
@@ -132,7 +132,7 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 {
 	if(medals < (1 << 15))
 	{
-		this->medals = medals;
+		this->_medals = medals;
 		
 		return true;
 	}
@@ -142,80 +142,57 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 
 bool Battlefield::PlayerStats::SetTotalTopPlayer(uint32_t total)
 {
-	this->ttb = total;
+	this->_ttb = total;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetTotalVictories(uint32_t total)
 {
-	this->mv = total;
+	this->_mv = total;
 	return true;
 }
 
 bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 {
-	this->ngp = total;
+	this->_ngp = total;
 	return true;
 }
 
-std::string Battlefield::PlayerStats::ToString()
+/*
+	Request responses
+*/
+std::vector<int> Battlefield::PlayerStats::GetStatsVector()
 {
-	std::string str;
+	std::vector<int> v_stats;
 	
-	str += std::to_string(this->score);
-	str += ",";
-	str += std::to_string(this->ran);
-	str += ",";
-	str += std::to_string(this->pph);
-	str += ",";
-	str += std::to_string(this->kills);
-	str += ",";
-	str += std::to_string(this->suicides);
-	str += ",";
-	str += std::to_string(this->time);
-	str += ",";
-	str += std::to_string(this->lavd);
-	str += ",";
-	str += std::to_string(this->mavd);
-	str += ",";
-	str += std::to_string(this->havd);
-	str += ",";
-	str += std::to_string(this->hed);
-	str += ",";
-	str += std::to_string(this->pld);
-	str += ",";
-	str += std::to_string(this->bod);
-	str += ",";
-	str += std::to_string(this->k1);
-	str += ",";
-	str += std::to_string(this->s1);
-	str += ",";
-	str += std::to_string(this->k2);
-	str += ",";
-	str += std::to_string(this->s2);
-	str += ",";
-	str += std::to_string(this->k3);
-	str += ",";
-	str += std::to_string(this->s3);
-	str += ",";
-	str += std::to_string(this->k4);
-	str += ",";
-	str += std::to_string(this->s4);
-	str += ",";
-	str += std::to_string(this->k5);
-	str += ",";
-	str += std::to_string(this->s5);
-	str += ",";
-	str += std::to_string(this->tk);
-	str += ",";
-	str += std::to_string(this->medals);
-	str += ",";
-	str += std::to_string(this->ttb);
-	str += ",";
-	str += std::to_string(this->mv);
-	str += ",";
-	str += std::to_string(this->ngp);
+	v_stats.push_back(this->_score);
+	v_stats.push_back(this->_ran);
+	v_stats.push_back(this->_pph);
+	v_stats.push_back(this->_kills);
+	v_stats.push_back(this->_suicides);
+	v_stats.push_back(this->_time);
+	v_stats.push_back(this->_lavd);
+	v_stats.push_back(this->_mavd);
+	v_stats.push_back(this->_havd);
+	v_stats.push_back(this->_hed);
+	v_stats.push_back(this->_pld);
+	v_stats.push_back(this->_bod);
+	v_stats.push_back(this->_k1);
+	v_stats.push_back(this->_s1);
+	v_stats.push_back(this->_k2);
+	v_stats.push_back(this->_s2);
+	v_stats.push_back(this->_k3);
+	v_stats.push_back(this->_s3);
+	v_stats.push_back(this->_k4);
+	v_stats.push_back(this->_s4);
+	v_stats.push_back(this->_k5);
+	v_stats.push_back(this->_s5);
+	v_stats.push_back(this->_tk);
+	v_stats.push_back(this->_medals);
+	v_stats.push_back(this->_ttb);
+	v_stats.push_back(this->_mv);
+	v_stats.push_back(this->_ngp);
 	
-	return str;
+	return v_stats;
 }
 

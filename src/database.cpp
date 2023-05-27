@@ -18,7 +18,7 @@ Database::Database()
 	this->OnDatabaseStart();
 }
 
-bool Database::queryDBUserByProfileid(DBUser& dbuser, const std::string profileid)
+bool Database::queryPlayerByProfileid(Battlefield::Player& player, const std::string profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -27,9 +27,9 @@ bool Database::queryDBUserByProfileid(DBUser& dbuser, const std::string profilei
 	char          output_nick[46];
 	char          output_uniquenick[46];
 	char          output_email[46];
-	char          output_password[46];
+	char          output_md5password[46];
 
-	std::string query = "SELECT * FROM Users WHERE profileid = ?";
+	std::string query = "SELECT * FROM `Players` WHERE profileid = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -58,7 +58,7 @@ bool Database::queryDBUserByProfileid(DBUser& dbuser, const std::string profilei
 	output_bind[4].buffer_length = 46;
 	output_bind[4].length = nullptr;
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
-	output_bind[5].buffer = output_password;
+	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 46;
 	output_bind[5].length = nullptr;
 
@@ -78,12 +78,12 @@ bool Database::queryDBUserByProfileid(DBUser& dbuser, const std::string profilei
 
 	if (status != 1 && status != MYSQL_NO_DATA)
 	{		
-		dbuser.profileid  = output_profileid;
-		dbuser.userid     = output_userid;
-		dbuser.nick       = output_nick;
-		dbuser.uniquenick = output_uniquenick;
-		dbuser.email      = output_email;
-		dbuser.password   = output_password;
+		player.SetProfileId(output_profileid);
+		player.SetUserId(output_userid);
+		player.SetNick(output_nick);
+		player.SetUniquenick(output_uniquenick);
+		player.SetEmail(output_email);
+		player.SetMD5Password(output_md5password);
 	}
 
 	// Cleanup
@@ -93,7 +93,7 @@ bool Database::queryDBUserByProfileid(DBUser& dbuser, const std::string profilei
 	return true;
 }
 
-bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick)
+bool Database::queryPlayerByUniquenick(Battlefield::Player& player, const std::string &uniquenick)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -102,9 +102,9 @@ bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &unique
 	char          output_nick[46];
 	char          output_uniquenick[46];
 	char          output_email[46];
-	char          output_password[46];
+	char          output_md5password[46];
 
-	std::string query = "SELECT * FROM Users WHERE uniquenick = ?";
+	std::string query = "SELECT * FROM `Players` WHERE uniquenick = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -133,7 +133,7 @@ bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &unique
 	output_bind[4].buffer_length = 46;
 	output_bind[4].length = nullptr;
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
-	output_bind[5].buffer = output_password;
+	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 46;
 	output_bind[5].length = nullptr;
 
@@ -153,12 +153,12 @@ bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &unique
 
 	if (status != 1 && status != MYSQL_NO_DATA)
 	{		
-		dbuser.profileid  = output_profileid;
-		dbuser.userid     = output_userid;
-		dbuser.nick       = output_nick;
-		dbuser.uniquenick = output_uniquenick;
-		dbuser.email      = output_email;
-		dbuser.password   = output_password;
+		player.SetProfileId(output_profileid);
+		player.SetUserId(output_userid);
+		player.SetNick(output_nick);
+		player.SetUniquenick(output_uniquenick);
+		player.SetEmail(output_email);
+		player.SetMD5Password(output_md5password);
 	}
 
 	// Cleanup
@@ -168,7 +168,7 @@ bool Database::queryDBUserByUniquenick(DBUser& dbuser, const std::string &unique
 	return true;
 }
 
-bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::string &email)
+bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::string &email)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -177,9 +177,9 @@ bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::stri
 	char          output_nick[46];
 	char          output_uniquenick[46];
 	char          output_email[46];
-	char          output_password[46];
+	char          output_md5password[46];
 
-	std::string query = "SELECT * FROM Users WHERE email = ?";
+	std::string query = "SELECT * FROM `Players` WHERE email = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -208,7 +208,7 @@ bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::stri
 	output_bind[4].buffer_length = 46;
 	output_bind[4].length = nullptr;
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
-	output_bind[5].buffer = output_password;
+	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 46;
 	output_bind[5].length = nullptr;
 
@@ -232,15 +232,16 @@ bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::stri
 		if (status == 1 || status == MYSQL_NO_DATA)
 			break;
 		
-		DBUser dbuser;
-		dbuser.profileid  = output_profileid;
-		dbuser.userid     = output_userid;
-		dbuser.nick       = output_nick;
-		dbuser.uniquenick = output_uniquenick;
-		dbuser.email      = output_email;
-		dbuser.password   = output_password;
+		Battlefield::Player player;
 		
-		dbusers.push_back(dbuser);
+		player.SetProfileId(output_profileid);
+		player.SetUserId(output_userid);
+		player.SetNick(output_nick);
+		player.SetUniquenick(output_uniquenick);
+		player.SetEmail(output_email);
+		player.SetMD5Password(output_md5password);
+		
+		players.push_back(player);
 	}
 
 	// Cleanup
@@ -250,16 +251,18 @@ bool Database::queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::stri
 	return true;
 }
 
-bool Database::queryDBUserNewUserID(int &userid)
+bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
-	std::string query = "Select MAX(userid) + 1 as `maxuserid` FROM Users;";
-
+	std::string query = "Select MAX(userid) + 1 as `maxuserid` FROM `Players`;";
+	
+	int output_userid;
+	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[0].buffer = &userid;
+	output_bind[0].buffer = &output_userid;
 	output_bind[0].is_unsigned = false;	
 
 	// Prepare the statement
@@ -273,9 +276,18 @@ bool Database::queryDBUserNewUserID(int &userid)
 	{
 		return false;
 	}
-
-	int status = mysql_stmt_fetch(statement);
-
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		player.SetUserId(output_userid);
+	}
+	
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
@@ -283,32 +295,42 @@ bool Database::queryDBUserNewUserID(int &userid)
 	return true;
 }
 
-bool Database::insertDBUser(const DBUser& dbuser)
+bool Database::insertPlayer(const Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
-
-	std::string query = "INSERT INTO `Users` (userid, nick, uniquenick, email, password) VALUES (?, ?, ?, ?, ?);";
-
+	
+	std::string query = "INSERT INTO `Players` (userid, nick, uniquenick, email, password) VALUES (?, ?, ?, ?, ?);";
+	
+	std::string input_nick = player.GetNick();
+	std::string input_uniquenick = player.GetUniquenick();
+	std::string input_email = player.GetEmail();
+	std::string input_md5password = player.GetPassword();
+	
+	std::cout << query << std::endl;
+	std::cout << player.GetPassword() << std::endl;
+	
+	int input_profileid = player.GetUserId();
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&(dbuser.userid));
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[1].buffer = const_cast<char*>(&(dbuser.nick[0]));
-	input_bind[1].buffer_length = dbuser.nick.size();
+	input_bind[1].buffer = const_cast<char*>(&(input_nick[0]));
+	input_bind[1].buffer_length = input_nick.size();
 	input_bind[1].length = nullptr;
 	input_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[2].buffer = const_cast<char*>(&(dbuser.uniquenick[0]));
-	input_bind[2].buffer_length = dbuser.uniquenick.size();
+	input_bind[2].buffer = const_cast<char*>(&(input_uniquenick[0]));
+	input_bind[2].buffer_length = input_uniquenick.size();
 	input_bind[2].length = nullptr;
 	input_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[3].buffer = const_cast<char*>(&(dbuser.email[0]));
-	input_bind[3].buffer_length = dbuser.email.size();
+	input_bind[3].buffer = const_cast<char*>(&(input_email[0]));
+	input_bind[3].buffer_length = input_email.size();
 	input_bind[3].length = nullptr;
 	input_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[4].buffer = const_cast<char*>(&(dbuser.password[0]));
-	input_bind[4].buffer_length = dbuser.password.size();
+	input_bind[4].buffer = const_cast<char*>(&(input_md5password[0]));
+	input_bind[4].buffer_length = input_md5password.size();
 	input_bind[4].length = nullptr;
 
 	// Prepare the statement
@@ -330,23 +352,24 @@ bool Database::insertDBUser(const DBUser& dbuser)
 	return true;
 }
 
-bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserfriends, const std::string profileid)
+bool Database::queryPlayerFriends(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
+	int input_profileid = player.GetProfileId();
 	unsigned long output_profileid = 0;
 	unsigned long output_target_profileid = 0;
 
-	std::string query = "SELECT `profileid`, `target_profileid` FROM UsersFriends WHERE profileid = ? OR target_profileid = ?";
+	std::string query = "SELECT `profileid`, `target_profileid` FROM `PlayerFriends` WHERE profileid = ? OR target_profileid = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
-	input_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[0].buffer = const_cast<char*>(&(profileid[0]));
-	input_bind[0].buffer_length = profileid.size();
-	input_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[1].buffer = const_cast<char*>(&(profileid[0]));
-	input_bind[1].buffer_length = profileid.size();
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].is_unsigned = false;	
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].is_unsigned = false;	
 
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -376,11 +399,9 @@ bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserf
 		if (status == 1 || status == MYSQL_NO_DATA)
 			break;
 		
-		DBUserFriend dbuserfriend;		
-		dbuserfriend.profileid  = output_profileid;
-		dbuserfriend.target_profileid = output_target_profileid;
+		int friend_profileid = (output_profileid == input_profileid) ? output_target_profileid : output_profileid;
 		
-		dbuserfriends.push_back(dbuserfriend);
+		player.AddFriend(friend_profileid);
 	}
 
 	// Cleanup
@@ -390,19 +411,19 @@ bool Database::queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserf
 	return true;
 }
 
-bool Database::insertDBUserFriend(const DBUserFriend& dbuserfriend)
+bool Database::insertPlayerFriend(int profileid, int target_profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
-	std::string query = "INSERT INTO `UsersFriends` (profileid, target_profileid) VALUES (?, ?);";
+	std::string query = "INSERT INTO `PlayerFriends` (profileid, target_profileid) VALUES (?, ?);";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[0].buffer = const_cast<int*>(&(profileid));
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[1].buffer = const_cast<int*>(&(target_profileid));
 	input_bind[1].is_unsigned = false;
 
 	// Prepare the statement
@@ -424,25 +445,25 @@ bool Database::insertDBUserFriend(const DBUserFriend& dbuserfriend)
 	return true;
 }
 
-bool Database::removeDBUserFriend(const DBUserFriend& dbuserfriend)
+bool Database::removePlayerFriend(int profileid, int target_profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
-	std::string query = "DELETE FROM `UsersFriends` WHERE (profileid = ? and target_profileid = ?) OR (profileid = ? and target_profileid = ?);";
+	std::string query = "DELETE FROM `PlayerFriends` WHERE (profileid = ? and target_profileid = ?) OR (profileid = ? and target_profileid = ?);";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[0].buffer = const_cast<int*>(&(profileid));
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[1].buffer = const_cast<int*>(&(target_profileid));
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&(dbuserfriend.target_profileid));
+	input_bind[2].buffer = const_cast<int*>(&(target_profileid));
 	input_bind[2].is_unsigned = false;
 	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[3].buffer = const_cast<int*>(&(dbuserfriend.profileid));
+	input_bind[3].buffer = const_cast<int*>(&(profileid));
 	input_bind[3].is_unsigned = false;
 
 	// Prepare the statement

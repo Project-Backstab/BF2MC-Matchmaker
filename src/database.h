@@ -5,22 +5,7 @@
 #include <vector>
 
 #include <mysql/mysql.h>
-
-struct DBUser
-{
-	int profileid = -1;
-	int userid = -1;
-	std::string nick = "";
-	std::string uniquenick = "";
-	std::string email = "";
-	std::string password = "";
-};
-
-struct DBUserFriend
-{
-	int profileid = -1;
-	int target_profileid = -1;
-};
+#include <battlefield/player.h>
 
 class Database
 {
@@ -35,17 +20,15 @@ class Database
 		/*
 			Queries
 		*/
-		// DBUser
-		bool queryDBUserByProfileid(DBUser& dbuser, const std::string profileid);
-		bool queryDBUserByUniquenick(DBUser& dbuser, const std::string &uniquenick);
-		bool queryDBUsersByEmail(std::vector<DBUser>& dbusers, const std::string &email);
-		bool queryDBUserNewUserID(int &userid);
-		bool insertDBUser(const DBUser& dbuser);
-		
-		// DBUserFriends
-		bool queryDBUsersFriendsByProfileid(std::vector<DBUserFriend>& dbuserfriends, const std::string profileid);
-		bool insertDBUserFriend(const DBUserFriend& dbuserfriend);
-		bool removeDBUserFriend(const DBUserFriend& dbuserfriend);
+		// Player
+		bool queryPlayerByProfileid(Battlefield::Player& player, const std::string profileid);
+		bool queryPlayerByUniquenick(Battlefield::Player& player, const std::string &uniquenick);
+		bool queryPlayersByEmail(Battlefield::Players& players, const std::string &email);
+		bool queryPlayerNewUserID(Battlefield::Player& player);
+		bool insertPlayer(const Battlefield::Player& player);
+		bool queryPlayerFriends(Battlefield::Player& player);
+		bool insertPlayerFriend(int profileid, int target_profileid);
+		bool removePlayerFriend(int profileid, int target_profileid);
 		
 		/*
 			Events

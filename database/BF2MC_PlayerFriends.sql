@@ -16,29 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `UsersFriends`
+-- Table structure for table `PlayerFriends`
 --
 
-DROP TABLE IF EXISTS `UsersFriends`;
+DROP TABLE IF EXISTS `PlayerFriends`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `UsersFriends` (
+CREATE TABLE `PlayerFriends` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `profileid` int unsigned NOT NULL,
   `target_profileid` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `UsersFriends`
+-- Dumping data for table `PlayerFriends`
 --
 
-LOCK TABLES `UsersFriends` WRITE;
-/*!40000 ALTER TABLE `UsersFriends` DISABLE KEYS */;
-INSERT INTO `UsersFriends` VALUES (5,10037049,10036819);
-/*!40000 ALTER TABLE `UsersFriends` ENABLE KEYS */;
+LOCK TABLES `PlayerFriends` WRITE;
+/*!40000 ALTER TABLE `PlayerFriends` DISABLE KEYS */;
+INSERT INTO `PlayerFriends` VALUES (12,10036819,10037054),(13,10037049,10036819);
+/*!40000 ALTER TABLE `PlayerFriends` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-24 23:10:54
+-- Dump completed on 2023-05-27 21:37:37

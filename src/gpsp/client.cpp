@@ -9,6 +9,7 @@
 #include <globals.h>
 #include <util.h>
 #include <database.h>
+#include <battlefield/player.h>
 
 #include <gpsp/client.h>
 
@@ -129,23 +130,23 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	bool correct_password = false;
 	
 	// Get all database users with email
-	std::vector<DBUser> dbusers;
-	if(!g_database->queryDBUsersByEmail(dbusers, email))
+	Battlefield::Players players;
+	if(!g_database->queryPlayersByEmail(players, email))
 	{
 		return; // No Database user found with uniquenick
 	}
 	
 	// Check password
-	for(DBUser dbuser : dbusers)
+	for(Battlefield::Player player : players)
 	{
-		if(dbuser.password == password)
+		if(player.GetPassword() == password)
 		{
 			correct_password = true;
 		}
 	}
 	
 	// If no database user exist or password isn't correct
-	if(dbusers.size() == 0 || !correct_password)
+	if(players.size() == 0 || !correct_password)
 	{
 		// Convert parameter to string response
 		std::string response = GameSpy::Parameter2Response({"nr", "260", "ndone", "", "final"});
@@ -159,13 +160,13 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	
 	GameSpy::Parameter response_parameter = { "nr", "0" };
 	
-	for(DBUser dbuser : dbusers)
+	for(Battlefield::Player player : players)
 	{
 		response_parameter.push_back("nick");
-		response_parameter.push_back(dbuser.nick);
+		response_parameter.push_back(player.GetNick());
 		
 		response_parameter.push_back("uniquenick");
-		response_parameter.push_back(dbuser.uniquenick);
+		response_parameter.push_back(player.GetUniquenick());
 	}
 	
 	response_parameter.push_back("ndone");
@@ -241,25 +242,25 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	
 	std::string nick = parameter[3];
 	std::string email = parameter[5];
-	std::string password = Util::MD5hash(parameter[7]);
+	std::string password = parameter[7];
 	std::string uniquenick = parameter[13];
 	
-	std::vector<DBUser> dbusers;
+	Battlefield::Players players;
 	
-	if(!g_database->queryDBUsersByEmail(dbusers, email))
+	if(!g_database->queryPlayersByEmail(players, email))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
-	// Check User exist with same email and uniquename already
-	for(DBUser dbuser : dbusers)
+	// Check Player exist with same email and uniquename already
+	for(Battlefield::Player player : players)
 	{
 		// Check uniquenick
-		if(dbuser.uniquenick == uniquenick)
+		if(player.GetUniquenick() == uniquenick)
 		{
 			std::string response = GameSpy::Parameter2Response({
 				"nur", "516",
-				"pid", std::to_string(dbuser.profileid),
+				"pid", std::to_string(player.GetProfileId()),
 				"final"
 			});
 			
@@ -272,39 +273,40 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	}
 	
 	// Create new dbuser
-	DBUser new_dbuser;
-	new_dbuser.nick = nick;
-	new_dbuser.email = email;
-	new_dbuser.uniquenick = uniquenick;
-	new_dbuser.password = password;
+	Battlefield::Player new_player;
 	
-	// Check if dbuser exist with same email
-	if(dbusers.size() >= 1)
+	new_player.SetNick(nick);
+	new_player.SetEmail(email);
+	new_player.SetUniquenick(uniquenick);
+	new_player.SetPassword(password);
+	
+	// Check if player exist with same email
+	if(players.size() >= 1)
 	{
 		// Copy there userid
-		new_dbuser.userid = dbusers[0].userid;
+		new_player.SetUserId(players[0].GetUserId());
 	}
 	else
 	{
 		// New userid
-		g_database->queryDBUserNewUserID(new_dbuser.userid);
+		g_database->queryPlayerNewUserID(new_player);
 	}
 	
-	// Insert user in database
-	if(!g_database->insertDBUser(new_dbuser))
+	// Insert player in database
+	if(!g_database->insertPlayer(new_player))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
 	// Get missing profileid
-	if(!g_database->queryDBUserByUniquenick(new_dbuser, uniquenick))
+	if(!g_database->queryPlayerByUniquenick(new_player, uniquenick))
 	{
 		return; // Oeps something went wrong?!
 	}
 	
 	std::string response = GameSpy::Parameter2Response({
 		"nur", "0",
-		"pid", std::to_string(new_dbuser.profileid),
+		"pid", std::to_string(new_player.GetProfileId()),
 		"final"
 	});
 	
@@ -330,8 +332,8 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 	
 	std::string uniquenick = parameter[9];
 	
-	DBUser dbuser;
-	if(!g_database->queryDBUserByUniquenick(dbuser, uniquenick))
+	Battlefield::Player player;
+	if(!g_database->queryPlayerByUniquenick(player, uniquenick))
 	{
 		return; // Oeps something went wrong?!
 	}
@@ -340,15 +342,15 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 	GameSpy::Parameter response_parameter;
 	
 	// User found
-	if(dbuser.profileid != -1)
+	if(player.GetProfileId() != -1)
 	{
 		response_parameter = {
-			"bsr", std::to_string(dbuser.profileid),
-			"nick", dbuser.nick,
+			"bsr", std::to_string(player.GetProfileId()),
+			"nick", player.GetNick(),
 			"firstname", "",
 			"lastname", "",
 			"email", "[hidden]",
-			"uniquenick", dbuser.uniquenick,
+			"uniquenick", player.GetUniquenick(),
 			"namespaceid", "13",
 			"bsrdone", "",
 			"final"

@@ -16,7 +16,9 @@ add_executable(bf2mc
 	src/util.cpp
 	src/gamespy.cpp
 	src/urlrequest.cpp
+	src/battlefield/player.cpp
 	src/battlefield/playerstats.cpp
+	src/battlefield/clan.cpp
 	src/main.cpp
 )
 

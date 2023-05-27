@@ -11,6 +11,7 @@
 #include <urlrequest.h>
 #include <battlefield.h>
 #include <battlefield/playerstats.h>
+#include <battlefield/clan.h>
 
 #include <webserver/client.h>
 
@@ -206,14 +207,14 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 			stats.useExample();
 		}
 	}
-	catch(const std::out_of_range &e)
-	{
-		
-	}
+	catch(...) {}
+	
+	std::vector<int> v_stats = stats.GetStatsVector();
 	
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
+	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(stats.ToString());
+	http_response.SetMessageBody(Util::ToString(v_stats));
 	
 	this->Send(http_response);
 	
@@ -347,9 +348,22 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 	this->Disconnect();
 }
 
+/*
+	
+*/
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	this->_SendFile("data/clan/claninfo/clanid=543151.txt");
+	Battlefield::Clan clan;
+	clan.useExample();
+	
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody(clan.responseGetClanInfo());
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
@@ -412,11 +426,17 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
 
 std::string Webserver::Client::_readFile(const std::string &file_name) const
 {
-	std::ifstream input("../" + file_name, std::ifstream::in);
+	std::ifstream input;
+	std::string data;
 	
-	std::string data((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+	input.open("../" + file_name, std::ifstream::in);
 	
-	input.close();
+	if(input.is_open())
+	{
+		data.append((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+	
+		input.close();
+	}
 	
 	return data;
 }
