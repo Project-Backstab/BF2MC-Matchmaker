@@ -45,6 +45,7 @@ namespace Webserver
 			void requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestMeme(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			
 			// Empty
 			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);

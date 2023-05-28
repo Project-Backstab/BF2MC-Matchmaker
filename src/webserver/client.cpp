@@ -61,6 +61,10 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // Done
 	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // Done
 	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // Done
+	
+	// I like memes :D
+	{ "/",                                                    &Webserver::Client::requestMeme  },
+	{ "/favicon.ico",                                         &Webserver::Client::requestEmpty  },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -872,6 +876,23 @@ void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, 
 	
 	http_response.SetStatusCode(200);
 	http_response.SetMessageBody("\r\n");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestMeme(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response;
+	
+	http_response.SetHeader("Accept-Ranges", "bytes");
+	http_response.SetHeader("Server", "BF2-MC");
+	
+	std::string data = this->_readFile("data/meme/index.html");
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody(data);
 	
 	this->Send(http_response);
 	
