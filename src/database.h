@@ -33,18 +33,20 @@ class Database
 		
 		// Clan
 		bool queryClanByClanId(Battlefield::Clan& clan);
-		bool queryClanByNameOrTag(Battlefield::Clan& clan, const std::string name, const std::string tag);
+		bool queryClanByNameOrTag(Battlefield::Clan& clan);
 		bool queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool queryClanRolesByClanId(Battlefield::Clan& clan);
 		bool insertClan(Battlefield::Clan& clan);
+		bool updateClan(Battlefield::Clan& clan);
+		bool removeClan(Battlefield::Clan& clan);
 		bool insertClanRole(Battlefield::Clan& clan, Battlefield::Player& player, int role);
+		bool removeClanRolesByClanId(Battlefield::Clan& clan);
 		/*
 			Events
 		*/
 		void OnDatabaseStart();
 	
 	private:
-		void _doQuery(const std::string &query);
 		bool _prepare(MYSQL_STMT* statement, const std::string query);
 		bool _prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BIND* input_bind);
 		bool _execute(MYSQL_STMT* statement);

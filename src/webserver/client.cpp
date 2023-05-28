@@ -55,8 +55,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },    // Done
 	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },    // 
 	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Done
-	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // 
-	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // 
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // Done
+	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // Done
 	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // 
 	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // 
 	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // 
@@ -372,10 +372,8 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_reques
 	
 	if(clan.GetClanId() != -1)
 	{
-		if(!g_database->queryClanByClanId(clan))
-		{
-			return;
-		}
+		// Get clan information
+		g_database->queryClanByClanId(clan);
 	}
 	
 	HTTPMessage http_response = this->_defaultResponseHeader();
@@ -422,79 +420,43 @@ void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_req
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	int session_profileid = -1;
-	std::string authtoken;
-	std::string name;
-	std::string tag;
-	std::string homepage;
-	std::string info;
-	std::string region;
-	
-	try
-	{
-		authtoken = url_variables.at("authtoken");
-		name = url_variables.at("name");
-		tag = url_variables.at("tag");
-		homepage = url_variables.at("homepage");
-		info = url_variables.at("info");
-		region = url_variables.at("region");
-		
-		// Find player profileid with current gpcm session
-		for(Net::Socket* client : g_gpcm_server->_clients)
-		{
-			GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
-			
-			if(gpcm_client->_session_authtoken == authtoken)
-			{
-				session_profileid = gpcm_client->_session_profileid;
-			}	
-		}
-	}
-	catch(...) {};
-	
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
 	Battlefield::Player player;
 	
-	player.SetProfileId(session_profileid);
+	// Get clan and play information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
 	
-	// Check player is already in clan
-	g_database->queryClanByPlayer(clan, player);
-	
-	// If url variables are not correct or session profileid cant be find or Check player is already in clan
-	if(session_profileid == -1 || clan.GetClanId() != -1)
+	// If player cant be found or player is already in clan
+	if(player.GetProfileId() == -1 || clan.GetClanId() != -1)
 	{
 		http_response.SetMessageBody("CANTJOIN");
 	}
 	else
 	{
+		Battlefield::Clan new_clan;
+		
+		// Copy url variables into clan
+		new_clan.updateInformation(url_variables);
+		
 		// get clan by name or tag
-		g_database->queryClanByNameOrTag(clan, name, tag);
-				
+		g_database->queryClanByNameOrTag(new_clan);
+		
 		// Clan name already in use
-		if(clan.GetClanId() != -1)
+		if(new_clan.GetClanId() != -1)
 		{
 			http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
 		}
 		else
 		{
-			Battlefield::Clan new_clan;
-			
-			new_clan.SetName(name);
-			new_clan.SetTag(tag);
-			new_clan.SetHomepage(homepage);
-			new_clan.SetInfo(info);
-			new_clan.SetRegion(region);
-			new_clan.SetName(name);
-			
 			// Insert clan in database
 			g_database->insertClan(new_clan);
 			
 			// Get Clan id
-			g_database->queryClanByNameOrTag(new_clan, name, tag);
+			g_database->queryClanByNameOrTag(new_clan);
 			
 			// Make player leader of clan
-			g_database->insertClanRole(new_clan, player, Battlefield::Clan::Leader);
+			g_database->insertClanRole(new_clan, player, Battlefield::Clan::Roles::Leader);
 			
 			http_response.SetMessageBody("OK");        // Clan succesfull created!
 		}
@@ -511,11 +473,42 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and play information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player cant be found or player is not in clan
+	if(player.GetProfileId() == -1 || clan.GetClanId() == -1)
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
+	else
+	{
+		// Get clan information
+		g_database->queryClanByClanId(clan);
+		
+		// Get all roles in clan
+		g_database->queryClanRolesByClanId(clan);
+		
+		if(clan.GetRole(player.GetProfileId()) != Battlefield::Clan::Roles::Leader)
+		{
+			http_response.SetMessageBody("NOTLEADER");
+		}
+		else
+		{
+			// Copy url variables into clan
+			clan.updateInformation(url_variables, true);
+			
+			// Insert clan in database
+			g_database->updateClan(clan);
+			
+			http_response.SetMessageBody("OK");
+		}
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
-	//http_response.SetMessageBody("NOTLEADER");
-	//http_response.SetMessageBody("INVALIDCLAN");
 	
 	this->Send(http_response);
 	
@@ -525,9 +518,41 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and play information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player cant be found or player is not in clan
+	if(player.GetProfileId() == -1 || clan.GetClanId() == -1)
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
+	else
+	{
+		// Get all roles in clan
+		g_database->queryClanRolesByClanId(clan);
+		
+		if(clan.GetRole(player.GetProfileId()) != Battlefield::Clan::Roles::Leader)
+		{
+			http_response.SetMessageBody("NOTLEADER");
+		}
+		else
+		{
+			// Remove all clan roles
+			g_database->removeClanRolesByClanId(clan);
+			
+			// remove clan
+			g_database->removeClan(clan);
+			
+			http_response.SetMessageBody("OK");
+		}
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
+	
+	//http_response.SetMessageBody("OK");
 	//http_response.SetMessageBody("NOTLEADER");
 	//http_response.SetMessageBody("INVALIDCLAN");
 	//http_response.SetMessageBody("ERROR");
@@ -661,5 +686,41 @@ void Webserver::Client::_SendFile(const std::string &file_name) const
 	this->Send(http_response);
 	
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+int Webserver::Client::_GetSessionProfileId(const UrlRequest::UrlVariables &url_variables) const
+{
+	int profileid = -1;
+	
+	try
+	{
+		std::string authtoken = url_variables.at("authtoken");
+		
+		// Find player profileid with current gpcm session
+		for(Net::Socket* client : g_gpcm_server->_clients)
+		{
+			GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+			
+			if(gpcm_client->_session_authtoken == authtoken)
+			{
+				profileid = gpcm_client->_session_profileid;
+			}	
+		}
+	}
+	catch(...) {};
+	
+	return profileid;
+}
+
+void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
+{
+	// Get session profileid base of the authtoken
+	int profileid = this->_GetSessionProfileId(url_variables);
+	
+	// Set player profileid
+	player.SetProfileId(profileid);
+	
+	// Get clan information based of player profileid
+	g_database->queryClanByPlayer(clan, player);
 }
 

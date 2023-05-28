@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdint>
 #include <map>
+#include <urlrequest.h>
 
 namespace Battlefield
 {
@@ -15,16 +16,18 @@ namespace Battlefield
 		public:
 			enum Regions
 			{
-				America = 0x1,
-				Europe  = 0x2,
-				Asia    = 0x3
+				Unknown_Region = -1,
+				America        =  1,
+				Europe         =  2,
+				Asia           =  3
 			};
 			
 			enum Roles
 			{
-				Leader    = 0x0,
-				Co_Leader = 0x1,
-				Member    = 0x2
+				Unknown_Role = -1,
+				Leader       =  0,
+				Co_Leader    =  1,
+				Member       =  2
 			};
 		
 		private:
@@ -44,12 +47,13 @@ namespace Battlefield
 		public:
 			void useExample();
 			
-			int                GetClanId() const   { return this->_clanid;   }
-			const std::string  GetName() const     { return this->_name;     }
-			const std::string  GetTag() const      { return this->_tag;      }
-			const std::string  GetHomepage() const { return this->_homepage; }
-			const std::string  GetInfo() const     { return this->_info;     }
-			Regions            GetRegion() const   { return this->_region;   }
+			int                         GetClanId() const   { return this->_clanid;   }
+			const std::string           GetName() const     { return this->_name;     }
+			const std::string           GetTag() const      { return this->_tag;      }
+			const std::string           GetHomepage() const { return this->_homepage; }
+			const std::string           GetInfo() const     { return this->_info;     }
+			Regions                     GetRegion() const   { return this->_region;   }
+			const std::map<int, Roles>  GetRoles() const    { return this->_roles;    }
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
@@ -62,11 +66,14 @@ namespace Battlefield
 			bool SetDate(const std::string &date);
 			bool SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws);
 			void AddRole(int profileid, Roles role);
+			Roles GetRole(int profileid) const;
+			
 			/*
 				Request responses
 			*/
 			std::string responseGetClanInfo();
 			std::string responseGetClanMembers();
+			void updateInformation(const UrlRequest::UrlVariables &url_variables, bool is_update = false);
 	};
 }
 

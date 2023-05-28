@@ -108,6 +108,17 @@ void Battlefield::Clan::AddRole(int profileid, Roles role)
 	this->_roles.insert(std::make_pair(profileid, role));
 }
 
+Battlefield::Clan::Roles Battlefield::Clan::GetRole(int profileid) const
+{
+	try
+	{
+		return this->_roles.at(profileid);
+	}
+	catch(...) {};
+	
+	return Unknown_Role;
+}
+
 /*
 	Request responses
 */
@@ -154,3 +165,29 @@ std::string Battlefield::Clan::responseGetClanMembers()
 	return response;
 }
 
+void Battlefield::Clan::updateInformation(const UrlRequest::UrlVariables &url_variables, bool is_update)
+{
+	for(const auto &url_variable : url_variables)
+	{
+		if(url_variable.first == "name" && !is_update)
+		{
+			this->SetName(url_variable.second);
+		}
+		else if(url_variable.first == "tag")
+		{
+			this->SetTag(url_variable.second);
+		}
+		else if(url_variable.first == "homepage")
+		{
+			this->SetHomepage(url_variable.second);
+		}
+		else if(url_variable.first == "info")
+		{
+			this->SetInfo(url_variable.second);
+		}
+		else if(url_variable.first == "region")
+		{
+			this->SetRegion(url_variable.second);
+		}
+	}
+}

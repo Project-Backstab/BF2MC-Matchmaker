@@ -4,6 +4,8 @@
 #include <net/socket.h>
 #include <urlrequest.h>
 #include <atomizes.hpp>
+#include <battlefield/clan.h>
+#include <battlefield/player.h>
 
 namespace Webserver
 {
@@ -27,9 +29,12 @@ namespace Webserver
 				Requests
 			*/
 			void requestNews(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			
+			// Stats
 			void requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			//Clan			
+			
+			// Clan			
 			void requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
@@ -41,7 +46,7 @@ namespace Webserver
 			void requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			
-			//Empty
+			// Empty
 			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 		
 		private:
@@ -49,6 +54,9 @@ namespace Webserver
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
 			std::string _readFile(const std::string &file_name) const;
 			void _SendFile(const std::string &file_name) const;
+			
+			int _GetSessionProfileId(const UrlRequest::UrlVariables &url_variables) const;
+			void _GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const;
 	};
 }
 
