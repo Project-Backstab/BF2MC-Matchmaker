@@ -12,7 +12,6 @@ void Battlefield::Clan::useExample()
 	this->SetRegion(Regions::Europe);
 	this->SetDate("1%2f16%2f2013+3%3a10%3a41+AM");
 	this->SetStats(1851, 1671, 10, 40);
-	this->SetTotalMembers(6);
 }
 
 bool Battlefield::Clan::SetClanId(int clanid)
@@ -23,7 +22,24 @@ bool Battlefield::Clan::SetClanId(int clanid)
 		return true;
 	}
 	
+	this->_clanid = -1;
 	return false;
+}
+
+bool Battlefield::Clan::SetClanId(const std::string& str_clanid)
+{
+	int clanid = -1;
+	
+	try
+	{
+		clanid = std::stoi(str_clanid);
+	}
+	catch(...)
+	{
+		return false;
+	}
+	
+	return this->SetClanId(clanid);
 }
 
 bool Battlefield::Clan::SetName(const std::string &name)
@@ -56,6 +72,22 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 	return true;
 }
 
+bool Battlefield::Clan::SetRegion(std::string str_region)
+{
+	int region = -1;
+	
+	try
+	{
+		region = std::stoi(str_region);
+	}
+	catch(...)
+	{
+		return false;
+	}
+	
+	return this->SetRegion(static_cast<Regions>(region));
+}
+
 bool Battlefield::Clan::SetDate(const std::string &date)
 {
 	this->_date = date;
@@ -71,10 +103,9 @@ bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses
 	return true;
 }
 
-bool Battlefield::Clan::SetTotalMembers(uint32_t membercount)
+void Battlefield::Clan::AddRole(int profileid, Roles role)
 {
-	this->_membercount = membercount;
-	return true;
+	this->_roles.insert(std::make_pair(profileid, role));
 }
 
 /*
@@ -100,7 +131,24 @@ std::string Battlefield::Clan::responseGetClanInfo()
 		response += "losses," + std::to_string(this->_losses) + "\r\n";
 		response += "draws," + std::to_string(this->_draws) + "\r\n";
 		
-		response += "membercount," + std::to_string(this->_membercount) + "\r\n";
+		response += "membercount," + std::to_string(this->_roles.size()) + "\r\n";
+	}
+	
+	return response;
+}
+
+std::string Battlefield::Clan::responseGetClanMembers()
+{
+	std::string response = "\r\n";
+	
+	if(this->_clanid != -1)
+	{
+		response = "OK\r\n";
+		
+		for (const auto& pair : this->_roles)
+		{
+			response += "\r\n" + std::to_string(pair.first) + "," + std::to_string(pair.second);
+		}
 	}
 	
 	return response;

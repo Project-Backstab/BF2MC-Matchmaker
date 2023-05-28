@@ -1,6 +1,5 @@
 #include <string>
 
-#include <battlefield.h>
 #include <util.h>
 
 #include <battlefield/player.h>

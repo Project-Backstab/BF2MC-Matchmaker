@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <openssl/md5.h>
 #include <numeric>
+#include <random>
 
 #include <util.h>
 
@@ -56,3 +57,43 @@ std::string Util::ToString(const std::vector<int>& list)
 		}
 	);
 }
+
+std::string Util::generateRandomChallenge()
+{
+	const int length = 10;
+	const std::string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_int_distribution<int> distribution(0, characters.size() - 1);
+
+	std::string randomString;
+	randomString.reserve(length);
+
+	for (int i = 0; i < length; ++i) 
+	{
+		randomString += characters[distribution(generator)];
+	}
+
+	return randomString;
+}
+
+std::string Util::generateRandomAuthtoken()
+{
+	const int length = 24;
+	const std::string characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_int_distribution<int> distribution(0, characters.size() - 1);
+
+	std::string randomString;
+	randomString.reserve(length);
+
+	for (int i = 0; i < length; ++i) 
+	{
+		randomString += characters[distribution(generator)];
+	}
+
+	return randomString;
+}
+
+

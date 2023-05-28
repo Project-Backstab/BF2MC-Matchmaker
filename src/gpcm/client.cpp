@@ -118,9 +118,11 @@ void GPCM::Client::onRequest(const std::string &request)
 
 void GPCM::Client::requestChallenge() const
 {
+	this->_session_challenge = Util::generateRandomChallenge();
+	
 	std::string response = GameSpy::Parameter2Response({
 		"lc",        "1",
-		"challenge", "Thc3BZFhfv",
+		"challenge", this->_session_challenge,
 		"id",        "1",
 		"final"
 	});
@@ -151,17 +153,21 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	std::string uniquenick = parameter[5];
 	std::string client_challenge = parameter[3];
 	std::string id = parameter[19];
+	std::string server_challenge = this->_session_challenge;
 	
 	// Query Database user
 	Battlefield::Player player;
 	if(!g_database->queryPlayerByUniquenick(player, uniquenick))
 	{
-		// No Database user found with uniquenick
-		return;
+		return; // No Database user found with uniquenick
 	}
 	
 	// Generate proof
-	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, "Thc3BZFhfv");
+	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge);
+	
+	// Save session profileid
+	this->_session_profileid = player.GetProfileId();
+	this->_session_authtoken = Util::generateRandomAuthtoken();
 	
 	std::string response = GameSpy::Parameter2Response({
 		"lc", "2",
@@ -169,14 +175,11 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 		"userid", std::to_string(player.GetUserId()),
 		"profileid", std::to_string(player.GetProfileId()),
 		"uniquenick", player.GetUniquenick(),
-		"lt", "ee5540bbd764b321378ccedd",
+		"lt", this->_session_authtoken,
 		"proof", proof,
 		"id", id,
 		"final"
 	});
-	
-	// Save session profileid
-	this->_session_profileid = player.GetProfileId();
 	
 	this->Send(response);
 	
@@ -338,7 +341,8 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter) const
 		response += GameSpy::Parameter2Response({
 			"bm", "100",
 			"f", std::to_string(friend_profileid),
-			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+			"msg", "|s|2|ss|Offline",
+			//"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
 			"final"
 		});
 		
@@ -585,6 +589,6 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
 	
-	//std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }
 

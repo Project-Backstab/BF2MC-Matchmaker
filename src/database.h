@@ -6,6 +6,7 @@
 
 #include <mysql/mysql.h>
 #include <battlefield/player.h>
+#include <battlefield/clan.h>
 
 class Database
 {
@@ -30,6 +31,13 @@ class Database
 		bool insertPlayerFriend(int profileid, int target_profileid);
 		bool removePlayerFriend(int profileid, int target_profileid);
 		
+		// Clan
+		bool queryClanByClanId(Battlefield::Clan& clan);
+		bool queryClanByNameOrTag(Battlefield::Clan& clan, const std::string name, const std::string tag);
+		bool queryClanByProfileId(Battlefield::Clan& clan, const std::string profileid);
+		bool queryClanRolesByClanId(Battlefield::Clan& clan);
+		bool insertClan(Battlefield::Clan& clan);
+		bool insertClanRole(Battlefield::Clan& clan, Battlefield::Player& player, int role);
 		/*
 			Events
 		*/

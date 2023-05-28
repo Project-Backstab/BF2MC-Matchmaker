@@ -9,7 +9,9 @@ namespace GPCM
 	class Client : public Net::Socket
 	{
 		public:
-			mutable int _session_profileid;
+			mutable std::string  _session_challenge;
+			mutable int          _session_profileid;
+			mutable std::string  _session_authtoken;
 		
 		public:
 			Client(int socket, struct sockaddr_in address);

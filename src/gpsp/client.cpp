@@ -126,7 +126,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	}
 	
 	std::string email = parameter[3];
-	std::string password = Util::MD5hash(parameter[5]);
+	std::string password = parameter[5];
 	bool correct_password = false;
 	
 	// Get all database users with email
@@ -137,9 +137,10 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	}
 	
 	// Check password
+	std::string md5password = Util::MD5hash(password);
 	for(Battlefield::Player player : players)
 	{
-		if(player.GetPassword() == password)
+		if(player.GetPassword() == md5password)
 		{
 			correct_password = true;
 		}
@@ -289,7 +290,10 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	else
 	{
 		// New userid
-		g_database->queryPlayerNewUserID(new_player);
+		if(!g_database->queryPlayerNewUserID(new_player))
+		{
+			return;
+		}
 	}
 	
 	// Insert player in database

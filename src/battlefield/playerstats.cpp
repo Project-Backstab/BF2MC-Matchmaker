@@ -1,5 +1,3 @@
-#include <battlefield.h>
-
 #include <battlefield/playerstats.h>
 
 void Battlefield::PlayerStats::useExample()

@@ -11,6 +11,9 @@ namespace Util
 	std::string MD5hash(const std::string& input);
 	
 	std::string ToString(const std::vector<int>& list);
+	
+	std::string generateRandomChallenge();
+	std::string generateRandomAuthtoken();
 }
 
 #endif // UTIL_H

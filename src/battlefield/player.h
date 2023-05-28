@@ -31,7 +31,7 @@ namespace Battlefield
 			const std::string      GetUniquenick() const { return this->_uniquenick; }
 			const std::string      GetEmail() const      { return this->_email;      }
 			const std::string      GetPassword() const   { return this->_password;   }
-			const std::vector<int> GetFriends() const    { return this->_friends;   }
+			const std::vector<int> GetFriends() const    { return this->_friends;    }
 			
 			bool SetProfileId(int profileid);
 			bool SetProfileId(const std::string& str_profileid);

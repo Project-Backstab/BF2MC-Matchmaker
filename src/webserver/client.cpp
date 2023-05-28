@@ -6,10 +6,11 @@
 #include <fstream>
 
 #include <server.h>
+#include <gpcm/client.h>
 #include <globals.h>
+#include <database.h>
 #include <util.h>
 #include <urlrequest.h>
-#include <battlefield.h>
 #include <battlefield/playerstats.h>
 #include <battlefield/clan.h>
 
@@ -46,20 +47,20 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// bfmc.gamespy.com
 	// Stats
-	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },
-	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },
+	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },  // Need to intergrate with database
+	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // Once players has stats in database this will be completed
 	
 	// Clan
-	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },
-	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },
-	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },
-	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestEmpty },
-	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestEmpty },
+	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },       // Done
+	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },    // Done
+	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },    // 
+	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Working, needs to add some extra checks
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestEmpty },          // 
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -354,7 +355,25 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	Battlefield::Clan clan;
-	clan.useExample();
+	
+	try
+	{
+		std::string profileid = url_variables.at("profileid");
+		
+		if(!g_database->queryClanByProfileId(clan, profileid))
+		{
+			return;
+		}
+	}
+	catch(...) {};
+	
+	if(clan.GetClanId() != -1)
+	{
+		if(!g_database->queryClanByClanId(clan))
+		{
+			return;
+		}
+	}
 	
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -367,8 +386,30 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_reques
 }
 
 void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
-{	
-	this->_SendFile("data/clan/clanmembers/clanid=561717.txt");
+{
+	Battlefield::Clan clan;
+	
+	try
+	{
+		std::string clanid = url_variables.at("clanid");
+		
+		clan.SetClanId(clanid);
+		
+		if(!g_database->queryClanRolesByClanId(clan))
+		{
+			return;
+		}
+	}
+	catch(...) {};
+	
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody(clan.responseGetClanMembers());
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
@@ -378,7 +419,101 @@ void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_req
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
+	HTTPMessage http_response = this->_defaultResponseHeader();
 	
+	int session_profileid = -1;
+	std::string authtoken;
+	std::string name;
+	std::string tag;
+	std::string homepage;
+	std::string info;
+	std::string region;
+	
+	try
+	{
+		authtoken = url_variables.at("authtoken");
+		name = url_variables.at("name");
+		tag = url_variables.at("tag");
+		homepage = url_variables.at("homepage");
+		info = url_variables.at("info");
+		region = url_variables.at("region");
+		
+		// Find player profileid with current gpcm session
+		for(Net::Socket* client : g_gpcm_server->_clients)
+		{
+			GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+			
+			if(gpcm_client->_session_authtoken == authtoken)
+			{
+				session_profileid = gpcm_client->_session_profileid;
+			}	
+		}
+	}
+	catch(...) {};
+	
+	// If url variables are not correct or session profileid cant be find
+	if(session_profileid == -1)
+	{
+		http_response.SetMessageBody("CANTJOIN");
+	}
+	else
+	{
+		Battlefield::Clan clan;
+		
+		if(!g_database->queryClanByNameOrTag(clan, name, tag))
+		{
+			return;
+		}
+		
+		// Clan name already in use
+		if(clan.GetClanId() != -1)
+		{
+			http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
+		}
+		else
+		{
+			Battlefield::Clan new_clan;
+			new_clan.SetName(name);
+			new_clan.SetTag(tag);
+			new_clan.SetHomepage(homepage);
+			new_clan.SetInfo(info);
+			new_clan.SetRegion(region);
+			new_clan.SetName(name);
+			
+			// Insert clan in database
+			if(!g_database->insertClan(new_clan))
+			{
+				return;
+			}
+			
+			// Get Clan id
+			if(!g_database->queryClanByNameOrTag(new_clan, name, tag))
+			{
+				return;
+			}
+			
+			Battlefield::Player player;
+			
+			player.SetProfileId(session_profileid);
+			
+			if(!g_database->insertClanRole(new_clan, player, 0))
+			{
+				return;
+			}
+			
+			http_response.SetMessageBody("OK");        // Clan succesfull created!
+		}
+		
+		//http_response.SetMessageBody("CANTJOIN");  // When you are already in clan
+		//http_response.SetMessageBody("BANNEDWORD");  // Clan name has bad word
+		
+	}
+	
+	http_response.SetStatusCode(200);
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
