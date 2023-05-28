@@ -57,10 +57,10 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Done
 	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // Done
 	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // Done
-	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // 
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // Done
 	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // Done
 	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // Done
-	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // 
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // Done
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -812,9 +812,47 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_re
 void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and player information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player can be found and player is in a clan
+	if(player.GetProfileId() != -1 || clan.GetClanId() != -1)
+	{
+		auto it = url_variables.find("message");
+		if (it != url_variables.end())
+		{
+			std::string message = it->second;
+			
+			// Get all ranks in clan
+			g_database->queryClanRanksByClanId(clan);
+			
+			std::map<int, Battlefield::Clan::Ranks> ranks = clan.GetRanks();
+			int player_profileid = player.GetProfileId();
+			
+			for(const auto& rank : ranks)
+			{
+				if(player_profileid != rank.first)
+				{
+					this->_SendBuddyMessage(player_profileid, rank.first, "Clan message: " + message);
+				}
+			}
+		
+			http_response.SetMessageBody("OK");
+		}
+		else
+		{
+			http_response.SetMessageBody("ERROR");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
 	//http_response.SetMessageBody("INVALIDCLAN");
 	//http_response.SetMessageBody("ERROR");
 	
