@@ -34,7 +34,7 @@ class Database
 		// Clan
 		bool queryClanByClanId(Battlefield::Clan& clan);
 		bool queryClanByNameOrTag(Battlefield::Clan& clan, const std::string name, const std::string tag);
-		bool queryClanByProfileId(Battlefield::Clan& clan, const std::string profileid);
+		bool queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool queryClanRolesByClanId(Battlefield::Clan& clan);
 		bool insertClan(Battlefield::Clan& clan);
 		bool insertClanRole(Battlefield::Clan& clan, Battlefield::Player& player, int role);

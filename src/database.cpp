@@ -561,25 +561,27 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan, const std::string n
 	return true;
 }
 
-bool Database::queryClanByProfileId(Battlefield::Clan& clan, const std::string profileid)
+bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
-
-	unsigned long output_clanid = 0;
+	
+	int input_profileid = player.GetProfileId();
+	
+	int output_clanid = 0;
 
 	std::string query = "SELECT `clanid` FROM `ClanRoles` WHERE `profileid` = ?";
 
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
-	input_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
-	input_bind[0].buffer = const_cast<char*>(&(profileid[0]));
-	input_bind[0].buffer_length = profileid.size();
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_profileid;
+	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_clanid;
-	output_bind[0].is_unsigned = false;	
+	output_bind[0].is_unsigned = false;
 
 	// Prepare the statement
 	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);

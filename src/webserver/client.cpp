@@ -54,13 +54,13 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },       // Done
 	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },    // Done
 	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },    // 
-	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Working, needs to add some extra checks
-	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },          // 
+	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Done
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // 
 	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // 
-	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },          // 
-	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },          // 
-	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },          // 
-	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },          // 
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // 
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // 
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // 
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // 
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -360,7 +360,10 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_reques
 	{
 		std::string profileid = url_variables.at("profileid");
 		
-		if(!g_database->queryClanByProfileId(clan, profileid))
+		Battlefield::Player player;
+		player.SetProfileId(profileid);
+		
+		if(!g_database->queryClanByPlayer(clan, player))
 		{
 			return;
 		}
@@ -419,8 +422,6 @@ void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_req
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	HTTPMessage http_response = this->_defaultResponseHeader();
-	
 	int session_profileid = -1;
 	std::string authtoken;
 	std::string name;
@@ -451,20 +452,25 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 	}
 	catch(...) {};
 	
-	// If url variables are not correct or session profileid cant be find
-	if(session_profileid == -1)
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	player.SetProfileId(session_profileid);
+	
+	// Check player is already in clan
+	g_database->queryClanByPlayer(clan, player);
+	
+	// If url variables are not correct or session profileid cant be find or Check player is already in clan
+	if(session_profileid == -1 || clan.GetClanId() != -1)
 	{
 		http_response.SetMessageBody("CANTJOIN");
 	}
 	else
 	{
-		Battlefield::Clan clan;
-		
-		if(!g_database->queryClanByNameOrTag(clan, name, tag))
-		{
-			return;
-		}
-		
+		// get clan by name or tag
+		g_database->queryClanByNameOrTag(clan, name, tag);
+				
 		// Clan name already in use
 		if(clan.GetClanId() != -1)
 		{
@@ -473,6 +479,7 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 		else
 		{
 			Battlefield::Clan new_clan;
+			
 			new_clan.SetName(name);
 			new_clan.SetTag(tag);
 			new_clan.SetHomepage(homepage);
@@ -481,35 +488,20 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 			new_clan.SetName(name);
 			
 			// Insert clan in database
-			if(!g_database->insertClan(new_clan))
-			{
-				return;
-			}
+			g_database->insertClan(new_clan);
 			
 			// Get Clan id
-			if(!g_database->queryClanByNameOrTag(new_clan, name, tag))
-			{
-				return;
-			}
+			g_database->queryClanByNameOrTag(new_clan, name, tag);
 			
-			Battlefield::Player player;
-			
-			player.SetProfileId(session_profileid);
-			
-			if(!g_database->insertClanRole(new_clan, player, 0))
-			{
-				return;
-			}
+			// Make player leader of clan
+			g_database->insertClanRole(new_clan, player, Battlefield::Clan::Leader);
 			
 			http_response.SetMessageBody("OK");        // Clan succesfull created!
 		}
-		
-		//http_response.SetMessageBody("CANTJOIN");  // When you are already in clan
-		//http_response.SetMessageBody("BANNEDWORD");  // Clan name has bad word
-		
 	}
 	
 	http_response.SetStatusCode(200);
+	//http_response.SetMessageBody("BANNEDWORD");  // Clan name has bad word
 	
 	this->Send(http_response);
 	
