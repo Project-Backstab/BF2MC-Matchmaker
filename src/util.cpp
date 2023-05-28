@@ -13,7 +13,7 @@ std::string Util::Buffer2String(const std::vector<char> &buffer)
 	
 	for(char v : buffer)
 	{
-		if(v >= 32 && v <= 126)
+		if((v >= 32 && v <= 126) || (v == 9))
 		{
 			s.push_back(v);
 		}

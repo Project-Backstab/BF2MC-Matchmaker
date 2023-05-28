@@ -394,11 +394,6 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 	Battlefield::Player target_player;
 	target_player.SetProfileId(profileid);
 	
-	if(msg.find("BFMCB-REMOVEDFROMBUDDYLIST") != std::string::npos)
-	{
-		return;
-	}
-	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
