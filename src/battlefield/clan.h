@@ -22,12 +22,12 @@ namespace Battlefield
 				Unknown_Region = 1337,
 			};
 			
-			enum Roles
+			enum Ranks
 			{
 				Leader       =    0,
 				Co_Leader    =    1,
 				Member       =    2,
-				Unknown_Role = 1337,
+				Unknown_Rank = 1337,
 			};
 		
 		private:
@@ -42,7 +42,7 @@ namespace Battlefield
 			uint32_t             _wins        = 0;
 			uint32_t             _losses      = 0;
 			uint32_t	         _draws       = 0;
-			std::map<int, Roles> _roles;
+			std::map<int, Ranks> _ranks;
 		
 		public:
 			void useExample();
@@ -53,7 +53,7 @@ namespace Battlefield
 			const std::string           GetHomepage() const { return this->_homepage; }
 			const std::string           GetInfo() const     { return this->_info;     }
 			Regions                     GetRegion() const   { return this->_region;   }
-			const std::map<int, Roles>  GetRoles() const    { return this->_roles;    }
+			const std::map<int, Ranks>  GetRanks() const    { return this->_ranks;    }
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
@@ -65,8 +65,8 @@ namespace Battlefield
 			bool SetRegion(std::string region);
 			bool SetDate(const std::string &date);
 			bool SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws);
-			void AddRole(int profileid, Roles role);
-			Roles GetRole(int profileid) const;
+			void AddRank(int profileid, Ranks rank);
+			Ranks GetRank(int profileid) const;
 			
 			/*
 				Request responses
@@ -74,6 +74,11 @@ namespace Battlefield
 			std::string responseGetClanInfo();
 			std::string responseGetClanMembers();
 			void updateInformation(const UrlRequest::UrlVariables &url_variables, bool is_update = false);
+			
+			/*
+				Static
+			*/
+			static Ranks convertRank(const std::string& rank);
 	};
 }
 

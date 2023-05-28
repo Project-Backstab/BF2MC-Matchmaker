@@ -16,32 +16,38 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Players`
+-- Table structure for table `Clans`
 --
 
-DROP TABLE IF EXISTS `Players`;
+DROP TABLE IF EXISTS `Clans`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Players` (
-  `profileid` int NOT NULL AUTO_INCREMENT,
-  `userid` int NOT NULL,
-  `nick` varchar(45) DEFAULT NULL,
-  `uniquenick` varchar(45) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
-  `password` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`profileid`),
-  UNIQUE KEY `id_UNIQUE` (`profileid`)
-) ENGINE=InnoDB AUTO_INCREMENT=10037060 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `Clans` (
+  `clanid` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  `tag` varchar(45) DEFAULT NULL,
+  `homepage` varchar(45) DEFAULT NULL,
+  `info` varchar(45) DEFAULT NULL,
+  `region` int DEFAULT NULL,
+  `date` varchar(45) DEFAULT '',
+  `rating` int DEFAULT '0',
+  `wins` int DEFAULT '0',
+  `losses` int DEFAULT '0',
+  `draws` int DEFAULT '0',
+  `membercount` int DEFAULT '0',
+  PRIMARY KEY (`clanid`),
+  UNIQUE KEY `clanid_UNIQUE` (`clanid`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Players`
+-- Dumping data for table `Clans`
 --
 
-LOCK TABLES `Players` WRITE;
-/*!40000 ALTER TABLE `Players` DISABLE KEYS */;
-INSERT INTO `Players` VALUES (10036819,64679,'IamLupo@6507BAD7','IamLupo','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037049,64679,'IamLupo3@3BEAA015','IamLupo3','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037054,64680,'aaa@E585EDF3','aaa','aaa','47bce5c74f589f4867dbd57e9ca9f808'),(10037055,64680,'aaaa@CB7AD088','aaaa','aaa','47bce5c74f589f4867dbd57e9ca9f808'),(10037056,64680,'aaaaa@A3A74090','aaaaa','aaa','827ccb0eea8a706c4c34a16891f84e7b'),(10037057,64681,'G3RM4NY_S0LDI3R@88D4EF9B','G3RM4NY_S0LDI3R','aaaaaaaaa','827ccb0eea8a706c4c34a16891f84e7b');
-/*!40000 ALTER TABLE `Players` ENABLE KEYS */;
+LOCK TABLES `Clans` WRITE;
+/*!40000 ALTER TABLE `Clans` DISABLE KEYS */;
+INSERT INTO `Clans` VALUES (18,'aaa','aaa','aaa','aaa',2,'',0,0,0,0,0);
+/*!40000 ALTER TABLE `Clans` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

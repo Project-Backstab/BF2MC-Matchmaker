@@ -392,7 +392,7 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_req
 	}
 
 	// Get clan information
-	g_database->queryClanRolesByClanId(clan);
+	g_database->queryClanRanksByClanId(clan);
 	
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -439,7 +439,7 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 			g_database->queryClanByNameOrTag(new_clan);
 			
 			// Make player leader of clan
-			g_database->insertClanRole(new_clan, player, Battlefield::Clan::Roles::Leader);
+			g_database->insertClanRank(new_clan, player, Battlefield::Clan::Ranks::Leader);
 			
 			http_response.SetMessageBody("OK");        // Clan succesfull created!
 		}
@@ -476,13 +476,13 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		// Get clan information
 		g_database->queryClanByClanId(clan);
 		
-		// Get all roles in clan
-		g_database->queryClanRolesByClanId(clan);
+		// Get all ranks in clan
+		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
 		
-		// If role is clan leader
-		if(role == Battlefield::Clan::Roles::Leader)
+		// If rank is clan leader
+		if(rank == Battlefield::Clan::Ranks::Leader)
 		{
 			// Copy url variables into clan
 			clan.updateInformation(url_variables, true);
@@ -521,16 +521,16 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 	// If player can be found and player is in a clan
 	if(player.GetProfileId() != -1 && clan.GetClanId() != -1)
 	{
-		// Get all roles in clan
-		g_database->queryClanRolesByClanId(clan);
+		// Get all ranks in clan
+		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
 		
-		// If role is clan leader
-		if(role == Battlefield::Clan::Roles::Leader)
+		// If rank is clan leader
+		if(rank == Battlefield::Clan::Ranks::Leader)
 		{
-			// Remove all clan roles
-			g_database->removeClanRolesByClanId(clan);
+			// Remove all clan ranks
+			g_database->removeClanRanksByClanId(clan);
 			
 			// remove clan
 			g_database->removeClan(clan);
@@ -562,9 +562,91 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and player information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player can be found and player is in a clan
+	if(player.GetProfileId() != -1 && clan.GetClanId() != -1)
+	{
+		Battlefield::Player target_player;
+		Battlefield::Clan   target_clan;
+		
+		// Get target player
+		auto it = url_variables.find("profileid");
+		if (it != url_variables.end())
+		{
+			target_player.SetProfileId(it->second);
+		}
+		
+		// Get target player information
+		g_database->queryClanByPlayer(target_clan, target_player);
+		
+		// Get new rank
+		Battlefield::Clan::Ranks new_rank = Battlefield::Clan::Ranks::Unknown_Rank;
+		
+		// Convert url variable rank
+		auto it2 = url_variables.find("rank");
+		if (it2 != url_variables.end())
+		{
+			new_rank = clan.convertRank(it2->second);
+		}
+		
+		// Check target player
+		if(
+			target_player.GetProfileId() != -1 &&          // Valid target player profileid must be supplied
+			target_clan.GetClanId() != -1 &&               // target player must be in a clan
+			clan.GetClanId() == target_clan.GetClanId() && // player and target player must be in the same clan
+			new_rank != Battlefield::Clan::Ranks::Unknown_Rank
+		)
+		{
+			// Get all ranks in clan
+			g_database->queryClanRanksByClanId(clan);
+			
+			// Get clan ranks
+			Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
+			Battlefield::Clan::Ranks target_rank = clan.GetRank(target_player.GetProfileId());
+			
+			// Check rank is higher
+			if(rank == Battlefield::Clan::Ranks::Leader)
+			{
+				if(new_rank == Battlefield::Clan::Ranks::Leader)
+				{
+					// Demote rank
+					g_database->updateClanRank(clan, player, Battlefield::Clan::Ranks::Co_Leader);
+				}
+				
+				// give target player new rank
+				g_database->updateClanRank(clan, target_player, new_rank);
+				
+				this->_SendBuddyMessage(
+					player.GetProfileId(),
+					target_player.GetProfileId(),
+					"Your rank in the clan has been changed. Login again to get the update!"
+				);
+				
+				http_response.SetMessageBody("OK");
+			}
+			else
+			{
+				http_response.SetMessageBody("NOTLEADER");
+			}
+		}
+		else
+		{
+			http_response.SetMessageBody("ERROR");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
+	
+	//http_response.SetMessageBody("OK");
 	//http_response.SetMessageBody("NOTMEMBER");
 	//http_response.SetMessageBody("NOTLEADER");
 	//http_response.SetMessageBody("INVALIDCLAN");
@@ -587,13 +669,13 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_reque
 	// If player can be found and player is in a clan
 	if(player.GetProfileId() != -1 || clan.GetClanId() != -1)
 	{
-		// Get all roles in clan
-		g_database->queryClanRolesByClanId(clan);
+		// Get all ranks in clan
+		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
 		
-		// If the player role is not Co-Leader or higher
-		if(role <= Battlefield::Clan::Roles::Co_Leader)
+		// If the player rank is not Co-Leader or higher
+		if(rank <= Battlefield::Clan::Ranks::Co_Leader)
 		{
 			Battlefield::Player target_player;
 			
@@ -606,7 +688,13 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_reque
 			if(target_player.GetProfileId() != -1)
 			{
 				// Make player leader of clan
-				g_database->insertClanRole(clan, target_player, Battlefield::Clan::Roles::Member);
+				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Ranks::Member);
+				
+				this->_SendBuddyMessage(
+					player.GetProfileId(),
+					target_player.GetProfileId(),
+					"You joined a new clan. Login again to get the update!"
+				);
 				
 				http_response.SetMessageBody("OK");
 			}
@@ -664,24 +752,33 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_re
 			clan.GetClanId() == target_clan.GetClanId() // player and target player must be in the same clan
 		)
 		{
-			// Get all roles in clan
-			g_database->queryClanRolesByClanId(clan);
+			// Get all ranks in clan
+			g_database->queryClanRanksByClanId(clan);
 			
-			// Get clan roles
-			Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
-			Battlefield::Clan::Roles target_role = clan.GetRole(target_player.GetProfileId());
+			// Get clan ranks
+			Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
+			Battlefield::Clan::Ranks target_rank = clan.GetRank(target_player.GetProfileId());
 			
 			// Check rank is higher or it tries to remove itself as a none leader. Leader can only disband clan.
 			if(
-				role < target_role ||
+				rank < target_rank ||
 				(
 					player.GetProfileId() == target_player.GetProfileId() &&
-					role != Battlefield::Clan::Roles::Leader
+					rank != Battlefield::Clan::Ranks::Leader
 				)
 			)
 			{
 				// Remove player from clan
-				g_database->removeClanRole(clan, target_player);
+				g_database->removeClanRank(clan, target_player);
+				
+				if(player.GetProfileId() != target_player.GetProfileId())
+				{
+					this->_SendBuddyMessage(
+						player.GetProfileId(),
+						target_player.GetProfileId(),
+						"You have been removed from the clan. Login again to get the update!"
+					);
+				}
 				
 				http_response.SetMessageBody("OK");
 			}
@@ -824,5 +921,27 @@ void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables 
 	
 	// Get clan information based of player profileid
 	g_database->queryClanByPlayer(clan, player);
+}
+
+void Webserver::Client::_SendBuddyMessage(int profileid, int target_profileid, const std::string& msg) const
+{
+	for(Net::Socket* client : g_gpcm_server->_clients)
+	{
+		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		
+		if(gpcm_client->_session_profileid == target_profileid)
+		{
+			std::string response = GameSpy::Parameter2Response({
+				"bm", "1",
+				"f", std::to_string(profileid),
+				"msg", msg,
+				"final"
+			});
+			
+			gpcm_client->Send(response);
+			
+			this->_LogTransaction("<--", response);
+		}
+	}
 }
 

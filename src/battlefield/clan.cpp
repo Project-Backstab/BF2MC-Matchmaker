@@ -103,20 +103,20 @@ bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses
 	return true;
 }
 
-void Battlefield::Clan::AddRole(int profileid, Roles role)
+void Battlefield::Clan::AddRank(int profileid, Ranks rank)
 {
-	this->_roles.insert(std::make_pair(profileid, role));
+	this->_ranks.insert(std::make_pair(profileid, rank));
 }
 
-Battlefield::Clan::Roles Battlefield::Clan::GetRole(int profileid) const
+Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
 {
 	try
 	{
-		return this->_roles.at(profileid);
+		return this->_ranks.at(profileid);
 	}
 	catch(...) {};
 	
-	return Unknown_Role;
+	return Unknown_Rank;
 }
 
 /*
@@ -142,7 +142,7 @@ std::string Battlefield::Clan::responseGetClanInfo()
 		response += "losses," + std::to_string(this->_losses) + "\r\n";
 		response += "draws," + std::to_string(this->_draws) + "\r\n";
 		
-		response += "membercount," + std::to_string(this->_roles.size()) + "\r\n";
+		response += "membercount," + std::to_string(this->_ranks.size()) + "\r\n";
 	}
 	
 	return response;
@@ -156,7 +156,7 @@ std::string Battlefield::Clan::responseGetClanMembers()
 	{
 		response = "OK\r\n";
 		
-		for (const auto& pair : this->_roles)
+		for (const auto& pair : this->_ranks)
 		{
 			response += "\r\n" + std::to_string(pair.first) + "," + std::to_string(pair.second);
 		}
@@ -190,4 +190,25 @@ void Battlefield::Clan::updateInformation(const UrlRequest::UrlVariables &url_va
 			this->SetRegion(url_variable.second);
 		}
 	}
+}
+
+/*
+	Static
+*/
+Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_rank)
+{
+	int rank = -1;
+	
+	try
+	{
+		rank = std::stoi(str_rank);
+	}
+	catch(...) {};
+	
+	if(rank >= Leader && rank <= Member)
+	{
+		return static_cast<Ranks>(rank);
+	}
+	
+	return Unknown_Rank;
 }
