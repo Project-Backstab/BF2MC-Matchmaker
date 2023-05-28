@@ -36,6 +36,10 @@ namespace Webserver
 			void requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			
 			//Empty
 			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);

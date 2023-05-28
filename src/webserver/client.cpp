@@ -55,12 +55,12 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },    // Done
 	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },    // 
 	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Working, needs to add some extra checks
-	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestEmpty },          // 
-	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestEmpty },          // 
-	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestEmpty },          // 
-	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestEmpty },          // 
-	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestEmpty },          // 
-	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestEmpty },          // 
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },          // 
+	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // 
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },          // 
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },          // 
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },          // 
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },          // 
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -518,12 +518,93 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 
 void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
+	HTTPMessage http_response = this->_defaultResponseHeader();
 	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("NOTLEADER");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
+	HTTPMessage http_response = this->_defaultResponseHeader();
 	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("NOTLEADER");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	//http_response.SetMessageBody("ERROR");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("NOTMEMBER");
+	//http_response.SetMessageBody("NOTLEADER");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	//http_response.SetMessageBody("ERROR");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	//http_response.SetMessageBody("CANTJOIN");
+	//http_response.SetMessageBody("ERROR");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("NOTMEMBER");
+	//http_response.SetMessageBody("NOTLEADER");
+	//http_response.SetMessageBody("LEADER");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	//http_response.SetMessageBody("ERROR");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+{
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("OK");
+	//http_response.SetMessageBody("INVALIDCLAN");
+	//http_response.SetMessageBody("ERROR");
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
