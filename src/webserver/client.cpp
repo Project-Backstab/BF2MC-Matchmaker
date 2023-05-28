@@ -47,8 +47,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// bfmc.gamespy.com
 	// Stats
-	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },  // Need to intergrate with database
-	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // Once players has stats in database this will be completed
+	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },  // Done
+	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // 
 	
 	// Clan
 	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },       // Done
@@ -197,22 +197,27 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 */
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	Battlefield::PlayerStats stats;
-	
-	try
-	{
-		std::string profileid = url_variables.at("pid");
-		
-		if(profileid == "10036819")
-		{
-			stats.useExample();
-		}
-	}
-	catch(...) {}
-	
-	std::vector<int> v_stats = stats.GetStatsVector();
-	
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Player player;
+	
+	// Get player profileid
+	auto it = url_variables.find("pid");
+	if (it != url_variables.end())
+	{
+		player.SetProfileId(it->second);
+	}
+	
+	// Patch player stats
+	//if(player.GetProfileId() == 10036819)
+	//{
+	//	player.PlayerStats::useExample();
+	//}
+	//g_database->updatePlayerStats(player);
+	
+	// Get player stats
+	g_database->queryPlayerStats(player);
+	
+	std::vector<int> v_stats = player.GetStatsVector();
 	
 	http_response.SetStatusCode(200);
 	http_response.SetMessageBody(Util::ToString(v_stats));

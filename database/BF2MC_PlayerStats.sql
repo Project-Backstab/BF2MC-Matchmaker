@@ -16,38 +16,47 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Clans`
+-- Table structure for table `PlayerStats`
 --
 
-DROP TABLE IF EXISTS `Clans`;
+DROP TABLE IF EXISTS `PlayerStats`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Clans` (
-  `clanid` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `tag` varchar(45) DEFAULT NULL,
-  `homepage` varchar(45) DEFAULT NULL,
-  `info` varchar(45) DEFAULT NULL,
-  `region` int DEFAULT NULL,
-  `date` varchar(45) DEFAULT '',
-  `rating` int DEFAULT '0',
-  `wins` int DEFAULT '0',
-  `losses` int DEFAULT '0',
-  `draws` int DEFAULT '0',
-  `membercount` int DEFAULT '0',
-  PRIMARY KEY (`clanid`),
-  UNIQUE KEY `clanid_UNIQUE` (`clanid`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `PlayerStats` (
+  `profileid` int NOT NULL,
+  `score` int DEFAULT '0',
+  `ran` int DEFAULT '0',
+  `pph` int DEFAULT '0',
+  `kills` int DEFAULT '0',
+  `suicides` int DEFAULT '0',
+  `time` int DEFAULT '0',
+  `lavd` int DEFAULT '0',
+  `mavd` int DEFAULT '0',
+  `havd` int DEFAULT '0',
+  `hed` int DEFAULT '0',
+  `bod` int DEFAULT '0',
+  `k1` int DEFAULT '0',
+  `k2` int DEFAULT '0',
+  `k3` int DEFAULT '0',
+  `k4` int DEFAULT '0',
+  `k5` int DEFAULT '0',
+  `medals` int DEFAULT '0',
+  `ttb` int DEFAULT '0',
+  `mv` int DEFAULT '0',
+  `ngp` int DEFAULT '0',
+  PRIMARY KEY (`profileid`),
+  UNIQUE KEY `profileid_UNIQUE` (`profileid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Clans`
+-- Dumping data for table `PlayerStats`
 --
 
-LOCK TABLES `Clans` WRITE;
-/*!40000 ALTER TABLE `Clans` DISABLE KEYS */;
-INSERT INTO `Clans` VALUES (19,'aaa','aaa','aaa','aaa',1,'',0,0,0,0,0);
-/*!40000 ALTER TABLE `Clans` ENABLE KEYS */;
+LOCK TABLES `PlayerStats` WRITE;
+/*!40000 ALTER TABLE `PlayerStats` DISABLE KEYS */;
+INSERT INTO `PlayerStats` VALUES (10036819,41476,20,5236,31848,41,3627752,342,182,118,173,3,20880,7445,2364,730,414,32767,56,1202,3613),(10037049,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),(10037060,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+/*!40000 ALTER TABLE `PlayerStats` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

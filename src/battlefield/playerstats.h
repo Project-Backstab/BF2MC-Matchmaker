@@ -11,7 +11,7 @@ namespace Battlefield
 	*/
 	class PlayerStats
 	{
-		enum Rank
+		enum Ranks
 		{
 			Private                     = 1,
 			Private_1st_Class           = 2,
@@ -86,6 +86,27 @@ namespace Battlefield
 		
 		public:
 			void useExample();
+			
+			int GetScore() const                  { return this->_score;    }
+			int GetRank() const                   { return this->_ran;      }
+			int GetPPH() const                    { return this->_pph;      }
+			int GetKills() const                  { return this->_kills;    }
+			int GetSuicides() const               { return this->_suicides; }
+			int GetTime() const                   { return this->_time;     }
+			int GetLAVsDestroyed() const          { return this->_lavd;     }
+			int GetMAVsDestroyed() const          { return this->_mavd;     } 
+			int GetHAVsDestroyed() const          { return this->_havd;     }
+			int GetHelicoptersDestroyed() const   { return this->_hed;      }
+			int GetBoatsDestroyed() const         { return this->_bod;      }
+			int GetKillsAssualtKit() const        { return this->_k1;       }
+			int GetKillsSniperKit() const         { return this->_k2;       }
+			int GetKillsSpecialOpKit() const      { return this->_k3;       }
+			int GetKillsCombatEngineerKit() const { return this->_k4;       }
+			int GetKillsSupportKit() const        { return this->_k5;       }
+			int GetMedals() const                 { return this->_medals;   }
+			int GetTotalTopPlayer() const         { return this->_ttb;      }
+			int GetTotalVictories() const         { return this->_mv;       }
+			int GetTotalGameSessions() const      { return this->_ngp;      }
 			
 			bool SetScore(uint32_t score);
 			bool SetRank(uint32_t ran);

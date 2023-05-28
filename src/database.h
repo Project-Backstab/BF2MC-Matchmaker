@@ -27,9 +27,16 @@ class Database
 		bool queryPlayersByEmail(Battlefield::Players& players, const std::string &email);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
 		bool insertPlayer(const Battlefield::Player& player);
+		
+		// Player friends
 		bool queryPlayerFriends(Battlefield::Player& player);
 		bool insertPlayerFriend(int profileid, int target_profileid);
 		bool removePlayerFriend(int profileid, int target_profileid);
+		
+		// Player Stats
+		bool queryPlayerStats(Battlefield::Player& player);
+		bool updatePlayerStats(const Battlefield::Player& player);
+		bool insertPlayerStats(const Battlefield::Player& player);
 		
 		// Clan
 		bool queryClanByClanId(Battlefield::Clan& clan);
@@ -39,6 +46,8 @@ class Database
 		bool insertClan(const Battlefield::Clan& clan);
 		bool updateClan(const Battlefield::Clan& clan);
 		bool removeClan(const Battlefield::Clan& clan);
+		
+		// Clan Rank
 		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, int rank);
 		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, int rank);
 		bool removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player);

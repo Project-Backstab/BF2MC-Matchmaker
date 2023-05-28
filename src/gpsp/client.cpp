@@ -248,10 +248,8 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	
 	Battlefield::Players players;
 	
-	if(!g_database->queryPlayersByEmail(players, email))
-	{
-		return; // Oeps something went wrong?!
-	}
+	// Get players by email
+	g_database->queryPlayersByEmail(players, email);
 	
 	// Check Player exist with same email and uniquename already
 	for(Battlefield::Player player : players)
@@ -290,23 +288,17 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	else
 	{
 		// New userid
-		if(!g_database->queryPlayerNewUserID(new_player))
-		{
-			return;
-		}
+		g_database->queryPlayerNewUserID(new_player);
 	}
 	
 	// Insert player in database
-	if(!g_database->insertPlayer(new_player))
-	{
-		return; // Oeps something went wrong?!
-	}
+	g_database->insertPlayer(new_player);
 	
 	// Get missing profileid
-	if(!g_database->queryPlayerByUniquenick(new_player, uniquenick))
-	{
-		return; // Oeps something went wrong?!
-	}
+	g_database->queryPlayerByUniquenick(new_player, uniquenick);
+	
+	// Insert player status
+	g_database->insertPlayerStats(new_player);
 	
 	std::string response = GameSpy::Parameter2Response({
 		"nur", "0",

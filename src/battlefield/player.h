@@ -11,7 +11,7 @@ namespace Battlefield
 	/*
 		Player
 	*/
-	class Player : PlayerStats
+	class Player : public PlayerStats
 	{
 		private:
 			int                 _profileid = -1;

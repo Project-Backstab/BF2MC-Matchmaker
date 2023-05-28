@@ -18,6 +18,7 @@ Database::Database()
 	this->OnDatabaseStart();
 }
 
+// Player
 bool Database::queryPlayerByProfileid(Battlefield::Player& player, const std::string profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
@@ -301,15 +302,11 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 	
 	std::string query = "INSERT INTO `Players` (`userid`, `nick`, `uniquenick`, `email`, `password`) VALUES (?, ?, ?, ?, ?);";
 	
-	std::string input_nick = player.GetNick();
-	std::string input_uniquenick = player.GetUniquenick();
-	std::string input_email = player.GetEmail();
-	std::string input_md5password = player.GetPassword();
-	
-	std::cout << query << std::endl;
-	std::cout << player.GetPassword() << std::endl;
-	
-	int input_profileid = player.GetUserId();
+	int          input_profileid   = player.GetUserId();
+	std::string  input_nick        = player.GetNick();
+	std::string  input_uniquenick  = player.GetUniquenick();
+	std::string  input_email       = player.GetEmail();
+	std::string  input_md5password = player.GetPassword();
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
@@ -352,6 +349,7 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 	return true;
 }
 
+// Player Friends
 bool Database::queryPlayerFriends(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
@@ -485,6 +483,345 @@ bool Database::removePlayerFriend(int profileid, int target_profileid)
 	return true;
 }
 
+// Player Stats
+bool Database::queryPlayerStats(Battlefield::Player& player)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "SELECT ";
+	query += "`score`, ";
+	query += "`ran`, ";
+	query += "`pph`, ";
+	query += "`kills`, ";
+	query += "`suicides`, ";
+	query += "`time`, ";
+	query += "`lavd`, ";
+	query += "`mavd`, ";
+	query += "`havd`, ";
+	query += "`hed`, ";
+	query += "`bod`, ";
+	query += "`k1`, ";
+	query += "`k2`, ";
+	query += "`k3`, ";
+	query += "`k4`, ";
+	query += "`k5`, ";
+	query += "`medals`, ";
+	query += "`ttb`, ";
+	query += "`mv`, ";
+	query += "`ngp` ";
+	query += "FROM `PlayerStats` WHERE `profileid` = ?;";
+	
+	int input_profileid = player.GetProfileId();
+	
+	int output_score     = player.GetScore();
+	int output_ran       = player.GetRank();
+	int output_pph       = player.GetPPH();
+	int output_kills     = player.GetKills();
+	int output_suicides  = player.GetSuicides();
+	int output_time      = player.GetTime();
+	int output_lavd      = player.GetLAVsDestroyed();
+	int output_mavd      = player.GetMAVsDestroyed();
+	int output_havd      = player.GetHAVsDestroyed();
+	int output_hed       = player.GetHelicoptersDestroyed();
+	int output_bod       = player.GetBoatsDestroyed();
+	int output_k1        = player.GetKillsAssualtKit();
+	int output_k2        = player.GetKillsSniperKit();
+	int output_k3        = player.GetKillsSpecialOpKit();
+	int output_k4        = player.GetKillsCombatEngineerKit();
+	int output_k5        = player.GetKillsSupportKit();
+	int output_medals    = player.GetMedals();
+	int output_ttb       = player.GetTotalTopPlayer();
+	int output_mv        = player.GetTotalVictories();
+	int output_ngp       = player.GetTotalGameSessions();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(20, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_score);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_ran);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[2].buffer = const_cast<int*>(&output_pph);
+	output_bind[2].is_unsigned = false;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = const_cast<int*>(&output_kills);
+	output_bind[3].is_unsigned = false;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = const_cast<int*>(&output_suicides);
+	output_bind[4].is_unsigned = false;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = const_cast<int*>(&output_time);
+	output_bind[5].is_unsigned = false;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = const_cast<int*>(&output_lavd);
+	output_bind[6].is_unsigned = false;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = const_cast<int*>(&output_mavd);
+	output_bind[7].is_unsigned = false;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = const_cast<int*>(&output_havd);
+	output_bind[8].is_unsigned = false;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[9].buffer = const_cast<int*>(&output_hed);
+	output_bind[9].is_unsigned = false;
+	output_bind[10].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[10].buffer = const_cast<int*>(&output_bod);
+	output_bind[10].is_unsigned = false;
+	output_bind[11].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[11].buffer = const_cast<int*>(&output_k1);
+	output_bind[11].is_unsigned = false;
+	output_bind[12].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[12].buffer = const_cast<int*>(&output_k2);
+	output_bind[12].is_unsigned = false;
+	output_bind[13].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[13].buffer = const_cast<int*>(&output_k3);
+	output_bind[13].is_unsigned = false;
+	output_bind[14].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[14].buffer = const_cast<int*>(&output_k4);
+	output_bind[14].is_unsigned = false;
+	output_bind[15].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[15].buffer = const_cast<int*>(&output_k5);
+	output_bind[15].is_unsigned = false;
+	output_bind[16].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[16].buffer = const_cast<int*>(&output_medals);
+	output_bind[16].is_unsigned = false;
+	output_bind[17].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[17].buffer = const_cast<int*>(&output_ttb);
+	output_bind[17].is_unsigned = false;
+	output_bind[18].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[18].buffer = const_cast<int*>(&output_mv);
+	output_bind[18].is_unsigned = false;
+	output_bind[19].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[19].buffer = const_cast<int*>(&output_ngp);
+	output_bind[19].is_unsigned = false;
+	
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		player.SetScore(output_score);
+		player.SetRank(output_ran);
+		player.SetPPH(output_pph);
+		player.SetKills(output_kills);
+		player.SetSuicides(output_suicides);
+		player.SetTime(output_time);
+		player.SetLAVsDestroyed(output_lavd);
+		player.SetMAVsDestroyed(output_mavd);
+		player.SetHAVsDestroyed(output_havd);
+		player.SetHelicoptersDestroyed(output_hed);
+		player.SetBoatsDestroyed(output_bod);
+		player.SetKillsAssualtKit(output_k1);
+		player.SetKillsSniperKit(output_k2);
+		player.SetKillsSpecialOpKit(output_k3);
+		player.SetKillsCombatEngineerKit(output_k4);
+		player.SetKillsSupportKit(output_k5);
+		player.SetMedals(output_medals);
+		player.SetTotalTopPlayer(output_ttb);
+		player.SetTotalVictories(output_mv);
+		player.SetTotalGameSessions(output_ngp);
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+
+	return true;
+}
+
+bool Database::updatePlayerStats(const Battlefield::Player& player)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "UPDATE `PlayerStats` SET ";
+	query += "`score` = ?, ";
+	query += "`ran` = ?, ";
+	query += "`pph` = ?, ";
+	query += "`kills` = ?, ";
+	query += "`suicides` = ?, ";
+	query += "`time` = ?, ";
+	query += "`lavd` = ?, ";
+	query += "`mavd` = ?, ";
+	query += "`havd` = ?, ";
+	query += "`hed` = ?, ";
+	query += "`bod` = ?, ";
+	query += "`k1` = ?, ";
+	query += "`k2` = ?, ";
+	query += "`k3` = ?, ";
+	query += "`k4` = ?, ";
+	query += "`k5` = ?, ";
+	query += "`medals` = ?, ";
+	query += "`ttb` = ?, ";
+	query += "`mv` = ?, ";
+	query += "`ngp` = ? ";
+	query += "WHERE `profileid` = ?;";
+	
+	int input_score     = player.GetScore();
+	int input_ran       = player.GetRank();
+	int input_pph       = player.GetPPH();
+	int input_kills     = player.GetKills();
+	int input_suicides  = player.GetSuicides();
+	int input_time      = player.GetTime();
+	int input_lavd      = player.GetLAVsDestroyed();
+	int input_mavd      = player.GetMAVsDestroyed();
+	int input_havd      = player.GetHAVsDestroyed();
+	int input_hed       = player.GetHelicoptersDestroyed();
+	int input_bod       = player.GetBoatsDestroyed();
+	int input_k1        = player.GetKillsAssualtKit();
+	int input_k2        = player.GetKillsSniperKit();
+	int input_k3        = player.GetKillsSpecialOpKit();
+	int input_k4        = player.GetKillsCombatEngineerKit();
+	int input_k5        = player.GetKillsSupportKit();
+	int input_medals    = player.GetMedals();
+	int input_ttb       = player.GetTotalTopPlayer();
+	int input_mv        = player.GetTotalVictories();
+	int input_ngp       = player.GetTotalGameSessions();
+	int input_profileid = player.GetProfileId();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(21, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&input_score);
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&input_ran);
+	input_bind[1].is_unsigned = false;
+	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[2].buffer = const_cast<int*>(&input_pph);
+	input_bind[2].is_unsigned = false;
+	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[3].buffer = const_cast<int*>(&input_kills);
+	input_bind[3].is_unsigned = false;
+	input_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[4].buffer = const_cast<int*>(&input_suicides);
+	input_bind[4].is_unsigned = false;
+	input_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[5].buffer = const_cast<int*>(&input_time);
+	input_bind[5].is_unsigned = false;
+	input_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[6].buffer = const_cast<int*>(&input_lavd);
+	input_bind[6].is_unsigned = false;
+	input_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[7].buffer = const_cast<int*>(&input_mavd);
+	input_bind[7].is_unsigned = false;
+	input_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[8].buffer = const_cast<int*>(&input_havd);
+	input_bind[8].is_unsigned = false;
+	input_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[9].buffer = const_cast<int*>(&input_hed);
+	input_bind[9].is_unsigned = false;
+	input_bind[10].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[10].buffer = const_cast<int*>(&input_bod);
+	input_bind[10].is_unsigned = false;
+	input_bind[11].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[11].buffer = const_cast<int*>(&input_k1);
+	input_bind[11].is_unsigned = false;
+	input_bind[12].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[12].buffer = const_cast<int*>(&input_k2);
+	input_bind[12].is_unsigned = false;
+	input_bind[13].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[13].buffer = const_cast<int*>(&input_k3);
+	input_bind[13].is_unsigned = false;
+	input_bind[14].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[14].buffer = const_cast<int*>(&input_k4);
+	input_bind[14].is_unsigned = false;
+	input_bind[15].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[15].buffer = const_cast<int*>(&input_k5);
+	input_bind[15].is_unsigned = false;
+	input_bind[16].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[16].buffer = const_cast<int*>(&input_medals);
+	input_bind[16].is_unsigned = false;
+	input_bind[17].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[17].buffer = const_cast<int*>(&input_ttb);
+	input_bind[17].is_unsigned = false;
+	input_bind[18].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[18].buffer = const_cast<int*>(&input_mv);
+	input_bind[18].is_unsigned = false;
+	input_bind[19].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[19].buffer = const_cast<int*>(&input_ngp);
+	input_bind[19].is_unsigned = false;
+	input_bind[20].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[20].buffer = const_cast<int*>(&input_profileid);
+	input_bind[20].is_unsigned = false;
+	
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+
+	return true;
+}
+
+bool Database::insertPlayerStats(const Battlefield::Player& player)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "INSERT INTO `PlayerStats` (`profileid`) VALUES (?);";
+	
+	int input_profileid = player.GetProfileId();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+
+	return true;
+}
+
+// Clan
 bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
@@ -870,6 +1207,7 @@ bool Database::removeClan(const Battlefield::Clan& clan)
 	return true;
 }
 
+// Clan Rank
 bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, int rank)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
@@ -1021,6 +1359,7 @@ bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 	return true;
 }
 
+// Private functions
 bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 {
 	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
@@ -1093,6 +1432,7 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 	return true;
 }
 
+// Events
 void Database::OnDatabaseStart()
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io);
