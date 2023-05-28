@@ -739,7 +739,7 @@ bool Database::queryClanRolesByClanId(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::insertClan(Battlefield::Clan& clan)
+bool Database::insertClan(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -788,7 +788,7 @@ bool Database::insertClan(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::updateClan(Battlefield::Clan& clan)
+bool Database::updateClan(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -837,7 +837,7 @@ bool Database::updateClan(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::removeClan(Battlefield::Clan& clan)
+bool Database::removeClan(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -870,7 +870,7 @@ bool Database::removeClan(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::insertClanRole(Battlefield::Clan& clan, Battlefield::Player& player, int role)
+bool Database::insertClanRole(const Battlefield::Clan& clan, const Battlefield::Player& player, int role)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -910,7 +910,44 @@ bool Database::insertClanRole(Battlefield::Clan& clan, Battlefield::Player& play
 	return true;
 }
 
-bool Database::removeClanRolesByClanId(Battlefield::Clan& clan)
+bool Database::removeClanRole(const Battlefield::Clan& clan, const Battlefield::Player& player)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex);
+
+	std::string query = "DELETE FROM `ClanRoles` WHERE `clanid` = ? AND `profileid` = ?;";
+	
+	int input_clanid     = clan.GetClanId();
+	int input_profileid  = player.GetProfileId();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = const_cast<int*>(&input_clanid);
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+
+	return true;
+}
+
+bool Database::removeClanRolesByClanId(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 

@@ -58,8 +58,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // Done
 	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // Done
 	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // 
-	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // 
-	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // 
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // Done
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // Done
 	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // 
 };
 
@@ -355,26 +355,20 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	Battlefield::Clan clan;
+	Battlefield::Player player;
 	
-	try
+	// Get player
+	auto it = url_variables.find("profileid");
+	if (it != url_variables.end())
 	{
-		std::string profileid = url_variables.at("profileid");
-		
-		Battlefield::Player player;
-		player.SetProfileId(profileid);
-		
-		if(!g_database->queryClanByPlayer(clan, player))
-		{
-			return;
-		}
+		player.SetProfileId(it->second);
 	}
-	catch(...) {};
 	
-	if(clan.GetClanId() != -1)
-	{
-		// Get clan information
-		g_database->queryClanByClanId(clan);
-	}
+	// Get Clan id
+	g_database->queryClanByPlayer(clan, player);
+	
+	// Get clan information
+	g_database->queryClanByClanId(clan);
 	
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -390,18 +384,15 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_req
 {
 	Battlefield::Clan clan;
 	
-	try
+	// Get player
+	auto it = url_variables.find("clanid");
+	if (it != url_variables.end())
 	{
-		std::string clanid = url_variables.at("clanid");
-		
-		clan.SetClanId(clanid);
-		
-		if(!g_database->queryClanRolesByClanId(clan))
-		{
-			return;
-		}
+		clan.SetClanId(it->second);
 	}
-	catch(...) {};
+
+	// Get clan information
+	g_database->queryClanRolesByClanId(clan);
 	
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -424,15 +415,11 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 	Battlefield::Clan clan;
 	Battlefield::Player player;
 	
-	// Get clan and play information based of the authtoken
+	// Get clan and player information based of the authtoken
 	this->_GetSessionPlayerAndClan(url_variables, clan, player);
 	
-	// If player cant be found or player is already in clan
-	if(player.GetProfileId() == -1 || clan.GetClanId() != -1)
-	{
-		http_response.SetMessageBody("CANTJOIN");
-	}
-	else
+	// If player can be found and player is not in clan
+	if(player.GetProfileId() != -1 && clan.GetClanId() == -1)
 	{
 		Battlefield::Clan new_clan;
 		
@@ -442,12 +429,8 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 		// get clan by name or tag
 		g_database->queryClanByNameOrTag(new_clan);
 		
-		// Clan name already in use
-		if(new_clan.GetClanId() != -1)
-		{
-			http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
-		}
-		else
+		// Check Clan name is not in use
+		if(new_clan.GetClanId() == -1)
 		{
 			// Insert clan in database
 			g_database->insertClan(new_clan);
@@ -460,6 +443,14 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_requ
 			
 			http_response.SetMessageBody("OK");        // Clan succesfull created!
 		}
+		else
+		{
+			http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("CANTJOIN");
 	}
 	
 	http_response.SetStatusCode(200);
@@ -476,15 +467,11 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 	Battlefield::Clan clan;
 	Battlefield::Player player;
 	
-	// Get clan and play information based of the authtoken
+	// Get clan and player information based of the authtoken
 	this->_GetSessionPlayerAndClan(url_variables, clan, player);
 	
-	// If player cant be found or player is not in clan
-	if(player.GetProfileId() == -1 || clan.GetClanId() == -1)
-	{
-		http_response.SetMessageBody("INVALIDCLAN");
-	}
-	else
+	// If player can be found and player is in clan
+	if(player.GetProfileId() != -1 && clan.GetClanId() != -1)
 	{
 		// Get clan information
 		g_database->queryClanByClanId(clan);
@@ -492,11 +479,10 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		// Get all roles in clan
 		g_database->queryClanRolesByClanId(clan);
 		
-		if(clan.GetRole(player.GetProfileId()) != Battlefield::Clan::Roles::Leader)
-		{
-			http_response.SetMessageBody("NOTLEADER");
-		}
-		else
+		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		
+		// If role is clan leader
+		if(role == Battlefield::Clan::Roles::Leader)
 		{
 			// Copy url variables into clan
 			clan.updateInformation(url_variables, true);
@@ -506,6 +492,14 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 			
 			http_response.SetMessageBody("OK");
 		}
+		else
+		{
+			http_response.SetMessageBody("NOTLEADER");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
 	}
 	
 	http_response.SetStatusCode(200);
@@ -521,24 +515,19 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 	Battlefield::Clan clan;
 	Battlefield::Player player;
 	
-	// Get clan and play information based of the authtoken
+	// Get clan and player information based of the authtoken
 	this->_GetSessionPlayerAndClan(url_variables, clan, player);
 	
-	// If player cant be found or player is not in clan
-	if(player.GetProfileId() == -1 || clan.GetClanId() == -1)
-	{
-		http_response.SetMessageBody("INVALIDCLAN");
-	}
-	else
+	// If player can be found and player is in a clan
+	if(player.GetProfileId() != -1 && clan.GetClanId() != -1)
 	{
 		// Get all roles in clan
 		g_database->queryClanRolesByClanId(clan);
 		
-		if(clan.GetRole(player.GetProfileId()) != Battlefield::Clan::Roles::Leader)
-		{
-			http_response.SetMessageBody("NOTLEADER");
-		}
-		else
+		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		
+		// If role is clan leader
+		if(role == Battlefield::Clan::Roles::Leader)
 		{
 			// Remove all clan roles
 			g_database->removeClanRolesByClanId(clan);
@@ -548,6 +537,14 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 			
 			http_response.SetMessageBody("OK");
 		}
+		else
+		{
+			http_response.SetMessageBody("NOTLEADER");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
 	}
 	
 	http_response.SetStatusCode(200);
@@ -581,12 +578,54 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_requ
 void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and player information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player can be found and player is in a clan
+	if(player.GetProfileId() != -1 || clan.GetClanId() != -1)
+	{
+		// Get all roles in clan
+		g_database->queryClanRolesByClanId(clan);
+		
+		Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+		
+		// If the player role is not Co-Leader or higher
+		if(role <= Battlefield::Clan::Roles::Co_Leader)
+		{
+			Battlefield::Player target_player;
+			
+			auto it = url_variables.find("profileid");
+			if (it != url_variables.end())
+			{
+				target_player.SetProfileId(it->second);
+			}
+			
+			if(target_player.GetProfileId() != -1)
+			{
+				// Make player leader of clan
+				g_database->insertClanRole(clan, target_player, Battlefield::Clan::Roles::Member);
+				
+				http_response.SetMessageBody("OK");
+			}
+			else
+			{
+				http_response.SetMessageBody("ERROR");
+			}
+		}
+		else
+		{
+			http_response.SetMessageBody("NOTLEADER");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
-	//http_response.SetMessageBody("INVALIDCLAN");
-	//http_response.SetMessageBody("CANTJOIN");
-	//http_response.SetMessageBody("ERROR");
 	
 	this->Send(http_response);
 	
@@ -596,9 +635,72 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_reque
 void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::Clan clan;
+	Battlefield::Player player;
+	
+	// Get clan and player information based of the authtoken
+	this->_GetSessionPlayerAndClan(url_variables, clan, player);
+	
+	// If player cant be found or player is not in clan
+	if(player.GetProfileId() != -1 && clan.GetClanId() != -1)
+	{
+		Battlefield::Player target_player;
+		Battlefield::Clan   target_clan;
+		
+		// Get target player
+		auto it = url_variables.find("profileid");
+		if (it != url_variables.end())
+		{
+			target_player.SetProfileId(it->second);
+		}
+		
+		// Get target player information
+		g_database->queryClanByPlayer(target_clan, target_player);
+		
+		// Check target player
+		if(
+			target_player.GetProfileId() != -1 &&       // Valid target player profileid must be supplied
+			target_clan.GetClanId() != -1 &&            // target player must be in a clan
+			clan.GetClanId() == target_clan.GetClanId() // player and target player must be in the same clan
+		)
+		{
+			// Get all roles in clan
+			g_database->queryClanRolesByClanId(clan);
+			
+			// Get clan roles
+			Battlefield::Clan::Roles role = clan.GetRole(player.GetProfileId());
+			Battlefield::Clan::Roles target_role = clan.GetRole(target_player.GetProfileId());
+			
+			// Check rank is higher or it tries to remove itself as a none leader. Leader can only disband clan.
+			if(
+				role < target_role ||
+				(
+					player.GetProfileId() == target_player.GetProfileId() &&
+					role != Battlefield::Clan::Roles::Leader
+				)
+			)
+			{
+				// Remove player from clan
+				g_database->removeClanRole(clan, target_player);
+				
+				http_response.SetMessageBody("OK");
+			}
+			else
+			{
+				http_response.SetMessageBody("NOTLEADER");
+			}
+		}
+		else
+		{
+			http_response.SetMessageBody("ERROR");
+		}
+	}
+	else
+	{
+		http_response.SetMessageBody("INVALIDCLAN");
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody("OK");
 	//http_response.SetMessageBody("NOTMEMBER");
 	//http_response.SetMessageBody("NOTLEADER");
 	//http_response.SetMessageBody("LEADER");

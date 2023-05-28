@@ -16,18 +16,18 @@ namespace Battlefield
 		public:
 			enum Regions
 			{
-				Unknown_Region = -1,
-				America        =  1,
-				Europe         =  2,
-				Asia           =  3
+				America        =    1,
+				Europe         =    2,
+				Asia           =    3,
+				Unknown_Region = 1337,
 			};
 			
 			enum Roles
 			{
-				Unknown_Role = -1,
-				Leader       =  0,
-				Co_Leader    =  1,
-				Member       =  2
+				Leader       =    0,
+				Co_Leader    =    1,
+				Member       =    2,
+				Unknown_Role = 1337,
 			};
 		
 		private:
