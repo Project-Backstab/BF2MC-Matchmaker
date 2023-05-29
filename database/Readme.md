@@ -25,5 +25,5 @@ I use [https://www.mysql.com/products/workbench/](Mysql Workbench) to remote con
 
 Use fill in your ip, port and username to connect to the database.
 
-![images/mysql/connect.png](images/mysql/connect.png)
+![../images/mysql/connect.png](../images/mysql/connect.png)
 
