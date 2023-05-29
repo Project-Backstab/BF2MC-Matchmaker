@@ -62,10 +62,12 @@ namespace Battlefield
 			bool SetHomepage(const std::string &homepage);
 			bool SetInfo(const std::string &info);
 			bool SetRegion(Battlefield::Clan::Regions region);
+			bool SetRegion(int int_region);
 			bool SetRegion(std::string region);
 			bool SetDate(const std::string &date);
 			bool SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws);
 			void AddRank(int profileid, Ranks rank);
+			void AddRank(int profileid, int int_rank);
 			Ranks GetRank(int profileid) const;
 			
 			/*
@@ -79,6 +81,9 @@ namespace Battlefield
 				Static
 			*/
 			static Ranks convertRank(const std::string& rank);
+			static Ranks convertRank(int int_rank);
+			static Regions convertRegion(const std::string& str_region);
+			static Regions convertRegion(int int_region);
 	};
 }
 

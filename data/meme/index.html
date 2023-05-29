@@ -3,37 +3,18 @@
 		<style>
 			* { box-sizing: border-box; }
 			
-			.video-background {
-			  background: #000;
-			  position: fixed;
-			  top: 0; right: 0; bottom: 0; left: 0;
-			  z-index: -99;
-			}
-			
-			.video-foreground,
-			.video-background iframe {
+			.video iframe {
 			  position: absolute;
 			  top: 0;
 			  left: 0;
 			  width: 100%;
 			  height: 100%;
-			  pointer-events: none;
 			}
-			
-			@media (min-aspect-ratio: 16/9) {
-			  .video-foreground { height: 300%; top: -100%; }
-			}
-			@media (max-aspect-ratio: 16/9) {
-			  .video-foreground { width: 300%; left: -100%; }
-			}
-			
 		</style>
 	</header>
 	<body>
-		<div class="video-background">
-			<div class="video-foreground">
-				<iframe src="https://www.youtube.com/embed/iE39q-IKOzA?controls=0&showinfo=0&rel=0&autoplay=1&loop=1" frameborder="0" allowfullscreen></iframe>
-			</div>
+		<div class="video">
+			<iframe src="https://www.youtube.com/embed/iE39q-IKOzA?controls=0&showinfo=0&rel=0&autoplay=1&loop=1" frameborder="0" allowfullscreen></iframe>
 		</div>
 	</body>
 </html>

@@ -72,20 +72,14 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 	return true;
 }
 
+bool Battlefield::Clan::SetRegion(int int_region)
+{
+	return this->SetRegion(convertRegion(int_region));
+}
+
 bool Battlefield::Clan::SetRegion(std::string str_region)
 {
-	int region = -1;
-	
-	try
-	{
-		region = std::stoi(str_region);
-	}
-	catch(...)
-	{
-		return false;
-	}
-	
-	return this->SetRegion(static_cast<Regions>(region));
+	return this->SetRegion(convertRegion(str_region));
 }
 
 bool Battlefield::Clan::SetDate(const std::string &date)
@@ -106,6 +100,11 @@ bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses
 void Battlefield::Clan::AddRank(int profileid, Ranks rank)
 {
 	this->_ranks.insert(std::make_pair(profileid, rank));
+}
+
+void Battlefield::Clan::AddRank(int profileid, int int_rank)
+{	
+	this->AddRank(profileid, convertRank(int_rank));
 }
 
 Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
@@ -197,18 +196,49 @@ void Battlefield::Clan::updateInformation(const UrlRequest::UrlVariables &url_va
 */
 Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_rank)
 {
-	int rank = -1;
+	int int_rank = -1;
 	
 	try
 	{
-		rank = std::stoi(str_rank);
+		int_rank = std::stoi(str_rank);
 	}
 	catch(...) {};
 	
-	if(rank >= Leader && rank <= Member)
+	
+	return convertRank(int_rank);
+}
+
+Battlefield::Clan::Ranks Battlefield::Clan::convertRank(int int_rank)
+{
+	if(int_rank >= Leader && int_rank <= Member)
 	{
-		return static_cast<Ranks>(rank);
+		return static_cast<Ranks>(int_rank);
 	}
 	
 	return Unknown_Rank;
 }
+
+Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& str_region)
+{
+	int int_region = -1;
+	
+	try
+	{
+		int_region = std::stoi(str_region);
+	}
+	catch(...) {};
+	
+	
+	return convertRegion(int_region);
+}
+
+Battlefield::Clan::Regions Battlefield::Clan::convertRegion(int int_region)
+{
+	if(int_region >= America && int_region <= Asia)
+	{
+		return static_cast<Regions>(int_region);
+	}
+	
+	return Unknown_Region;
+}
+

@@ -22,8 +22,8 @@ class Database
 			Queries
 		*/
 		// Player
-		bool queryPlayerByProfileid(Battlefield::Player& player, const std::string profileid);
-		bool queryPlayerByUniquenick(Battlefield::Player& player, const std::string &uniquenick);
+		bool queryPlayerByProfileid(Battlefield::Player& player);
+		bool queryPlayerByUniquenick(Battlefield::Player& player);
 		bool queryPlayersByEmail(Battlefield::Players& players, const std::string &email);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
 		bool insertPlayer(const Battlefield::Player& player);
@@ -48,8 +48,8 @@ class Database
 		bool removeClan(const Battlefield::Clan& clan);
 		
 		// Clan Rank
-		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, int rank);
-		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, int rank);
+		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
+		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
 		bool removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool removeClanRanksByClanId(const Battlefield::Clan& clan);
 		

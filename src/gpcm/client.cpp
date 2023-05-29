@@ -108,7 +108,7 @@ void GPCM::Client::onRequest(const std::string &request)
 	{
 		std::unique_lock<std::mutex> guard(g_mutex_io);
 		
-		std::cout << "action \"" << action << "\"not implemented!" << std::endl;
+		std::cout << "action \"" << action << "\" not implemented!" << std::endl;
 		
 		guard.unlock();
 		
@@ -155,12 +155,11 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 	std::string id = parameter[19];
 	std::string server_challenge = this->_session_challenge;
 	
-	// Query Database user
 	Battlefield::Player player;
-	if(!g_database->queryPlayerByUniquenick(player, uniquenick))
-	{
-		return; // No Database user found with uniquenick
-	}
+	player.SetUniquenick(uniquenick);
+	
+	// Get player information
+	g_database->queryPlayerByUniquenick(player);
 	
 	// Generate proof
 	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge);
@@ -249,15 +248,14 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter) const
 	std::string id = parameter[7];
 	
 	Battlefield::Player player;
+	player.SetProfileId(profileid);
 	
-	if(!g_database->queryPlayerByProfileid(player, profileid))
-	{
-		return; // No Database user found with uniquenick
-	}
+	// Get player information
+	g_database->queryPlayerByProfileid(player);
 	
 	std::string response;
 	
-	if(player.GetProfileId() != -1)
+	if(player.GetUserId() != -1)
 	{
 		response = GameSpy::Parameter2Response({
 			"pi", "",

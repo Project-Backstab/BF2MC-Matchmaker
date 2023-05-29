@@ -151,7 +151,7 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		{
 			std::unique_lock<std::mutex> guard(g_mutex_io);
 			
-			std::cout << "action \"" << url_base << "\"not implemented!" << std::endl;
+			std::cout << "action \"" << url_base << "\" not implemented!" << std::endl;
 			
 			guard.unlock();
 			

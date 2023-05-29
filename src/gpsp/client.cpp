@@ -95,7 +95,7 @@ void GPSP::Client::onRequest(const std::string &request)
 	{
 		std::unique_lock<std::mutex> guard(g_mutex_io);
 		
-		std::cout << "action \"" << action << "\"not implemented!" << std::endl;
+		std::cout << "action \"" << action << "\" not implemented!" << std::endl;
 		
 		guard.unlock();
 		
@@ -127,16 +127,14 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	
 	std::string email = parameter[3];
 	std::string password = parameter[5];
-	bool correct_password = false;
 	
-	// Get all database users with email
 	Battlefield::Players players;
-	if(!g_database->queryPlayersByEmail(players, email))
-	{
-		return; // No Database user found with uniquenick
-	}
+	
+	// Get players from database by email
+	g_database->queryPlayersByEmail(players, email);
 	
 	// Check password
+	bool correct_password = false;
 	std::string md5password = Util::MD5hash(password);
 	for(Battlefield::Player player : players)
 	{
@@ -295,7 +293,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	g_database->insertPlayer(new_player);
 	
 	// Get missing profileid
-	g_database->queryPlayerByUniquenick(new_player, uniquenick);
+	g_database->queryPlayerByUniquenick(new_player);
 	
 	// Insert player status
 	g_database->insertPlayerStats(new_player);
@@ -329,11 +327,11 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 	std::string uniquenick = parameter[9];
 	
 	Battlefield::Player player;
-	if(!g_database->queryPlayerByUniquenick(player, uniquenick))
-	{
-		return; // Oeps something went wrong?!
-	}
+	player.SetUniquenick(uniquenick);
 	
+	// Get player information
+	g_database->queryPlayerByUniquenick(player);
+		
 	std::string response;
 	GameSpy::Parameter response_parameter;
 	
