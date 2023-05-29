@@ -25,17 +25,14 @@ I use [Mysql Workbench](https://www.mysql.com/products/workbench/) to remote con
 
 Use fill in your ip, port and username to connect to the database.
 
-![../images/mysql/connection.png](../images/mysql/connection.png | width=200)
-
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/connection.png?raw=true" width="200" />
 
 ### Create schema
 
 Once your logged in you can see your server stats. On the left bottom you will click tab Schema.
 
-![../images/mysql/schema.png](../images/mysql/schema.png)
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema.png?raw=true" width="200" />
 
 Then right click and create a new Schema.
 
-![../images/mysql/schema_new.png](../images/mysql/schema_new.png | width=200)
-
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
