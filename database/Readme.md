@@ -33,3 +33,9 @@ Once your logged in you can see your server stats. On the left bottom you will c
 
 <img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema.png?raw=true" width="200" /> - <img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
 
+Call it "BF2MC" and click Apply.
+
+Now we go back to administration tab and click "Data import".
+
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Administration-Data_Import.png?raw=true" width="200" />
+
