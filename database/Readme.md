@@ -27,7 +27,7 @@ Use fill in your ip, port and username to connect to the database.
 
 ![../images/mysql/connection.png](../images/mysql/connection.png | width=200)
 
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" alt="" data-canonical-src="https://gyazo.com/eb5c5741b6a9a16c692170a41a49c858.png" width="200" height="400" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
 
 ### Create schema
 
