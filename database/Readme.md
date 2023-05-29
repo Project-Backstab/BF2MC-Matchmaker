@@ -29,10 +29,7 @@ Use fill in your ip, port and username to connect to the database.
 
 ### Create schema
 
-Once your logged in you can see your server stats. On the left bottom you will click tab Schema.
+Once your logged in you can see your server stats. On the left bottom you will click tab Schema. Then right click and create a new Schema.
 
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema.png?raw=true" width="200" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema.png?raw=true" width="200" /><img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
 
-Then right click and create a new Schema.
-
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/schema_new.png?raw=true" width="200" />
