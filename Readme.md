@@ -31,7 +31,7 @@ This will create the bf2mc executable.
 
 ## Database
 
-This project requires a mysql database to save/extract information. Read [database/Readme.md](here) to setup. 
+This project requires a mysql database to save/extract information. Read [here](database/Readme.md) to setup. 
 
 ## Run
 
