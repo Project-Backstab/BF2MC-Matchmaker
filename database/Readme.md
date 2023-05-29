@@ -39,11 +39,11 @@ Now we go back to administration tab and click "Data import".
 
 <img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Administration-Data_Import.png?raw=true" width="200" />
 
-Step 1: Select the project database folder.
-Step 2: Click "Load folder Contents"
-Step 3: Select BF2MC database
-Step 4: Make sure all the tables are selected.
-Step 5: Click "Start Import"
+- Step 1: Select the project database folder.
+- Step 2: Click "Load folder Contents"
+- Step 3: Select BF2MC database
+- Step 4: Make sure all the tables are selected.
+- Step 5: Click "Start Import"
 
 <img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Data_Import_steps.png?raw=true" width="500" />
 
