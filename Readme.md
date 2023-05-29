@@ -31,7 +31,8 @@ This will create the bf2mc executable.
 
 ## Database
 
-This project requires a mysql database to save/extract information. Read [here](database/Readme.md) to setup. 
+This project requires a mysql database to save/extract information.
+Read [here](database/Readme.md) to setup. 
 
 ## Run
 
@@ -39,4 +40,4 @@ This project requires a mysql database to save/extract information. Read [here](
 ./bf2mc
 ```
 
-This will run 4 services on TCP port: 80, 28910, 29900, 29901.
+This will run 4 services on TCP port: 80, 28910, 29900 and 29901.
