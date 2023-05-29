@@ -25,7 +25,7 @@ I use [Mysql Workbench](https://www.mysql.com/products/workbench/) to remote con
 
 Use fill in your ip, port and username to connect to the database.
 
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/connection.png?raw=true" width="500" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/connection.png?raw=true" width="800" />
 
 ### Create schema
 
@@ -45,5 +45,5 @@ Now we go back to administration tab and click "Data import".
 - Step 4: Make sure all the tables are selected.
 - Step 5: Click "Start Import"
 
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Data_Import_steps.png?raw=true" width="500" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Data_Import_steps.png?raw=true" width="800" />
 
