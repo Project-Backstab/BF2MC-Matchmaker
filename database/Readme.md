@@ -19,7 +19,7 @@ In my case i allow to open up remote connections to admin the server.
 
 ## Remote control
 
-I use [https://www.mysql.com/products/workbench/](Mysql Workbench) to remote control the database server.
+I use [Mysql Workbench](https://www.mysql.com/products/workbench/) to remote control the database server.
 
 ### Connect
 
