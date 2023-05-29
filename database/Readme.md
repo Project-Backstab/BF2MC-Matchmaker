@@ -25,7 +25,7 @@ I use [Mysql Workbench](https://www.mysql.com/products/workbench/) to remote con
 
 Use fill in your ip, port and username to connect to the database.
 
-![../images/mysql/connection.png](../images/mysql/connection.png)
+![../images/mysql/connection.png](../images/mysql/connection.png | width=200)
 
 ### Create schema
 
@@ -35,5 +35,5 @@ Once your logged in you can see your server stats. On the left bottom you will c
 
 Then right click and create a new Schema.
 
-![../images/mysql/schema_new.png](../images/mysql/schema_new.png)
+![../images/mysql/schema_new.png](../images/mysql/schema_new.png | width=200)
 
