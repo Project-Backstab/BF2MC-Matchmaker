@@ -25,7 +25,7 @@ I use [Mysql Workbench](https://www.mysql.com/products/workbench/) to remote con
 
 Use fill in your ip, port and username to connect to the database.
 
-<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/connection.png?raw=true" width="200" />
+<img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/connection.png?raw=true" width="450" />
 
 ### Create schema
 
