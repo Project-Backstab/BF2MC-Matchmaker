@@ -169,7 +169,7 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 }
 
 /*
-	pid:		Player id
+	pid:		Player profileid
 	getarg:		this argument defines the parameters it needs to return
 		score:		Total score
 		ran:		Rank
