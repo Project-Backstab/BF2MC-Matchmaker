@@ -15,7 +15,7 @@ The following domains needs to be redirected to this server:
 	gpsp.gamespy.com
 	gpcm.gamespy.com
 	
-Read [dns/Readme.md](here) more about about it.
+Read [here](dns/Readme.md) more about about it.
 
 
 ## Compilation
