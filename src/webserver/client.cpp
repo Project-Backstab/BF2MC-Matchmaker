@@ -139,10 +139,11 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		// Split url into url base and variables
 		UrlRequest::GetUrlElements(http_request.GetPath(), url_base, url_variables);
 		
-		if (mRequestActions.find(url_base) != mRequestActions.end())
+		auto it = mRequestActions.find(url_base);
+		if (it != mRequestActions.end())
 		{
 			// Get Function address
-			RequestActionFunc func = mRequestActions[url_base];
+			RequestActionFunc func = it->second;
 		
 			// Execute action function with class object.
 			(this->*(func))(http_request, url_variables);
@@ -204,16 +205,16 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Player player;
 	
-	// Patch player stats
-	//player.PlayerStats::useExample();
-	//g_database->updatePlayerStats(player);
-	
 	// Get player profileid
 	auto it = url_variables.find("pid");
 	if (it != url_variables.end())
 	{
 		player.SetProfileId(it->second);
 	}
+	
+	// Patch player stats
+	//player.PlayerStats::useExample();
+	//g_database->updatePlayerStats(player);
 	
 	// Get player stats
 	g_database->queryPlayerStats(player);

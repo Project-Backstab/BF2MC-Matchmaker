@@ -96,10 +96,11 @@ void GPCM::Client::onRequest(const std::string &request)
 	// Find function name
 	std::string action = parameter[0];
 	
-	if (mRequestActions.find(action) != mRequestActions.end())
+	auto it = mRequestActions.find(action);
+	if (it != mRequestActions.end())
 	{
 		// Get Function address
-		RequestActionFunc func = mRequestActions[action];
+		RequestActionFunc func = it->second;
 	
 		// Execute action function with class object.
 		(this->*(func))(parameter);
