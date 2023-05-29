@@ -1,5 +1,3 @@
-#include <battlefield.h>
-
 #include <battlefield/clan.h>
 
 void Battlefield::Clan::useExample()
@@ -109,11 +107,11 @@ void Battlefield::Clan::AddRank(int profileid, int int_rank)
 
 Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
 {
-	try
+	auto it = this->_ranks.find(profileid);
+	if (it != this->_ranks.end())
 	{
-		return this->_ranks.at(profileid);
+		return it->second;
 	}
-	catch(...) {};
 	
 	return Unknown_Rank;
 }

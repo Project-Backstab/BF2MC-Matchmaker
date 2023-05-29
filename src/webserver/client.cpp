@@ -233,9 +233,10 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 
 void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
 {
-	try
+	auto it = url_variables.find("sort");
+	if (it != url_variables.end())
 	{
-		std::string sort = url_variables.at("sort");
+		std::string sort = it->second;
 		
 		if(sort == "rank")
 		{
@@ -251,10 +252,11 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 		}
 		else if(sort == "kills")
 		{
-			try
+			auto it2 = url_variables.find("k_filter");
+			if (it2 != url_variables.end())
 			{
-				std::string k_filter = url_variables.at("k_filter");
-			
+				std::string k_filter = it2->second;
+				
 				if(k_filter == "assault")
 				{
 					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
@@ -275,17 +277,14 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 				{
 					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
 				}
-			}
-			catch(const std::out_of_range &e)
-			{
-				this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
 			}
 		}
 		else if(sort == "ratio")
 		{
-			try
+			auto it2 = url_variables.find("k_filter");
+			if (it2 != url_variables.end())
 			{
-				std::string k_filter = url_variables.at("k_filter");
+				std::string k_filter = it2->second;
 			
 				if(k_filter == "assault")
 				{
@@ -308,16 +307,13 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
 				}
 			}
-			catch(const std::out_of_range &e)
-			{
-				this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-			}
 		}
 		else if(sort == "vehicles")
 		{
-			try
+			auto it2 = url_variables.find("v_filter");
+			if (it2 != url_variables.end())
 			{
-				std::string v_filter = url_variables.at("v_filter");
+				std::string v_filter = it2->second;
 			
 				if(v_filter == "light")
 				{
@@ -340,19 +336,11 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
 				}
 			}
-			catch(const std::out_of_range &e)
-			{
-				this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
-			}
 		}
 		else
 		{
 			this->_SendFile("data/stats/sort=score&pos=1&posafter=9.txt");
 		}
-	}
-	catch(int e)
-	{
-		
 	}
 	
 	this->Disconnect();
@@ -955,14 +943,15 @@ int Webserver::Client::_GetSessionProfileId(const UrlRequest::UrlVariables &url_
 {
 	int profileid = -1;
 	
-	try
+	auto it = url_variables.find("authtoken");
+	if (it != url_variables.end())
 	{
-		std::string authtoken = url_variables.at("authtoken");
+		std::string authtoken = it->second;
 		
 		// Find player profileid with current gpcm session
 		for(Net::Socket* client : g_gpcm_server->_clients)
 		{
-			GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+			GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 			
 			if(gpcm_client->_session_authtoken == authtoken)
 			{
@@ -970,7 +959,6 @@ int Webserver::Client::_GetSessionProfileId(const UrlRequest::UrlVariables &url_
 			}	
 		}
 	}
-	catch(...) {};
 	
 	return profileid;
 }
@@ -991,7 +979,7 @@ void Webserver::Client::_SendBuddyMessage(int profileid, int target_profileid, c
 {
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
-		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 		
 		if(gpcm_client->_session_profileid == target_profileid)
 		{

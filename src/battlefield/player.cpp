@@ -28,10 +28,7 @@ bool Battlefield::Player::SetProfileId(const std::string& str_profileid)
 	{
 		profileid = std::stoi(str_profileid);
 	}
-	catch(...)
-	{
-		return false;
-	}
+	catch(...) {};
 	
 	return this->SetProfileId(profileid);
 }

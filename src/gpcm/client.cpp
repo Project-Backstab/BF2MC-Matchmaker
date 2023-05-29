@@ -394,7 +394,7 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
-		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 		
 		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
@@ -436,7 +436,7 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 		
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
-		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 		
 		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
@@ -481,7 +481,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter) const
 	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
-		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 		
 		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
@@ -538,7 +538,7 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
 	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
-		GPCM::Client* gpcm_client = reinterpret_cast<GPCM::Client*>(client);
+		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
 		
 		if(gpcm_client->_session_profileid == target_player.GetProfileId())
 		{
