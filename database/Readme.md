@@ -47,3 +47,5 @@ Now we go back to administration tab and click "Data import".
 
 <img src="https://github.com/Project-Backstab/BF2MC-Matchmaker/blob/main/images/mysql/Data_Import_steps.png?raw=true" width="800" />
 
+Now we go back to the "Schema" tab. Right click "BF2MC" database and click "Refresh All".
+Now all the tables will be shown up and your good to go to run the server.
