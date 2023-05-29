@@ -34,7 +34,7 @@ namespace Webserver
 			void requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			
-			// Clan			
+			// Clan	
 			void requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
 			void requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);

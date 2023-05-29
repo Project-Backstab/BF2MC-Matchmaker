@@ -38,10 +38,10 @@ namespace Battlefield
 			std::string          _info        = "";
 			Regions              _region      = America;
 			std::string          _date        = "";
-	        uint32_t             _rating      = 0;
+			uint32_t             _rating      = 0;
 			uint32_t             _wins        = 0;
 			uint32_t             _losses      = 0;
-			uint32_t	         _draws       = 0;
+			uint32_t             _draws       = 0;
 			std::map<int, Ranks> _ranks;
 		
 		public:

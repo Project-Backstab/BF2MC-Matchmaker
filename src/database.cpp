@@ -78,7 +78,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player, const std::st
 	int status = mysql_stmt_fetch(statement);
 
 	if (status != 1 && status != MYSQL_NO_DATA)
-	{		
+	{
 		player.SetProfileId(output_profileid);
 		player.SetUserId(output_userid);
 		player.SetNick(output_nick);
