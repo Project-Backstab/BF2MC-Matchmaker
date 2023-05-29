@@ -193,6 +193,11 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter) const
 {
+	if(parameter.size() != 7)
+	{
+		return;
+	}
+	
 	Battlefield::Player player;
 	
 	player.SetProfileId(this->_session_profileid);
@@ -424,7 +429,7 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter) const
 {
-	if(parameter.size() != 9 || parameter[7] == "BFMCB-AUTO.")
+	if(parameter.size() != 9)
 	{
 		return;
 	}
@@ -563,7 +568,10 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter) const
 {
-	
+	//if(parameter.size() != 7)
+	//{
+	//	return;
+	//}
 }
 
 /*
@@ -572,7 +580,10 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter) const
 */
 void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter) const
 {
-	
+	//if(parameter.size() != 5)
+	//{
+	//	return;
+	//}
 }
 
 /*

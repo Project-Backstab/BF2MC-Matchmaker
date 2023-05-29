@@ -204,19 +204,16 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Player player;
 	
+	// Patch player stats
+	//player.PlayerStats::useExample();
+	//g_database->updatePlayerStats(player);
+	
 	// Get player profileid
 	auto it = url_variables.find("pid");
 	if (it != url_variables.end())
 	{
 		player.SetProfileId(it->second);
 	}
-	
-	// Patch player stats
-	//if(player.GetProfileId() == 10036819)
-	//{
-	//	player.PlayerStats::useExample();
-	//}
-	//g_database->updatePlayerStats(player);
 	
 	// Get player stats
 	g_database->queryPlayerStats(player);
