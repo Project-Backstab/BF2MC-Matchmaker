@@ -31,7 +31,7 @@ CREATE TABLE `Players` (
   `password` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`profileid`),
   UNIQUE KEY `id_UNIQUE` (`profileid`)
-) ENGINE=InnoDB AUTO_INCREMENT=10037062 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10037064 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `Players` (
 
 LOCK TABLES `Players` WRITE;
 /*!40000 ALTER TABLE `Players` DISABLE KEYS */;
-INSERT INTO `Players` VALUES (10036819,64679,'IamLupo@6507BAD7','IamLupo','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037049,64679,'IamLupo3@3BEAA015','IamLupo3','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037061,64682,'noahallen522@3CA95DEC','noahallen522','fortnite','900150983cd24fb0d6963f7d28e17f72');
+INSERT INTO `Players` VALUES (10036819,64679,'IamLupo@6507BAD7','IamLupo','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037049,64679,'IamLupo3@3BEAA015','IamLupo3','help0001@gmail.com','827ccb0eea8a706c4c34a16891f84e7b'),(10037061,64682,'noahallen522@3CA95DEC','noahallen522','fortnite','900150983cd24fb0d6963f7d28e17f72'),(10037062,64683,'Shika@9AE43FAE','Shika','lol@batman.com','417e4705aee1415f8583243b8c403af3'),(10037063,64684,'NoBackstab@ADDEDBD6','NoBackstab','aaaaaaaaa','6b60bbc4e0db240ad3a6a82d9c2f7fc6');
 /*!40000 ALTER TABLE `Players` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-30  1:43:53
+-- Dump completed on 2023-05-30  3:38:00
