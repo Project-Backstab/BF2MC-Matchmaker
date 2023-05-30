@@ -42,25 +42,57 @@ bool Battlefield::Clan::SetClanId(const std::string& str_clanid)
 
 bool Battlefield::Clan::SetName(const std::string &name)
 {
-	this->_name = name;
+	if(name.size() > 32)
+	{
+		this->_name = name.substr(0, 31);
+	}
+	else
+	{
+		this->_name = name;
+	}
+	
 	return true;
 }
 
 bool Battlefield::Clan::SetTag(const std::string &tag)
 {
-	this->_tag = tag;
+	if(tag.size() > 3)
+	{
+		this->_tag = tag.substr(0, 2);
+	}
+	else
+	{
+		this->_tag = tag;
+	}
+	
 	return true;
 }
 
 bool Battlefield::Clan::SetHomepage(const std::string &homepage)
 {
-	this->_homepage = homepage;
+	if(homepage.size() > 256)
+	{
+		this->_homepage = homepage.substr(0, 255);
+	}
+	else
+	{
+		this->_homepage = homepage;
+	}
+	
 	return true;
 }
 
 bool Battlefield::Clan::SetInfo(const std::string &info)
 {
-	this->_info = info;
+	if(info.size() > 1024)
+	{
+		this->_info = info.substr(0, 1023);
+	}
+	else
+	{
+		this->_info = info;
+	}
+	
 	return true;
 }
 
@@ -82,7 +114,15 @@ bool Battlefield::Clan::SetRegion(std::string str_region)
 
 bool Battlefield::Clan::SetDate(const std::string &date)
 {
-	this->_date = date;
+	if(date.size() > 15)
+	{
+		this->_date = date.substr(0, 15);
+	}
+	else
+	{
+		this->_date = date;
+	}
+	
 	return true;
 }
 

@@ -26,10 +26,10 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	int  input_profileid = player.GetProfileId();
 	
 	int  output_userid = 0;
-	char output_nick[46];
-	char output_uniquenick[46];
-	char output_email[46];
-	char output_md5password[46];
+	char output_nick[42];
+	char output_uniquenick[33];
+	char output_email[51];
+	char output_md5password[33];
 
 	std::string query = "SELECT `userid`, `nick`, `uniquenick`, `email`, `password` FROM `Players` WHERE `profileid` = ?";
 
@@ -46,16 +46,16 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[1].buffer = output_nick;
-	output_bind[1].buffer_length = 46;
+	output_bind[1].buffer_length = 42;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = output_uniquenick;
-	output_bind[2].buffer_length = 46;
+	output_bind[2].buffer_length = 33;
 	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[3].buffer = output_email;
-	output_bind[3].buffer_length = 46;
+	output_bind[3].buffer_length = 51;
 	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[4].buffer = output_md5password;
-	output_bind[4].buffer_length = 46;
+	output_bind[4].buffer_length = 33;
 
 	// Prepare the statement
 	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
@@ -103,9 +103,9 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	
 	int  output_profileid = 0;
 	int  output_userid = 0;
-	char output_nick[46];
-	char output_email[46];
-	char output_md5password[46];
+	char output_nick[42];
+	char output_email[51];
+	char output_md5password[33];
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -123,13 +123,13 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	output_bind[1].is_unsigned = false;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = output_nick;
-	output_bind[2].buffer_length = 46;
+	output_bind[2].buffer_length = 42;
 	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[3].buffer = output_email;
-	output_bind[3].buffer_length = 46;
+	output_bind[3].buffer_length = 51;
 	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[4].buffer = output_md5password;
-	output_bind[4].buffer_length = 46;
+	output_bind[4].buffer_length = 33;
 
 	// Prepare the statement
 	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
@@ -175,10 +175,10 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	
 	int  output_profileid = 0;
 	int  output_userid = 0;
-	char output_nick[46];
-	char output_uniquenick[46];
-	char output_email[46];
-	char output_md5password[46];
+	char output_nick[42];
+	char output_uniquenick[33];
+	char output_email[51];
+	char output_md5password[33];
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -196,16 +196,16 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	output_bind[1].is_unsigned = false;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = output_nick;
-	output_bind[2].buffer_length = 46;
+	output_bind[2].buffer_length = 42;
 	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[3].buffer = output_uniquenick;
-	output_bind[3].buffer_length = 46;
+	output_bind[3].buffer_length = 33;
 	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[4].buffer = output_email;
-	output_bind[4].buffer_length = 46;
+	output_bind[4].buffer_length = 51;
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[5].buffer = output_md5password;
-	output_bind[5].buffer_length = 46;
+	output_bind[5].buffer_length = 33;
 
 	// Prepare the statement
 	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
@@ -865,8 +865,8 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	std::string input_tag = clan.GetTag();
 	
 	int  output_clanid = 0;
-	char output_homepage[46];
-	char output_info[46];
+	char output_homepage[257];
+	char output_info[1025];
 	int  output_region = 0;
 	
 	// Allocate input binds
@@ -885,10 +885,10 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[1].buffer = &output_homepage;
-	output_bind[1].buffer_length = 46;
+	output_bind[1].buffer_length = 257;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = &output_info;
-	output_bind[2].buffer_length = 46;
+	output_bind[2].buffer_length = 1025;
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[3].buffer = &output_region;
 	output_bind[3].is_unsigned = false;	
@@ -988,10 +988,10 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 
 	int input_clanid = clan.GetClanId();
 	
-	char output_name[46];
-	char output_tag[46];
-	char output_homepage[46];
-	char output_info[46];
+	char output_name[33];
+	char output_tag[4];
+	char output_homepage[257];
+	char output_info[1025];
 	int  output_region = 0;
 
 	std::string query = "SELECT `name`, `tag`, `homepage`, `info`, `region` FROM `Clans` WHERE `clanid` = ?";
@@ -1006,16 +1006,16 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[0].buffer = &output_name;
-	output_bind[0].buffer_length = 46;
+	output_bind[0].buffer_length = 33;
 	output_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[1].buffer = &output_tag;
-	output_bind[1].buffer_length = 46;
+	output_bind[1].buffer_length = 4;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = &output_homepage;
-	output_bind[2].buffer_length = 46;
+	output_bind[2].buffer_length = 257;
 	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[3].buffer = &output_info;
-	output_bind[3].buffer_length = 46;
+	output_bind[3].buffer_length = 1025;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[4].buffer = &output_region;
 	output_bind[4].is_unsigned = false;	

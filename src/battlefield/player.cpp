@@ -46,19 +46,43 @@ bool Battlefield::Player::SetUserId(int userid)
 
 bool Battlefield::Player::SetNick(const std::string &nick)
 {
-	this->_nick = nick;
+	if(nick.size() > 41)
+	{
+		this->_nick = nick.substr(0, 40);
+	}
+	else
+	{
+		this->_nick = nick;
+	}
+	
 	return true;
 }
 
 bool Battlefield::Player::SetUniquenick(const std::string &uniquenick)
 {
-	this->_uniquenick = uniquenick;
+	if(uniquenick.size() > 32)
+	{
+		this->_uniquenick = uniquenick.substr(0, 31);
+	}
+	else
+	{
+		this->_uniquenick = uniquenick;
+	}
+	
 	return true;
 }
 
 bool Battlefield::Player::SetEmail(const std::string &email)
 {
-	this->_email = email;
+	if(email.size() > 50)
+	{
+		this->_email = email.substr(0, 49);
+	}
+	else
+	{
+		this->_email = email;
+	}
+	
 	return true;
 }
 
@@ -70,6 +94,11 @@ bool Battlefield::Player::SetPassword(const std::string &password)
 
 bool Battlefield::Player::SetMD5Password(const std::string &md5_password)
 {
+	if(md5_password.size() != 32)
+	{
+		return false;
+	}
+	
 	this->_password = md5_password;
 	return true;
 }
