@@ -30,8 +30,8 @@ class Database
 		
 		// Player friends
 		bool queryPlayerFriends(Battlefield::Player& player);
-		bool insertPlayerFriend(int profileid, int target_profileid);
-		bool removePlayerFriend(int profileid, int target_profileid);
+		bool insertPlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player);
+		bool removePlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player);
 		
 		// Player Stats
 		bool queryPlayerStats(Battlefield::Player& player);

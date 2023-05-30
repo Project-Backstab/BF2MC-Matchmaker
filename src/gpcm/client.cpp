@@ -478,13 +478,15 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	std::string target_profileid = parameter[5];
 	std::string sig = parameter[7];
 	
+	Battlefield::Player player;
 	Battlefield::Player target_player;
+	
+	// Set profileid
+	player.SetProfileId(this->_session.profileid);
 	target_player.SetProfileId(target_profileid);
 	
-	if(!g_database->insertPlayerFriend(this->_session.profileid, target_player.GetProfileId()))
-	{
-		return;
-	}
+	// Save friendship
+	g_database->insertPlayerFriend(player, target_player);
 	
 	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
 	
@@ -493,7 +495,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 		// Send friendlist update to friendship sender
 		std::string response = GameSpy::Parameter2Response({
 			"bm", "100",
-			"f", std::to_string(this->_session.profileid),
+			"f", std::to_string(player.GetProfileId()),
 			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
 			"final"
 		});
@@ -532,13 +534,15 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 	
 	std::string target_profileid = parameter[5];
 	
+	Battlefield::Player player;
 	Battlefield::Player target_player;
+	
+	// Set profileid
+	player.SetProfileId(this->_session.profileid);
 	target_player.SetProfileId(target_profileid);
 	
-	if(!g_database->removePlayerFriend(this->_session.profileid, target_player.GetProfileId()))
-	{
-		return;
-	}
+	// Remove friendship
+	g_database->removePlayerFriend(player, target_player);
 	
 	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
 	
@@ -547,7 +551,7 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 		// Send friendlist update to friendship sender
 		std::string response = GameSpy::Parameter2Response({
 			"bm", "100",
-			"f", std::to_string(this->_session.profileid),
+			"f", std::to_string(player.GetProfileId()),
 			"msg", "|s|0|ss|Offline",
 			"final"
 		});
@@ -597,10 +601,14 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 */
 GPCM::Session GPCM::Client::findSessionByProfileId(int profileid)
 {
+	GPCM::Session session;
+	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
-		GPCM::Session session = gpcm_client->GetSession();
+		
+		// Find session
+		session = gpcm_client->GetSession();
 		
 		if(session.profileid == profileid)
 		{
@@ -614,10 +622,14 @@ GPCM::Session GPCM::Client::findSessionByProfileId(int profileid)
 
 GPCM::Session GPCM::Client::findSessionByAuthtoken(const std::string& authtoken)
 {
+	GPCM::Session session;
+	
 	for(Net::Socket* client : g_gpcm_server->_clients)
 	{
 		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
-		GPCM::Session session = gpcm_client->GetSession();
+		
+		// Find session
+		session = gpcm_client->GetSession();
 		
 		if(session.authtoken == authtoken)
 		{
@@ -645,7 +657,6 @@ void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const s
 		session.client->Send(response);
 		
 		session.client->_LogTransaction("<--", response);
-
 	}
 }
 

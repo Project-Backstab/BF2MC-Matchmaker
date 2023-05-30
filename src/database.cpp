@@ -420,19 +420,22 @@ bool Database::queryPlayerFriends(Battlefield::Player& player)
 	return true;
 }
 
-bool Database::insertPlayerFriend(int profileid, int target_profileid)
+bool Database::insertPlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
 	std::string query = "INSERT INTO `PlayerFriends` (`profileid`, `target_profileid`) VALUES (?, ?);";
-
+	
+	int input_profileid        = player.GetProfileId();
+	int input_target_profileid = target_player.GetProfileId();
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&(profileid));
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&(target_profileid));
+	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[1].is_unsigned = false;
 
 	// Prepare the statement
@@ -458,25 +461,28 @@ bool Database::insertPlayerFriend(int profileid, int target_profileid)
 	return true;
 }
 
-bool Database::removePlayerFriend(int profileid, int target_profileid)
+bool Database::removePlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex);
 
 	std::string query = "DELETE FROM `PlayerFriends` WHERE (`profileid` = ? and `target_profileid` = ?) OR (`profileid` = ? and `target_profileid` = ?);";
-
+	
+	int input_profileid        = player.GetProfileId();
+	int input_target_profileid = target_player.GetProfileId();
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&(profileid));
+	input_bind[0].buffer = const_cast<int*>(&input_profileid);
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&(target_profileid));
+	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&(target_profileid));
+	input_bind[2].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[2].is_unsigned = false;
 	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[3].buffer = const_cast<int*>(&(profileid));
+	input_bind[3].buffer = const_cast<int*>(&input_profileid);
 	input_bind[3].is_unsigned = false;
 
 	// Prepare the statement

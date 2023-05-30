@@ -129,6 +129,12 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	std::string email = parameter[3];
 	std::string password = parameter[5];
 	
+	// Filter email
+	if(email.size() > 50)
+	{
+		email = email.substr(0, 49);
+	}
+	
 	Battlefield::Players players;
 	
 	// Get players from database by email
@@ -244,6 +250,12 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	std::string email = parameter[5];
 	std::string password = parameter[7];
 	std::string uniquenick = parameter[13];
+	
+	// Filter email
+	if(email.size() > 50)
+	{
+		email = email.substr(0, 49);
+	}
 	
 	Battlefield::Players players;
 	
