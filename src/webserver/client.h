@@ -56,9 +56,7 @@ namespace Webserver
 			std::string _readFile(const std::string &file_name) const;
 			void _SendFile(const std::string &file_name) const;
 			
-			int _GetSessionProfileId(const UrlRequest::UrlVariables &url_variables) const;
 			void _GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const;
-			void _SendBuddyMessage(int profileid, int target_profileid, const std::string& msg) const;
 	};
 }
 

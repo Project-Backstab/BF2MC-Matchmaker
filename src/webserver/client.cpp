@@ -616,7 +616,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_requ
 				// give target player new rank
 				g_database->updateClanRank(clan, target_player, new_rank);
 				
-				this->_SendBuddyMessage(
+				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
 					"Your rank in the clan has been changed. Login again to get the update!"
@@ -685,7 +685,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_reque
 				// Make player leader of clan
 				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Ranks::Member);
 				
-				this->_SendBuddyMessage(
+				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
 					"You joined a new clan. Login again to get the update!"
@@ -768,7 +768,7 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_re
 				
 				if(player.GetProfileId() != target_player.GetProfileId())
 				{
-					this->_SendBuddyMessage(
+					GPCM::Client::SendBuddyMessage(
 						player.GetProfileId(),
 						target_player.GetProfileId(),
 						"You have been removed from the clan. Login again to get the update!"
@@ -831,7 +831,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage &http_req
 			{
 				if(player_profileid != rank.first)
 				{
-					this->_SendBuddyMessage(player_profileid, rank.first, "Clan message: " + message);
+					GPCM::Client::SendBuddyMessage(player_profileid, rank.first, "Clan message: " + message);
 				}
 			}
 		
@@ -937,61 +937,24 @@ void Webserver::Client::_SendFile(const std::string &file_name) const
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-int Webserver::Client::_GetSessionProfileId(const UrlRequest::UrlVariables &url_variables) const
+void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
 {
-	int profileid = -1;
+	GPCM::Session session;
 	
 	auto it = url_variables.find("authtoken");
 	if (it != url_variables.end())
 	{
 		std::string authtoken = it->second;
 		
-		// Find player profileid with current gpcm session
-		for(Net::Socket* client : g_gpcm_server->_clients)
-		{
-			GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
-			
-			if(gpcm_client->_session_authtoken == authtoken)
-			{
-				profileid = gpcm_client->_session_profileid;
-			}	
-		}
+		session = GPCM::Client::findSessionByAuthtoken(authtoken);
 	}
 	
-	return profileid;
-}
-
-void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
-{
-	// Get session profileid base of the authtoken
-	int profileid = this->_GetSessionProfileId(url_variables);
-	
 	// Set player profileid
-	player.SetProfileId(profileid);
+	player.SetProfileId(session.profileid);
 	
 	// Get clan information based of player profileid
 	g_database->queryClanByPlayer(clan, player);
 }
 
-void Webserver::Client::_SendBuddyMessage(int profileid, int target_profileid, const std::string& msg) const
-{
-	for(Net::Socket* client : g_gpcm_server->_clients)
-	{
-		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
-		
-		if(gpcm_client->_session_profileid == target_profileid)
-		{
-			std::string response = GameSpy::Parameter2Response({
-				"bm", "1",
-				"f", std::to_string(profileid),
-				"msg", msg,
-				"final"
-			});
-			
-			gpcm_client->Send(response);
-			
-			this->_LogTransaction("<--", response);
-		}
-	}
-}
+
 

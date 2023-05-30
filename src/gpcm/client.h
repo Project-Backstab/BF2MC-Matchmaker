@@ -4,14 +4,23 @@
 #include <gamespy.h>
 #include <net/socket.h>
 
+
 namespace GPCM
 {
+	class Client;
+	
+	struct Session
+	{
+		std::string  challenge;
+		int          profileid = -1;
+		std::string  authtoken;
+		Client* client;
+	};
+
 	class Client : public Net::Socket
 	{
-		public:
-			mutable std::string  _session_challenge;
-			mutable int          _session_profileid;
-			mutable std::string  _session_authtoken;
+		private:
+			GPCM::Session _session;
 		
 		public:
 			Client(int socket, struct sockaddr_in address);
@@ -20,6 +29,7 @@ namespace GPCM
 			void Listen();
 			void Disconnect();
 			void Send(const std::string &msg) const;
+			GPCM::Session GetSession() const;
 			
 			/*
 				Events
@@ -29,20 +39,28 @@ namespace GPCM
 			/*
 				Requests
 			*/
-			void requestChallenge() const;
-			void requestLogin(const GameSpy::Parameter &parameter) const;
-			void requestInviteTo(const GameSpy::Parameter& parameter) const;
-			void requestGetProfile(const GameSpy::Parameter& parameter) const;
-			void requestStatus(const GameSpy::Parameter& parameter) const;
-			void requestBm(const GameSpy::Parameter& parameter) const;
-			void requestAddBuddy(const GameSpy::Parameter& parameter) const;
-			void requestRevoke(const GameSpy::Parameter& parameter) const;
-			void requestDeleteBuddy(const GameSpy::Parameter& parameter) const;
-			void requestAuthAdd(const GameSpy::Parameter& parameter) const;
-			void requestLogout(const GameSpy::Parameter& parameter) const;
+			void requestChallenge();
+			void requestLogin(const GameSpy::Parameter &parameter);
+			void requestInviteTo(const GameSpy::Parameter& parameter);
+			void requestGetProfile(const GameSpy::Parameter& parameter);
+			void requestStatus(const GameSpy::Parameter& parameter);
+			void requestBm(const GameSpy::Parameter& parameter);
+			void requestAddBuddy(const GameSpy::Parameter& parameter);
+			void requestRevoke(const GameSpy::Parameter& parameter);
+			void requestDeleteBuddy(const GameSpy::Parameter& parameter);
+			void requestAuthAdd(const GameSpy::Parameter& parameter);
+			void requestLogout(const GameSpy::Parameter& parameter);
 			
 		private:
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
+		
+		/*
+			Static
+		*/
+		public:
+			static GPCM::Session findSessionByProfileId(int profileid);
+			static GPCM::Session findSessionByAuthtoken(const std::string& authtoken);
+			static void          SendBuddyMessage(int profileid, int target_profileid, const std::string& msg);
 	};
 }
 
