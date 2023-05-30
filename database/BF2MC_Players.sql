@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `Players`;
 CREATE TABLE `Players` (
   `profileid` int NOT NULL AUTO_INCREMENT,
   `userid` int NOT NULL,
-  `nick` varchar(45) DEFAULT NULL,
-  `uniquenick` varchar(45) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
+  `nick` varchar(41) DEFAULT NULL,
+  `uniquenick` varchar(32) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
   `password` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`profileid`),
   UNIQUE KEY `id_UNIQUE` (`profileid`)
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-30  3:38:00
+-- Dump completed on 2023-05-30  4:09:52

@@ -24,12 +24,12 @@ DROP TABLE IF EXISTS `Clans`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Clans` (
   `clanid` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) DEFAULT NULL,
-  `tag` varchar(45) DEFAULT NULL,
-  `homepage` varchar(45) DEFAULT NULL,
-  `info` varchar(45) DEFAULT NULL,
+  `name` varchar(32) DEFAULT NULL,
+  `tag` varchar(3) DEFAULT NULL,
+  `homepage` varchar(256) DEFAULT NULL,
+  `info` varchar(1024) DEFAULT NULL,
   `region` int DEFAULT NULL,
-  `date` varchar(45) DEFAULT '',
+  `date` varchar(15) DEFAULT '',
   `rating` int DEFAULT '0',
   `wins` int DEFAULT '0',
   `losses` int DEFAULT '0',
@@ -59,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-30  3:38:00
+-- Dump completed on 2023-05-30  4:09:52
