@@ -23,6 +23,8 @@ namespace GPCM
 			GPCM::Session _session;
 		
 		public:
+			std::vector<int> _sync_friends;
+			
 			Client(int socket, struct sockaddr_in address);
 			~Client();
 			
@@ -52,6 +54,7 @@ namespace GPCM
 			
 		private:
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
+			void _SyncFriends();
 		
 		/*
 			Static

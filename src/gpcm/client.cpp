@@ -316,6 +316,8 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	this->Send(response);
 	
 	this->_LogTransaction("<--", response);
+	
+	this->_SyncFriends();
 }
 
 /*
@@ -345,46 +347,8 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 		return; // Oeps something went wrong?!
 	}
 	
-	std::vector<int> player_friends = player.GetFriends();
-	
-	for(int friend_profileid : player_friends)
-	{
-		std::string response;
-		
-		response += GameSpy::Parameter2Response({
-			"bm", "100",
-			"f", std::to_string(friend_profileid),
-			"msg", "|s|2|ss|Offline",
-			//"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
-			"final"
-		});
-		
-		this->Send(response);
-
-		this->_LogTransaction("<--", response);
-	}
-	
-	/*
-	// Stress test: Test a lot of friends
-	if(player_friends.size() > 0)
-	{
-		for(int i = 0; i < 100; i++)
-		{
-			std::string response;
-			
-			response += GameSpy::Parameter2Response({
-				"bm", "100",
-				"f", std::to_string(player_friends[player_friends.size() - 1] + i + 1),
-				"msg", "|s|2|ss|Offline",
-				"final"
-			});
-			
-			this->Send(response);
-
-			this->_LogTransaction("<--", response);
-		}
-	}
-	*/
+	this->_sync_friends = player.GetFriends();
+	this->_SyncFriends();
 }
 
 /*
@@ -602,6 +566,29 @@ void GPCM::Client::_LogTransaction(const std::string &direction, const std::stri
 	)
 	{
 		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	}
+}
+
+void GPCM::Client::_SyncFriends()
+{
+	if(this->_sync_friends.size() >= 1)
+	{
+		int id = this->_sync_friends.size() - 1;
+		int profileid = this->_sync_friends[id];
+		
+		std::string response = GameSpy::Parameter2Response({
+			"bm", "100",
+			"f", std::to_string(profileid),
+			"msg", "|s|2|ss|Offline",
+			"final"
+		});
+		
+		this->Send(response);
+
+		this->_LogTransaction("<--", response);
+		
+		// Erase last profileid from list
+		this->_sync_friends.pop_back();
 	}
 }
 
