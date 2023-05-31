@@ -62,6 +62,11 @@ void GPCM::Client::Listen()
 		
 		request = Util::Buffer2String(buffer);
 		
+		// Debug
+		//std::cout << "--- START ----------------------------------------" << std::endl;
+		//std::cout << "size = " << v << std::endl;
+		//std::cout << "request = " << request << std::endl;
+		
 		std::vector<std::string> requests = GameSpy::RequestToRequests(request);
 		
 		for(std::string v : requests)
@@ -69,7 +74,11 @@ void GPCM::Client::Listen()
 			this->_LogTransaction("-->", v);
 		
 			this->onRequest(v);
+			
+			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
+		
+		//std::cout << "--- END ----------------------------------------" << std::endl;
 	}
 	
 	this->Disconnect();
@@ -79,11 +88,6 @@ void GPCM::Client::Disconnect()
 {
 	close(this->_socket);
 	g_gpcm_server->onClientDisconnect(*this);
-}
-
-void GPCM::Client::Send(const std::string &msg) const
-{
-	send(this->_socket, msg.c_str(), msg.size(), 0);
 }
 
 GPCM::Session GPCM::Client::GetSession() const
@@ -114,7 +118,7 @@ void GPCM::Client::onRequest(const std::string &request)
 	}
 	else
 	{
-		std::unique_lock<std::mutex> guard(g_mutex_io);
+		std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
 		
 		std::cout << "action \"" << action << "\" not implemented!" << std::endl;
 		
@@ -226,8 +230,6 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 	this->Send(response);
 	
 	this->_LogTransaction("<--", response);
-	
-	
 }
 
 /*
@@ -364,7 +366,7 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 	
 	/*
 	// Stress test: Test a lot of friends
-	if(profileids.size())
+	if(player_friends.size() > 0)
 	{
 		for(int i = 0; i < 100; i++)
 		{
@@ -372,7 +374,7 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 			
 			response += GameSpy::Parameter2Response({
 				"bm", "100",
-				"f", std::to_string(profileids[profileids.size() - 1] + i + 1),
+				"f", std::to_string(player_friends[player_friends.size() - 1] + i + 1),
 				"msg", "|s|2|ss|Offline",
 				"final"
 			});
@@ -591,9 +593,16 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 */
 void GPCM::Client::_LogTransaction(const std::string &direction, const std::string &response) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	if(
+		(g_settings["gpcm"]["show_requests"].asBool() && direction == "-->") ||
+		(g_settings["gpcm"]["show_responses"].asBool() && direction == "<--")
+	)
+	{
+		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	}
 }
 
 /*

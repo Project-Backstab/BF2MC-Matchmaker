@@ -14,8 +14,6 @@ namespace Browsing
 			
 			void Listen();
 			void Disconnect();
-			void Send(const std::string &msg) const;
-			void Send(const std::vector<unsigned char> &msg) const;
 			
 			/*
 				Events

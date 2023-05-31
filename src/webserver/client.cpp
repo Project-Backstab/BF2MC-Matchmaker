@@ -114,14 +114,9 @@ void Webserver::Client::Disconnect()
 	g_webserver_server->onClientDisconnect(*this);
 }
 
-void Webserver::Client::Send(const std::string &msg) const
-{
-	send(this->_socket, msg.c_str(), msg.size(), 0);
-}
-
 void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 {
-	this->Send(http_response.ToString());
+	this->Net::Socket::Send(http_response.ToString());
 }
 
 /*
@@ -150,7 +145,7 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		}
 		else
 		{
-			std::unique_lock<std::mutex> guard(g_mutex_io);
+			std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
 			
 			std::cout << "action \"" << url_base << "\" not implemented!" << std::endl;
 			
@@ -890,9 +885,16 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage &http_request, c
 */
 void Webserver::Client::_LogTransaction(const std::string &direction, const std::string &response) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock       (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	if(
+		(g_settings["webserver"]["show_requests"].asBool() && direction == "-->") ||
+		(g_settings["webserver"]["show_responses"].asBool() && direction == "<--")
+	)
+	{
+		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	}
 }
 
 atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
@@ -949,11 +951,14 @@ void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables 
 		session = GPCM::Client::findSessionByAuthtoken(authtoken);
 	}
 	
-	// Set player profileid
-	player.SetProfileId(session.profileid);
-	
-	// Get clan information based of player profileid
-	g_database->queryClanByPlayer(clan, player);
+	if(session.profileid != -1)
+	{
+		// Set player profileid
+		player.SetProfileId(session.profileid);
+		
+		// Get clan information based of player profileid
+		g_database->queryClanByPlayer(clan, player);
+	}
 }
 
 

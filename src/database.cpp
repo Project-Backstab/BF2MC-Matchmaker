@@ -21,7 +21,7 @@ Database::Database()
 // Player
 bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	int  input_profileid = player.GetProfileId();
 	
@@ -95,7 +95,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 
 bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "SELECT `profileid`, `userid`, `nick`, `email`, `password` FROM `Players` WHERE `uniquenick` = ?";
 	
@@ -169,7 +169,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 
 bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::string &email)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "SELECT * FROM `Players` WHERE `email` = ?";
 	
@@ -254,7 +254,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 
 bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "Select MAX(userid) + 1 as `maxuserid` FROM `Players`;";
 	
@@ -302,7 +302,7 @@ bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 
 bool Database::insertPlayer(const Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "INSERT INTO `Players` (`userid`, `nick`, `uniquenick`, `email`, `password`) VALUES (?, ?, ?, ?, ?);";
 	
@@ -356,7 +356,7 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 // Player Friends
 bool Database::queryPlayerFriends(Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "SELECT `profileid`, `target_profileid` FROM `PlayerFriends` WHERE `profileid` = ? OR `target_profileid` = ?";
 	
@@ -422,7 +422,7 @@ bool Database::queryPlayerFriends(Battlefield::Player& player)
 
 bool Database::insertPlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "INSERT INTO `PlayerFriends` (`profileid`, `target_profileid`) VALUES (?, ?);";
 	
@@ -463,7 +463,7 @@ bool Database::insertPlayerFriend(const Battlefield::Player& player, const Battl
 
 bool Database::removePlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "DELETE FROM `PlayerFriends` WHERE (`profileid` = ? and `target_profileid` = ?) OR (`profileid` = ? and `target_profileid` = ?);";
 	
@@ -511,7 +511,7 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 // Player Stats
 bool Database::queryPlayerStats(Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "SELECT ";
 	query += "`score`, ";
@@ -686,7 +686,7 @@ bool Database::queryPlayerStats(Battlefield::Player& player)
 
 bool Database::updatePlayerStats(const Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "UPDATE `PlayerStats` SET ";
 	query += "`score` = ?, ";
@@ -825,7 +825,7 @@ bool Database::updatePlayerStats(const Battlefield::Player& player)
 
 bool Database::insertPlayerStats(const Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "INSERT INTO `PlayerStats` (`profileid`) VALUES (?);";
 	
@@ -863,7 +863,7 @@ bool Database::insertPlayerStats(const Battlefield::Player& player)
 // Clan
 bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "SELECT `clanid`, `homepage`, `info`, `region` FROM `Clans` WHERE `name` = ? OR `tag` = ?";
 	
@@ -936,7 +936,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 
 bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "SELECT `clanid` FROM `ClanRanks` WHERE `profileid` = ?";
 	
@@ -990,7 +990,7 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 
 bool Database::queryClanByClanId(Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	int input_clanid = clan.GetClanId();
 	
@@ -1064,7 +1064,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 
 bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	int input_clanid = clan.GetClanId();
 	
@@ -1127,7 +1127,7 @@ bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 
 bool Database::insertClan(const Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "INSERT INTO `Clans` (`name`, `tag`, `homepage`, `info`, `region`) VALUES (?, ?, ?, ?, ?);";
 	
@@ -1180,7 +1180,7 @@ bool Database::insertClan(const Battlefield::Clan& clan)
 
 bool Database::updateClan(const Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "UPDATE `Clans` SET `tag` = ?, `homepage` = ?, `info` = ?, `region` = ? WHERE `clanid` = ?;";
 	
@@ -1233,7 +1233,7 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 
 bool Database::removeClan(const Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "DELETE FROM `Clans` WHERE `clanid` = ?;";
 	
@@ -1271,7 +1271,7 @@ bool Database::removeClan(const Battlefield::Clan& clan)
 // Clan Rank
 bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "INSERT INTO `ClanRanks` (`clanid`, `profileid`, `rank`) VALUES (?, ?, ?);";
 	
@@ -1316,7 +1316,7 @@ bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::
 
 bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "UPDATE `ClanRanks` SET `rank` = ? WHERE `clanid` = ? AND profileid = ?;";
 	 
@@ -1361,7 +1361,7 @@ bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::
 
 bool Database::removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "DELETE FROM `ClanRanks` WHERE `clanid` = ? AND `profileid` = ?;";
 	
@@ -1402,7 +1402,7 @@ bool Database::removeClanRank(const Battlefield::Clan& clan, const Battlefield::
 
 bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex);
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "DELETE FROM `ClanRanks` WHERE `clanid` = ?;";
 	
@@ -1513,7 +1513,7 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 // Events
 void Database::OnDatabaseStart()
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 
 	std::cout << "Database started" << std::endl;
 }

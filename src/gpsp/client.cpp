@@ -68,11 +68,6 @@ void GPSP::Client::Disconnect()
 	g_gpsp_server->onClientDisconnect(*this);
 }
 
-void GPSP::Client::Send(const std::string &msg) const
-{
-	send(this->_socket, msg.c_str(), msg.size(), 0);
-}
-
 /*
 	Events
 */
@@ -94,7 +89,7 @@ void GPSP::Client::onRequest(const std::string &request)
 	}
 	else
 	{
-		std::unique_lock<std::mutex> guard(g_mutex_io);
+		std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
 		
 		std::cout << "action \"" << action << "\" not implemented!" << std::endl;
 		
@@ -380,8 +375,15 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 */
 void GPSP::Client::_LogTransaction(const std::string &direction, const std::string &response) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	if(
+		(g_settings["gpsp"]["show_requests"].asBool() && direction == "-->") ||
+		(g_settings["gpsp"]["show_responses"].asBool() && direction == "<--")
+	)
+	{
+		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	}
 }
 

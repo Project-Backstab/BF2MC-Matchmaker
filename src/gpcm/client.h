@@ -28,7 +28,6 @@ namespace GPCM
 			
 			void Listen();
 			void Disconnect();
-			void Send(const std::string &msg) const;
 			GPCM::Session GetSession() const;
 			
 			/*

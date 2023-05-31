@@ -1,8 +1,9 @@
 #ifndef NET_SOCKET_H
 #define NET_SOCKET_H
 
-#include <netinet/in.h>
 #include <string>
+#include <mutex>
+#include <netinet/in.h>
 
 namespace Net
 {
@@ -11,6 +12,7 @@ namespace Net
 		protected:
 			int                  _socket;
 			struct sockaddr_in   _address;
+			mutable std::mutex  _mutex;
 		
 		public:
 			Socket();
@@ -18,6 +20,9 @@ namespace Net
 			std::string GetIP() const;
 			int GetPort() const;
 			std::string GetAddress() const;
+			
+			void Send(const std::string &msg) const;
+			void Send(const std::vector<unsigned char> &msg) const;
 	};
 }
 

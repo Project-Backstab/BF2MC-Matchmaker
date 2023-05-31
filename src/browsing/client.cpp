@@ -63,15 +63,6 @@ void Browsing::Client::Disconnect()
 	g_browsing_server->onClientDisconnect(*this);
 }
 
-void Browsing::Client::Send(const std::string &msg) const
-{
-	send(this->_socket, msg.c_str(), msg.size(), 0);
-}
-
-void Browsing::Client::Send(const std::vector<unsigned char> &msg) const
-{
-	send(this->_socket, &(msg[0]), msg.size(), 0);
-}
 
 /*
 	Events
@@ -94,7 +85,7 @@ void Browsing::Client::onRequest(const std::string &request)
 	}
 	else
 	{
-		std::unique_lock<std::mutex> guard(g_mutex_io);
+		std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
 		
 		std::cout << "action \"" << action << "\"not implemented!" << std::endl;
 		
@@ -163,7 +154,7 @@ void Browsing::Client::requestServerList(const GameSpy::Parameter& parameter)
 */
 void Browsing::Client::_LogTransaction(const std::string &direction, const std::string &response) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 	
 	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
 }

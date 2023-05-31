@@ -1,0 +1,22 @@
+{
+	"gpcm":
+	{
+		"connection_time_out": 5,
+		"show_requests": true,
+		"show_responses": true
+	},
+	"gpsp":
+	{
+		"connection_time_out": 5,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"webserver":
+	{
+		"connection_time_out": 5,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"show_client_connect": false,
+	"show_client_disconnect": false
+}

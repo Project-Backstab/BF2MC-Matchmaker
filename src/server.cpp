@@ -23,6 +23,14 @@ Server::Server(Server::Type type, int port)
 	
 	this->_type = type;
 	
+	// Get time out setting
+	switch(type)
+	{
+		case Server::Type::GPSP:      opt = g_settings["gpsp"]["connection_time_out"].asInt();      break;
+		case Server::Type::GPCM:      opt = g_settings["gpcm"]["connection_time_out"].asInt();      break;
+		case Server::Type::Webserver: opt = g_settings["webserver"]["connection_time_out"].asInt(); break;
+	}
+	
 	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		perror("[Error] Server::Server() at socket");
@@ -134,35 +142,43 @@ void Server::Close()
 */
 void Server::onServerListen() const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 	
 	std::cout << "Server is now listening on " << this->GetAddress() << std::endl;
 }
 
 void Server::onServerShutdown() const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 	
 	std::cout << "Server shutdown" << std::endl;
 }
 
 void Server::onClientConnect(const Net::Socket &client) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
+	if(g_settings["show_client_connect"].asBool())
+	{
+		std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
+	}
 }
 
 void Server::onClientDisconnect(const Net::Socket &client)
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io);
+	std::lock_guard<std::mutex>         guard (g_mutex_io);       // io lock        (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	std::vector<Net::Socket*>::iterator position;
-
-	position = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
-	if (position != this->_clients.end())
-		this->_clients.erase(position);
+	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
+	if (it != this->_clients.end())
+	{
+		this->_clients.erase(it);
+	}
 	
-	std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
+	if(g_settings["show_client_disconnect"].asBool())
+	{
+		std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
+	}
 }
 

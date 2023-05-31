@@ -17,7 +17,6 @@ namespace Webserver
 			
 			void Listen();
 			void Disconnect();
-			void Send(const std::string &msg) const;
 			void Send(const atomizes::HTTPMessage &http_response) const;
 			
 			/*

@@ -14,7 +14,6 @@ namespace GPSP
 			
 			void Listen();
 			void Disconnect();
-			void Send(const std::string &msg) const;
 			
 			/*
 				Events
