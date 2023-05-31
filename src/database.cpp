@@ -7,7 +7,13 @@ Database::Database()
 {
 	this->_connection = mysql_init(nullptr);
 
-	if (!mysql_real_connect(this->_connection, "localhost", "root", "", "BF2MC", 0, nullptr, 0))
+	if (!mysql_real_connect(
+			this->_connection,
+			g_settings["database"]["host"].asString().c_str(),
+			g_settings["database"]["username"].asString().c_str(),
+			g_settings["database"]["password"].asString().c_str(),
+			g_settings["database"]["database_name"].asString().c_str(),
+			0, nullptr, 0))
 	{
 		std::cerr << "[Error] Failed to connect to the database: " << mysql_error(this->_connection) << std::endl;
 		std::cerr << "[Error] Database::Database() at mysql_real_connect" << std::endl;

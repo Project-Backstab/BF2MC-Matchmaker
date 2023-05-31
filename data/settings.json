@@ -1,4 +1,11 @@
 {
+	"database":
+	{
+		"host": "localhost",
+		"username": "root",
+		"password": "",
+		"database_name": "BF2MC"
+	},
 	"gpcm":
 	{
 		"connection_time_out": 5,
