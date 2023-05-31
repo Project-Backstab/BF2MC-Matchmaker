@@ -5,6 +5,8 @@
 
 Database::Database()
 {
+	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // Read only
+	
 	this->_connection = mysql_init(nullptr);
 
 	if (!mysql_real_connect(
