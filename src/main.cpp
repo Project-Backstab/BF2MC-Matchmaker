@@ -11,6 +11,7 @@
 #include <server.h>
 #include <database.h>
 #include <globals.h>
+#include <browsing/client.h>
 
 // Globals
 Json::Value       g_settings;
@@ -74,6 +75,8 @@ void start_webserver_server()
 
 void start_browsing_server()
 {
+	//Browsing::Client::Test();
+	
 	g_browsing_server = new Server(Server::Type::Browsing, 28910);	
 	g_browsing_server->Listen();
 }

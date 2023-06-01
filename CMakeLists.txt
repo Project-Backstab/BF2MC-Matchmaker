@@ -17,6 +17,7 @@ add_executable(bf2mc
 	src/gpcm/client.cpp
 	src/webserver/client.cpp
 	src/browsing/client.cpp
+	src/browsing/sb_crypt.cpp
 	src/net/socket.cpp
 	src/database.cpp
 	src/util.cpp

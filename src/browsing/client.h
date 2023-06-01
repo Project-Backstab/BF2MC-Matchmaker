@@ -27,6 +27,9 @@ namespace Browsing
 			
 		private:
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
+		
+		public:
+			static void Test();
 	};
 }
 

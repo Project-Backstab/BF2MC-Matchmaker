@@ -112,7 +112,7 @@ void Server::Listen()
 				t.detach();
 				
 				this->_clients.push_back(client);
-			}	
+			}
 			break;
 			case Server::Type::Webserver:
 			{
