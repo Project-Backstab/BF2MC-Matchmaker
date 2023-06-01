@@ -415,19 +415,21 @@ std::vector<unsigned char> example_C_decrypt_data = {
 	0x78, 0x69, 0x00, 0x00,                                                       // xi
 	0x71, 0x6d, 0x00, 0x00,                                                       // qm
 
-	0x3b,                            // New server ip/port
-	0xa8, 0x77, 0xbd, 0x95,          // Server ip: 168.119.189.149
-	0x0e, 0x4a,                      // Server port: 3658
-	0xa8, 0x77, 0xbd, 0x95,          // Server ip: 168.119.189.149
-	0x0e, 0x4a,                      // Server port: 3658
-	0xa8, 0x77, 0xbd, 0x95,          // Server ip: 168.119.189.149
+	// New server
+	0x3b,                            // flags: UNSOLICITED_UDP_FLAG | PRIVATE_IP_FLAG | ICMP_IP_FLAG | NONSTANDARD_PORT_FLAG | NONSTANDARD_PRIVATE_PORT_FLAG
+	0xa8, 0x77, 0xbd, 0x95,          //                                  wan ip:      168.119.189.149
+	0x0e, 0x4a,                      // NONSTANDARD_PORT_FLAG         -> wan port:    3658
+	0xa8, 0x77, 0xbd, 0x95,          // PRIVATE_IP_FLAG               -> localip0 ip: 168.119.189.149
+	0x0e, 0x4a,                      // NONSTANDARD_PRIVATE_PORT_FLAG -> localport:   3658
+	0xa8, 0x77, 0xbd, 0x95,          // ICMP_IP_FLAG                  -> icmp ip:     168.119.189.149
 
-	0x3b,                            // New server ip/port
-	0x4e, 0x2f, 0xb8, 0x17,          // Server ip: 78.47.184.23
-	0x0e, 0x4a,                      // Server port: 3658
-	0x4e, 0x2f, 0xb8, 0x17,          // Server ip: 78.47.184.23
-	0x0e, 0x4a,                      // Server port: 3658
-	0x4e, 0x2f, 0xb8, 0x17,          // Server ip: 78.47.184.23
+	// New server
+	0x3b,                            // flags: UNSOLICITED_UDP_FLAG | PRIVATE_IP_FLAG | ICMP_IP_FLAG | NONSTANDARD_PORT_FLAG | NONSTANDARD_PRIVATE_PORT_FLAG
+	0x4e, 0x2f, 0xb8, 0x17,          //                                  wan ip:      78.47.184.23
+	0x0e, 0x4a,                      // NONSTANDARD_PORT_FLAG         -> wan port:    3658
+	0x4e, 0x2f, 0xb8, 0x17,          // PRIVATE_IP_FLAG               -> localip0 ip: 78.47.184.23
+	0x0e, 0x4a,                      // NONSTANDARD_PRIVATE_PORT_FLAG -> localport:   3658
+	0x4e, 0x2f, 0xb8, 0x17,          // ICMP_IP_FLAG                  -> icmp ip:     78.47.184.23
 
 	// End decrypted data
 	0x00, 0xff, 0xff, 0xff, 0xff
