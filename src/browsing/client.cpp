@@ -169,27 +169,27 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& msg)
 		// Server flag
 		response.push_back(0x3b); // UNSOLICITED_UDP_FLAG | PRIVATE_IP_FLAG | ICMP_IP_FLAG | NONSTANDARD_PORT_FLAG | NONSTANDARD_PRIVATE_PORT_FLAG
 		
-		// Ip
+		// wan ip
 		response.push_back(0xa8);
 		response.push_back(0x77);
 		response.push_back(0xbd);
 		response.push_back(0x95);
 		
-		// Port
+		// NONSTANDARD_PORT_FLAG         -> wan port
 		response.push_back(0x0e);
 		response.push_back(0x4a);
 
-		// Ip
+		// PRIVATE_IP_FLAG               -> localip0 ip
 		response.push_back(0xa8);
 		response.push_back(0x77);
 		response.push_back(0xbd);
 		response.push_back(0x95);
 		
-		// Port
+		// NONSTANDARD_PRIVATE_PORT_FLAG -> localport
 		response.push_back(0x0e);
 		response.push_back(0x4a);
 		
-		// Ip
+		// ICMP_IP_FLAG                  -> icmp ip
 		response.push_back(0xa8);
 		response.push_back(0x77);
 		response.push_back(0xbd);
@@ -202,9 +202,6 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& msg)
 	response.push_back(0xFF);
 	response.push_back(0xFF);
 	response.push_back(0xFF);
-	
-	//std::vector<char> buffer2(response.begin() + encryption_start_pos, response.end() - 5);
-	//std::string str_request = Util::Buffer2String(buffer2);
 	
 	// Encrypt data
 	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), LIST_CHALLENGE_LEN);
