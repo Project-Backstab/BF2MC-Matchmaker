@@ -5,16 +5,20 @@
 #include <net/socket.h>
 
 //message types for outgoing requests
-#define SERVER_LIST_REQUEST   0
-#define SERVER_INFO_REQUEST   1
-#define SEND_MESSAGE_REQUEST  2
-#define KEEPALIVE_REPLY       3
-#define MAPLOOP_REQUEST       4
-#define PLAYERSEARCH_REQUEST  5
+#define REQUEST_SERVER_LIST   0
+#define REQUEST_SERVER_INFO   1
+#define REQUEST_SEND_MESSAGE  2
+#define REQUEST_KEEPALIVE     3
+#define REQUEST_MAPLOOP       4
+#define REQUEST_PLAYERSEARCH  5
 
-#define CRYPTCHAL_LEN         10
-#define SERVCHAL_LEN          25
-#define LIST_CHALLENGE_LEN    8
+#define CRYPT_CHALLENGE_LEN   10
+#define SERVER_CHALLENGE_LEN  25
+#define CLIENT_CHALLENGE_LEN  8
+#define BROWSING_HEADER_LEN   (1 + CRYPT_CHALLENGE_LEN + 1 + SERVER_CHALLENGE_LEN)
+
+#define SECRET_KEY            "HpWx9z"
+#define SECRET_KEY_LEN        6
 
 namespace Browsing
 {
@@ -30,14 +34,15 @@ namespace Browsing
 			/*
 				Events
 			*/
-			void onRequest(const std::vector<unsigned char>& msg);
+			void onRequest(const std::vector<unsigned char>& request);
 			
 			/*
 				Requests
 			*/
-			void requestServerList(const std::vector<unsigned char>& msg);
+			void requestServerList(const std::vector<unsigned char>& request);
 			
 		private:
+			void _Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response);
 			void _LogTransaction(const std::string &direction, const std::string &response) const;
 		
 		public:

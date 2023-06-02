@@ -16,11 +16,12 @@ typedef void (Browsing::Client::*RequestActionFunc)(const std::vector<unsigned c
 
 static std::map<uint8_t, RequestActionFunc> mRequestActions = 
 {
-	{ SERVER_LIST_REQUEST,    &Browsing::Client::requestServerList  },
-	//{ SERVER_INFO_REQUEST,    &Browsing::Client::requestServerInfo  },
-	//{ SEND_MESSAGE_REQUEST,   &Browsing::Client::requestSendMessage },
-	//{ KEEPALIVE_REPLY,        &Browsing::Client::requestKeepAlive   },
-	//{ MAPLOOP_REQUEST,        &Browsing::Client::requestMaLoop      },
+	{ REQUEST_SERVER_LIST,    &Browsing::Client::requestServerList   },
+	//{ REQUEST_SERVER_INFO,    &Browsing::Client::requestServerInfo   },
+	//{ REQUEST_SEND_MESSAGE,   &Browsing::Client::requestSendMessage  },
+	//{ REQUEST_KEEPALIVE,      &Browsing::Client::requestKeepAlive    },
+	//{ REQUEST_MAPLOOP,        &Browsing::Client::requestMapLoop      },
+	//{ REQUEST_PLAYERSEARCH,   &Browsing::Client::requestPlayerSearch },
 };
 
 Browsing::Client::Client(int socket, struct sockaddr_in address)
@@ -72,9 +73,9 @@ void Browsing::Client::Disconnect()
 /*
 	Events
 */
-void Browsing::Client::onRequest(const std::vector<unsigned char>& msg)
+void Browsing::Client::onRequest(const std::vector<unsigned char>& request)
 {	
-	uint8_t action = static_cast<uint8_t>(msg[2]);
+	uint8_t action = static_cast<uint8_t>(request[2]);
 	
 	// Find function
 	auto it = mRequestActions.find(action);
@@ -84,7 +85,7 @@ void Browsing::Client::onRequest(const std::vector<unsigned char>& msg)
 		RequestActionFunc func = it->second;
 	
 		// Execute action function with class object.
-		(this->*(func))(msg);
+		(this->*(func))(request);
 	}
 	else
 	{
@@ -101,54 +102,14 @@ void Browsing::Client::onRequest(const std::vector<unsigned char>& msg)
 /*
 	
 */
-void Browsing::Client::requestServerList(const std::vector<unsigned char>& msg)
+void Browsing::Client::requestServerList(const std::vector<unsigned char>& request)
 {	
-	if(msg.size() <= 45)
+	if(request.size() <= 45)
 	{
 		return;
 	}
 	
-	std::vector<unsigned char> response;
-	uint8_t cryptchal[CRYPTCHAL_LEN];
-	uint8_t servchal[SERVCHAL_LEN];
-	uint8_t m_challenge[LIST_CHALLENGE_LEN];
-	const size_t encryption_start_pos = 1 + CRYPTCHAL_LEN + 1 + SERVCHAL_LEN;
-	const size_t seckeylen = 6;
-	const char* seckey = "HpWx9z";
-	GOACryptState m_crypt_state;
-	
-	// set crypt/server challenge
-	for(int i = 0; i < LIST_CHALLENGE_LEN; i++)
-	{
-		cryptchal[i] = 0x0;
-		servchal[i] = 0x0;
-	}
-	
-	// Get client challenge
-	for(int i = 0; i < LIST_CHALLENGE_LEN; i++)
-	{
-		m_challenge[i] = msg[37 + i];
-	}
-	
-	// Generate challenge encryption/decryption key
-	for (uint32_t i = 0 ; i < SERVCHAL_LEN; i++)
-	{
-		m_challenge[(i *  seckey[i % seckeylen]) % LIST_CHALLENGE_LEN] ^= (char)((m_challenge[i % LIST_CHALLENGE_LEN] ^ servchal[i]) & 0xFF);
-	}
-	
-	// Push Crypt Challenge
-	response.push_back(0xe6); // CRYPTCHAL_LEN ^ 0xec = 0xe6
-	for(int i = 0; i < CRYPTCHAL_LEN; i++)
-	{
-		response.push_back(cryptchal[i]);
-	}
-
-	// Push Server challenge
-	response.push_back(0xf3); // SERVCHAL_LEN ^ 0xea = 0xe6
-	for(int i = 0; i < SERVCHAL_LEN; i++)
-	{
-		response.push_back(servchal[i]);
-	}
+	std::vector<unsigned char> response(BROWSING_HEADER_LEN, 0x0);
 	
 	// Ip
 	response.push_back(0x56);
@@ -164,7 +125,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& msg)
 	response.push_back(0x00);
 	response.push_back(0x00);
 
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 1; i++)
 	{
 		// Server flag
 		response.push_back(0x3b); // UNSOLICITED_UDP_FLAG | PRIVATE_IP_FLAG | ICMP_IP_FLAG | NONSTANDARD_PORT_FLAG | NONSTANDARD_PRIVATE_PORT_FLAG
@@ -198,14 +159,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& msg)
 	
 	// End data
 	response.push_back(0x00);
-	response.push_back(0xFF);
-	response.push_back(0xFF);
-	response.push_back(0xFF);
-	response.push_back(0xFF);
 	
-	// Encrypt data
-	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), LIST_CHALLENGE_LEN);
-	GOAEncrypt(&(m_crypt_state), (&response[encryption_start_pos]), response.size() - encryption_start_pos);
+	this->_Encrypt(request, response);
 	
 	this->Send(response);
 		
@@ -220,6 +175,55 @@ void Browsing::Client::_LogTransaction(const std::string &direction, const std::
 	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 	
 	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+}
+
+void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response)
+{
+	uint8_t crypt_challenge[CRYPT_CHALLENGE_LEN];
+	uint8_t server_challenge[SERVER_CHALLENGE_LEN];
+	uint8_t client_challenge[CLIENT_CHALLENGE_LEN];
+	
+	GOACryptState m_crypt_state;
+	
+	// Push Crypt Challenge
+	response[0] = 0xe6; // CRYPT_CHALLENGE_LEN ^ 0xec = 0xe6
+	for(int i = 0; i < CRYPT_CHALLENGE_LEN; i++)
+	{
+		crypt_challenge[i] = 0x0;
+		response[1 + i] = crypt_challenge[i];
+	}
+
+	// Push Server challenge
+	response[CRYPT_CHALLENGE_LEN + 1] = 0xf3; // SERVER_CHALLENGE_LEN ^ 0xea = 0xf3
+	for(int i = 0; i < SERVER_CHALLENGE_LEN; i++)
+	{
+		server_challenge[i] = 0x0;
+		response[CRYPT_CHALLENGE_LEN + 2 + i] = server_challenge[i];
+	}
+	
+	// Get client challenge
+	for(int i = 0; i < CLIENT_CHALLENGE_LEN; i++)
+	{
+		client_challenge[i] = request[37 + i];
+	}
+	
+	// Generate challenge encryption/decryption key
+	for (uint32_t i = 0 ; i < SERVER_CHALLENGE_LEN; i++)
+	{
+		uint8_t index = (i *  SECRET_KEY[i % SECRET_KEY_LEN]) % CLIENT_CHALLENGE_LEN;
+		uint8_t value = (client_challenge[i % CLIENT_CHALLENGE_LEN] ^ server_challenge[i]) & 0xFF;
+		
+		client_challenge[index] ^= value;
+	}
+	
+	response.push_back(0xFF);
+	response.push_back(0xFF);
+	response.push_back(0xFF);
+	response.push_back(0xFF);
+	
+	// Encrypt data
+	GOACryptInit(&(m_crypt_state), (unsigned char *)(&client_challenge), CLIENT_CHALLENGE_LEN);
+	GOAEncrypt(&(m_crypt_state), &response[BROWSING_HEADER_LEN], response.size() - BROWSING_HEADER_LEN);
 }
 
 std::vector<unsigned char> example_A_request = {
@@ -592,11 +596,11 @@ void Browsing::Client::Test()
 	//std::vector<unsigned char> request = example_D_request;
 	//std::vector<unsigned char> response = example_D_response;
 	
-	uint32_t cryptlen = CRYPTCHAL_LEN;
-	uint8_t cryptchal[CRYPTCHAL_LEN];
-	uint32_t servchallen = SERVCHAL_LEN;
-	uint8_t servchal[SERVCHAL_LEN];
-	uint8_t m_challenge[LIST_CHALLENGE_LEN];
+	uint32_t cryptlen = CRYPT_CHALLENGE_LEN;
+	uint8_t cryptchal[CRYPT_CHALLENGE_LEN];
+	uint32_t servchallen = SERVER_CHALLENGE_LEN;
+	uint8_t servchal[SERVER_CHALLENGE_LEN];
+	uint8_t m_challenge[CLIENT_CHALLENGE_LEN];
 	
 	// First conclusion:
 	// buffer.WriteByte((uint8_t)(cryptlen ^ 0xEC));
@@ -606,12 +610,12 @@ void Browsing::Client::Test()
 	
 	// copy crypt challenge
 	ss.str("");
-	for(int i = 0; i < CRYPTCHAL_LEN; i++)
+	for(int i = 0; i < CRYPT_CHALLENGE_LEN; i++)
 	{
 		cryptchal[i] = response[response_offset + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(cryptchal[i]);
 	}
-	response_offset += CRYPTCHAL_LEN;
+	response_offset += CRYPT_CHALLENGE_LEN;
 	std::cout << "cryptchal = " << ss.str() << std::endl;
 	
 	// Second conclusion
@@ -622,12 +626,12 @@ void Browsing::Client::Test()
 	
 	// copy crypt challenge
 	ss.str("");
-	for(int i = 0; i < SERVCHAL_LEN; i++)
+	for(int i = 0; i < SERVER_CHALLENGE_LEN; i++)
 	{
 		servchal[i] = response[response_offset + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(servchal[i]);
 	}
-	response_offset += SERVCHAL_LEN;
+	response_offset += SERVER_CHALLENGE_LEN;
 	std::cout << "servchal = " << ss.str() << std::endl;
 	
 	// Third: Find secret key
@@ -640,7 +644,7 @@ void Browsing::Client::Test()
 	
 	// Get the challenge from the clients request
 	ss.str("");
-	for(int i = 0; i < LIST_CHALLENGE_LEN; i++)
+	for(int i = 0; i < CLIENT_CHALLENGE_LEN; i++)
 	{
 		m_challenge[i] = request[37 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(m_challenge[i]);
@@ -650,27 +654,27 @@ void Browsing::Client::Test()
 	// Update challenge
 	for (uint32_t i = 0 ; i < servchallen ; i++)
 	{
-		m_challenge[(i *  seckey[i % seckeylen]) % LIST_CHALLENGE_LEN] ^= (char)((m_challenge[i % LIST_CHALLENGE_LEN] ^ servchal[i]) & 0xFF);
+		m_challenge[(i *  seckey[i % seckeylen]) % CLIENT_CHALLENGE_LEN] ^= (char)((m_challenge[i % CLIENT_CHALLENGE_LEN] ^ servchal[i]) & 0xFF);
 	}
 	
 	GOACryptState m_crypt_state;
-	int encrypted_data_position = 1 + CRYPTCHAL_LEN + 1 + SERVCHAL_LEN;
+	int header_size = 1 + CRYPT_CHALLENGE_LEN + 1 + SERVER_CHALLENGE_LEN;
 	
 	ss.str("");
-	for(int i = encrypted_data_position; i < response.size(); i++)
+	for(int i = header_size; i < response.size(); i++)
 	{
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(response[i]);
 	}
 	std::cout << "encrypted data = " << ss.str() << std::endl;
 	
 	// Initialization GOA crypt
-	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), LIST_CHALLENGE_LEN);	
+	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), CLIENT_CHALLENGE_LEN);	
 	
 	// Decrypt data
-	GOADecrypt(&(m_crypt_state), (&response[encrypted_data_position]), response.size() - encrypted_data_position);
+	GOADecrypt(&(m_crypt_state), (&response[header_size]), response.size() - header_size);
 	
 	ss.str("");
-	for(int i = encrypted_data_position; i < response.size(); i++)
+	for(int i = header_size; i < response.size(); i++)
 	{
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(response[i]);
 	}
@@ -679,11 +683,11 @@ void Browsing::Client::Test()
 	/*
 	// Encrypt the data again to confirm its the right encrypted data
 	GOACryptState m_crypt_state2;
-	GOACryptInit(&(m_crypt_state2), (unsigned char *)(&m_challenge), LIST_CHALLENGE_LEN);	
-	GOAEncrypt(&(m_crypt_state2), (&response[encrypted_data_position]), response.size() - encrypted_data_position);
+	GOACryptInit(&(m_crypt_state2), (unsigned char *)(&m_challenge), CLIENT_CHALLENGE_LEN);	
+	GOAEncrypt(&(m_crypt_state2), (&response[header_size]), response.size() - header_size);
 	
 	ss.str("");
-	for(int i = encrypted_data_position; i < response.size(); i++)
+	for(int i = header_size; i < response.size(); i++)
 	{
 		ss << std::hex << (int)(response[i]);
 	}
