@@ -174,6 +174,8 @@ void Server::onClientDisconnect(const Net::Socket &client)
 	if (it != this->_clients.end())
 	{
 		this->_clients.erase(it);
+		
+		delete &client;
 	}
 	
 	if(g_settings["show_client_disconnect"].asBool())

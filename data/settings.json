@@ -15,15 +15,15 @@
 	"gpsp":
 	{
 		"connection_time_out": 5,
-		"show_requests": false,
-		"show_responses": false
+		"show_requests": true,
+		"show_responses": true
 	},
 	"webserver":
 	{
 		"connection_time_out": 5,
-		"show_requests": false,
-		"show_responses": false
+		"show_requests": true,
+		"show_responses": true
 	},
-	"show_client_connect": false,
-	"show_client_disconnect": false
+	"show_client_connect": true,
+	"show_client_disconnect": true
 }
