@@ -86,7 +86,7 @@ void GPCM::Client::Listen()
 
 void GPCM::Client::Disconnect()
 {
-	close(this->_socket);
+	this->Close();
 	g_gpcm_server->onClientDisconnect(*this);
 }
 

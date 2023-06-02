@@ -17,6 +17,8 @@ namespace Net
 		public:
 			Socket();
 			
+			void Close();
+			
 			std::string GetIP() const;
 			int GetPort() const;
 			std::string GetAddress() const;

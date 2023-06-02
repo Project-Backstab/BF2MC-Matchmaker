@@ -130,6 +130,28 @@ void Server::Listen()
 	}
 }
 
+void Server::DisconnectAllClients()
+{
+	for(Net::Socket* client : this->_clients)
+	{
+		switch(this->_type)
+		{
+			case Server::Type::GPSP:
+				((GPSP::Client*)client)->Disconnect();
+			break;
+			case Server::Type::GPCM:
+				((GPCM::Client*)client)->Disconnect();
+			break;
+			case Server::Type::Browsing:
+				((Browsing::Client*)client)->Disconnect();
+			break;
+			case Server::Type::Webserver:
+				((Webserver::Client*)client)->Disconnect();
+			break;
+		}
+	}
+}
+
 void Server::Close()
 {
 	shutdown(this->_socket, SHUT_RDWR);
@@ -170,17 +192,17 @@ void Server::onClientDisconnect(const Net::Socket &client)
 	std::lock_guard<std::mutex>         guard (g_mutex_io);       // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
+	if(g_settings["show_client_disconnect"].asBool())
+	{
+		std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
+	}
+	
 	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
 	if (it != this->_clients.end())
 	{
 		this->_clients.erase(it);
 		
 		delete &client;
-	}
-	
-	if(g_settings["show_client_disconnect"].asBool())
-	{
-		std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
 	}
 }
 

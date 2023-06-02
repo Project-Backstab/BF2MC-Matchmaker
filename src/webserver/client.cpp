@@ -110,7 +110,7 @@ void Webserver::Client::Listen()
 
 void Webserver::Client::Disconnect()
 {
-	close(this->_socket);
+	this->Close();
 	g_webserver_server->onClientDisconnect(*this);
 }
 

@@ -65,7 +65,7 @@ void Browsing::Client::Listen()
 
 void Browsing::Client::Disconnect()
 {
-	close(this->_socket);
+	this->Close();
 	g_browsing_server->onClientDisconnect(*this);
 }
 

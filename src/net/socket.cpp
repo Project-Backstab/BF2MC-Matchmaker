@@ -1,11 +1,17 @@
 #include <vector>
 #include <arpa/inet.h>
+#include <unistd.h>
 
 #include <net/socket.h>
 
 Net::Socket::Socket()
 {
 	
+}
+
+void Net::Socket::Close()
+{
+	close(this->_socket);
 }
 
 std::string Net::Socket::GetIP() const

@@ -31,6 +31,7 @@ class Server : public Net::Socket
 	public:
 		Server(Server::Type type, int port);
 		void Listen();
+		void DisconnectAllClients();
 		void Close();
 		
 		// Events

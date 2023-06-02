@@ -89,6 +89,12 @@ void signal_callback(int signum)
 	
 	guard.unlock();
 	
+	//Disconnect all clients
+	g_gpsp_server->DisconnectAllClients();
+	g_gpcm_server->DisconnectAllClients();
+	g_webserver_server->DisconnectAllClients();
+	g_browsing_server->DisconnectAllClients();
+	
 	// Close services
 	g_gpsp_server->Close();
 	g_gpcm_server->Close();

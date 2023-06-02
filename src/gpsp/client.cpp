@@ -64,7 +64,7 @@ void GPSP::Client::Listen()
 
 void GPSP::Client::Disconnect()
 {
-	close(this->_socket);
+	this->Close();
 	g_gpsp_server->onClientDisconnect(*this);
 }
 
