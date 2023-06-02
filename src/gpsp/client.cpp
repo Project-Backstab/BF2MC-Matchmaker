@@ -157,6 +157,8 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 		
 		// Log
 		this->_LogTransaction("<--", response);
+		
+		return;
 	}
 	
 	GameSpy::Parameter response_parameter = { "nr", "0" };
