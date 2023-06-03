@@ -1,5 +1,3 @@
-#include <string>
-
 #include <util.h>
 
 #include <battlefield/player.h>
@@ -44,7 +42,7 @@ bool Battlefield::Player::SetUserId(int userid)
 	return false;
 }
 
-bool Battlefield::Player::SetNick(const std::string &nick)
+bool Battlefield::Player::SetNick(const std::string& nick)
 {
 	if(nick.size() > 41)
 	{
@@ -58,7 +56,7 @@ bool Battlefield::Player::SetNick(const std::string &nick)
 	return true;
 }
 
-bool Battlefield::Player::SetUniquenick(const std::string &uniquenick)
+bool Battlefield::Player::SetUniquenick(const std::string& uniquenick)
 {
 	if(uniquenick.size() > 32)
 	{
@@ -72,7 +70,7 @@ bool Battlefield::Player::SetUniquenick(const std::string &uniquenick)
 	return true;
 }
 
-bool Battlefield::Player::SetEmail(const std::string &email)
+bool Battlefield::Player::SetEmail(const std::string& email)
 {
 	if(email.size() > 50)
 	{
@@ -86,13 +84,13 @@ bool Battlefield::Player::SetEmail(const std::string &email)
 	return true;
 }
 
-bool Battlefield::Player::SetPassword(const std::string &password)
+bool Battlefield::Player::SetPassword(const std::string& password)
 {
 	this->_password = Util::MD5hash(password);
 	return true;
 }
 
-bool Battlefield::Player::SetMD5Password(const std::string &md5_password)
+bool Battlefield::Player::SetMD5Password(const std::string& md5_password)
 {
 	if(md5_password.size() != 32)
 	{

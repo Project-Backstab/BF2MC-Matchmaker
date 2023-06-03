@@ -35,13 +35,13 @@ namespace GPCM
 			/*
 				Events
 			*/
-			void onRequest(const std::string &msg);
+			void onRequest(const std::string& msg);
 			
 			/*
 				Requests
 			*/
 			void requestChallenge();
-			void requestLogin(const GameSpy::Parameter &parameter);
+			void requestLogin(const GameSpy::Parameter& parameter);
 			void requestInviteTo(const GameSpy::Parameter& parameter);
 			void requestGetProfile(const GameSpy::Parameter& parameter);
 			void requestStatus(const GameSpy::Parameter& parameter);
@@ -53,7 +53,7 @@ namespace GPCM
 			void requestLogout(const GameSpy::Parameter& parameter);
 			
 		private:
-			void _LogTransaction(const std::string &direction, const std::string &response) const;
+			void _LogTransaction(const std::string& direction, const std::string& response) const;
 			void _SyncFriends();
 		
 		/*

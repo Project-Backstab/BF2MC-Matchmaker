@@ -33,14 +33,14 @@ std::string Net::Socket::GetAddress() const
 	return this->GetIP() + ":" + std::to_string(this->GetPort());
 }
 
-void Net::Socket::Send(const std::string &msg) const
+void Net::Socket::Send(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	
 	send(this->_socket, msg.c_str(), msg.size(), 0);
 }
 
-void Net::Socket::Send(const std::vector<unsigned char> &msg) const
+void Net::Socket::Send(const std::vector<unsigned char>& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	

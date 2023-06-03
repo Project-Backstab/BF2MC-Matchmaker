@@ -40,7 +40,7 @@ bool Battlefield::Clan::SetClanId(const std::string& str_clanid)
 	return this->SetClanId(clanid);
 }
 
-bool Battlefield::Clan::SetName(const std::string &name)
+bool Battlefield::Clan::SetName(const std::string& name)
 {
 	if(name.size() > 32)
 	{
@@ -54,7 +54,7 @@ bool Battlefield::Clan::SetName(const std::string &name)
 	return true;
 }
 
-bool Battlefield::Clan::SetTag(const std::string &tag)
+bool Battlefield::Clan::SetTag(const std::string& tag)
 {
 	if(tag.size() > 3)
 	{
@@ -68,7 +68,7 @@ bool Battlefield::Clan::SetTag(const std::string &tag)
 	return true;
 }
 
-bool Battlefield::Clan::SetHomepage(const std::string &homepage)
+bool Battlefield::Clan::SetHomepage(const std::string& homepage)
 {
 	if(homepage.size() > 256)
 	{
@@ -82,7 +82,7 @@ bool Battlefield::Clan::SetHomepage(const std::string &homepage)
 	return true;
 }
 
-bool Battlefield::Clan::SetInfo(const std::string &info)
+bool Battlefield::Clan::SetInfo(const std::string& info)
 {
 	if(info.size() > 1024)
 	{
@@ -107,7 +107,7 @@ bool Battlefield::Clan::SetRegion(int int_region)
 	return this->SetRegion(convertRegion(int_region));
 }
 
-bool Battlefield::Clan::SetRegion(std::string str_region)
+bool Battlefield::Clan::SetRegion(const std::string& str_region)
 {
 	return this->SetRegion(convertRegion(str_region));
 }

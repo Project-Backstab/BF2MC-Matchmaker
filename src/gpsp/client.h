@@ -18,18 +18,18 @@ namespace GPSP
 			/*
 				Events
 			*/
-			void onRequest(const std::string &msg);
+			void onRequest(const std::string& msg);
 			
 			/*
 				Requests
 			*/
-			void requestNicks(const GameSpy::Parameter &parameter) const;
-			void requestValid(const GameSpy::Parameter &parameter) const;
-			void requestNewUser(const GameSpy::Parameter &parameter) const;
+			void requestNicks(const GameSpy::Parameter& parameter) const;
+			void requestValid(const GameSpy::Parameter& parameter) const;
+			void requestNewUser(const GameSpy::Parameter& parameter) const;
 			void requestSearch(const GameSpy::Parameter& parameter) const;
 			
 		private:
-			void _LogTransaction(const std::string &direction, const std::string &response) const;
+			void _LogTransaction(const std::string& direction, const std::string& response) const;
 	};
 }
 

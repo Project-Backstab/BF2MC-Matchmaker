@@ -3,9 +3,18 @@
 
 #include <net/socket.h>
 #include <urlrequest.h>
-#include <atomizes.hpp>
-#include <battlefield/clan.h>
-#include <battlefield/player.h>
+
+// Forward declair
+namespace atomizes
+{
+	class HTTPMessage;
+};
+
+namespace Battlefield
+{
+	class Clan;
+	class Player;
+};
 
 namespace Webserver
 {
@@ -17,46 +26,45 @@ namespace Webserver
 			
 			void Listen();
 			void Disconnect();
-			void Send(const atomizes::HTTPMessage &http_response) const;
+			void Send(const atomizes::HTTPMessage& http_response) const;
 			
 			/*
 				Events
 			*/
-			void onRequest(const atomizes::HTTPMessage &http_request);
-			void onUnimplementedAction(const std::string &action);
+			void onRequest(const atomizes::HTTPMessage& http_request);
+			void onUnimplementedAction(const std::string& action);
 			
 			/*
 				Requests
 			*/
-			void requestNews(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Stats
-			void requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Clan	
-			void requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
-			void requestMeme(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestClanInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestClanMembers(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLeaderboard(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestCreateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestUpdateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestDisband(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestDeleteMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestClanMessage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestMeme(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Empty
-			void requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables);
+			void requestEmpty(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 		
 		private:
 			atomizes::HTTPMessage _defaultResponseHeader() const;
-			void _LogTransaction(const std::string &direction, const std::string &response) const;
-			std::string _readFile(const std::string &file_name) const;
-			void _SendFile(const std::string &file_name) const;
-			
-			void _GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const;
+			void           _LogTransaction(const std::string& direction, const std::string& response) const;
+			std::string    _readFile(const std::string& file_name) const;
+			void           _SendFile(const std::string& file_name) const;
+			void           _GetSessionPlayerAndClan(const UrlRequest::UrlVariables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const;
 	};
 }
 

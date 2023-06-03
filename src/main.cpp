@@ -1,17 +1,13 @@
 #include <iostream>
-#include <unistd.h>
-#include <iostream>
-#include <cstdlib>
 #include <signal.h>
 #include <thread>
 #include <fstream>
 #include <mysql/mysql.h>
-#include <json/json.h>
 
+#include <settings.h>
+#include <globals.h>
 #include <server.h>
 #include <database.h>
-#include <globals.h>
-#include <browsing/client.h>
 
 // Globals
 Json::Value       g_settings;

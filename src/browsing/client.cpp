@@ -1,16 +1,13 @@
 #include <unistd.h>
 #include <iostream>
-#include <thread>
 #include <iomanip>
-#include <map>
 
+#include <settings.h>
 #include <server.h>
-#include <gamespy.h>
 #include <globals.h>
 #include <util.h>
 #include <database.h>
 #include <browsing/sb_crypt.h>
-#include <battlefield/gameserver.h>
 #include <browsing/constants.h>
 
 #include <browsing/client.h>
@@ -168,11 +165,18 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 /*
 	Private functions
 */
-void Browsing::Client::_LogTransaction(const std::string &direction, const std::string &response) const
+void Browsing::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	if(
+		(g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
+		(g_settings["browsing"]["show_responses"].asBool() && direction == "<--")
+	)
+	{
+		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
+	}
 }
 
 void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response)
@@ -696,8 +700,6 @@ void Browsing::Client::Test()
 	std::cout << "encrypt data = " << ss.str() << std::endl;
 	*/
 }
-
-#include <algorithm>
 
 void Browsing::Client::Crack()
 {

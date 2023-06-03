@@ -7,7 +7,7 @@
 
 #include <util.h>
 
-std::string Util::Buffer2String(const std::vector<char> &buffer)
+std::string Util::Buffer2String(const std::vector<char>& buffer)
 {
 	std::string s;
 	

@@ -3,7 +3,7 @@
 
 #include <urlrequest.h>
 
-void UrlRequest::GetUrlElements(const std::string &url, std::string &url_base, std::map<std::string, std::string> &url_variables)
+void UrlRequest::GetUrlElements(const std::string& url, std::string& url_base, std::map<std::string, std::string>& url_variables)
 {
 	std::stringstream input, input2;
 	std::string str_url_variables, url_variable, key, value;

@@ -57,14 +57,14 @@ namespace Battlefield
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
-			bool SetName(const std::string &name);
-			bool SetTag(const std::string &tag);
-			bool SetHomepage(const std::string &homepage);
-			bool SetInfo(const std::string &info);
+			bool SetName(const std::string& name);
+			bool SetTag(const std::string& tag);
+			bool SetHomepage(const std::string& homepage);
+			bool SetInfo(const std::string& info);
 			bool SetRegion(Battlefield::Clan::Regions region);
 			bool SetRegion(int int_region);
-			bool SetRegion(std::string region);
-			bool SetDate(const std::string &date);
+			bool SetRegion(const std::string& region);
+			bool SetDate(const std::string& date);
 			bool SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws);
 			void AddRank(int profileid, Ranks rank);
 			void AddRank(int profileid, int int_rank);
@@ -75,7 +75,7 @@ namespace Battlefield
 			*/
 			std::string responseGetClanInfo();
 			std::string responseGetClanMembers();
-			void updateInformation(const UrlRequest::UrlVariables &url_variables, bool is_update = false);
+			void updateInformation(const UrlRequest::UrlVariables& url_variables, bool is_update = false);
 			
 			/*
 				Static

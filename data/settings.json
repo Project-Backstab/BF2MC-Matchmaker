@@ -8,26 +8,26 @@
 	},
 	"gpcm":
 	{
-		"connection_time_out": 5,
-		"show_requests": true,
-		"show_responses": true
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
 	},
 	"gpsp":
 	{
-		"connection_time_out": 5,
-		"show_requests": true,
-		"show_responses": true
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
 	},
 	"webserver":
 	{
-		"connection_time_out": 5,
-		"show_requests": true,
-		"show_responses": true,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false,
 		"banned_requests":
 		[
 			"^/root/"
 		]
 	},
-	"show_client_connect": true,
-	"show_client_disconnect": true
+	"show_client_connect": false,
+	"show_client_disconnect": false
 }

@@ -27,7 +27,7 @@ namespace Browsing
 			
 		private:
 			void _Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response);
-			void _LogTransaction(const std::string &direction, const std::string &response) const;
+			void _LogTransaction(const std::string& direction, const std::string& response) const;
 		
 		public:
 			static void Test();

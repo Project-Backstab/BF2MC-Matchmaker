@@ -12,6 +12,7 @@
  
 #include <server.h>
 #include <globals.h>
+#include <settings.h>
 #include <gpsp/client.h>
 #include <gpcm/client.h>
 #include <webserver/client.h>
@@ -176,7 +177,7 @@ void Server::onServerShutdown() const
 	std::cout << "Server shutdown" << std::endl;
 }
 
-void Server::onClientConnect(const Net::Socket &client) const
+void Server::onClientConnect(const Net::Socket& client) const
 {
 	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
@@ -187,7 +188,7 @@ void Server::onClientConnect(const Net::Socket &client) const
 	}
 }
 
-void Server::onClientDisconnect(const Net::Socket &client)
+void Server::onClientDisconnect(const Net::Socket& client)
 {
 	std::lock_guard<std::mutex>         guard (g_mutex_io);       // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)

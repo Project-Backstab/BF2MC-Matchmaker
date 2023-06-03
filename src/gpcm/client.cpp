@@ -1,11 +1,9 @@
 #include <unistd.h>
 #include <iostream>
-#include <thread>
 #include <iomanip>
-#include <map>
 
+#include <settings.h>
 #include <server.h>
-#include <gamespy.h>
 #include <globals.h>
 #include <database.h>
 #include <util.h>
@@ -100,7 +98,7 @@ GPCM::Session GPCM::Client::GetSession() const
 /*
 	Events
 */
-void GPCM::Client::onRequest(const std::string &request)
+void GPCM::Client::onRequest(const std::string& request)
 {
 	GameSpy::Parameter parameter = GameSpy::Request2Parameter(request);
 	
@@ -555,7 +553,7 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 /*
 	Private functions
 */
-void GPCM::Client::_LogTransaction(const std::string &direction, const std::string &response) const
+void GPCM::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)

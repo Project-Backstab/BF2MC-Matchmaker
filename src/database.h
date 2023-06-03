@@ -2,12 +2,14 @@
 #define DATABASE_H
 
 #include <mutex>
-#include <vector>
 
-#include <mysql/mysql.h>
 #include <battlefield/player.h>
 #include <battlefield/clan.h>
 #include <battlefield/gameserver.h>
+
+class MYSQL;
+class MYSQL_STMT;
+class MYSQL_BIND;
 
 class Database
 {
@@ -25,7 +27,7 @@ class Database
 		// Player
 		bool queryPlayerByProfileid(Battlefield::Player& player);
 		bool queryPlayerByUniquenick(Battlefield::Player& player);
-		bool queryPlayersByEmail(Battlefield::Players& players, const std::string &email);
+		bool queryPlayersByEmail(Battlefield::Players& players, const std::string& email);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
 		bool insertPlayer(const Battlefield::Player& player);
 		

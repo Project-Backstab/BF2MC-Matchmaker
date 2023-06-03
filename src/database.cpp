@@ -1,6 +1,9 @@
 #include <iostream>
+#include <mysql/mysql.h>
 
+#include <settings.h>
 #include <globals.h>
+
 #include <database.h>
 
 Database::Database()
@@ -175,7 +178,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	return true;
 }
 
-bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::string &email)
+bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::string& email)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 

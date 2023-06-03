@@ -2,15 +2,8 @@
 #define SERVER_H
 
 #include <vector>
-#include <string>
 
 #include <net/socket.h>
-
-//forward declare
-namespace GPSP
-{
-	class Client;
-}
 
 class Server : public Net::Socket
 {
@@ -38,8 +31,8 @@ class Server : public Net::Socket
 		// Events
 		void onServerListen() const;
 		void onServerShutdown() const;
-		void onClientConnect(const Net::Socket &client) const;
-		void onClientDisconnect(const Net::Socket &client);
+		void onClientConnect(const Net::Socket& client) const;
+		void onClientDisconnect(const Net::Socket& client);
 };
 
 #endif // SERVER_H

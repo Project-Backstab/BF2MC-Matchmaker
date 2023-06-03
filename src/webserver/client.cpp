@@ -1,19 +1,16 @@
 #include <unistd.h>
 #include <iostream>
-#include <thread>
 #include <iomanip>
-#include <map>
 #include <fstream>
 #include <regex>
 
+#include <settings.h>
 #include <server.h>
 #include <gpcm/client.h>
 #include <globals.h>
 #include <database.h>
 #include <util.h>
-#include <urlrequest.h>
-#include <battlefield/playerstats.h>
-#include <battlefield/clan.h>
+#include <atomizes.hpp>
 
 #include <webserver/client.h>
 
@@ -136,8 +133,6 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		// Split url into url base and variables
 		UrlRequest::GetUrlElements(http_request.GetPath(), url_base, url_variables);
 		
-		this->onUnimplementedAction(url_base);
-		
 		auto it = mRequestActions.find(url_base);
 		if (it != mRequestActions.end())
 		{
@@ -148,14 +143,8 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 			(this->*(func))(http_request, url_variables);
 		}
 		else
-		{
-			std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
-			
-			std::cout << "action \"" << url_base << "\" not implemented!" << std::endl;
-			
-			guard.unlock();
-			
-			//this->Disconnect();
+		{		
+			this->onUnimplementedAction(url_base);
 		}
 	}
 }
@@ -163,6 +152,8 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 void Webserver::Client::onUnimplementedAction(const std::string &action)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
+	
+	std::cout << "action \"" << action << "\" not implemented!" << std::endl;
 	
 	Json::Value banned_requests = g_settings["webserver"]["banned_requests"];
 	
@@ -194,7 +185,7 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 /*
 	
 */
-void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	this->_SendFile("data/news.txt");
 }
@@ -230,7 +221,7 @@ void Webserver::Client::requestNews(const atomizes::HTTPMessage &http_request, c
 		mv			Total mayor victories
 		ngp			Total Parcipated game sessions
 */
-void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Player player;
@@ -259,7 +250,7 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage &http_r
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	auto it = url_variables.find("sort");
 	if (it != url_variables.end())
@@ -375,7 +366,7 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 /*
 	
 */
-void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	Battlefield::Clan clan;
 	Battlefield::Player player;
@@ -403,7 +394,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage &http_reques
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	Battlefield::Clan clan;
 	
@@ -427,12 +418,12 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage &http_req
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	this->_SendFile("data/leaderboard/startrank=1&endrank=7.txt");
 }
 
-void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -532,7 +523,7 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -582,7 +573,7 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage &http_request
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -680,7 +671,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage &http_requ
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -743,7 +734,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage &http_reque
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -832,7 +823,7 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage &http_re
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -884,7 +875,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage &http_req
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -896,7 +887,7 @@ void Webserver::Client::requestEmpty(const atomizes::HTTPMessage &http_request, 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestMeme(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response;
 	
@@ -916,7 +907,7 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage &http_request, c
 /*
 	Private functions
 */
-void Webserver::Client::_LogTransaction(const std::string &direction, const std::string &response) const
+void Webserver::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock       (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
@@ -958,7 +949,7 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	return data;
 }
 
-void Webserver::Client::_SendFile(const std::string &file_name) const
+void Webserver::Client::_SendFile(const std::string& file_name) const
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -972,7 +963,7 @@ void Webserver::Client::_SendFile(const std::string &file_name) const
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables &url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
+void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
 {
 	GPCM::Session session;
 	

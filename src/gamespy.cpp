@@ -4,7 +4,7 @@
 
 #include <gamespy.h>
 
-std::vector<std::string> GameSpy::RequestToRequests(const std::string &request)
+std::vector<std::string> GameSpy::RequestToRequests(const std::string& request)
 {
 	std::string t = request;
 	std::vector<std::string> requests;
@@ -23,7 +23,7 @@ std::vector<std::string> GameSpy::RequestToRequests(const std::string &request)
 	return requests;
 }
 
-GameSpy::Parameter GameSpy::Request2Parameter(const std::string &request)
+GameSpy::Parameter GameSpy::Request2Parameter(const std::string& request)
 {
 	std::stringstream input;
 	std::string value;
@@ -43,7 +43,7 @@ GameSpy::Parameter GameSpy::Request2Parameter(const std::string &request)
 	return parameter;
 }
 
-std::string GameSpy::Parameter2Response(const GameSpy::Parameter &parameter)
+std::string GameSpy::Parameter2Response(const GameSpy::Parameter& parameter)
 {
 	std::string response;
 	
@@ -57,7 +57,7 @@ std::string GameSpy::Parameter2Response(const GameSpy::Parameter &parameter)
 	return response;
 }
 
-std::string GameSpy::LoginProof(const std::string &password, const std::string &uniquenick, const std::string &client_challenge, const std::string &server_challenge)
+std::string GameSpy::LoginProof(const std::string& password, const std::string& uniquenick, const std::string& client_challenge, const std::string& server_challenge)
 {
 	const std::string space = "                                                ";
 	

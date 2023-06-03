@@ -12,7 +12,7 @@ namespace Net
 		protected:
 			int                  _socket;
 			struct sockaddr_in   _address;
-			mutable std::mutex  _mutex;
+			mutable std::mutex   _mutex;
 		
 		public:
 			Socket();
@@ -23,8 +23,8 @@ namespace Net
 			int GetPort() const;
 			std::string GetAddress() const;
 			
-			void Send(const std::string &msg) const;
-			void Send(const std::vector<unsigned char> &msg) const;
+			void Send(const std::string& msg) const;
+			void Send(const std::vector<unsigned char>& msg) const;
 	};
 }
 
