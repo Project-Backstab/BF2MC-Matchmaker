@@ -335,8 +335,6 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage &http_request, 
 			this->_SendFile("data/stats/sort=score&pos=1&posafter=9.txt");
 		}
 	}
-	
-	this->Disconnect();
 }
 
 /*
