@@ -8,7 +8,10 @@
 #include <gamespy.h>
 #include <globals.h>
 #include <util.h>
+#include <database.h>
 #include <browsing/sb_crypt.h>
+#include <battlefield/gameserver.h>
+#include <browsing/constants.h>
 
 #include <browsing/client.h>
 
@@ -109,56 +112,51 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		return;
 	}
 	
-	std::vector<unsigned char> response(BROWSING_HEADER_LEN, 0x0);
+	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN + 8, 0x0);
 	
-	// Ip
-	response.push_back(0x56);
-	response.push_back(0x57);
-	response.push_back(0x8b);
-	response.push_back(0xeb);
+	Battlefield::GameServers game_servers;
 	
-	// Port
-	response.push_back(0x19);
-	response.push_back(0x64);
+	g_database->queryGameServers(game_servers);
 	
-	// Total items
-	response.push_back(0x00);
-	response.push_back(0x00);
-
-	for(int i = 0; i < 1; i++)
+	//Battlefield::GameServer game_server;
+	//game_server.useExample();
+	
+	for(Battlefield::GameServer game_server : game_servers)
 	{
+		uint16_t port = game_server.GetPort();
+		uint8_t flag = game_server.GetFlag();
+		
 		// Server flag
-		response.push_back(0x3b); // UNSOLICITED_UDP_FLAG | PRIVATE_IP_FLAG | ICMP_IP_FLAG | NONSTANDARD_PORT_FLAG | NONSTANDARD_PRIVATE_PORT_FLAG
+		response.push_back(game_server.GetFlag());
 		
 		// wan ip
-		response.push_back(0xa8);
-		response.push_back(0x77);
-		response.push_back(0xbd);
-		response.push_back(0x95);
+		response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
 		
-		// NONSTANDARD_PORT_FLAG         -> wan port
-		response.push_back(0x0e);
-		response.push_back(0x4a);
-
-		// PRIVATE_IP_FLAG               -> localip0 ip
-		response.push_back(0xa8);
-		response.push_back(0x77);
-		response.push_back(0xbd);
-		response.push_back(0x95);
+		if(flag & FLAG_NONSTANDARD_PORT)         // -> wan port
+		{
+			response.push_back(port / 256);
+			response.push_back(port % 256);
+		}
 		
-		// NONSTANDARD_PRIVATE_PORT_FLAG -> localport
-		response.push_back(0x0e);
-		response.push_back(0x4a);
+		if(flag & FLAG_PRIVATE_IP)               // -> localip0 ip
+		{              
+			response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
+		}
 		
-		// ICMP_IP_FLAG                  -> icmp ip
-		response.push_back(0xa8);
-		response.push_back(0x77);
-		response.push_back(0xbd);
-		response.push_back(0x95);
+		if(flag & FLAG_NONSTANDARD_PRIVATE_PORT) // -> localport
+		{
+			response.push_back(port / 256);
+			response.push_back(port % 256);
+		}
+		
+		if(flag & FLAG_ICMP_IP)                  // -> icmp ip
+		{
+			response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
+		}
 	}
 	
 	// End data
-	response.push_back(0x00);
+	response.push_back(0x00); // Empty flag means end of servers
 	
 	this->_Encrypt(request, response);
 	
@@ -179,53 +177,57 @@ void Browsing::Client::_LogTransaction(const std::string &direction, const std::
 
 void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response)
 {
-	uint8_t crypt_challenge[CRYPT_CHALLENGE_LEN];
-	uint8_t server_challenge[SERVER_CHALLENGE_LEN];
-	uint8_t client_challenge[CLIENT_CHALLENGE_LEN];
+	uint8_t crypt_challenge[CHALLENGE_CRYPT_LEN];
+	uint8_t server_challenge[CHALLENGE_SERVER_LEN];
+	uint8_t client_challenge[CHALLENGE_CLIENT_LEN];
 	
 	GOACryptState m_crypt_state;
 	
 	// Push Crypt Challenge
-	response[0] = 0xe6; // CRYPT_CHALLENGE_LEN ^ 0xec = 0xe6
-	for(int i = 0; i < CRYPT_CHALLENGE_LEN; i++)
+	response[0] = 0xe6; // CHALLENGE_CRYPT_LEN ^ 0xec = 0xe6
+	for(int i = 0; i < CHALLENGE_CRYPT_LEN; i++)
 	{
 		crypt_challenge[i] = 0x0;
 		response[1 + i] = crypt_challenge[i];
 	}
 
 	// Push Server challenge
-	response[CRYPT_CHALLENGE_LEN + 1] = 0xf3; // SERVER_CHALLENGE_LEN ^ 0xea = 0xf3
-	for(int i = 0; i < SERVER_CHALLENGE_LEN; i++)
+	response[CHALLENGE_CRYPT_LEN + 1] = 0xf3; // CHALLENGE_SERVER_LEN ^ 0xea = 0xf3
+	for(int i = 0; i < CHALLENGE_SERVER_LEN; i++)
 	{
 		server_challenge[i] = 0x0;
-		response[CRYPT_CHALLENGE_LEN + 2 + i] = server_challenge[i];
+		response[CHALLENGE_CRYPT_LEN + 2 + i] = server_challenge[i];
 	}
 	
 	// Get client challenge
-	for(int i = 0; i < CLIENT_CHALLENGE_LEN; i++)
+	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
 	{
 		client_challenge[i] = request[37 + i];
 	}
 	
 	// Generate challenge encryption/decryption key
-	for (uint32_t i = 0 ; i < SERVER_CHALLENGE_LEN; i++)
+	for (uint32_t i = 0 ; i < CHALLENGE_SERVER_LEN; i++)
 	{
-		uint8_t index = (i *  SECRET_KEY[i % SECRET_KEY_LEN]) % CLIENT_CHALLENGE_LEN;
-		uint8_t value = (client_challenge[i % CLIENT_CHALLENGE_LEN] ^ server_challenge[i]) & 0xFF;
+		uint8_t index = (i *  SECRET_KEY[i % SECRET_KEY_LEN]) % CHALLENGE_CLIENT_LEN;
+		uint8_t value = (client_challenge[i % CHALLENGE_CLIENT_LEN] ^ server_challenge[i]) & 0xFF;
 		
 		client_challenge[index] ^= value;
 	}
 	
+	// Add to data to say confirm decryption went correctly
 	response.push_back(0xFF);
 	response.push_back(0xFF);
 	response.push_back(0xFF);
 	response.push_back(0xFF);
 	
 	// Encrypt data
-	GOACryptInit(&(m_crypt_state), (unsigned char *)(&client_challenge), CLIENT_CHALLENGE_LEN);
-	GOAEncrypt(&(m_crypt_state), &response[BROWSING_HEADER_LEN], response.size() - BROWSING_HEADER_LEN);
+	GOACryptInit(&(m_crypt_state), (unsigned char *)(&client_challenge), CHALLENGE_CLIENT_LEN);
+	GOAEncrypt(&(m_crypt_state), &response[CHALLENGE_HEADER_LEN], response.size() - CHALLENGE_HEADER_LEN);
 }
 
+/*
+	Example and test
+*/
 std::vector<unsigned char> example_A_request = {
 	0x01, 0x5e,                                                                                    // Total Bytes to read
 	0x00,                                                                                          // SERVER_LIST_REQUEST
@@ -596,11 +598,11 @@ void Browsing::Client::Test()
 	//std::vector<unsigned char> request = example_D_request;
 	//std::vector<unsigned char> response = example_D_response;
 	
-	uint32_t cryptlen = CRYPT_CHALLENGE_LEN;
-	uint8_t cryptchal[CRYPT_CHALLENGE_LEN];
-	uint32_t servchallen = SERVER_CHALLENGE_LEN;
-	uint8_t servchal[SERVER_CHALLENGE_LEN];
-	uint8_t m_challenge[CLIENT_CHALLENGE_LEN];
+	uint32_t cryptlen = CHALLENGE_CRYPT_LEN;
+	uint8_t cryptchal[CHALLENGE_CRYPT_LEN];
+	uint32_t servchallen = CHALLENGE_SERVER_LEN;
+	uint8_t servchal[CHALLENGE_SERVER_LEN];
+	uint8_t m_challenge[CHALLENGE_CLIENT_LEN];
 	
 	// First conclusion:
 	// buffer.WriteByte((uint8_t)(cryptlen ^ 0xEC));
@@ -610,12 +612,12 @@ void Browsing::Client::Test()
 	
 	// copy crypt challenge
 	ss.str("");
-	for(int i = 0; i < CRYPT_CHALLENGE_LEN; i++)
+	for(int i = 0; i < CHALLENGE_CRYPT_LEN; i++)
 	{
 		cryptchal[i] = response[response_offset + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(cryptchal[i]);
 	}
-	response_offset += CRYPT_CHALLENGE_LEN;
+	response_offset += CHALLENGE_CRYPT_LEN;
 	std::cout << "cryptchal = " << ss.str() << std::endl;
 	
 	// Second conclusion
@@ -626,12 +628,12 @@ void Browsing::Client::Test()
 	
 	// copy crypt challenge
 	ss.str("");
-	for(int i = 0; i < SERVER_CHALLENGE_LEN; i++)
+	for(int i = 0; i < CHALLENGE_SERVER_LEN; i++)
 	{
 		servchal[i] = response[response_offset + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(servchal[i]);
 	}
-	response_offset += SERVER_CHALLENGE_LEN;
+	response_offset += CHALLENGE_SERVER_LEN;
 	std::cout << "servchal = " << ss.str() << std::endl;
 	
 	// Third: Find secret key
@@ -644,7 +646,7 @@ void Browsing::Client::Test()
 	
 	// Get the challenge from the clients request
 	ss.str("");
-	for(int i = 0; i < CLIENT_CHALLENGE_LEN; i++)
+	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
 	{
 		m_challenge[i] = request[37 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(m_challenge[i]);
@@ -654,11 +656,11 @@ void Browsing::Client::Test()
 	// Update challenge
 	for (uint32_t i = 0 ; i < servchallen ; i++)
 	{
-		m_challenge[(i *  seckey[i % seckeylen]) % CLIENT_CHALLENGE_LEN] ^= (char)((m_challenge[i % CLIENT_CHALLENGE_LEN] ^ servchal[i]) & 0xFF);
+		m_challenge[(i *  seckey[i % seckeylen]) % CHALLENGE_CLIENT_LEN] ^= (char)((m_challenge[i % CHALLENGE_CLIENT_LEN] ^ servchal[i]) & 0xFF);
 	}
 	
 	GOACryptState m_crypt_state;
-	int header_size = 1 + CRYPT_CHALLENGE_LEN + 1 + SERVER_CHALLENGE_LEN;
+	int header_size = 1 + CHALLENGE_CRYPT_LEN + 1 + CHALLENGE_SERVER_LEN;
 	
 	ss.str("");
 	for(int i = header_size; i < response.size(); i++)
@@ -668,7 +670,7 @@ void Browsing::Client::Test()
 	std::cout << "encrypted data = " << ss.str() << std::endl;
 	
 	// Initialization GOA crypt
-	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), CLIENT_CHALLENGE_LEN);	
+	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), CHALLENGE_CLIENT_LEN);	
 	
 	// Decrypt data
 	GOADecrypt(&(m_crypt_state), (&response[header_size]), response.size() - header_size);
@@ -683,7 +685,7 @@ void Browsing::Client::Test()
 	/*
 	// Encrypt the data again to confirm its the right encrypted data
 	GOACryptState m_crypt_state2;
-	GOACryptInit(&(m_crypt_state2), (unsigned char *)(&m_challenge), CLIENT_CHALLENGE_LEN);	
+	GOACryptInit(&(m_crypt_state2), (unsigned char *)(&m_challenge), CHALLENGE_CLIENT_LEN);	
 	GOAEncrypt(&(m_crypt_state2), (&response[header_size]), response.size() - header_size);
 	
 	ss.str("");

@@ -4,22 +4,6 @@
 #include <gamespy.h>
 #include <net/socket.h>
 
-//message types for outgoing requests
-#define REQUEST_SERVER_LIST   0
-#define REQUEST_SERVER_INFO   1
-#define REQUEST_SEND_MESSAGE  2
-#define REQUEST_KEEPALIVE     3
-#define REQUEST_MAPLOOP       4
-#define REQUEST_PLAYERSEARCH  5
-
-#define CRYPT_CHALLENGE_LEN   10
-#define SERVER_CHALLENGE_LEN  25
-#define CLIENT_CHALLENGE_LEN  8
-#define BROWSING_HEADER_LEN   (1 + CRYPT_CHALLENGE_LEN + 1 + SERVER_CHALLENGE_LEN)
-
-#define SECRET_KEY            "HpWx9z"
-#define SECRET_KEY_LEN        6
-
 namespace Browsing
 {
 	class Client : public Net::Socket

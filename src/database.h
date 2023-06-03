@@ -7,6 +7,7 @@
 #include <mysql/mysql.h>
 #include <battlefield/player.h>
 #include <battlefield/clan.h>
+#include <battlefield/gameserver.h>
 
 class Database
 {
@@ -52,6 +53,9 @@ class Database
 		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
 		bool removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool removeClanRanksByClanId(const Battlefield::Clan& clan);
+		
+		//GameServer
+		bool queryGameServers(Battlefield::GameServers& game_servers);
 		
 		/*
 			Events

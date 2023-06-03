@@ -1445,6 +1445,69 @@ bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 	return true;
 }
 
+// Game Server
+bool Database::queryGameServers(Battlefield::GameServers& game_servers)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "SELECT `ip`, `port`, `flag` FROM `GameServer`";
+	
+	char output_ip[16];
+	int  output_port;
+	int  output_flag;
+
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[0].buffer = output_ip;
+	output_bind[0].buffer_length = 16;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = &output_port;
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[2].buffer = &output_flag;
+	output_bind[2].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(output_bind);
+		
+		return false;
+	}
+
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::GameServer game_server;
+
+		game_server.SetIp(output_ip);
+		game_server.SetPort(output_port);
+		game_server.SetFlag(output_flag);
+		
+		game_servers.push_back(game_server);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(output_bind);
+	
+	return true;
+}
+
 // Private functions
 bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 {
