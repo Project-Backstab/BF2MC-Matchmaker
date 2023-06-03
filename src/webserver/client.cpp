@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <map>
 #include <fstream>
+#include <regex>
 
 #include <server.h>
 #include <gpcm/client.h>
@@ -124,6 +125,7 @@ void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 */
 void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 {
+	
 	if(http_request.GetMethod() == MessageMethod::GET)
 	{
 		std::string url_base;
@@ -133,6 +135,8 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		
 		// Split url into url base and variables
 		UrlRequest::GetUrlElements(http_request.GetPath(), url_base, url_variables);
+		
+		this->onUnimplementedAction(url_base);
 		
 		auto it = mRequestActions.find(url_base);
 		if (it != mRequestActions.end())
@@ -152,6 +156,37 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 			guard.unlock();
 			
 			//this->Disconnect();
+		}
+	}
+}
+
+void Webserver::Client::onUnimplementedAction(const std::string &action)
+{
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
+	
+	Json::Value banned_requests = g_settings["webserver"]["banned_requests"];
+	
+	if(!banned_requests.isArray())
+	{
+		return;
+	}
+	
+	std::string client_ip = this->GetIP();
+	std::regex ip_pattern("^10.10.10.");
+	
+	for(Json::Value banned_request : banned_requests)
+	{
+		if(banned_request.isString())
+		{
+			std::regex pattern(banned_request.asString());
+			
+			if(std::regex_search(action, pattern) && !std::regex_search(client_ip, ip_pattern))
+			{
+				std::cout << "Bannable action found \"" << action << "\" by " << client_ip << std::endl;
+				
+				std::string query = "sudo iptables -I INPUT -s " + client_ip + " -j DROP";
+				int result = system(query.c_str());
+			}
 		}
 	}
 }

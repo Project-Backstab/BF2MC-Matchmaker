@@ -23,6 +23,7 @@ namespace Webserver
 				Events
 			*/
 			void onRequest(const atomizes::HTTPMessage &http_request);
+			void onUnimplementedAction(const std::string &action);
 			
 			/*
 				Requests

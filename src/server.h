@@ -25,6 +25,7 @@ class Server : public Net::Socket
 	
 	public:
 		std::vector<Net::Socket*> _clients;
+	
 	private:
 		Server::Type              _type;
 	

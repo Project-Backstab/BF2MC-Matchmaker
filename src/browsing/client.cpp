@@ -230,7 +230,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::
 */
 std::vector<unsigned char> example_A_request = {
 	0x01, 0x5e,                                                                                    // Total Bytes to read
-	0x00,                                                                                          // SERVER_LIST_REQUEST
+	0x00,                                                                                          // REQUEST_SERVER_LIST
 	0x01,                                                                                          // protocol_version
 	0x03,                                                                                          // encoding_version
 	0x00, 0x00, 0x00, 0x00,                                                                        // game_version
@@ -296,7 +296,7 @@ std::vector<unsigned char> example_A_response = {
 
 std::vector<unsigned char> example_B_request = {
 	0x01, 0x5d,                                                                                    // Total Bytes to read
-	0x00,                                                                                          // SERVER_LIST_REQUEST
+	0x00,                                                                                          // REQUEST_SERVER_LIST
 	0x01,                                                                                          // protocol_version
 	0x03,                                                                                          // encoding_version
 	0x00, 0x00, 0x00, 0x00,                                                                        // game_version
@@ -360,7 +360,7 @@ std::vector<unsigned char> example_B_response = {
 
 std::vector<unsigned char> example_C_request = {
 	0x01, 0x5e,                                                                                    // Total Bytes to read
-	0x00,                                                                                          // SERVER_LIST_REQUEST
+	0x00,                                                                                          // REQUEST_SERVER_LIST
 	0x01,                                                                                          // protocol_version
 	0x03,                                                                                          // encoding_version
 	0x00, 0x00, 0x00, 0x00,                                                                        // game_version
@@ -426,7 +426,7 @@ std::vector<unsigned char> example_C_response = {
 
 std::vector<unsigned char> example_D_request = {
 	0x01, 0x5d,                                                                                    // Total Bytes to read
-	0x00,                                                                                          // SERVER_LIST_REQUEST
+	0x00,                                                                                          // REQUEST_SERVER_LIST
 	0x01,                                                                                          // protocol_version
 	0x03,                                                                                          // encoding_version
 	0x00, 0x00, 0x00, 0x00,                                                                        // game_version
@@ -697,3 +697,95 @@ void Browsing::Client::Test()
 	*/
 }
 
+#include <algorithm>
+
+void Browsing::Client::Crack()
+{
+	std::stringstream ss;
+	
+	uint8_t crypt_challenge[CHALLENGE_CRYPT_LEN];
+	uint8_t server_challenge[CHALLENGE_SERVER_LEN];
+	uint8_t client_challenge[CHALLENGE_CLIENT_LEN];
+	uint8_t key_challenge[CHALLENGE_CLIENT_LEN];
+	
+	std::vector<unsigned char> request = example_C_request;
+	std::vector<unsigned char> response = example_C_response;
+	std::vector<unsigned char> decrypted_data = example_C_decrypt_data;
+	
+	// copy crypt challenge
+	ss.str("");
+	for(int i = 0; i < CHALLENGE_CRYPT_LEN; i++)
+	{
+		crypt_challenge[i] = response[1 + i];
+		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(crypt_challenge[i]);
+	}
+	std::cout << "crypt_challenge = " << ss.str() << std::endl;
+	
+	ss.str("");
+	for(int i = 0; i < CHALLENGE_SERVER_LEN; i++)
+	{
+		server_challenge[i] = response[12 + i];
+		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(server_challenge[i]);
+	}
+	std::cout << "server_challenge = " << ss.str() << std::endl;
+	
+	// Get the challenge from the clients request
+	ss.str("");
+	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
+	{
+		client_challenge[i] = request[37 + i];
+		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(client_challenge[i]);
+	}
+	std::cout << "client_challenge = " << ss.str() << std::endl;
+	
+	/*
+		Crack
+	*/
+	std::string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	std::vector<unsigned char> encryted_data(16, 0x0);
+	
+	while(true)
+	{
+		std::string secret_key = "123456";
+		
+		// Generate random secret key
+		for(int i = 0; i < 6; i++)
+		{
+			secret_key[i] = alphabet[rand() % alphabet.size()];
+		}
+		
+		// Copy backup challenge
+		for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
+		{
+			key_challenge[i] = client_challenge[i];
+		}
+		
+		// Update challenge
+		for (uint32_t i = 0 ; i < CHALLENGE_SERVER_LEN; i++)
+		{
+			key_challenge[(i *  secret_key[i % 6]) % CHALLENGE_CLIENT_LEN] ^= (char)((key_challenge[i % CHALLENGE_CLIENT_LEN] ^ server_challenge[i]) & 0xFF);
+		}
+		
+		// Copy encrypted data
+		for(int i = 0; i < 8; i++)
+		{
+			encryted_data[i] = response[CHALLENGE_CRYPT_LEN + CHALLENGE_SERVER_LEN + 2 + i];
+		}
+		
+		GOACryptState m_crypt_state2;
+		GOACryptInit(&(m_crypt_state2), (unsigned char *)(&key_challenge), CHALLENGE_CLIENT_LEN);	
+		GOADecrypt(&(m_crypt_state2), &encryted_data[0], 8);
+		
+		bool correct = true;
+		for(int i = 0; i < 8 && correct; i++)
+			if(encryted_data[i] != decrypted_data[i])
+				correct = false;
+		
+		if(correct)
+		{
+			std::cout << "Found!! secret_key = " << secret_key << std::endl;
+			
+			return;
+		}
+    }
+}

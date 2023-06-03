@@ -22,7 +22,11 @@
 	{
 		"connection_time_out": 5,
 		"show_requests": true,
-		"show_responses": true
+		"show_responses": true,
+		"banned_requests":
+		[
+			"^/root/"
+		]
 	},
 	"show_client_connect": true,
 	"show_client_disconnect": true

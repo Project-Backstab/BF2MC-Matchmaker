@@ -23,7 +23,8 @@
 #define FLAG_HAS_KEYS                  64
 #define FLAG_HAS_FULL_RULES           128
 
-#define SECRET_KEY                    "HpWx9z"
+//#define SECRET_KEY                    "HpWx9z"
+#define SECRET_KEY                    "Hpch92"
 #define SECRET_KEY_LEN                6
 
 #endif // BROWSING_CONSTANTS_H

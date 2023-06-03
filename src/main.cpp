@@ -76,6 +76,7 @@ void start_webserver_server()
 void start_browsing_server()
 {
 	//Browsing::Client::Test();
+	//Browsing::Client::Crack();
 	
 	g_browsing_server = new Server(Server::Type::Browsing, 28910);	
 	g_browsing_server->Listen();
