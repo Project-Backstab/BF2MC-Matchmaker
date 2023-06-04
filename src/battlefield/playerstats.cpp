@@ -14,10 +14,15 @@ void Battlefield::PlayerStats::useExample()
 	this->SetHelicoptersDestroyed(173);
 	this->SetBoatsDestroyed(3);
 	this->SetKillsAssualtKit(20880);
+	this->SetDeathsAssualtKit(16556);
 	this->SetKillsSniperKit(7445);
+	this->SetDeathsSniperKit(4790);
 	this->SetKillsSpecialOpKit(2364);
+	this->SetDeathsSpecialOpKit(3286);
 	this->SetKillsCombatEngineerKit(730);
+	this->SetDeathsCombatEngineerKit(1411);
 	this->SetKillsSupportKit(414);
+	this->SetDeathsSupportKit(351);
 	this->SetMedals(All_Medals);
 	this->SetTotalTopPlayer(56);
 	this->SetTotalVictories(1202);
@@ -102,9 +107,21 @@ bool Battlefield::PlayerStats::SetKillsAssualtKit(uint32_t kills)
 	return true;
 }
 
+bool Battlefield::PlayerStats::SetDeathsAssualtKit(uint32_t deaths)
+{
+	this->_s1 = deaths;
+	return true;
+}
+
 bool Battlefield::PlayerStats::SetKillsSniperKit(uint32_t kills)
 {
 	this->_k2 = kills;
+	return true;
+}
+
+bool Battlefield::PlayerStats::SetDeathsSniperKit(uint32_t deaths)
+{
+	this->_s2 = deaths;
 	return true;
 }
 
@@ -114,15 +131,33 @@ bool Battlefield::PlayerStats::SetKillsSpecialOpKit(uint32_t kills)
 	return true;
 }
 
+bool Battlefield::PlayerStats::SetDeathsSpecialOpKit(uint32_t deaths)
+{
+	this->_s3 = deaths;
+	return true;
+}
+
 bool Battlefield::PlayerStats::SetKillsCombatEngineerKit(uint32_t kills)
 {
 	this->_k4 = kills;
 	return true;
 }
 
+bool Battlefield::PlayerStats::SetDeathsCombatEngineerKit(uint32_t deaths)
+{
+	this->_s4 = deaths;
+	return true;
+}
+
 bool Battlefield::PlayerStats::SetKillsSupportKit(uint32_t kills)
 {
 	this->_k5 = kills;
+	return true;
+}
+
+bool Battlefield::PlayerStats::SetDeathsSupportKit(uint32_t deaths)
+{
+	this->_s5 = deaths;
 	return true;
 }
 

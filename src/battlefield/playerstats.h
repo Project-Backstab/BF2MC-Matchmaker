@@ -62,23 +62,23 @@ namespace Battlefield
 			uint32_t  _kills     = 0; // Total kills
 			uint32_t  _suicides  = 0; // Total suicides
 			uint32_t  _time      = 0; // Total time played in seconds
-			uint32_t  _lavd      = 0; // Total LAV's destroyed
-			uint32_t  _mavd      = 0; // Total MAV's destroyed
-			uint32_t  _havd      = 0; // Total HAV's destroyed
+			uint32_t  _lavd      = 0; // Total LAV's destroyed, Light Armored Vehicle  (such as a Humvee or similar)
+			uint32_t  _mavd      = 0; // Total MAV's destroyed, Medium Armored Vehicle (such as a Tank or similar)
+			uint32_t  _havd      = 0; // Total HAV's destroyed, Heavy Armored Vehicle  (such as an APC or similar)
 			uint32_t  _hed       = 0; // Total Helicopters destroyed
-			uint32_t  _pld       = 0; // ?? Some other vehicle ??                    (Not used in game)
+			uint32_t  _pld       = 0; // Total Planes destroyed                        (unimplemented vehicle)
 			uint32_t  _bod       = 0; // Total Boats destoyed
 			uint32_t  _k1        = 0; // Total kills assualt kit
-			uint32_t  _s1        = 0; // ??                                          (Not used in game)
+			uint32_t  _s1        = 0; // Total Deaths assualt kit
 			uint32_t  _k2        = 0; // Total kills sniper kit 
-			uint32_t  _s2        = 0; // ??                                          (Not used in game)
+			uint32_t  _s2        = 0; // Total Deaths sniper kit 
 			uint32_t  _k3        = 0; // Total kills special Op. kit
-			uint32_t  _s3        = 0; // ??                                          (Not used in game)
+			uint32_t  _s3        = 0; // Total Deaths special Op. kit
 			uint32_t  _k4        = 0; // Total kills Combat engineer kit 
-			uint32_t  _s4        = 0; // ??                                          (Not used in game)
+			uint32_t  _s4        = 0; // Total Deaths Combat engineer kit
 			uint32_t  _k5        = 0; // Total kills Support kit  
-			uint32_t  _s5        = 0; // ??                                          (Not used in game)
-			uint32_t  _tk        = 0; //                                             (Not used in game)
+			uint32_t  _s5        = 0; // Total Deaths Support kit
+			uint32_t  _tk        = 0; // Team kills                                   (Not used in game)
 			uint32_t  _medals    = 0; // Earned medals (See: enum PlayerStatsMedals)
 			uint32_t  _ttb       = 0; // Total times been the top player in the game
 			uint32_t  _mv        = 0; // Total mayor victories
@@ -87,26 +87,31 @@ namespace Battlefield
 		public:
 			void useExample();
 			
-			int GetScore() const                  { return this->_score;    }
-			int GetRank() const                   { return this->_ran;      }
-			int GetPPH() const                    { return this->_pph;      }
-			int GetKills() const                  { return this->_kills;    }
-			int GetSuicides() const               { return this->_suicides; }
-			int GetTime() const                   { return this->_time;     }
-			int GetLAVsDestroyed() const          { return this->_lavd;     }
-			int GetMAVsDestroyed() const          { return this->_mavd;     } 
-			int GetHAVsDestroyed() const          { return this->_havd;     }
-			int GetHelicoptersDestroyed() const   { return this->_hed;      }
-			int GetBoatsDestroyed() const         { return this->_bod;      }
-			int GetKillsAssualtKit() const        { return this->_k1;       }
-			int GetKillsSniperKit() const         { return this->_k2;       }
-			int GetKillsSpecialOpKit() const      { return this->_k3;       }
-			int GetKillsCombatEngineerKit() const { return this->_k4;       }
-			int GetKillsSupportKit() const        { return this->_k5;       }
-			int GetMedals() const                 { return this->_medals;   }
-			int GetTotalTopPlayer() const         { return this->_ttb;      }
-			int GetTotalVictories() const         { return this->_mv;       }
-			int GetTotalGameSessions() const      { return this->_ngp;      }
+			int GetScore() const                   { return this->_score;    }
+			int GetRank() const                    { return this->_ran;      }
+			int GetPPH() const                     { return this->_pph;      }
+			int GetKills() const                   { return this->_kills;    }
+			int GetSuicides() const                { return this->_suicides; }
+			int GetTime() const                    { return this->_time;     }
+			int GetLAVsDestroyed() const           { return this->_lavd;     }
+			int GetMAVsDestroyed() const           { return this->_mavd;     } 
+			int GetHAVsDestroyed() const           { return this->_havd;     }
+			int GetHelicoptersDestroyed() const    { return this->_hed;      }
+			int GetBoatsDestroyed() const          { return this->_bod;      }
+			int GetKillsAssualtKit() const         { return this->_k1;       }
+			int GetDeathsAssualtKit() const        { return this->_s1;       }
+			int GetKillsSniperKit() const          { return this->_k2;       }
+			int GetDeathsSniperKit() const         { return this->_s2;       }
+			int GetKillsSpecialOpKit() const       { return this->_k3;       }
+			int GetDeathsSpecialOpKit() const      { return this->_s3;       }
+			int GetKillsCombatEngineerKit() const  { return this->_k4;       }
+			int GetDeathsCombatEngineerKit() const { return this->_s4;       }
+			int GetKillsSupportKit() const         { return this->_k5;       }
+			int GetDeathsSupportKit() const        { return this->_s5;       }
+			int GetMedals() const                  { return this->_medals;   }
+			int GetTotalTopPlayer() const          { return this->_ttb;      }
+			int GetTotalVictories() const          { return this->_mv;       }
+			int GetTotalGameSessions() const       { return this->_ngp;      }
 			
 			bool SetScore(uint32_t score);
 			bool SetRank(uint32_t ran);
@@ -120,10 +125,15 @@ namespace Battlefield
 			bool SetHelicoptersDestroyed(uint32_t hed);
 			bool SetBoatsDestroyed(uint32_t bod);
 			bool SetKillsAssualtKit(uint32_t kills);
+			bool SetDeathsAssualtKit(uint32_t deaths);
 			bool SetKillsSniperKit(uint32_t kills);
+			bool SetDeathsSniperKit(uint32_t deaths);
 			bool SetKillsSpecialOpKit(uint32_t kills);
+			bool SetDeathsSpecialOpKit(uint32_t deaths);
 			bool SetKillsCombatEngineerKit(uint32_t kills);
+			bool SetDeathsCombatEngineerKit(uint32_t deaths);
 			bool SetKillsSupportKit(uint32_t kills);
+			bool SetDeathsSupportKit(uint32_t deaths);
 			bool SetMedals(uint32_t medals);
 			bool SetTotalTopPlayer(uint32_t total);
 			bool SetTotalVictories(uint32_t total);
