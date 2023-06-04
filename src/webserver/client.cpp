@@ -252,22 +252,98 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 
 void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	auto it = url_variables.find("sort");
+	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
+	Battlefield::RankPlayers rank_players;
+	std::string data = "";
+	std::vector<int> profileids;
+	int self_profileid = -1;
+	
+	auto it = url_variables.find("pid");
+	if (it != url_variables.end())
+	{
+		profileids = Util::convertProfileIdToVector(it->second);
+		
+		if(profileids.size() >= 1)
+		{
+			self_profileid = profileids[0];
+		}
+	}
+	
+	it = url_variables.find("sort");
 	if (it != url_variables.end())
 	{
 		std::string sort = it->second;
 		
 		if(sort == "rank")
 		{
-			this->_SendFile("data/stats/sort=rank&pos=1&posafter=9.txt");
+			if(profileids.size() == 0)
+			{
+				g_database->queryRankPlayersTopByRank(rank_players);
+			}
+			else if(profileids.size() == 1)
+			{
+				g_database->queryRankPlayersSelfByRank(rank_players, self_profileid);
+			}
+			
+			for (const auto& pair : rank_players)
+			{
+				if(self_profileid == pair.second.GetProfileId())
+				{
+					data += "-";
+				}
+				
+				data += std::to_string(pair.first) + ",";
+				data += pair.second.GetUniquenick() + ",";
+				data += std::to_string(pair.second.GetRank()) + ",";
+				data += std::to_string(pair.second.GetPPH()) + ",";
+				data += std::to_string(pair.second.GetScore()) + "\n";
+			}
 		}
 		else if(sort == "score")
-		{
-			this->_SendFile("data/stats/sort=score&pos=1&posafter=9.txt");
+		{	
+			if(profileids.size() == 0)
+			{
+				g_database->queryRankPlayersTopByType(rank_players, "score");
+			}
+			else if(profileids.size() == 1)
+			{
+				g_database->queryRankPlayersSelfByType(rank_players, "score", self_profileid);
+			}
+			
+			for (const auto& pair : rank_players)
+			{
+				if(self_profileid == pair.second.GetProfileId())
+				{
+					data += "-";
+				}
+				
+				data += std::to_string(pair.first) + ",";
+				data += pair.second.GetUniquenick() + ",";
+				data += std::to_string(pair.second.GetScore()) + "\n";
+			}
 		}
 		else if(sort == "pph")
 		{
-			this->_SendFile("data/stats/sort=pph&pos=1&posafter=9.txt");
+			if(profileids.size() == 0)
+			{
+				g_database->queryRankPlayersTopByType(rank_players, "pph");
+			}
+			else if(profileids.size() == 1)
+			{
+				g_database->queryRankPlayersSelfByType(rank_players, "pph", self_profileid);
+			}
+			
+			for (const auto& pair : rank_players)
+			{
+				if(self_profileid == pair.second.GetProfileId())
+				{
+					data += "-";
+				}
+				
+				data += std::to_string(pair.first) + ",";
+				data += pair.second.GetUniquenick() + ",";
+				data += std::to_string(pair.second.GetPPH()) + "\n";
+			}
 		}
 		else if(sort == "kills")
 		{
@@ -278,23 +354,141 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				
 				if(k_filter == "assault")
 				{
-					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
-				}
-				else if(k_filter == "engineer")
-				{
-					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "k1");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "k1", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetKillsAssualtKit()) + "\n";
+					}
 				}
 				else if(k_filter == "sniper")
 				{
-					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "k2");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "k2", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetKillsSniperKit()) + "\n";
+					}
 				}
 				else if(k_filter == "specialops")
 				{
-					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "k3");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "k3", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+				
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetKillsSpecialOpKit()) + "\n";
+					}
+				}
+				else if(k_filter == "engineer")
+				{
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "k4");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "k4", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetKillsCombatEngineerKit()) + "\n";
+					}
 				}
 				else if(k_filter == "support")
 				{
-					this->_SendFile("data/stats/sort=kills&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "k5");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "k5", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetKillsSupportKit()) + "\n";
+					}
+				}
+			}
+			else
+			{
+				if(profileids.size() == 0)
+				{
+					g_database->queryRankPlayersTopByType(rank_players, "kills");
+				}
+				else if(profileids.size() == 1)
+				{
+					g_database->queryRankPlayersSelfByType(rank_players, "kills", self_profileid);
+				}
+				
+				for (const auto& pair : rank_players)
+				{
+					if(self_profileid == pair.second.GetProfileId())
+					{
+						data += "-";
+					}
+					
+					data += std::to_string(pair.first) + ",";
+					data += pair.second.GetUniquenick() + ",";
+					data += std::to_string(pair.second.GetKills()) + "\n";
 				}
 			}
 		}
@@ -308,23 +502,33 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				if(k_filter == "assault")
 				{
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+					return;
 				}
 				else if(k_filter == "engineer")
 				{
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+					return;
 				}
 				else if(k_filter == "sniper")
 				{
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+					return;
 				}
 				else if(k_filter == "specialops")
 				{
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+					return;
 				}
 				else if(k_filter == "support")
 				{
 					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+					return;
 				}
+			}
+			else
+			{
+				this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
+				return;
 			}
 		}
 		else if(sort == "vehicles")
@@ -336,30 +540,128 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			
 				if(v_filter == "light")
 				{
-					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "lavd");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "lavd", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetLAVsDestroyed()) + "\n";
+					}
 				}
 				else if(v_filter == "medium")
 				{
-					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "mavd");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "mavd", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetMAVsDestroyed()) + "\n";
+					}
 				}
 				else if(v_filter == "heavy")
 				{
-					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
-				}
-				else if(v_filter == "boats")
-				{
-					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "havd");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "havd", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetHAVsDestroyed()) + "\n";
+					}
 				}
 				else if(v_filter == "helis")
 				{
-					this->_SendFile("data/stats/sort=vehicles&pos=1&posafter=9.txt");
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "hed");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "hed", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetHelicoptersDestroyed()) + "\n";
+					}
+				}
+				else if(v_filter == "boats")
+				{
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByType(rank_players, "bod");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByType(rank_players, "bod", self_profileid);
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetBoatsDestroyed()) + "\n";
+					}
 				}
 			}
 		}
-		else
-		{
-			this->_SendFile("data/stats/sort=score&pos=1&posafter=9.txt");
-		}
+		
+		http_response.SetStatusCode(200);
+		http_response.SetMessageBody(data);
+		
+		this->Send(http_response);
+		
+		this->_LogTransaction("<--", http_response.ToString());
 	}
 }
 

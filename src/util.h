@@ -14,6 +14,8 @@ namespace Util
 	
 	std::string generateRandomChallenge();
 	std::string generateRandomAuthtoken();
+	
+	std::vector<int> convertProfileIdToVector(const std::string& input);
 }
 
 #endif // UTIL_H

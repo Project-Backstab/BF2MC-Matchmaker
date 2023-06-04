@@ -59,6 +59,12 @@ class Database
 		//GameServer
 		bool queryGameServers(Battlefield::GameServers& game_servers);
 		
+		// RankPlayers
+		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
+		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type);
+		bool queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
+		bool queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid);
+		
 		/*
 			Events
 		*/

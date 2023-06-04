@@ -373,8 +373,8 @@ bool Database::queryPlayerFriends(Battlefield::Player& player)
 	
 	int input_profileid = player.GetProfileId();
 	
-	int output_profileid = 0;
-	int output_target_profileid = 0;
+	int output_profileid;
+	int output_target_profileid;
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -549,26 +549,26 @@ bool Database::queryPlayerStats(Battlefield::Player& player)
 	
 	int input_profileid = player.GetProfileId();
 	
-	int output_score     = player.GetScore();
-	int output_ran       = player.GetRank();
-	int output_pph       = player.GetPPH();
-	int output_kills     = player.GetKills();
-	int output_suicides  = player.GetSuicides();
-	int output_time      = player.GetTime();
-	int output_lavd      = player.GetLAVsDestroyed();
-	int output_mavd      = player.GetMAVsDestroyed();
-	int output_havd      = player.GetHAVsDestroyed();
-	int output_hed       = player.GetHelicoptersDestroyed();
-	int output_bod       = player.GetBoatsDestroyed();
-	int output_k1        = player.GetKillsAssualtKit();
-	int output_k2        = player.GetKillsSniperKit();
-	int output_k3        = player.GetKillsSpecialOpKit();
-	int output_k4        = player.GetKillsCombatEngineerKit();
-	int output_k5        = player.GetKillsSupportKit();
-	int output_medals    = player.GetMedals();
-	int output_ttb       = player.GetTotalTopPlayer();
-	int output_mv        = player.GetTotalVictories();
-	int output_ngp       = player.GetTotalGameSessions();
+	int output_score;
+	int output_ran;
+	int output_pph;
+	int output_kills;
+	int output_suicides;
+	int output_time;
+	int output_lavd;
+	int output_mavd;
+	int output_havd;
+	int output_hed;
+	int output_bod;
+	int output_k1;
+	int output_k2;
+	int output_k3;
+	int output_k4;
+	int output_k5;
+	int output_medals;
+	int output_ttb;
+	int output_mv;
+	int output_ngp;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -953,7 +953,7 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	
 	int input_profileid = player.GetProfileId();
 	
-	int output_clanid = 0;
+	int output_clanid;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -1079,8 +1079,8 @@ bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 
 	int input_clanid = clan.GetClanId();
 	
-	int output_profileid = 0;
-	int output_rank = 0;
+	int output_profileid;
+	int output_rank;
 
 	std::string query = "SELECT `profileid`, `rank` FROM `ClanRanks` WHERE `clanid` = ?";
 
@@ -1508,6 +1508,625 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	mysql_stmt_close(statement);
 	free(output_bind);
 	
+	return true;
+}
+
+// Rank Players
+bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query;
+	
+	query += "SELECT ";
+	query += "	ROW_NUMBER() OVER (";
+	query += "		ORDER BY ";
+	query += "			`ran` DESC, ";
+	query += "			`score` DESC, ";
+	query += "			`pph` DESC";
+	query += "	) AS `rank`, ";
+	query += "	Players.profileid  AS `profileid`, ";
+	query += "	Players.uniquenick AS `uniquenick`, ";
+	query += "	PlayerStats.score AS `score`, ";
+	query += "	PlayerStats.ran AS `ran`, ";
+	query += "	PlayerStats.pph AS `pph` ";
+	query += "FROM ";
+	query += "	`Players`, ";
+	query += "	`PlayerStats` ";
+	query += "WHERE ";
+	query += "	Players.profileid = PlayerStats.profileid ";
+	query += "ORDER BY ";
+	query += "	`ran` DESC, ";
+	query += "	`score` DESC, ";
+	query += "	`pph` DESC ";
+	query += "LIMIT 10;";
+	
+	int  output_rank;
+	int  output_profileid;
+	char output_uniquenick[33];
+	int  output_score = -1;
+	int  output_ran = -1;
+	int  output_pph = -1;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = &output_uniquenick;
+	output_bind[2].buffer_length = 33;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = const_cast<int*>(&output_score);
+	output_bind[3].is_unsigned = false;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = const_cast<int*>(&output_ran);
+	output_bind[4].is_unsigned = false;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = const_cast<int*>(&output_pph);
+	output_bind[5].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(output_bind);
+		
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Player player;
+		
+		player.SetProfileId(output_profileid);
+		player.SetUniquenick(output_uniquenick);
+		player.SetScore(output_score);
+		player.SetRank(output_ran);
+		player.SetPPH(output_pph);
+		
+		rank_players.insert(std::make_pair(output_rank, player));
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(output_bind);
+		
+	return true;
+}
+
+bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query;
+	
+	query += "SELECT ";
+	query += "	ROW_NUMBER() OVER (";
+	query += "		ORDER BY ";
+	query += "			`" + type + "` DESC ";
+	query += "	) AS `rank`, ";
+	query += "	Players.profileid  AS `profileid`, ";
+	query += "	Players.uniquenick AS `uniquenick`, ";
+	query += "	PlayerStats." + type + " AS '" + type + "' ";
+	query += "FROM ";
+	query += "	`Players`, ";
+	query += "	`PlayerStats` ";
+	query += "WHERE ";
+	query += "	Players.profileid = PlayerStats.profileid ";
+	query += "ORDER BY ";
+	query += "	`" + type + "` DESC ";
+	query += "LIMIT 10;";
+	
+	int  output_rank;
+	int  output_profileid;
+	char output_uniquenick[33];
+	int  output_value;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = &output_uniquenick;
+	output_bind[2].buffer_length = 33;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = const_cast<int*>(&output_value);
+	output_bind[3].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(output_bind);
+		
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Player player;
+		
+		player.SetProfileId(output_profileid);
+		player.SetUniquenick(output_uniquenick);
+		
+		if(type == "score")      { player.SetScore(output_value);                  }
+		else if(type == "pph")   { player.SetPPH(output_value);                    }
+		else if(type == "kills") { player.SetKills(output_value);                  }
+		else if(type == "k1")    { player.SetKillsAssualtKit(output_value);        }
+		else if(type == "k2")    { player.SetKillsSniperKit(output_value);         }
+		else if(type == "k3")    { player.SetKillsSpecialOpKit(output_value);      }
+		else if(type == "k4")    { player.SetKillsCombatEngineerKit(output_value); }
+		else if(type == "k5")    { player.SetKillsSupportKit(output_value);        }
+		else if(type == "lavd")  { player.SetLAVsDestroyed(output_value);          }
+		else if(type == "mavd")  { player.SetMAVsDestroyed(output_value);          }
+		else if(type == "havd")  { player.SetHAVsDestroyed(output_value);          }
+		else if(type == "hed")   { player.SetHelicoptersDestroyed(output_value);   }
+		else if(type == "bod")   { player.SetBoatsDestroyed(output_value);         }
+		
+		rank_players.insert(std::make_pair(output_rank, player));
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(output_bind);
+		
+	return true;
+}
+
+/*
+SELECT *
+FROM (
+    SELECT
+        ROW_NUMBER() OVER (
+			ORDER BY
+				`ran` DESC,
+                `score` DESC,
+				`pph` DESC
+		) AS `rank`,
+        Players.profileid  AS `profileid`,
+        Players.uniquenick AS `uniquenick`,
+        PlayerStats.score  AS `score`,
+        PlayerStats.ran    AS `ran`,
+	    PlayerStats.pph    AS `pph`
+    FROM Players, PlayerStats
+    WHERE Players.profileid = PlayerStats.profileid
+) AS `ranked_players`
+WHERE `rank` >= (
+    SELECT CASE WHEN `subquery`.`rank` <= 4
+                THEN 1
+                ELSE `subquery`.`rank` - 4
+           END
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (
+				ORDER BY
+					`ran` DESC,
+					`score` DESC,
+					`pph` DESC
+			) AS `rank`,
+            Players.profileid  AS `profileid`,
+			Players.uniquenick AS `uniquenick`,
+			PlayerStats.score  AS `score`,
+			PlayerStats.ran    AS `ran`,
+			PlayerStats.pph    AS `pph`
+        FROM Players, PlayerStats
+        WHERE Players.profileid = PlayerStats.profileid
+    ) AS `subquery`
+    WHERE `subquery`.`profileid` = 10036819
+)
+AND `rank` <= (
+    SELECT `rank` + 9
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (
+				ORDER BY
+					`ran` DESC,
+					`score` DESC,
+					`pph` DESC
+			) AS `rank`,
+            Players.profileid  AS `profileid`,
+			Players.uniquenick AS `uniquenick`,
+			PlayerStats.score  AS `score`,
+			PlayerStats.ran    AS `ran`,
+			PlayerStats.pph    AS `pph`
+        FROM Players, PlayerStats
+        WHERE Players.profileid = PlayerStats.profileid
+    ) AS `subquery`
+    WHERE `subquery`.`profileid` = 10036819
+)
+LIMIT 10;
+*/
+bool Database::queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query;
+	
+	query += "SELECT * ";
+	query += "FROM ( ";
+	query += "	SELECT ";
+	query += "		ROW_NUMBER() OVER ( ";
+	query += "			ORDER BY ";
+	query += "				`ran` DESC, ";
+	query += "				`score` DESC, ";
+	query += "				`pph` DESC ";
+	query += "		) AS `rank`, ";
+	query += "		Players.profileid  AS `profileid`, ";
+	query += "		Players.uniquenick AS `uniquenick`, ";
+	query += "		PlayerStats.score  AS `score`, ";
+	query += "		PlayerStats.ran    AS `ran`, ";
+	query += "		PlayerStats.pph    AS `pph` ";
+	query += "	FROM ";
+	query += "		`Players`, ";
+	query += "		`PlayerStats` ";
+	query += "	WHERE ";
+	query += "		Players.profileid = PlayerStats.profileid ";
+	query += ") AS `ranked_players` ";
+	query += "WHERE ";
+	query += "	`rank` >= ( ";
+	query += "		SELECT CASE WHEN `subquery`.`rank` <= 4 ";
+	query += "				THEN 1 ";
+	query += "				ELSE `subquery`.`rank` - 4 ";
+	query += "			END ";
+	query += "		FROM ( ";
+	query += "			SELECT ";
+	query += "				ROW_NUMBER() OVER ( ";
+	query += "					ORDER BY ";
+	query += "						`ran` DESC, ";
+	query += "						`score` DESC, ";
+	query += "						`pph` DESC ";
+	query += "				) AS `rank`, ";
+	query += "				Players.profileid  AS `profileid`, ";
+	query += "				Players.uniquenick AS `uniquenick`, ";
+	query += "				PlayerStats.score  AS `score`, ";
+	query += "				PlayerStats.ran    AS `ran`, ";
+	query += "				PlayerStats.pph    AS `pph` ";
+	query += "			FROM ";
+	query += "				Players, ";
+	query += "				PlayerStats ";
+	query += "			WHERE ";
+	query += "				Players.profileid = PlayerStats.profileid ";
+	query += "		) AS `subquery` ";
+	query += "		WHERE ";
+	query += "			`subquery`.`profileid` = ? ";
+	query += "	) ";
+	query += "AND ";
+	query += "	`rank` <= ( ";
+	query += "		SELECT ";
+	query += "			`rank` + 9 ";
+	query += "		FROM ";
+	query += "			(";
+	query += "				SELECT ";
+	query += "					ROW_NUMBER() OVER ( ";
+	query += "						ORDER BY ";
+	query += "							`ran` DESC, ";
+	query += "							`score` DESC, ";
+	query += "							`pph` DESC ";
+	query += "					) AS `rank`, ";
+	query += "					Players.profileid  AS `profileid`, ";
+	query += "					Players.uniquenick AS `uniquenick`, ";
+	query += "					PlayerStats.score  AS `score`, ";
+	query += "					PlayerStats.ran    AS `ran`, ";
+	query += "					PlayerStats.pph    AS `pph` ";
+	query += "				FROM ";
+	query += "					Players, ";
+	query += "					PlayerStats ";
+	query += "				WHERE ";
+	query += "					Players.profileid = PlayerStats.profileid ";
+	query += "			) AS `subquery` ";
+	query += "		WHERE `subquery`.`profileid` = ? ";
+	query += "	) ";
+	query += "LIMIT 10;";
+	
+	int input_profileid = profileid;
+	
+	int  output_rank;
+	int  output_profileid;
+	char output_uniquenick[33];
+	int  output_score = -1;
+	int  output_ran = -1;
+	int  output_pph = -1;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_profileid;
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &input_profileid;
+	input_bind[1].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = &output_uniquenick;
+	output_bind[2].buffer_length = 33;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = const_cast<int*>(&output_score);
+	output_bind[3].is_unsigned = false;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = const_cast<int*>(&output_ran);
+	output_bind[4].is_unsigned = false;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = const_cast<int*>(&output_pph);
+	output_bind[5].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Player player;
+		
+		player.SetProfileId(output_profileid);
+		player.SetUniquenick(output_uniquenick);
+		player.SetScore(output_score);
+		player.SetRank(output_ran);
+		player.SetPPH(output_pph);
+		
+		rank_players.insert(std::make_pair(output_rank, player));
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+		
+	return true;
+}
+
+/*
+SELECT *
+FROM (
+    SELECT
+        ROW_NUMBER() OVER (
+			ORDER BY `score` DESC
+		) AS `rank`,
+        Players.profileid                       AS `profileid`,
+        Players.uniquenick                      AS `uniquenick`,
+        PlayerStats.score                       AS `score`
+    FROM Players, PlayerStats
+    WHERE Players.profileid = PlayerStats.profileid
+) AS `ranked_players`
+WHERE `rank` >= (
+    SELECT CASE WHEN `subquery`.`rank` <= 4
+                THEN 1
+                ELSE `subquery`.`rank` - 4
+           END
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (
+				ORDER BY `score` DESC
+			) AS `rank`,
+            Players.profileid                       AS `profileid`,
+            Players.uniquenick                      AS `uniquenick`,
+            PlayerStats.score                       AS `score`
+        FROM Players, PlayerStats
+        WHERE Players.profileid = PlayerStats.profileid
+    ) AS `subquery`
+    WHERE `subquery`.`profileid` = 10036819
+)
+AND `rank` <= (
+    SELECT `rank` + 9
+    FROM (
+        SELECT
+            ROW_NUMBER() OVER (
+				ORDER BY `score` DESC
+			) AS `rank`,
+            Players.profileid                       AS `profileid`,
+            Players.uniquenick                      AS `uniquenick`,
+            PlayerStats.score                       AS `score`
+        FROM Players, PlayerStats
+        WHERE Players.profileid = PlayerStats.profileid
+    ) AS `subquery`
+    WHERE `subquery`.`profileid` = 10036819
+)
+LIMIT 10;
+*/
+bool Database::queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query;
+	
+	query += "SELECT * ";
+	query += "FROM ( ";
+	query += "	SELECT ";
+	query += "		ROW_NUMBER() OVER (ORDER BY `" + type + "` DESC) AS `rank`, ";
+	query += "		Players.profileid                                AS `profileid`, ";
+	query += "		Players.uniquenick                               AS `uniquenick`, ";
+	query += "		PlayerStats." + type + "                         AS `" + type + "` ";
+	query += "	FROM ";
+	query += "		`Players`, ";
+	query += "		`PlayerStats` ";
+	query += "	WHERE ";
+	query += "		Players.profileid = PlayerStats.profileid ";
+	query += ") AS `ranked_players` ";
+	query += "WHERE ";
+	query += "	`rank` >= ( ";
+	query += "		SELECT CASE WHEN `subquery`.`rank` <= 4 ";
+	query += "				THEN 1 ";
+	query += "				ELSE `subquery`.`rank` - 4 ";
+	query += "			END ";
+	query += "		FROM ( ";
+	query += "			SELECT ";
+	query += "				ROW_NUMBER() OVER (ORDER BY `" + type + "` DESC) AS `rank`, ";
+	query += "				Players.profileid                              AS `profileid`, ";
+	query += "				Players.uniquenick                             AS `uniquenick`, ";
+	query += "				PlayerStats." + type + "                       AS `" + type + "` ";
+	query += "			FROM ";
+	query += "				Players, ";
+	query += "				PlayerStats ";
+	query += "			WHERE ";
+	query += "				Players.profileid = PlayerStats.profileid ";
+	query += "		) AS `subquery` ";
+	query += "		WHERE ";
+	query += "			`subquery`.`profileid` = ? ";
+	query += "	) ";
+	query += "AND ";
+	query += "	`rank` <= ( ";
+	query += "		SELECT ";
+	query += "			`rank` + 9 ";
+	query += "		FROM ";
+	query += "			(";
+	query += "				SELECT ";
+	query += "					ROW_NUMBER() OVER (ORDER BY `" + type + "` DESC) AS `rank`, ";
+	query += "					Players.profileid                                AS `profileid`, ";
+	query += "					Players.uniquenick                               AS `uniquenick`, ";
+	query += "					PlayerStats." + type + "                         AS `" + type + "` ";
+	query += "				FROM ";
+	query += "					Players, ";
+	query += "					PlayerStats ";
+	query += "				WHERE ";
+	query += "					Players.profileid = PlayerStats.profileid ";
+	query += "			) AS `subquery` ";
+	query += "		WHERE `subquery`.`profileid` = ? ";
+	query += "	) ";
+	query += "LIMIT 10;";
+	
+	int input_profileid = profileid;
+	
+	int  output_rank;
+	int  output_profileid;
+	char output_uniquenick[33];
+	int  output_value;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_profileid;
+	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &input_profileid;
+	input_bind[1].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = &output_uniquenick;
+	output_bind[2].buffer_length = 33;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = const_cast<int*>(&output_value);
+	output_bind[3].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Player player;
+		
+		player.SetProfileId(output_profileid);
+		player.SetUniquenick(output_uniquenick);
+		
+		if(type == "score")      { player.SetScore(output_value);                  }
+		else if(type == "pph")   { player.SetPPH(output_value);                    }
+		else if(type == "kills") { player.SetKills(output_value);                  }
+		else if(type == "k1")    { player.SetKillsAssualtKit(output_value);        }
+		else if(type == "k2")    { player.SetKillsSniperKit(output_value);         }
+		else if(type == "k3")    { player.SetKillsSpecialOpKit(output_value);      }
+		else if(type == "k4")    { player.SetKillsCombatEngineerKit(output_value); }
+		else if(type == "k5")    { player.SetKillsSupportKit(output_value);        }
+		else if(type == "lavd")  { player.SetLAVsDestroyed(output_value);          }
+		else if(type == "mavd")  { player.SetMAVsDestroyed(output_value);          }
+		else if(type == "havd")  { player.SetHAVsDestroyed(output_value);          }
+		else if(type == "hed")   { player.SetHelicoptersDestroyed(output_value);   }
+		else if(type == "bod")   { player.SetBoatsDestroyed(output_value);         }
+		
+		rank_players.insert(std::make_pair(output_rank, player));
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+		
 	return true;
 }
 

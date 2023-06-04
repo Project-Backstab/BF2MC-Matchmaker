@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include <battlefield/playerstats.h>
 
@@ -49,6 +50,7 @@ namespace Battlefield
 	};
 	
 	typedef std::vector<Battlefield::Player> Players;
+	typedef std::map<int, Battlefield::Player> RankPlayers;
 }
 
 #endif // BATTLEFIELD_PLAYER_H

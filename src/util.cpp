@@ -96,4 +96,20 @@ std::string Util::generateRandomAuthtoken()
 	return randomString;
 }
 
+std::vector<int> Util::convertProfileIdToVector(const std::string& input)
+{
+    std::vector<int> result;
+    std::stringstream ss(input);
+    std::string item;
 
+    while (std::getline(ss, item, ',')) {
+        try
+		{
+            int value = std::stoi(item);
+            result.push_back(value);
+        }
+		catch (...) {};
+    }
+
+    return result;
+}
