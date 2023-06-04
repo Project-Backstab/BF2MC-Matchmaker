@@ -30,6 +30,7 @@ Server::Server(Server::Type type, int port)
 		case Server::Type::GPSP:      opt = g_settings["gpsp"]["connection_time_out"].asInt();      break;
 		case Server::Type::GPCM:      opt = g_settings["gpcm"]["connection_time_out"].asInt();      break;
 		case Server::Type::Webserver: opt = g_settings["webserver"]["connection_time_out"].asInt(); break;
+		case Server::Type::Browsing:  opt = g_settings["browsing"]["connection_time_out"].asInt();  break;
 	}
 	
 	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
