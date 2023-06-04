@@ -38,6 +38,8 @@ namespace Webserver
 				Requests
 			*/
 			void requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Stats
 			void requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);

@@ -40,8 +40,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestEmpty },
 	
 	// Advertisements
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestAdvertTxt },
 	
 	// bfmc.gamespy.com
 	// Stats
@@ -188,6 +188,16 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 void Webserver::Client::requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	this->_SendFile("data/news.txt");
+}
+
+void Webserver::Client::requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/advert/advert.us.sux");
+}
+
+void Webserver::Client::requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/advert/advert.us.txt");
 }
 
 /*
