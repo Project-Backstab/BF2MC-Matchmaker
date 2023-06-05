@@ -46,7 +46,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	// bfmc.gamespy.com
 	// Stats
 	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },  // Done
-	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // 
+	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // Done
 	
 	// Clan
 	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },       // Done
