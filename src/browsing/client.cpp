@@ -100,26 +100,75 @@ void Browsing::Client::onRequest(const std::vector<unsigned char>& request)
 }
 
 /*
-	
+
+	filter:
+		gamever='V1.31a' and (teamplay=0 and numplayers<=23 and numplayers>=0 and numplayers!=maxplayers and nr<=20 and xr>=20)and (region & 1)=0
+		
+		Min/Max Players:
+			Max:				numplayers<=22
+			Min:				numplayers>=1
+		Game Mode:
+			Conquest:			gc=0 and gametype='conquest'
+			CTF:				gc=0 and gametype='capturetheflag'
+		Maps: 
+			Backstab:			mapname=0 and mc=1
+			DeadlyPass:			mapname=1 and mc=1
+			BridgeToFar:		mapname=2 and mc=1
+			Dammage:			mapname=3 and mc=1
+			HarborEdge:			mapname=4 and mc=1
+			Honor:				mapname=5 and mc=1
+			LittleBigEye:		mapname=6 and mc=1
+			MissleCrisis		mapname=7 and mc=1
+			ColdFront			mapname=8 and mc=1
+			RussianBorder:		mapname=9 and mc=1
+			SpecialOp:			mapname=10 and mc=1
+			TheBlackGold		mapname=11 and mc=1
+			TheNest				mapname=12 and mc=1
+			[All Maps Playlist]	mc=2
+			[Assualt Maps]		mc=3
+			[Incursion Maps]	mc=4
+			[Domination Maps]	mc=5
+		Ranked:
+			On:					(nr>1 or xr<20)
+			Off:				nr=1 and xr=20
+		Stats Tracking:
+			On:					sr=1
+			Off:				sr=0
+		
+		Clan fight:
+			gamever='V1.31a' and (teamplay!=0 and (c0=-1 or c1=-1 or c0=19 or c1=19) and maxplayers<=24 and numplayers!=maxplayers and nr<=20 and xr>=20)and (region & 1)=0
+			
+			gamever='V1.31a' and (teamplay!=0 and (c0=-1 or c1=-1 or c0=21 or c1=21) and maxplayers<=24 and numplayers!=maxplayers and nr<=1 and xr>=1 and sr=1)and (region & 1)=0
+			
+			
 */
 void Browsing::Client::requestServerList(const std::vector<unsigned char>& request)
 {	
-	if(request.size() <= 45)
+	if(request.size() < 50)
 	{
 		return;
 	}
 	
+	const char* start = reinterpret_cast<const char*>(&request[0]) + 45;
+	std::string filter(start);
+	std::string key_list(start + filter.size() + 1);
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN + 8, 0x0);
-	
 	Battlefield::GameServers game_servers;
 	
-	g_database->queryGameServers(game_servers);
+	std::cout << "filter = " << filter << std::endl;
+	std::cout << "key_list = " << key_list << std::endl;
 	
-	//Battlefield::GameServer game_server;
-	//game_server.useExample();
+	// Only execute once
+	if(filter.find("(region & 1)!=0") != std::string::npos)
+	{
+		g_database->queryGameServers(game_servers);
+	}
 	
 	for(Battlefield::GameServer game_server : game_servers)
 	{
+		//Battlefield::GameServer game_server;
+		//game_server.useExample();
+	
 		uint16_t port = game_server.GetPort();
 		uint8_t flag = game_server.GetFlag();
 		
@@ -549,10 +598,11 @@ std::vector<unsigned char> example_C_decrypt_data = {
 
 std::vector<unsigned char> example_D_decrypt_data = {
 	// Request
-	0x56, 0x57, 0x8b, 0xeb,
+	0x56, 0x57, 0x8b, 0xeb,                                                       // Request ip: 86.87.139.235
+	0x19, 0x64,                                                                   // Requested: port 6500
 	
 	// ?? Header information ??
-	0x19, 0x64, 0x1c, 0x00,
+	0x1c, 0x00,                                                                   // Total header items: 28
 	0x68, 0x6f, 0x73, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x00,                   // hostname
 	0x67, 0x61, 0x6d, 0x65, 0x74, 0x79, 0x70, 0x65, 0x00, 0x00,                   // gametype
 	0x67, 0x61, 0x6d, 0x65, 0x76, 0x65, 0x72, 0x00, 0x00,                         // gamever

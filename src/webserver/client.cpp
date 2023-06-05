@@ -903,10 +903,19 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 	if (it != url_variables.end())
 	{
 		player.SetProfileId(it->second);
+		
+		// Get Clan id
+		g_database->queryClanByPlayer(clan, player);
 	}
 	
-	// Get Clan id
-	g_database->queryClanByPlayer(clan, player);
+	it = url_variables.find("name");
+	if(it != url_variables.end())
+	{
+		clan.SetName(it->second);
+		clan.SetTag(it->second);
+		
+		g_database->queryClanByNameOrTag(clan);
+	}
 	
 	// Get clan information
 	g_database->queryClanByClanId(clan);

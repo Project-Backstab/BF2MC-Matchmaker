@@ -31,7 +31,7 @@
 	"browsing":
 	{
 		"connection_time_out": 2,
-		"show_requests": false,
+		"show_requests": true,
 		"show_responses": false,
 	},
 	"show_client_connect": false,
