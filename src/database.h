@@ -62,8 +62,18 @@ class Database
 		// RankPlayers
 		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
 		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type);
+		bool queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s);
+		
 		bool queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
 		bool queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid);
+		bool queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_players, int profileid, const std::string& k,
+				const std::string& s);
+		
+		bool queryRankPlayersTopFriendsByRank(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends);
+		bool queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+				const std::vector<int>& friends);
+		bool queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
+				const std::string& k, const std::string& s);
 		
 		/*
 			Events

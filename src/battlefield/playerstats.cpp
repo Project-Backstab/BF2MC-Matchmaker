@@ -6,8 +6,10 @@ void Battlefield::PlayerStats::useExample()
 	this->SetRank(Five_Star_General);
 	this->SetPPH(5236);
 	this->SetKills(31848);
+	this->SetDeaths(26394);
 	this->SetSuicides(41);
 	this->SetTime(3627752);
+	this->SetVehiclesDestroyed(818);
 	this->SetLAVsDestroyed(342);
 	this->SetMAVsDestroyed(182);
 	this->SetHAVsDestroyed(118);
@@ -59,6 +61,12 @@ bool Battlefield::PlayerStats::SetKills(uint32_t kills)
 	return true;
 }
 
+bool Battlefield::PlayerStats::SetDeaths(uint32_t deaths)
+{
+	this->_deaths = deaths;
+	return true;
+}
+
 bool Battlefield::PlayerStats::SetSuicides(uint32_t suicides)
 {
 	this->_suicides = suicides;
@@ -68,6 +76,12 @@ bool Battlefield::PlayerStats::SetSuicides(uint32_t suicides)
 bool Battlefield::PlayerStats::SetTime(uint32_t time)
 {
 	this->_time = time;
+	return true;
+}
+
+bool Battlefield::PlayerStats::SetVehiclesDestroyed(uint32_t vehicles)
+{
+	this->_vehicles = vehicles;
 	return true;
 }
 

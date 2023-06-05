@@ -60,8 +60,10 @@ namespace Battlefield
 			uint32_t  _ran       = 0; // Rank
 			uint32_t  _pph       = 0; // Point per Hour
 			uint32_t  _kills     = 0; // Total kills
+			uint32_t  _deaths    = 0; // Total Deaths
 			uint32_t  _suicides  = 0; // Total suicides
 			uint32_t  _time      = 0; // Total time played in seconds
+			uint32_t  _vehicles  = 0; // Total Vehicle's destroyed
 			uint32_t  _lavd      = 0; // Total LAV's destroyed, Light Armored Vehicle  (such as a Humvee or similar)
 			uint32_t  _mavd      = 0; // Total MAV's destroyed, Medium Armored Vehicle (such as a Tank or similar)
 			uint32_t  _havd      = 0; // Total HAV's destroyed, Heavy Armored Vehicle  (such as an APC or similar)
@@ -91,8 +93,10 @@ namespace Battlefield
 			int GetRank() const                    { return this->_ran;      }
 			int GetPPH() const                     { return this->_pph;      }
 			int GetKills() const                   { return this->_kills;    }
+			int GetDeaths() const                  { return this->_deaths;   }
 			int GetSuicides() const                { return this->_suicides; }
 			int GetTime() const                    { return this->_time;     }
+			int GetVehiclesDestroyed() const       { return this->_vehicles; }
 			int GetLAVsDestroyed() const           { return this->_lavd;     }
 			int GetMAVsDestroyed() const           { return this->_mavd;     } 
 			int GetHAVsDestroyed() const           { return this->_havd;     }
@@ -113,12 +117,21 @@ namespace Battlefield
 			int GetTotalVictories() const          { return this->_mv;       }
 			int GetTotalGameSessions() const       { return this->_ngp;      }
 			
+			double GetRatio() const                  { return static_cast<double>(this->_kills * 100) / this->_deaths; }
+			double GetRatioAssualtKit() const        { return static_cast<double>(this->_k1 * 100) / this->_s1; }
+			double GetRatioSniperKit() const         { return static_cast<double>(this->_k2 * 100) / this->_s2; }
+			double GetRatioSpecialOpKit() const      { return static_cast<double>(this->_k3 * 100) / this->_s3; }
+			double GetRatioCombatEngineerKit() const { return static_cast<double>(this->_k4 * 100) / this->_s4; }
+			double GetRatioSupportKit() const        { return static_cast<double>(this->_k5 * 100) / this->_s5; }
+			
 			bool SetScore(uint32_t score);
 			bool SetRank(uint32_t ran);
 			bool SetPPH(uint32_t pph);
 			bool SetKills(uint32_t kills);
+			bool SetDeaths(uint32_t kills);
 			bool SetSuicides(uint32_t suicides);
 			bool SetTime(uint32_t time);
+			bool SetVehiclesDestroyed(uint32_t vehicles);
 			bool SetLAVsDestroyed(uint32_t lavd);
 			bool SetMAVsDestroyed(uint32_t mavd);
 			bool SetHAVsDestroyed(uint32_t havd);

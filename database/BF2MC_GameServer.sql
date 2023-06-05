@@ -16,38 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Clans`
+-- Table structure for table `GameServer`
 --
 
-DROP TABLE IF EXISTS `Clans`;
+DROP TABLE IF EXISTS `GameServer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Clans` (
-  `clanid` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) DEFAULT NULL,
-  `tag` varchar(3) DEFAULT NULL,
-  `homepage` varchar(256) DEFAULT NULL,
-  `info` varchar(1024) DEFAULT NULL,
-  `region` int DEFAULT NULL,
-  `date` varchar(15) DEFAULT '',
-  `rating` int DEFAULT '0',
-  `wins` int DEFAULT '0',
-  `losses` int DEFAULT '0',
-  `draws` int DEFAULT '0',
-  `membercount` int DEFAULT '0',
-  PRIMARY KEY (`clanid`),
-  UNIQUE KEY `clanid_UNIQUE` (`clanid`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `GameServer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ip` varchar(15) DEFAULT NULL,
+  `port` smallint DEFAULT '3658',
+  `flag` tinyint(1) DEFAULT '59',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Clans`
+-- Dumping data for table `GameServer`
 --
 
-LOCK TABLES `Clans` WRITE;
-/*!40000 ALTER TABLE `Clans` DISABLE KEYS */;
-INSERT INTO `Clans` VALUES (19,'aaa','aaa','aaa','aaa',1,'',0,0,0,0,0),(20,'Noah%5fGaming%5fClan','NGC','We+play+games','We+made+the+clan',1,'',0,0,0,0,0);
-/*!40000 ALTER TABLE `Clans` ENABLE KEYS */;
+LOCK TABLES `GameServer` WRITE;
+/*!40000 ALTER TABLE `GameServer` DISABLE KEYS */;
+INSERT INTO `GameServer` VALUES (1,'168.119.189.149',3658,59),(2,'78.47.184.23',3658,59),(3,'78.47.184.23',3659,59);
+/*!40000 ALTER TABLE `GameServer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -59,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05  4:07:35
+-- Dump completed on 2023-06-05  4:07:36

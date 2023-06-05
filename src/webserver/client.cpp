@@ -294,6 +294,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			{
 				g_database->queryRankPlayersSelfByRank(rank_players, self_profileid);
 			}
+			else
+			{
+				g_database->queryRankPlayersTopFriendsByRank(rank_players, profileids);
+			}
 			
 			for (const auto& pair : rank_players)
 			{
@@ -319,6 +323,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			{
 				g_database->queryRankPlayersSelfByType(rank_players, "score", self_profileid);
 			}
+			else
+			{
+				g_database->queryRankPlayersTopFriendsByType(rank_players, "score", profileids);
+			}
 			
 			for (const auto& pair : rank_players)
 			{
@@ -341,6 +349,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			else if(profileids.size() == 1)
 			{
 				g_database->queryRankPlayersSelfByType(rank_players, "pph", self_profileid);
+			}
+			else
+			{
+				g_database->queryRankPlayersTopFriendsByType(rank_players, "pph", profileids);
 			}
 			
 			for (const auto& pair : rank_players)
@@ -372,6 +384,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "k1", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "k1", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -394,6 +410,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					else if(profileids.size() == 1)
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "k2", self_profileid);
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "k2", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -418,6 +438,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "k3", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "k3", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -441,6 +465,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "k4", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "k4", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -463,6 +491,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					else if(profileids.size() == 1)
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "k5", self_profileid);
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "k5", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -488,6 +520,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					g_database->queryRankPlayersSelfByType(rank_players, "kills", self_profileid);
 				}
+				else
+				{
+					g_database->queryRankPlayersTopFriendsByType(rank_players, "kills", profileids);
+				}
 				
 				for (const auto& pair : rank_players)
 				{
@@ -511,34 +547,166 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			
 				if(k_filter == "assault")
 				{
-					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-					return;
-				}
-				else if(k_filter == "engineer")
-				{
-					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-					return;
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByRatio(rank_players, "k1", "s1");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "k1", "s1");
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "k1", "s1");
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetRatioAssualtKit()) + "\n";
+					}
 				}
 				else if(k_filter == "sniper")
 				{
-					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-					return;
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByRatio(rank_players, "k2", "s2");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "k2", "s2");
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "k2", "s2");
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetRatioSniperKit()) + "\n";
+					}
 				}
 				else if(k_filter == "specialops")
 				{
-					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-					return;
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByRatio(rank_players, "k3", "s3");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "k3", "s3");
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "k3", "s3");
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetRatioSpecialOpKit()) + "\n";
+					}
+				}
+				else if(k_filter == "engineer")
+				{
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByRatio(rank_players, "k4", "s4");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "k4", "s4");
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "k4", "s4");
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetRatioCombatEngineerKit()) + "\n";
+					}
 				}
 				else if(k_filter == "support")
 				{
-					this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-					return;
+					if(profileids.size() == 0)
+					{
+						g_database->queryRankPlayersTopByRatio(rank_players, "k5", "s5");
+					}
+					else if(profileids.size() == 1)
+					{
+						g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "k5", "s5");
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "k5", "s5");
+					}
+					
+					for (const auto& pair : rank_players)
+					{
+						if(self_profileid == pair.second.GetProfileId())
+						{
+							data += "-";
+						}
+						
+						data += std::to_string(pair.first) + ",";
+						data += pair.second.GetUniquenick() + ",";
+						data += std::to_string(pair.second.GetRatioSupportKit()) + "\n";
+					}
 				}
 			}
 			else
 			{
-				this->_SendFile("data/stats/sort=ratio&pos=1&posafter=9.txt");
-				return;
+				if(profileids.size() == 0)
+				{
+					g_database->queryRankPlayersTopByRatio(rank_players, "kills", "deaths");
+				}
+				else if(profileids.size() == 1)
+				{
+					g_database->queryRankPlayersSelfByRatio(rank_players, self_profileid, "kills", "deaths");
+				}
+				else
+				{
+					g_database->queryRankPlayersTopFriendsByRatio(rank_players, profileids, "kills", "deaths");
+				}
+				
+				for (const auto& pair : rank_players)
+				{
+					if(self_profileid == pair.second.GetProfileId())
+					{
+						data += "-";
+					}
+					
+					data += std::to_string(pair.first) + ",";
+					data += pair.second.GetUniquenick() + ",";
+					data += std::to_string(pair.second.GetRatio()) + "\n";
+				}
 			}
 		}
 		else if(sort == "vehicles")
@@ -557,6 +725,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					else if(profileids.size() == 1)
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "lavd", self_profileid);
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "lavd", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -581,6 +753,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "mavd", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "mavd", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -603,6 +779,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					else if(profileids.size() == 1)
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "havd", self_profileid);
+					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "havd", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -627,6 +807,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "hed", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "hed", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -650,6 +834,10 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 					{
 						g_database->queryRankPlayersSelfByType(rank_players, "bod", self_profileid);
 					}
+					else
+					{
+						g_database->queryRankPlayersTopFriendsByType(rank_players, "bod", profileids);
+					}
 					
 					for (const auto& pair : rank_players)
 					{
@@ -662,6 +850,33 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 						data += pair.second.GetUniquenick() + ",";
 						data += std::to_string(pair.second.GetBoatsDestroyed()) + "\n";
 					}
+				}
+			}
+			else
+			{
+				if(profileids.size() == 0)
+				{
+					g_database->queryRankPlayersTopByType(rank_players, "vehicles");
+				}
+				else if(profileids.size() == 1)
+				{
+					g_database->queryRankPlayersSelfByType(rank_players, "vehicles", self_profileid);
+				}				
+				else
+				{
+					g_database->queryRankPlayersTopFriendsByType(rank_players, "vehicles", profileids);
+				}
+				
+				for (const auto& pair : rank_players)
+				{
+					if(self_profileid == pair.second.GetProfileId())
+					{
+						data += "-";
+					}
+					
+					data += std::to_string(pair.first) + ",";
+					data += pair.second.GetUniquenick() + ",";
+					data += std::to_string(pair.second.GetVehiclesDestroyed()) + "\n";
 				}
 			}
 		}
