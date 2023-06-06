@@ -21,6 +21,8 @@
 
 Server::Server(Server::Type type)
 {
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
+	
 	int port = -1;
 	int opt = 10; // After 10 seconds time out socket
 	
