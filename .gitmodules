@@ -1,0 +1,6 @@
+[submodule "third-party/jsoncpp"]
+	path = third-party/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "third-party/atomizes"]
+	path = third-party/atomizes
+	url = https://github.com/tinfoilboy/atomizes.git

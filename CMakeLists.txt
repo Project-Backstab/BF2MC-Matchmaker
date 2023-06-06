@@ -4,7 +4,9 @@ option(JSONCPP_WITH_TESTS "Compile and (for jsoncpp_check) run JsonCpp test exec
 option(BUILD_SHARED_LIBS "Build jsoncpp_lib as a shared library." ON)
 option(BUILD_STATIC_LIBS "Build jsoncpp_lib as a static library." OFF)
 option(BUILD_OBJECT_LIBS "Build jsoncpp_lib as a object library." OFF)
+option (ATOMIZES_ENABLE_TESTS "Build tests for atomizes?" OFF)
 
+add_subdirectory(third-party/atomizes)
 add_subdirectory(third-party/jsoncpp)
 
 set (CMAKE_CXX_STANDARD 17)
@@ -30,6 +32,6 @@ add_executable(bf2mc
 	src/main.cpp
 )
 
-include_directories(bf2mc src src/include)
+include_directories(bf2mc src)
 
-target_link_libraries(bf2mc mysqlclient ssl crypto jsoncpp_lib)
+target_link_libraries(bf2mc mysqlclient ssl crypto jsoncpp_lib atomizes)
