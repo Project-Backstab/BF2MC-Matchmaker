@@ -2803,7 +2803,7 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 {
 	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
 	{
-		std::cerr << "Failed to prepare the statement: " << mysql_stmt_error(statement) << std::endl;
+		Logger::error("Failed to prepare the statement: " + std::string(mysql_stmt_error(statement)));
 
 		// Cleanup
 		mysql_stmt_free_result(statement);
@@ -2823,7 +2823,7 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BI
 
 	if (mysql_stmt_bind_param(statement, input_bind) != 0)
 	{
-		std::cerr << "Failed to bind the input parameter: " << mysql_stmt_error(statement) << std::endl;
+		Logger::error("Failed to bind the input parameter: " + std::string(mysql_stmt_error(statement)));
 
 		// Cleanup
 		mysql_stmt_close(statement);
@@ -2838,7 +2838,7 @@ bool Database::_execute(MYSQL_STMT* statement)
 {
 	if(mysql_stmt_execute(statement))
 	{
-		std::cerr << "Failed to execute the statement: " << mysql_stmt_error(statement) << std::endl;
+		Logger::error("Failed to execute the statement: " + std::string(mysql_stmt_error(statement)));
 		
 		// Cleanup
 		mysql_stmt_close(statement);
@@ -2859,7 +2859,7 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 	// Bind the result buffers to the statement
 	if (mysql_stmt_bind_result(statement, output_bind))
 	{
-		std::cerr << "Failed to bind the output parameter: " << mysql_stmt_error(statement) << std::endl;
+		Logger::error("Failed to bind the output parameter: " + std::string(mysql_stmt_error(statement)));
 
 		// Cleanup
 		mysql_stmt_free_result(statement);
