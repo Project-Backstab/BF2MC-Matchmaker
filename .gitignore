@@ -1,6 +1,8 @@
 build/
 reverse/
 
+src/version.h
+
 tools/hashcracker
 tools/openspy-core-v2
 tools/gs_login_server.zip

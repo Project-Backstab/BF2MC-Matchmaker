@@ -12,7 +12,7 @@ We reload systemd
 sudo systemctl daemon-reload
 ```
 
-Copy the service file and modify the path:
+Copy the service file and modify the following values in bf2mc.service: "ExecStart" and "WorkingDirectory" 
 ```
 sudo cp service/bf2mc.service /etc/systemd/system/
 sudo nano /etc/systemd/system/bf2mc.service

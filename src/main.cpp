@@ -4,6 +4,7 @@
 #include <fstream>
 #include <mysql/mysql.h>
 
+#include <version.h>
 #include <settings.h>
 #include <globals.h>
 #include <server.h>
@@ -104,6 +105,13 @@ void signal_callback(int signum)
 
 int main(int argc, char const* argv[])
 {
+	std::cout << "--- PROJECT INFO ---" << std::endl;
+	std::cout << "Project name     = " << PROJECT_GIT_NAME << std::endl;
+	std::cout << "Project toplevel = " << PROJECT_GIT_TOPLEVEL << std::endl;
+	std::cout << "Branch name      = " << PROJECT_GIT_BRANCH_NAME << std::endl;
+	std::cout << "Branch hash      = " << PROJECT_GIT_BRANCH_HASH << std::endl;
+	std::cout << "Version          = " << PROJECT_VERSION_STRING << std::endl;
+	
 	// Register signal callbacks
 	signal(SIGINT, signal_callback);
 	signal(SIGINT, signal_callback);
