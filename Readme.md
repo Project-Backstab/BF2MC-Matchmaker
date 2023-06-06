@@ -18,9 +18,13 @@ The following domains needs to be redirected to this server:
 Read [here](dns/Readme.md) more about about it.
 
 
-## Compilation
+## Clone/Compilation
 
 ```
+git clone https://github.com/Project-Backstab/BF2MC-Matchmaker.git
+git submodule init
+git submodule update
+
 mkdir build
 cd build
 cmake ..
@@ -37,7 +41,8 @@ Read [here](database/Readme.md) to setup.
 ## Run
 
 ```
-./bf2mc
+cd build
+./bin/bf2mc
 ```
 
 This will run 4 services on TCP port: 80, 28910, 29900 and 29901.
