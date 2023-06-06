@@ -22,26 +22,26 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 {
 	// www.easports.com
 	// News
-	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews  },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews               },
 	
 	// Licenses
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestEmpty },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestLicensePunkBuster  },
 	
-	// Configs
-	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestEmpty },
+	// Settings
+	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &Webserver::Client::requestSettingsGameModes  },
+	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &Webserver::Client::requestSettingsQuickMatch },
+	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &Webserver::Client::requestSettingsPlayList   },
+	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestSettingsClanMatch  },
 	
-	// Local
-	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestEmpty },
-	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestEmpty },
+	// Locale
+	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestLocaleEnglish      },
+	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestLocaleLanguage     },
 	
 	// Advertisements
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestAdvertTxt },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestAdvertTxt          },
 	
 	// bfmc.gamespy.com
 	// Stats
@@ -182,24 +182,73 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 	}
 }
 
-/*
-	
-*/
+// www.easports.com
+// News
 void Webserver::Client::requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/news.txt");
+	this->_SendFile("data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt");
 }
 
+void Webserver::Client::requestLicenseGameSpy(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/GameSpy/gs.us");
+}
+
+void Webserver::Client::requestLicenseEA(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Ea/Ea.us");
+}
+
+void Webserver::Client::requestLicensePunkBuster(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/PunkBuster/pb.us");
+}
+
+// Settings
+void Webserver::Client::requestSettingsGameModes(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/GameModes.txt");
+}
+
+void Webserver::Client::requestSettingsQuickMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt");
+}
+
+void Webserver::Client::requestSettingsPlayList(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/PlayLists.txt");
+}
+
+void Webserver::Client::requestSettingsClanMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt");
+}
+
+// Locale
+void Webserver::Client::requestLocaleEnglish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/english.pus");
+}
+
+void Webserver::Client::requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/language.hdt");
+}
+
+// Advertisements
 void Webserver::Client::requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/advert/advert.us.sux");
+	this->_SendFile("data/gamescripts/bfmc/ps2/Ads/advert.us.sux");
 }
 
 void Webserver::Client::requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/advert/advert.us.txt");
+	this->_SendFile("data/gamescripts/bfmc/ps2/Ads/advert.us.txt");
 }
 
+// bfmc.gamespy.com
+// Stats
 /*
 	pid:		Player profileid
 	getarg:		this argument defines the parameters it needs to return
@@ -890,9 +939,7 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 	}
 }
 
-/*
-	
-*/
+// Clan
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	Battlefield::Clan clan;

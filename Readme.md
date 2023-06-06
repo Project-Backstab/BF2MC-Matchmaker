@@ -18,15 +18,21 @@ The following domains needs to be redirected to this server:
 Read [here](dns/Readme.md) more about about it.
 
 
-## Clone/Compilation
+## Clone Project
 
 ```
 git clone https://github.com/Project-Backstab/BF2MC-Matchmaker.git
+cd BF2MC-Matchmaker
+
 git submodule init
 git submodule update
 
 sudo apt-get install libmysqlclient-dev
+```
 
+## Compile project
+
+```
 mkdir build
 cd build
 cmake ..

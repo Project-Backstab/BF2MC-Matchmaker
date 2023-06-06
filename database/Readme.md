@@ -30,7 +30,7 @@ Now we set up that the root is accepted from remote ip.
 sudo mysql
 
 SELECT User, Host FROM mysql.user;
-CREATE USER 'root'@'<your_ip>' IDENTIFIED WITH mysql_native_password BY '<your_password>'
+CREATE USER 'root'@'<your_ip>' IDENTIFIED WITH mysql_native_password BY '<your_password>';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'<your_ip>' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 ```

@@ -37,10 +37,30 @@ namespace Webserver
 			/*
 				Requests
 			*/
+			// www.easports.com
+			// News
 			void requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			
+			// Licenses
+			void requestLicenseGameSpy(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLicenseEA(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLicensePunkBuster(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			
+			// Settings
+			void requestSettingsGameModes(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestSettingsQuickMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestSettingsPlayList(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestSettingsClanMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			
+			// Locale
+			void requestLocaleEnglish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			
+			// Advertisements
 			void requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			void requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
+			// bfmc.gamespy.com
 			// Stats
 			void requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			void requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
