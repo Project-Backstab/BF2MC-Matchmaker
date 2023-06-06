@@ -19,19 +19,32 @@
 
 #include <server.h>
 
-Server::Server(Server::Type type, int port)
+Server::Server(Server::Type type)
 {
+	int port = -1;
 	int opt = 10; // After 10 seconds time out socket
 	
 	this->_type = type;
 	
-	// Get time out setting
+	// setting
 	switch(type)
 	{
-		case Server::Type::GPSP:      opt = g_settings["gpsp"]["connection_time_out"].asInt();      break;
-		case Server::Type::GPCM:      opt = g_settings["gpcm"]["connection_time_out"].asInt();      break;
-		case Server::Type::Webserver: opt = g_settings["webserver"]["connection_time_out"].asInt(); break;
-		case Server::Type::Browsing:  opt = g_settings["browsing"]["connection_time_out"].asInt();  break;
+		case Server::Type::GPSP:
+			port = g_settings["gpsp"]["port"].asInt();
+			opt = g_settings["gpsp"]["connection_time_out"].asInt();
+		break;
+		case Server::Type::GPCM:
+			port = g_settings["gpcm"]["port"].asInt();
+			opt = g_settings["gpcm"]["connection_time_out"].asInt();
+		break;
+		case Server::Type::Webserver:
+			port = g_settings["webserver"]["port"].asInt();
+			opt = g_settings["webserver"]["connection_time_out"].asInt();
+		break;
+		case Server::Type::Browsing:
+			port = g_settings["browsing"]["port"].asInt();
+			opt = g_settings["browsing"]["connection_time_out"].asInt();
+		break;
 	}
 	
 	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)

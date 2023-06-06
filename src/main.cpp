@@ -54,19 +54,19 @@ void start_db()
 
 void start_gpsp_server()
 {
-	g_gpsp_server = new Server(Server::Type::GPSP, 29901);	
+	g_gpsp_server = new Server(Server::Type::GPSP);	
 	g_gpsp_server->Listen();
 }
 
 void start_gpcm_server()
 {
-	g_gpcm_server = new Server(Server::Type::GPCM, 29900);	
+	g_gpcm_server = new Server(Server::Type::GPCM);	
 	g_gpcm_server->Listen();
 }
 
 void start_webserver_server()
 {
-	g_webserver_server = new Server(Server::Type::Webserver, 80);	
+	g_webserver_server = new Server(Server::Type::Webserver);	
 	g_webserver_server->Listen();
 }
 
@@ -75,7 +75,7 @@ void start_browsing_server()
 	//Browsing::Client::Test();
 	//Browsing::Client::Crack();
 	
-	g_browsing_server = new Server(Server::Type::Browsing, 28910);	
+	g_browsing_server = new Server(Server::Type::Browsing);	
 	g_browsing_server->Listen();
 }
 

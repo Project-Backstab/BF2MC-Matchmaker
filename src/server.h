@@ -23,7 +23,7 @@ class Server : public Net::Socket
 		Server::Type              _type;
 	
 	public:
-		Server(Server::Type type, int port);
+		Server(Server::Type type);
 		void Listen();
 		void DisconnectAllClients();
 		void Close();
