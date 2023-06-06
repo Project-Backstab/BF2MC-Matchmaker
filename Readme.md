@@ -31,6 +31,8 @@ mkdir build
 cd build
 cmake ..
 make
+
+cmake --install . --prefix ../../BF2MC-Matchmaker-release
 ```
 
 This will create the bf2mc executable.
@@ -43,8 +45,8 @@ Read [here](database/Readme.md) to setup.
 ## Run
 
 ```
-cd build
-./bin/bf2mc
+cd BF2MC-Matchmaker-release/bin
+sudo ./bf2mc
 ```
 
 This will run 4 services on TCP port: 80, 28910, 29900 and 29901.

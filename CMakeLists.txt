@@ -35,3 +35,9 @@ add_executable(bf2mc
 include_directories(bf2mc src)
 
 target_link_libraries(bf2mc mysqlclient ssl crypto jsoncpp_lib atomizes)
+
+install(TARGETS bf2mc DESTINATION bin)
+install(
+    DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+    DESTINATION data
+    FILES_MATCHING PATTERN "*.*")
