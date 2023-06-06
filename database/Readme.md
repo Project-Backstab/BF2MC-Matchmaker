@@ -15,7 +15,30 @@ Run mysql secury script to configure to your liking
 sudo mysql_secure_installation
 ```
 
-In my case i allow to open up remote connections to admin the server.
+## Remote control
+
+We have to open up mysql server to listen to the correct bind.
+
+```
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+Modify that bind-address from: 127.0.0.1 to 0.0.0.0
+
+
+Now we set up that the root is accepted from remote ip.
+```
+sudo mysql
+
+SELECT User, Host FROM mysql.user;
+CREATE USER 'root'@'<your_ip>' IDENTIFIED WITH mysql_native_password BY '<your_password>'
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'<your_ip>' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+```
+
+Last we patch the firewall.
+```
+sudo ufw allow from <myip> to any port 3306
+```
 
 ## Remote control
 

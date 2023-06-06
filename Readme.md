@@ -25,6 +25,8 @@ git clone https://github.com/Project-Backstab/BF2MC-Matchmaker.git
 git submodule init
 git submodule update
 
+sudo apt-get install libmysqlclient-dev
+
 mkdir build
 cd build
 cmake ..
