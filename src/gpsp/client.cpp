@@ -3,6 +3,7 @@
 #include <iomanip>
 
 #include <settings.h>
+#include <logger.h>
 #include <server.h>
 #include <globals.h>
 #include <util.h>
@@ -86,11 +87,7 @@ void GPSP::Client::onRequest(const std::string& request)
 	}
 	else
 	{
-		std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
-		
-		std::cout << "action \"" << action << "\" not implemented!" << std::endl;
-		
-		guard.unlock();
+		Logger::warning("action \"" + action + "\" not implemented!");
 		
 		this->Disconnect();
 	}
@@ -374,15 +371,11 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 */
 void GPSP::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // settings lock  (read)
 	
-	if(
-		(g_settings["gpsp"]["show_requests"].asBool() && direction == "-->") ||
-		(g_settings["gpsp"]["show_responses"].asBool() && direction == "<--")
-	)
-	{
-		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
-	}
+	bool show_console = (g_settings["gpsp"]["show_requests"].asBool() && direction == "-->") ||
+						(g_settings["gpsp"]["show_responses"].asBool() && direction == "<--");
+	
+	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
 }
 

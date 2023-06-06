@@ -4,6 +4,7 @@
 #include <openssl/md5.h>
 #include <numeric>
 #include <random>
+#include <chrono>
 
 #include <util.h>
 
@@ -113,3 +114,27 @@ std::vector<int> Util::convertProfileIdToVector(const std::string& input)
 
     return result;
 }
+
+std::string Util::GetNowTime()
+{
+    char timeStr[9];
+	
+	auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::tm* timeInfo = std::localtime(&time);
+    std::strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeInfo);
+	
+	return timeStr;
+}
+
+std::string Util::GetNowDateTime()
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(now);
+    std::tm* timeInfo = std::localtime(&time);
+
+    std::ostringstream oss;
+    oss << std::put_time(timeInfo, "%Y%m%d-%H%M%S");
+    return oss.str();
+}
+

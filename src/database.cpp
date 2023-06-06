@@ -2,7 +2,7 @@
 #include <mysql/mysql.h>
 
 #include <settings.h>
-#include <globals.h>
+#include <logger.h>
 #include <util.h>
 
 #include <database.h>
@@ -21,8 +21,8 @@ Database::Database()
 			g_settings["database"]["database_name"].asString().c_str(),
 			0, nullptr, 0))
 	{
-		std::cerr << "[Error] Failed to connect to the database: " << mysql_error(this->_connection) << std::endl;
-		std::cerr << "[Error] Database::Database() at mysql_real_connect" << std::endl;
+		Logger::error("Failed to connect to the database: " + std::string(mysql_error(this->_connection)));
+		Logger::error("Database::Database() at mysql_real_connect");
 		
 		exit(EXIT_FAILURE);
 	}
@@ -2874,8 +2874,6 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 // Events
 void Database::OnDatabaseStart()
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
-
-	std::cout << "Database started" << std::endl;
+	Logger::info("Database started");
 }
 

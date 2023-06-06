@@ -5,6 +5,7 @@
 #include <regex>
 
 #include <settings.h>
+#include <logger.h>
 #include <server.h>
 #include <gpcm/client.h>
 #include <globals.h>
@@ -153,7 +154,7 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
 	
-	std::cout << "action \"" << action << "\" not implemented!" << std::endl;
+	Logger::warning("action \"" + action + "\" not implemented!");
 	
 	Json::Value banned_requests = g_settings["webserver"]["banned_requests"];
 	
@@ -173,7 +174,7 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 			
 			if(std::regex_search(action, pattern) && !std::regex_search(client_ip, ip_pattern))
 			{
-				std::cout << "Bannable action found \"" << action << "\" by " << client_ip << std::endl;
+				Logger::warning("Bannable action found \"" + action + "\" by " + client_ip);
 				
 				std::string query = "sudo iptables -I INPUT -s " + client_ip + " -j DROP";
 				int result = system(query.c_str());
@@ -935,7 +936,8 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 		
 		this->Send(http_response);
 		
-		this->_LogTransaction("<--", http_response.ToString());
+		this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+		//this->_LogTransaction("<--", http_response.ToString());
 	}
 }
 
@@ -1492,16 +1494,12 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, c
 */
 void Webserver::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock       (read/write)
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
+	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // settings lock (read)
 	
-	if(
-		(g_settings["webserver"]["show_requests"].asBool() && direction == "-->") ||
-		(g_settings["webserver"]["show_responses"].asBool() && direction == "<--")
-	)
-	{
-		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
-	}
+	bool show_console = (g_settings["webserver"]["show_requests"].asBool() && direction == "-->") ||
+						(g_settings["webserver"]["show_responses"].asBool() && direction == "<--");
+	
+	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
 }
 
 atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const

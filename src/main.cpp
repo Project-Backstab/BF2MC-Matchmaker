@@ -5,20 +5,20 @@
 #include <mysql/mysql.h>
 
 #include <version.h>
+#include <logger.h>
 #include <settings.h>
 #include <globals.h>
 #include <server.h>
 #include <database.h>
 
 // Globals
-Json::Value       g_settings;
 Database*         g_database;
 Server*           g_gpsp_server;
 Server*           g_gpcm_server;
 Server*           g_webserver_server;
 Server*           g_browsing_server;
 
-std::mutex        g_mutex_io;
+Json::Value       g_settings;
 std::shared_mutex g_mutex_settings;
 
 void load_settings()
@@ -81,11 +81,7 @@ void start_browsing_server()
 
 void signal_callback(int signum)
 {
-	std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
-	
-	std::cout << "Caught signal " << signum << std::endl;
-	
-	guard.unlock();
+	Logger::info("Caught signal " + std::to_string(signum));
 	
 	//Disconnect all clients
 	g_gpsp_server->DisconnectAllClients();
@@ -105,12 +101,15 @@ void signal_callback(int signum)
 
 int main(int argc, char const* argv[])
 {
-	std::cout << "--- PROJECT INFO ---" << std::endl;
-	std::cout << "Project name     = " << PROJECT_GIT_NAME << std::endl;
-	std::cout << "Project toplevel = " << PROJECT_GIT_TOPLEVEL << std::endl;
-	std::cout << "Branch name      = " << PROJECT_GIT_BRANCH_NAME << std::endl;
-	std::cout << "Branch hash      = " << PROJECT_GIT_BRANCH_HASH << std::endl;
-	std::cout << "Version          = " << PROJECT_VERSION_STRING << std::endl;
+	Logger::Initialize();
+	
+	Logger::info("--- PROJECT INFO ---");
+	Logger::info("Project name     = " + std::string(PROJECT_GIT_NAME));
+	Logger::info("Project toplevel = " + std::string(PROJECT_GIT_TOPLEVEL));
+	Logger::info("Branch name      = " + std::string(PROJECT_GIT_BRANCH_NAME));
+	Logger::info("Branch hash      = " + std::string(PROJECT_GIT_BRANCH_HASH));
+	Logger::info("Version          = " + std::string(PROJECT_VERSION_STRING));
+	Logger::warning("lool");
 	
 	// Register signal callbacks
 	signal(SIGINT, signal_callback);

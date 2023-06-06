@@ -3,6 +3,7 @@
 #include <iomanip>
 
 #include <settings.h>
+#include <logger.h>
 #include <server.h>
 #include <globals.h>
 #include <util.h>
@@ -89,11 +90,7 @@ void Browsing::Client::onRequest(const std::vector<unsigned char>& request)
 	}
 	else
 	{
-		std::unique_lock<std::mutex> guard(g_mutex_io); // io lock (read/write)
-		
-		std::cout << "action \"" << action << "\"not implemented!" << std::endl;
-		
-		guard.unlock();
+		Logger::warning("action \"" + std::to_string(action) + "\"not implemented!");
 		
 		this->Disconnect();
 	}
@@ -155,8 +152,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN + 8, 0x0);
 	Battlefield::GameServers game_servers;
 	
-	std::cout << "filter = " << filter << std::endl;
-	std::cout << "key_list = " << key_list << std::endl;
+	//Logger::debug("filter = " + filter);
+	//Logger::debug("key_list = " + key_list);
 	
 	// Only execute once
 	if(filter.find("(region & 1)!=0") != std::string::npos)
@@ -216,16 +213,12 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 */
 void Browsing::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	if(
-		(g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
-		(g_settings["browsing"]["show_responses"].asBool() && direction == "<--")
-	)
-	{
-		std::cout << std::setfill(' ') << std::setw(21) << this->GetAddress() << " " << direction << " " << response << std::endl;
-	}
+	bool show_console = (g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
+						(g_settings["browsing"]["show_responses"].asBool() && direction == "<--");
+	
+	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
 }
 
 void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response)
@@ -637,9 +630,7 @@ std::vector<unsigned char> example_D_decrypt_data = {
 };
 
 void Browsing::Client::Test()
-{
-	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
-	
+{	
 	int response_offset = 0;
 	std::stringstream ss;
 	
@@ -661,7 +652,8 @@ void Browsing::Client::Test()
 	// First conclusion:
 	// buffer.WriteByte((uint8_t)(cryptlen ^ 0xEC));
 	// buffer.WriteBuffer((uint8_t *)&cryptchal, cryptlen);
-	std::cout << std::hex << (cryptlen ^ 0xEC) << std::endl; // Returns e6
+	ss << std::hex << (cryptlen ^ 0xEC); // Returns e6
+	Logger::debug(ss.str());
 	response_offset++;
 	
 	// copy crypt challenge
@@ -672,12 +664,14 @@ void Browsing::Client::Test()
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(cryptchal[i]);
 	}
 	response_offset += CHALLENGE_CRYPT_LEN;
-	std::cout << "cryptchal = " << ss.str() << std::endl;
+	Logger::debug("cryptchal = " + ss.str());
 	
 	// Second conclusion
 	// buffer.WriteByte((uint8_t)(servchallen ^ 0xEA));
 	// buffer.WriteBuffer((uint8_t *)&servchal, servchallen);
-	std::cout << std::hex << (servchallen ^ 0xEA) << std::endl; // Returns f3
+	ss.str("");
+	ss << std::hex << (servchallen ^ 0xEA) << std::endl; // Returns f3
+	Logger::debug(ss.str());
 	response_offset++;
 	
 	// copy crypt challenge
@@ -688,7 +682,7 @@ void Browsing::Client::Test()
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(servchal[i]);
 	}
 	response_offset += CHALLENGE_SERVER_LEN;
-	std::cout << "servchal = " << ss.str() << std::endl;
+	Logger::debug("servchal = " + ss.str());
 	
 	// Third: Find secret key
 	// Found online:
@@ -705,7 +699,7 @@ void Browsing::Client::Test()
 		m_challenge[i] = request[37 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(m_challenge[i]);
 	}
-	std::cout << "m_challenge = " << ss.str() << std::endl;
+	Logger::debug("m_challenge = " + ss.str());
 	
 	// Update challenge
 	for (uint32_t i = 0 ; i < servchallen ; i++)
@@ -721,7 +715,7 @@ void Browsing::Client::Test()
 	{
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(response[i]);
 	}
-	std::cout << "encrypted data = " << ss.str() << std::endl;
+	Logger::debug("encrypted data = " + ss.str());
 	
 	// Initialization GOA crypt
 	GOACryptInit(&(m_crypt_state), (unsigned char *)(&m_challenge), CHALLENGE_CLIENT_LEN);	
@@ -734,7 +728,7 @@ void Browsing::Client::Test()
 	{
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(response[i]);
 	}
-	std::cout << "decrypted data = " << ss.str() << std::endl;
+	Logger::debug("decrypted data = " + ss.str());
 	
 	/*
 	// Encrypt the data again to confirm its the right encrypted data
@@ -747,7 +741,7 @@ void Browsing::Client::Test()
 	{
 		ss << std::hex << (int)(response[i]);
 	}
-	std::cout << "encrypt data = " << ss.str() << std::endl;
+	Logger::debug("encrypt data = " + ss.str());
 	*/
 }
 
@@ -771,7 +765,7 @@ void Browsing::Client::Crack()
 		crypt_challenge[i] = response[1 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(crypt_challenge[i]);
 	}
-	std::cout << "crypt_challenge = " << ss.str() << std::endl;
+	Logger::debug("crypt_challenge = " + ss.str());
 	
 	ss.str("");
 	for(int i = 0; i < CHALLENGE_SERVER_LEN; i++)
@@ -779,7 +773,7 @@ void Browsing::Client::Crack()
 		server_challenge[i] = response[12 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(server_challenge[i]);
 	}
-	std::cout << "server_challenge = " << ss.str() << std::endl;
+	Logger::debug("server_challenge = " + ss.str());
 	
 	// Get the challenge from the clients request
 	ss.str("");
@@ -788,7 +782,7 @@ void Browsing::Client::Crack()
 		client_challenge[i] = request[37 + i];
 		ss << std::hex << std::setfill('0') << std::setw(2) << (int)(client_challenge[i]);
 	}
-	std::cout << "client_challenge = " << ss.str() << std::endl;
+	Logger::debug("client_challenge = " + ss.str());
 	
 	/*
 		Crack
@@ -835,7 +829,7 @@ void Browsing::Client::Crack()
 		
 		if(correct)
 		{
-			std::cout << "Found!! secret_key = " << secret_key << std::endl;
+			Logger::debug("Found!! secret_key = " + secret_key);
 			
 			return;
 		}

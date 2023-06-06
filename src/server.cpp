@@ -10,13 +10,14 @@
 #include <thread>
 #include <algorithm>
  
-#include <server.h>
-#include <globals.h>
+#include <logger.h>
 #include <settings.h>
 #include <gpsp/client.h>
 #include <gpcm/client.h>
 #include <webserver/client.h>
 #include <browsing/client.h>
+
+#include <server.h>
 
 Server::Server(Server::Type type, int port)
 {
@@ -35,13 +36,13 @@ Server::Server(Server::Type type, int port)
 	
 	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		perror("[Error] Server::Server() at socket");
+		Logger::error("Server::Server() at socket");
 		exit(EXIT_FAILURE);
 	}
 	
 	if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
 	{
-		perror("[Error] Server::Server() at setsockopt");
+		Logger::error("Server::Server() at setsockopt");
 		exit(EXIT_FAILURE);
 	}
 
@@ -51,7 +52,7 @@ Server::Server(Server::Type type, int port)
 
 	if (bind(this->_socket, (struct sockaddr*)&this->_address, sizeof(this->_address)) < 0)
 	{
-		perror("[Error] Server::Server() at bind");
+		Logger::error("Server::Server() at bind");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -64,7 +65,7 @@ void Server::Listen()
 	
 	if (listen(this->_socket, 3) < 0)
 	{
-		perror("[Error] Server::Listen() on listen");
+		Logger::error("Server::Listen() on listen");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -74,7 +75,7 @@ void Server::Listen()
 	{
 		if ((client_socket = accept(this->_socket, (struct sockaddr*)&client_address, &client_address_len)) < 0)
 		{
-			perror("[Error] Server::Listen() on accept");
+			Logger::error("Server::Listen() on accept");
 			exit(EXIT_FAILURE);
 		}
 		
@@ -165,39 +166,27 @@ void Server::Close()
 	Events
 */
 void Server::onServerListen() const
-{
-	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
-	
-	std::cout << "Server is now listening on " << this->GetAddress() << std::endl;
+{	
+	Logger::info("Server is now listening on " + this->GetAddress());
 }
 
 void Server::onServerShutdown() const
 {
-	std::lock_guard<std::mutex> guard(g_mutex_io); // io lock (read/write)
-	
-	std::cout << "Server shutdown" << std::endl;
+	Logger::info("Server shutdown");
 }
 
 void Server::onClientConnect(const Net::Socket& client) const
 {
-	std::lock_guard<std::mutex>         guard(g_mutex_io);        // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	if(g_settings["show_client_connect"].asBool())
-	{
-		std::cout << "Client " << client.GetAddress() << " connected" << std::endl;
-	}
+	Logger::info("Client " + client.GetAddress() + " connected", g_settings["show_client_connect"].asBool());
 }
 
 void Server::onClientDisconnect(const Net::Socket& client)
 {
-	std::lock_guard<std::mutex>         guard (g_mutex_io);       // io lock        (read/write)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	if(g_settings["show_client_disconnect"].asBool())
-	{
-		std::cout << "Client " << client.GetAddress() << " disconnected" << std::endl;
-	}
+	Logger::info("Client " + client.GetAddress() + " disconnected", g_settings["show_client_disconnect"].asBool());
 	
 	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
 	if (it != this->_clients.end())

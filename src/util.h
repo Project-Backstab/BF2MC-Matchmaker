@@ -16,6 +16,9 @@ namespace Util
 	std::string generateRandomAuthtoken();
 	
 	std::vector<int> convertProfileIdToVector(const std::string& input);
+	
+	std::string GetNowTime();
+	std::string GetNowDateTime();
 }
 
 #endif // UTIL_H

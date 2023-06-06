@@ -26,6 +26,7 @@ add_executable(bf2mc
 	src/net/socket.cpp
 	src/database.cpp
 	src/util.cpp
+	src/logger.cpp
 	src/gamespy.cpp
 	src/urlrequest.cpp
 	src/battlefield/player.cpp
