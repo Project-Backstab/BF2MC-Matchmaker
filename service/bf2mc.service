@@ -1,0 +1,12 @@
+[Unit]
+Description=BF2MC-Matchmaker
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=/var/www/BF2MC-Matchmaker-release/bin/bf2mc
+WorkingDirectory=/var/www/BF2MC-Matchmaker-release/bin
+
+[Install]
+WantedBy=multi-user.target
