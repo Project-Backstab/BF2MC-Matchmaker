@@ -11,6 +11,8 @@ add_subdirectory(third-party/jsoncpp)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -s")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s")
 
 ## BF2MC-Matchmaker
 project(bf2mc VERSION 1.0.0)
