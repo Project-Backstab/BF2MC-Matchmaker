@@ -30,7 +30,7 @@ sudo apt-get install libmysqlclient-dev
 mkdir build
 cd build
 cmake ..
-make
+make -j 4
 
 cmake --install . --prefix ../../BF2MC-Matchmaker-release
 ```

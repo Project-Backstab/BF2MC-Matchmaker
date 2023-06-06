@@ -27,6 +27,7 @@ sudo systemctl start bf2mc.service
 ## Usage
 
 ```
+sudo systemctl start bf2mc
 sudo systemctl stop bf2mc
 sudo systemctl restart bf2mc
 sudo systemctl status bf2mc
