@@ -183,7 +183,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query = "SELECT * FROM `Players` WHERE `email` = ?";
+	std::string query = "SELECT `profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`  FROM `Players` WHERE `email` = ?";
 	
 	int  output_profileid = 0;
 	int  output_userid = 0;
@@ -312,13 +312,60 @@ bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 	return true;
 }
 
+bool Database::updatePlayerLastLogin(Battlefield::Player& player, const std::string& ip)
+{
+	std::string query = "UPDATE `Players` SET ";
+	query += "`last_login` = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), ";
+	query += "`last_login_ip` = ? ";
+	query += "WHERE `profileid` = ?;";
+	
+	int input_profileid = player.GetProfileId();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(ip[0]));
+	input_bind[0].buffer_length = ip.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].is_unsigned = false;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	
+	return true;
+}
+
 bool Database::insertPlayer(const Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
-	std::string query = "INSERT INTO `Players` (`userid`, `nick`, `uniquenick`, `email`, `password`) VALUES (?, ?, ?, ?, ?);";
+	std::string query;
+	query += "INSERT INTO ";
+	query += "	`Players` (";
+	query += "		`userid`, `nick`, `uniquenick`, `email`, `password`, `created_at`";
+	query += "	)";
+	query += "	VALUES ";
+	query += "		(?, ?, ?, ?, ?, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'));";
 	
-	int          input_profileid   = player.GetUserId();
+	int          input_userid      = player.GetUserId();
 	std::string  input_nick        = player.GetNick();
 	std::string  input_uniquenick  = player.GetUniquenick();
 	std::string  input_email       = player.GetEmail();
@@ -327,7 +374,7 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].buffer = const_cast<int*>(&input_userid);
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
 	input_bind[1].buffer = const_cast<char*>(&(input_nick[0]));
@@ -1215,7 +1262,12 @@ bool Database::insertClan(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query = "INSERT INTO `Clans` (`name`, `tag`, `homepage`, `info`, `region`) VALUES (?, ?, ?, ?, ?);";
+	std::string query;
+	
+	query += "INSERT INTO `Clans` ";
+	query += "	(`name`, `tag`, `homepage`, `info`, `region`, `created_at`) ";
+	query += "VALUES ";
+	query += "(?, ?, ?, ?, ?, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'));";
 	
 	std::string  input_name     = clan.GetName();
 	std::string  input_tag      = clan.GetTag();
@@ -2841,6 +2893,7 @@ bool Database::_execute(MYSQL_STMT* statement)
 		Logger::error("Failed to execute the statement: " + std::string(mysql_stmt_error(statement)));
 		
 		// Cleanup
+		mysql_stmt_free_result(statement);
 		mysql_stmt_close(statement);
 
 		return false;

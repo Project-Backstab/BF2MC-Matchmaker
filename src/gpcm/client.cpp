@@ -187,6 +187,8 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 		"final"
 	});
 	
+	g_database->updatePlayerLastLogin(player, this->GetIP());
+	
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress());
 	
 	this->Send(response);

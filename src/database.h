@@ -29,6 +29,7 @@ class Database
 		bool queryPlayerByUniquenick(Battlefield::Player& player);
 		bool queryPlayersByEmail(Battlefield::Players& players, const std::string& email);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
+		bool updatePlayerLastLogin(Battlefield::Player& player, const std::string& ip);
 		bool insertPlayer(const Battlefield::Player& player);
 		
 		// Player friends

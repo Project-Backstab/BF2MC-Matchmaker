@@ -35,9 +35,10 @@ CREATE TABLE `Clans` (
   `losses` int DEFAULT '0',
   `draws` int DEFAULT '0',
   `membercount` int DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`clanid`),
   UNIQUE KEY `clanid_UNIQUE` (`clanid`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +47,7 @@ CREATE TABLE `Clans` (
 
 LOCK TABLES `Clans` WRITE;
 /*!40000 ALTER TABLE `Clans` DISABLE KEYS */;
-INSERT INTO `Clans` VALUES (19,'aaa','aaa','aaa','aaa',1,'',0,0,0,0,0),(20,'Noah%5fGaming%5fClan','NGC','We+play+games','We+made+the+clan',1,'',0,0,0,0,0);
+INSERT INTO `Clans` VALUES (19,'aaa','aaa','aaa','aaa',1,'',0,0,0,0,0,NULL),(20,'Noah%5fGaming%5fClan','NGC','We+play+games','We+made+the+clan',1,'',0,0,0,0,0,NULL),(21,'aaaaaaaaa','aap','aaaa','aaaa',1,'',0,0,0,0,0,NULL),(22,'lllll','lll','aaaa','aaaa',1,'',0,0,0,0,0,'2023-06-08 05:56:04');
 /*!40000 ALTER TABLE `Clans` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -59,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05  4:07:35
+-- Dump completed on 2023-06-08  8:02:44
