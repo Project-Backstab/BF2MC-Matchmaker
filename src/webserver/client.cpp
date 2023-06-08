@@ -974,7 +974,6 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 		this->Send(http_response);
 		
 		this->_LogTransaction("<--", "HTTP/1.1 200 OK");
-		//this->_LogTransaction("<--", http_response.ToString());
 	}
 }
 
