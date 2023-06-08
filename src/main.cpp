@@ -109,7 +109,6 @@ int main(int argc, char const* argv[])
 	Logger::info("Branch name      = " + std::string(PROJECT_GIT_BRANCH_NAME));
 	Logger::info("Branch hash      = " + std::string(PROJECT_GIT_BRANCH_HASH));
 	Logger::info("Version          = " + std::string(PROJECT_VERSION_STRING));
-	Logger::warning("lool");
 	
 	// Register signal callbacks
 	signal(SIGINT, signal_callback);
