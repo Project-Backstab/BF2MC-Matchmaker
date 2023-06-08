@@ -53,8 +53,14 @@ namespace Webserver
 			void requestSettingsClanMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Locale
-			void requestLocaleEnglish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			void requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleEnglish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleFrench(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleGerman(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleItalian(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleJapanese(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleSpanish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestLocaleSwedish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
 			
 			// Advertisements
 			void requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);

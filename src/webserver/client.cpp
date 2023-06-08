@@ -37,8 +37,14 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestSettingsClanMatch  },
 	
 	// Locale
-	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestLocaleEnglish      },
 	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestLocaleLanguage     },
+	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestLocaleEnglish      },
+	{ "/gamescripts/bfmc/ps2/Locale/french.pus",              &Webserver::Client::requestLocaleFrench       },
+	{ "/gamescripts/bfmc/ps2/Locale/german.pus",              &Webserver::Client::requestLocaleGerman       },
+	{ "/gamescripts/bfmc/ps2/Locale/italian.pus",             &Webserver::Client::requestLocaleItalian      },
+	{ "/gamescripts/bfmc/ps2/Locale/japanese.pus",            &Webserver::Client::requestLocaleJapanese     },
+	{ "/gamescripts/bfmc/ps2/Locale/spanish.pus",             &Webserver::Client::requestLocaleSpanish      },
+	{ "/gamescripts/bfmc/ps2/Locale/swedish.pus",             &Webserver::Client::requestLocaleSwedish      },
 	
 	// Advertisements
 	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux          },
@@ -227,15 +233,46 @@ void Webserver::Client::requestSettingsClanMatch(const atomizes::HTTPMessage& ht
 }
 
 // Locale
+void Webserver::Client::requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/language.hdt");
+}
+
 void Webserver::Client::requestLocaleEnglish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
 	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/english.pus");
 }
 
-void Webserver::Client::requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestLocaleFrench(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/language.hdt");
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/french.pus");
 }
+
+void Webserver::Client::requestLocaleGerman(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/german.pus");
+}
+
+void Webserver::Client::requestLocaleItalian(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/italian.pus");
+}
+
+void Webserver::Client::requestLocaleJapanese(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/japanese.pus");
+}
+
+void Webserver::Client::requestLocaleSpanish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/spanish.pus");
+}
+
+void Webserver::Client::requestLocaleSwedish(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+{
+	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/swedish.pus");
+}
+
 
 // Advertisements
 void Webserver::Client::requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
