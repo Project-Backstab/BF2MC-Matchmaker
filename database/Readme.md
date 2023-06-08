@@ -24,14 +24,24 @@ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 Modify that bind-address from: 127.0.0.1 to 0.0.0.0
 
-
-Now we set up that the root is accepted from remote ip.
+Execute mysql as root ans show all users.
 ```
 sudo mysql
 
 SELECT User, Host FROM mysql.user;
+```
+
+Add root account to remote controll mysql server with your ip.
+```
 CREATE USER 'root'@'<your_ip>' IDENTIFIED WITH mysql_native_password BY '<your_password>';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'<your_ip>' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+```
+
+Create backend account to run bf2mc server with.
+```
+CREATE USER 'backend'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `BF2MC`.* TO `backend`@`localhost`;
 FLUSH PRIVILEGES;
 ```
 

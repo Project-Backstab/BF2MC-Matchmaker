@@ -23,9 +23,6 @@ std::shared_mutex g_mutex_settings;
 
 void load_settings()
 {
-	//std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // Read only
-	std::unique_lock<std::shared_mutex> guard(g_mutex_settings); // write
-	
 	Json::CharReaderBuilder builder;
 	
 	std::ifstream ifs;
@@ -35,8 +32,8 @@ void load_settings()
 	{
 		if(!parseFromStream(builder, ifs, &g_settings, nullptr))
 		{
-			perror("[Error] Cant parse settings.json.");
-			perror("[Error] load_settings() at parseFromStream");
+			Logger::error("Cant parse settings.json.");
+			Logger::error("load_settings() at parseFromStream");
 			exit(EXIT_FAILURE);
 		}
 		
@@ -102,6 +99,7 @@ void signal_callback(int signum)
 int main(int argc, char const* argv[])
 {
 	Logger::Initialize();
+	load_settings();
 	
 	Logger::info("--- PROJECT INFO ---");
 	Logger::info("Project name     = " + std::string(PROJECT_GIT_NAME));
@@ -116,9 +114,6 @@ int main(int argc, char const* argv[])
 	signal(SIGTERM, signal_callback);
 	signal(SIGQUIT, signal_callback);
 	signal(SIGTSTP, signal_callback);
-	
-	std::thread t_settings(&load_settings);
-	t_settings.detach();
 	
 	// Start servers
 	std::thread t_db(&start_db);

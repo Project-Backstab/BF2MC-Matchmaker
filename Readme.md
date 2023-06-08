@@ -60,5 +60,6 @@ This will run 4 services on TCP port: 80, 28910, 29900 and 29901.
 If you want to avoid to run the application as sudo you must Preroute port 80 to 8080
 ```
 sudo iptables -A PREROUTING -t nat -i <network interface> -p tcp --dport 80 -j REDIRECT --to-port 8080
+sudo ufw allow 8080
 ```
 Also in data/settings.json, change "webserver" -> "port" to 8080.

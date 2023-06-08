@@ -524,7 +524,14 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query = "DELETE FROM `PlayerFriends` WHERE (`profileid` = ? and `target_profileid` = ?) OR (`profileid` = ? and `target_profileid` = ?);";
+	std::string query;
+	
+	query += "DELETE FROM ";
+	query += "	`PlayerFriends` ";
+	query += "WHERE ";
+	query += "	(`profileid` = ? and `target_profileid` = ?) ";
+	query += "OR ";
+	query += "	(`profileid` = ? and `target_profileid` = ?);";
 	
 	int input_profileid        = player.GetProfileId();
 	int input_target_profileid = target_player.GetProfileId();
