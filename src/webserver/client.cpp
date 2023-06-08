@@ -1537,11 +1537,20 @@ void Webserver::Client::_SendFile(const std::string& file_name) const
 	std::string data = this->_readFile(file_name);
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(data);
+	
+	if(data.size() != 0)
+	{
+		http_response.SetMessageBody(data);
+	}
+	else
+	{ // fix: Prevent to hang the http connection
+		http_response.SetMessageBody("\r\n");
+	}
 	
 	this->Send(http_response);
 	
-	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+	this->_LogTransaction("<--", http_response.ToString());
+	//this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
