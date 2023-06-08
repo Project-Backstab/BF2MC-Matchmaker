@@ -40,7 +40,7 @@ FLUSH PRIVILEGES;
 
 Create backend account to run bf2mc server with.
 ```
-CREATE USER 'backend'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
+CREATE USER 'backend'@'localhost' IDENTIFIED WITH mysql_native_password BY 'bf2mcbackend2023';
 GRANT SELECT, INSERT, UPDATE, DELETE ON `BF2MC`.* TO `backend`@`localhost`;
 FLUSH PRIVILEGES;
 ```

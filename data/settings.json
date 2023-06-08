@@ -3,7 +3,7 @@
 	{
 		"host": "localhost",
 		"username": "backend",
-		"password": "",
+		"password": "bf2mcbackend2023",
 		"database_name": "BF2MC"
 	},
 	"gpcm":
