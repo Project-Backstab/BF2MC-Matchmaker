@@ -1586,8 +1586,7 @@ void Webserver::Client::_SendFile(const std::string& file_name) const
 	
 	this->Send(http_response);
 	
-	this->_LogTransaction("<--", http_response.ToString());
-	//this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
