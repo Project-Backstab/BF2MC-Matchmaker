@@ -10,6 +10,8 @@ make -j 4
 
 cmake --install . --prefix ../../BF2MC-Matchmaker-release
 
-cd ../
-rm ../BF2MC-Matchmaker-release/include/ -r
-rm ../BF2MC-Matchmaker-release/lib/ -r
+cd ../../BF2MC-Matchmaker-release
+
+rm include/ -r
+rm lib/ -r
+
