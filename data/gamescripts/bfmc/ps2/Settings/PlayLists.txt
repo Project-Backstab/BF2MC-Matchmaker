@@ -1,0 +1,64 @@
+version : 1
+playLists : length=4
+{
+	item 0
+	{
+		version : 1
+		guiName : "PLAYLIST_ALL"
+		maps : length=13
+		{
+			item0 : "BACKSTAB"
+			item1 : "BRIDGETOOFAR"
+			item2 : "COLDFRONT"
+			item3 : "DAMMAGE"
+			item4 : "DEADLYPASS"
+			item5 : "HARBOREDGE"
+			item6 : "HONOR"
+			item7 : "LITTLEBIGEYE"
+			item8 : "MISSILECRISIS"
+			item9 : "RUSSIANBORDER"
+			item10 : "SPECIALOP"
+			item11 : "THEBLACKGOLD"
+			item12 : "THENEST"
+		}
+	}
+	item 1
+	{
+		version : 1
+		guiName : "PLAYLIST_ASSAULT"
+		maps : length=5
+		{
+			item0 : "THEBLACKGOLD"
+			item1 : "MISSILECRISIS"
+			item2 : "SPECIALOP"
+			item3 : "HARBOREDGE"
+			item4 : "COLDFRONT"
+		}
+	}
+	item 2
+	{
+		version : 1
+		guiName : "PLAYLIST_INCURSION"
+		maps : length=5
+		{
+			item0 : "RUSSIANBORDER"
+			item1 : "BACKSTAB"
+			item2 : "DEADLYPASS"
+			item3 : "BRIDGETOOFAR"
+			item4 : "LITTLEBIGEYE"
+		}
+	}
+	item 3
+	{
+		version : 1
+		guiName : "PLAYLIST_DOMINATION"
+		maps : length=4
+		{
+			item0 : "HONOR"
+			item1 : "COLDFRONT"
+			item2 : "DAMMAGE"
+			item3 : "THENEST"
+		}
+	}
+}
+

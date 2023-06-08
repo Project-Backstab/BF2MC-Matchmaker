@@ -1,0 +1,7 @@
+version : 1
+matchLength : 2.000000
+timeLeftWeight1 : 1024.000000
+timeLeftWeight2 : 1.000000
+timeLeftDivider : 5.000000
+maxPlayerCount : 24.000000
+

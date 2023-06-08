@@ -1,0 +1,17 @@
+version : 1
+gameModes : length=2
+{
+	item 0
+	{
+		version : 1
+		logicName : "Conquest"
+		guiName : "GF_CONQUEST"
+	}
+	item 1
+	{
+		version : 1
+		logicName : "CaptureTheFlag"
+		guiName : "GF_CTF"
+	}
+}
+
