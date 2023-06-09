@@ -214,14 +214,16 @@ void Server::onClientConnect(const Net::Socket& client) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	Logger::info("Client " + client.GetAddress() + " connected", g_settings["show_client_connect"].asBool());
+	Logger::info("Client " + client.GetAddress() + " connected",
+		Server::Type::None, g_settings["show_client_connect"].asBool());
 }
 
 void Server::onClientDisconnect(const Net::Socket& client)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	Logger::info("Client " + client.GetAddress() + " disconnected", g_settings["show_client_disconnect"].asBool());
+	Logger::info("Client " + client.GetAddress() + " disconnected",
+			Server::Type::None, g_settings["show_client_disconnect"].asBool());
 	
 	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
 	if (it != this->_clients.end())

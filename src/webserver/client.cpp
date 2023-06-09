@@ -160,7 +160,7 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
 	
-	Logger::warning("action \"" + action + "\" not implemented!");
+	Logger::warning("action \"" + action + "\" not implemented!", Server::Type::Webserver);
 	
 	Json::Value banned_requests = g_settings["webserver"]["banned_requests"];
 	
@@ -180,7 +180,7 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 			
 			if(std::regex_search(action, pattern) && !std::regex_search(client_ip, ip_pattern))
 			{
-				Logger::warning("Bannable action found \"" + action + "\" by " + client_ip);
+				Logger::warning("Bannable action found \"" + action + "\" by " + client_ip, Server::Type::Webserver);
 				
 				std::string query = "sudo iptables -I INPUT -s " + client_ip + " -j DROP";
 				int result = system(query.c_str());
@@ -1535,7 +1535,8 @@ void Webserver::Client::_LogTransaction(const std::string& direction, const std:
 	bool show_console = (g_settings["webserver"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["webserver"]["show_responses"].asBool() && direction == "<--");
 	
-	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
+	Logger::info(this->GetAddress() + " " + direction + " " + response,
+			Server::Type::Webserver, show_console);
 }
 
 atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const

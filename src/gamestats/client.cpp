@@ -81,7 +81,7 @@ void GameStats::Client::onRequest(const std::vector<unsigned char>& request)
 	}
 	else
 	{
-		Logger::warning("action \"" + std::to_string(action) + "\"not implemented!");
+		Logger::warning("action \"" + std::to_string(action) + "\"not implemented!", Server::Type::GameStats);
 		
 		this->Disconnect();
 	}
@@ -104,6 +104,7 @@ void GameStats::Client::_LogTransaction(const std::string& direction, const std:
 	bool show_console = (g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["browsing"]["show_responses"].asBool() && direction == "<--");
 	
-	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
+	Logger::info(this->GetAddress() + " " + direction + " " + response,
+			Server::Type::GameStats, show_console);
 }
 

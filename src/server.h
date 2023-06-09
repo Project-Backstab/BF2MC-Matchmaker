@@ -15,6 +15,7 @@ class Server : public Net::Socket
 			Webserver,		// www.easports.com and bfmc.gamespy.com
 			Browsing,       // bfield1942ps2.available.gamespy.com and bfield1942ps2.ms7.gamespy.com
 			GameStats,		// ???
+			None,
 		};
 	
 	public:

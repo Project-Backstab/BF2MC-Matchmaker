@@ -87,7 +87,7 @@ void GPSP::Client::onRequest(const std::string& request)
 	}
 	else
 	{
-		Logger::warning("action \"" + action + "\" not implemented!");
+		Logger::warning("action \"" + action + "\" not implemented!", Server::Type::GPSP);
 		
 		this->Disconnect();
 	}
@@ -376,6 +376,7 @@ void GPSP::Client::_LogTransaction(const std::string& direction, const std::stri
 	bool show_console = (g_settings["gpsp"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["gpsp"]["show_responses"].asBool() && direction == "<--");
 	
-	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
+	Logger::info(this->GetAddress() + " " + direction + " " + response,
+			Server::Type::GPSP, show_console);
 }
 

@@ -117,7 +117,7 @@ void GPCM::Client::onRequest(const std::string& request)
 	}
 	else
 	{
-		Logger::warning("action \"" + action + "\" not implemented!");
+		Logger::warning("action \"" + action + "\" not implemented!", Server::Type::GPCM);
 		
 		this->Disconnect();
 	}
@@ -189,7 +189,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	
 	g_database->updatePlayerLastLogin(player, this->GetIP());
 	
-	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress());
+	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
 	
 	this->Send(response);
 	
@@ -556,7 +556,7 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 	
 	g_database->queryPlayerByProfileid(player);
 	
-	Logger::info("User \"" + player.GetUniquenick() + "\" logged out");
+	Logger::info("User \"" + player.GetUniquenick() + "\" logged out", Server::Type::GPCM);
 }
 
 /*
@@ -569,7 +569,8 @@ void GPCM::Client::_LogTransaction(const std::string& direction, const std::stri
 	bool show_console = (g_settings["gpcm"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["gpcm"]["show_responses"].asBool() && direction == "<--");
 	
-	Logger::info(this->GetAddress() + " " + direction + " " + response, show_console);
+	Logger::info(this->GetAddress() + " " + direction + " " + response,
+			Server::Type::GPCM, show_console);
 }
 
 void GPCM::Client::_SyncFriends()
