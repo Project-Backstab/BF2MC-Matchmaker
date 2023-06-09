@@ -59,7 +59,7 @@ void GameStats::Client::Listen()
 void GameStats::Client::Disconnect()
 {
 	this->Close();
-	g_browsing_server->onClientDisconnect(*this);
+	g_gamestats_server->onClientDisconnect(*this);
 }
 
 /*

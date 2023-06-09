@@ -17,6 +17,7 @@ Server*           g_gpsp_server;
 Server*           g_gpcm_server;
 Server*           g_webserver_server;
 Server*           g_browsing_server;
+Server*           g_gamestats_server;
 
 Json::Value       g_settings;
 std::shared_mutex g_mutex_settings;
@@ -76,6 +77,12 @@ void start_browsing_server()
 	g_browsing_server->Listen();
 }
 
+void start_gamestats_server()
+{	
+	g_gamestats_server = new Server(Server::Type::GameStats);	
+	g_gamestats_server->Listen();
+}
+
 void signal_callback(int signum)
 {
 	Logger::info("Caught signal " + std::to_string(signum));
@@ -121,12 +128,14 @@ int main(int argc, char const* argv[])
 	std::thread t_gpcm(&start_gpcm_server);
 	std::thread t_webserver(&start_webserver_server);
 	std::thread t_browsing(&start_browsing_server);
+	std::thread t_gamestats(&start_gamestats_server);
 	
 	t_db.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
 	t_webserver.detach();
 	t_browsing.detach();
+	t_gamestats.detach();
 	
 	// Sleep ZZZZZZzzzzzZZZZZ
 	while(true)
