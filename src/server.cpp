@@ -16,6 +16,7 @@
 #include <gpcm/client.h>
 #include <webserver/client.h>
 #include <browsing/client.h>
+#include <gamestats/client.h>
 
 #include <server.h>
 
@@ -46,6 +47,10 @@ Server::Server(Server::Type type)
 		case Server::Type::Browsing:
 			port = g_settings["browsing"]["port"].asInt();
 			opt = g_settings["browsing"]["connection_time_out"].asInt();
+		break;
+		case Server::Type::GameStats:
+			port = g_settings["gamestats"]["port"].asInt();
+			opt = g_settings["gamestats"]["connection_time_out"].asInt();
 		break;
 	}
 	
@@ -144,6 +149,18 @@ void Server::Listen()
 				this->_clients.push_back(client);
 			}
 			break;
+			case Server::Type::GameStats:
+			{
+				Net::Socket* client = new GameStats::Client(client_socket, client_address);
+				
+				this->onClientConnect(*client);
+				
+				std::thread t(&GameStats::Client::Listen, (GameStats::Client*)client);
+				t.detach();
+				
+				this->_clients.push_back(client);
+			}
+			break;
 		}
 	}
 }
@@ -165,6 +182,9 @@ void Server::DisconnectAllClients()
 			break;
 			case Server::Type::Webserver:
 				((Webserver::Client*)client)->Disconnect();
+			break;
+			case Server::Type::GameStats:
+				((GameStats::Client*)client)->Disconnect();
 			break;
 		}
 	}
