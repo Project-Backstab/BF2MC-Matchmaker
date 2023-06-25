@@ -129,7 +129,6 @@ void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 */
 void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 {
-	
 	if(http_request.GetMethod() == MessageMethod::GET)
 	{
 		std::string url_base;

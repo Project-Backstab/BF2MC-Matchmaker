@@ -77,8 +77,12 @@ void start_browsing_server()
 	g_browsing_server->Listen();
 }
 
+#include "gamestats/client.h"
+
 void start_gamestats_server()
 {	
+	//GameStats::Client::Test();
+	
 	g_gamestats_server = new Server(Server::Type::GameStats);	
 	g_gamestats_server->Listen();
 }
