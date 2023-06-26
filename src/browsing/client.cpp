@@ -165,6 +165,18 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		g_database->queryGameServers(game_servers);
 	}
 	
+	if(filter.find("hostname") != std::string::npos)
+	{
+		
+		Battlefield::GameServer game_server;
+
+		game_server.SetIp("86.160.99.212");
+		game_server.SetPort(3658);
+		game_server.SetFlag(59);
+		
+		game_servers.push_back(game_server);
+	}
+	
 	for(Battlefield::GameServer game_server : game_servers)
 	{
 		//Battlefield::GameServer game_server;
