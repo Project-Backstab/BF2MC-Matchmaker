@@ -75,8 +75,12 @@ void Browsing::Client::Disconnect()
 	Events
 */
 void Browsing::Client::onRequest(const std::vector<unsigned char>& request)
-{	
+{
+	int size = static_cast<uint16_t>(request[0]);
 	uint8_t action = static_cast<uint8_t>(request[2]);
+	
+	Logger::debug("size = " + std::to_string(size));
+	Logger::debug("action = " + std::to_string(action));
 	
 	// Find function
 	auto it = mRequestActions.find(action);
