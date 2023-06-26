@@ -264,6 +264,98 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	return true;
 }
 
+bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query;
+	
+	query += "SELECT `profileid`, `userid`, `nick`, `uniquenick`, `email`, `password` ";
+	query += "FROM `Players` ";
+	query += "WHERE `email` = ? OR `uniquenick` = ?";
+	
+	int  output_profileid = 0;
+	int  output_userid = 0;
+	char output_nick[42];
+	char output_uniquenick[33];
+	char output_email[51];
+	char output_md5password[33];
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(email[0]));
+	input_bind[0].buffer_length = email.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[1].buffer = const_cast<char*>(&(uniquenick[0]));
+	input_bind[1].buffer_length = uniquenick.size();
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_profileid;
+	output_bind[0].is_unsigned = false;	
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = &output_userid;
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = output_nick;
+	output_bind[2].buffer_length = 42;
+	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[3].buffer = output_uniquenick;
+	output_bind[3].buffer_length = 33;
+	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[4].buffer = output_email;
+	output_bind[4].buffer_length = 51;
+	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[5].buffer = output_md5password;
+	output_bind[5].buffer_length = 33;
+
+	// Prepare the statement
+	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
+
+	// Prepare and execute with binds
+	if(
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Player player;
+		
+		player.SetProfileId(output_profileid);
+		player.SetUserId(output_userid);
+		player.SetNick(output_nick);
+		player.SetUniquenick(output_uniquenick);
+		player.SetEmail(output_email);
+		player.SetMD5Password(output_md5password);
+		
+		players.push_back(player);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
 bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)

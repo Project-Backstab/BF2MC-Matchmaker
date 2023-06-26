@@ -28,6 +28,7 @@ class Database
 		bool queryPlayerByProfileid(Battlefield::Player& player);
 		bool queryPlayerByUniquenick(Battlefield::Player& player);
 		bool queryPlayersByEmail(Battlefield::Players& players, const std::string& email);
+		bool queryPlayersByEmailAndUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
 		bool updatePlayerLastLogin(Battlefield::Player& player, const std::string& ip);
 		bool insertPlayer(const Battlefield::Player& player);
