@@ -23,6 +23,7 @@ namespace GameStats
 			/*
 				Requests
 			*/
+			void requestChallenge();
 			void requestAuth(const GameSpy::Parameter& parameter);
 			void requestNewGame(const GameSpy::Parameter& parameter);
 			

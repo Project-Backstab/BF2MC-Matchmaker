@@ -30,6 +30,9 @@ GameStats::Client::~Client()
 
 void GameStats::Client::Listen()
 {
+	// Initialize connection send challenge
+	this->requestChallenge();
+	
 	while(true)
 	{
 		std::string request;
@@ -92,6 +95,24 @@ void GameStats::Client::onRequest(const std::string& request)
 /*
 	Response:
 		\lc\1\challenge\GzlCt7q8sV\id\1\final\
+*/
+void GameStats::Client::requestChallenge()
+{
+	std::string challenge = Util::generateRandomChallenge();
+	
+	std::string response = GameSpy::Parameter2Response({
+		"lc",        "1",
+		"challenge", challenge,
+		"id",        "1",
+		"final"
+	});
+	
+	this->Send(Encrypt(response));
+	
+	this->_LogTransaction("<--", response);
+}
+
+/*
 	Request:
 		\auth\\gamename\bfield1942ps2\response\f34cc66938c4b07c70ebff98d9d98561\port\0\id\1\final\
 	Response:
@@ -99,7 +120,17 @@ void GameStats::Client::onRequest(const std::string& request)
 */
 void GameStats::Client::requestAuth(const GameSpy::Parameter& parameter)
 {	
+	std::string response = GameSpy::Parameter2Response({
+		"lc",      "2",
+		"sesskey", "1687554231",
+		"proof",   "0",
+		"id",   "1",
+		"final"
+	});
 	
+	this->Send(Encrypt(response));
+	
+	this->_LogTransaction("<--", response);
 }
 
 /*
