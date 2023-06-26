@@ -1762,6 +1762,7 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	query += "WHERE ";
 	query += "	Players.profileid = PlayerStats.profileid ";
 	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
 	query += "	`ran` DESC, ";
 	query += "	`score` DESC, ";
 	query += "	`pph` DESC ";
