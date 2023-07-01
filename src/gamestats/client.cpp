@@ -126,7 +126,7 @@ void GameStats::Client::requestAuth(const GameSpy::Parameter& parameter)
 		"lc",      "2",
 		"sesskey", "1687554231",
 		"proof",   "0",
-		"id",   "1",
+		"id",      "1",
 		"final"
 	});
 	
@@ -145,11 +145,81 @@ void GameStats::Client::requestNewGame(const GameSpy::Parameter& parameter)
 }
 
 /*
-	\updgame\\sesskey\898654156\done\1\gamedata\gametype2gamverV1.31ahostname[Server]IamLupomapid2numplayers0pplayers0tplayed1141\final\
+	\updgame\\sesskey\898654156\done\1\gamedata\
+		\gametype\2\gamver\V1.31a\hostname\[Server]IamLupo\mapid\2\numplayers\0\pplayers\0\tplayed\1141
+		\final\
+	
+	\updgame\\sesskey\1216337440\done\1\gamedata\
+		\gametype\1\gamver\V1.31a\hostname\[Server]IamLupo\mapid\2\numplayers\2\pplayers\2\tplayed\88
+		\clanid_t0\0\country_t0\2\victory_t0\2\clanid_t1\0\country_t1\1
+		\auth_0\1413c48006d6c3c7aca3cb558ca9ae07\bod_0\0\havd_0\0\hed_0\0\k1_0\0\k2_0\0\k3_0\0\k4_0\0\k5_0\0\kills_0\0
+			\lavd_0\0\mavd_0\0\medals_0\1069580287\mv_0\0\ngp_0\0\pid_0\10036819\pld_0\0\pph_0\5239\rank_0\13
+			\s1_0\0\s2_0\1\s3_0\0\s4_0\0\s5_0\0\score_0\3\suicides_0\0\time_0\71\tk_0\0\ttb_0\0
+		\auth_1\1413c48006d6c3c7aca3cb558ca9ae07\bod_1\0\havd_1\0\hed_1\0\k1_1\0\k2_1\0\k3_1\0\k4_1\0\k5_1\0\kills_1\0
+			\lavd_1\0\mavd_1\0\medals_1\1069580287\mv_1\0\ngp_1\1\pid_1\10037049\pld_1\0\pph_1\5175\rank_1\13
+			\s1_1\1\s2_1\0\s3_1\0\s4_1\0\s5_1\0\score_1\0\suicides_1\0\time_1\88\tk_1\0\ttb_1\1
+		\final\
 */
 void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 {
+	int index = 6;
 	
+	// Game information
+	while(parameter.size() > index + 2)
+	{
+		index += 2;
+		
+		if(std::equal(parameter[index].begin(), parameter[index].begin() + 5, "auth_"))
+			break;
+		
+		if(parameter[index + 2] == "final")
+			return;
+		
+		Logger::debug(parameter[index] + " = " + parameter[index + 1]);
+	}
+	
+	// Player stats
+	while(parameter[index] != "final")
+	{
+		//
+		// Use pid and grab the stats from the database
+		// Copy over medals and pph.
+		// All the other stats add up
+		// Then save the stats!
+		//
+		Logger::debug("--- Player stats ---------------------------------------");
+		Logger::debug(parameter[index]      + " = " + parameter[index + 1]); // auth
+		Logger::debug(parameter[index + 2]  + " = " + parameter[index + 3]); // bod
+		Logger::debug(parameter[index + 4]  + " = " + parameter[index + 5]); // havd
+		Logger::debug(parameter[index + 6]  + " = " + parameter[index + 7]); // hed
+		Logger::debug(parameter[index + 8]  + " = " + parameter[index + 9]); // k1
+		Logger::debug(parameter[index + 10] + " = " + parameter[index + 11]); // k2
+		Logger::debug(parameter[index + 12] + " = " + parameter[index + 13]); // k3
+		Logger::debug(parameter[index + 14] + " = " + parameter[index + 15]); // k4
+		Logger::debug(parameter[index + 16] + " = " + parameter[index + 17]); // k5
+		Logger::debug(parameter[index + 18] + " = " + parameter[index + 19]); // kills
+		Logger::debug(parameter[index + 20] + " = " + parameter[index + 21]); // lavd
+		Logger::debug(parameter[index + 22] + " = " + parameter[index + 23]); // mavd
+		Logger::debug(parameter[index + 24] + " = " + parameter[index + 25]); // medals
+		Logger::debug(parameter[index + 26] + " = " + parameter[index + 27]); // mv
+		Logger::debug(parameter[index + 28] + " = " + parameter[index + 29]); // ngp
+		Logger::debug(parameter[index + 30] + " = " + parameter[index + 31]); // pid
+		Logger::debug(parameter[index + 32] + " = " + parameter[index + 33]); // pld
+		Logger::debug(parameter[index + 34] + " = " + parameter[index + 35]); // pph
+		Logger::debug(parameter[index + 36] + " = " + parameter[index + 37]); // rank
+		Logger::debug(parameter[index + 38] + " = " + parameter[index + 39]); // s1
+		Logger::debug(parameter[index + 40] + " = " + parameter[index + 41]); // s2
+		Logger::debug(parameter[index + 42] + " = " + parameter[index + 43]); // s3
+		Logger::debug(parameter[index + 44] + " = " + parameter[index + 45]); // s4
+		Logger::debug(parameter[index + 46] + " = " + parameter[index + 47]); // s5
+		Logger::debug(parameter[index + 48] + " = " + parameter[index + 49]); // score
+		Logger::debug(parameter[index + 50] + " = " + parameter[index + 51]); // suicides
+		Logger::debug(parameter[index + 52] + " = " + parameter[index + 53]); // time
+		Logger::debug(parameter[index + 54] + " = " + parameter[index + 55]); // tk
+		Logger::debug(parameter[index + 56] + " = " + parameter[index + 57]); // ttb
+		
+		index += 58;
+	}
 }
 
 /*
@@ -194,6 +264,13 @@ static std::vector<unsigned char> example_C_request = {
 	0x6e, 0x61, 0x6c, 0x5c, 
 };
 
+/*
+	\updgame\\sesskey\349913892\done\1\gamedata\
+		\gametype\1\gamver\V1.31a\hostname\[CQ]BF2MC-SERVER1\mapid\0\numplayers\2\pplayers\2\tplayed\63\clanid_t0\0\country_t0\3\victory_t0\3\clanid_t1\0\country_t1\1\victory_t1\3
+		\auth_0\0\bod_0\0\havd_0\0\hed_0\0\k1_0\0\k2_0\0\k3_0\0\k4_0\0\k5_0\0\kills_0\0\lavd_0\0\mavd_0\0\medals_0\0\mv_0\0\ngp_0\0\pid_0\0\pld_0\0\pph_0\0\rank_0\0\s1_0\0\s2_0\0\s3_0\0\s4_0\0\s5_0\0\score_0\0\suicides_0\0\time_0\0\tk_0\0\ttb_0\0
+		\auth_1\0\bod_1\0\havd_1\0\hed_1\0\k1_1\0\k2_1\0\k3_1\0\k4_1\0\k5_1\0\kills_1\0\lavd_1\0\mavd_1\0\medals_1\0\mv_1\0\ngp_1\0\pid_1\0\pld_1\0\pph_1\0\rank_1\0\s1_1\0\s2_1\0\s3_1\0\s4_1\0\s5_1\0\score_1\0\suicides_1\0\time_1\0\tk_1\0\ttb_1\0
+		\final\
+*/
 static std::vector<unsigned char> example_D_request = {
 	0x1b, 0x14, 0x1d, 0x01, 0x34, 0x11, 0x14, 0x56, 0x18, 0x1b, 0x12, 0x08, 0x16, 0x20,
 	0x1b, 0x1c, 0x4a, 0x18, 0x74, 0x55, 0x54, 0x5c, 0x62, 0x43, 0x41, 0x0a, 0x76, 0x1b, 0x05, 0x02,
@@ -242,379 +319,14 @@ static std::vector<unsigned char> example_D_request = {
 };
 
 /*
-\updgame\\sesskey\349913882\done\1\gamedata\
-gametype
-1
-gamver
-V1.31a
-hostname
-[CQ]BF2MC-SERVER1
-mapid
-0
-numplayers
-6
-pplayers
-6
-tplayed
-1200
-clanid_t0
-0
-country_t0
-3
-victory_t0
-1
-clanid_t1
-0
-country_t1
-1
-auth_0
-0
-bod_0
-0
-havd_0
-0
-hed_0
-0
-k1_0
-0
-k2_0
-0
-k3_0
-0
-k4_0
-0
-k5_0
-0
-kills_0
-0
-lavd_0
-0
-mavd_0
-0
-medals_0
-0
-mv_0
-0
-ngp_0
-0
-pid_0
-0
-pld_0
-0
-pph_0
-0
-rank_0
-0
-s1_0
-0
-s2_0
-0
-s3_0
-0
-s4_0
-0
-s5_0
-0
-score_0
-0
-suicides_0
-0
-time_0
-0
-tk_0
-0
-ttb_0
-0
-auth_1
-0
-bod_1
-0
-havd_1
-0
-hed_1
-0
-k1_1
-0
-k2_1
-0
-k3_1
-0
-k4_1
-0
-k5_1
-0
-kills_1
-0
-lavd_1
-0
-mavd_1
-0
-medals_1
-0
-mv_1
-0
-ngp_1
-0
-pid_1
-0
-pld_1
-0
-pph_1
-0
-rank_1
-0
-s1_1
-0
-s2_1
-0
-s3_1
-0
-s4_1
-0
-s5_1
-0
-score_1
-0
-suicides_1
-0
-time_1
-0
-tk_1
-0
-ttb_1
-0
-auth_2
-0
-bod_2
-0
-havd_2
-0
-hed_2
-0
-k1_2
-0
-k2_2
-0
-k3_2
-0
-k4_2
-0
-k5_2
-0
-kills_2
-0
-lavd_2
-0
-mavd_2
-0
-medals_2
-0
-mv_2
-0
-ngp_2
-0
-pid_2
-0
-pld_2
-0
-pph_2
-0
-rank_2
-0
-s1_2
-0
-s2_2
-0
-s3_2
-0
-s4_2
-0
-s5_2
-0
-score_2
-0
-suicides_2
-0
-time_2
-0
-tk_2
-0
-ttb_2
-0
-auth_3
-0
-bod_3
-0
-havd_3
-0
-hed_3
-0
-k1_3
-0
-k2_3
-0
-k3_3
-0
-k4_3
-0
-k5_3
-0
-kills_3
-0
-lavd_3
-0
-mavd_3
-0
-medals_3
-0
-mv_3
-0
-ngp_3
-0
-pid_3
-0
-pld_3
-0
-pph_3
-0
-rank_3
-0
-s1_3
-0
-s2_3
-0
-s3_3
-0
-s4_3
-0
-s5_3
-0
-score_3
-0
-suicides_3
-0
-time_3
-0
-tk_3
-0
-ttb_3
-0
-auth_4
-0
-bod_4
-0
-havd_4
-0
-hed_4
-0
-k1_4
-0
-k2_4
-0
-k3_4
-0
-k4_4
-0
-k5_4
-0
-kills_4
-0
-lavd_4
-0
-mavd_4
-0
-medals_4
-0
-mv_4
-0
-ngp_4
-0
-pid_4
-0
-pld_4
-0
-pph_4
-0
-rank_4
-0
-s1_4
-0
-s2_4
-0
-s3_4
-0
-s4_4
-0
-s5_4
-0
-score_4
-0
-suicides_4
-0
-time_4
-0
-tk_4
-0
-ttb_4
-0
-auth_5
-0
-bod_5
-0
-havd_5
-0
-hed_5
-0
-k1_5
-0
-k2_5
-0
-k3_5
-0
-k4_5
-0
-k5_5
-0
-kills_5
-0
-lavd_5
-0
-mavd_5
-0
-medals_5
-0
-mv_5
-0
-ngp_5
-0
-pid_5
-0
-pld_5
-0
-pph_5
-0
-rank_5
-0
-s1_5
-0
-s2_5
-0
-s3_5
-0
-s4_5
-0
-s5_5
-0
-score_5
-0
-suicides_5
-0
-time_5
-0
-tk_5
-0
-ttb_5
-0\final\
+	\updgame\\sesskey\349913882\done\1\gamedata\\gametype\1\gamver\V1.31a\hostname\[CQ]BF2MC-SERVER1\mapid\0\numplayers\6\pplayers\6\tplayed\1200\clanid_t0\0\country_t0\3\victory_t0\1\clanid_t1\0\country_t1\1
+		\auth_0\0\bod_0\0\havd_0\0\hed_0\0\k1_0\0\k2_0\0\k3_0\0\k4_0\0\k5_0\0\kills_0\0\lavd_0\0\mavd_0\0\medals_0\0\mv_0\0\ngp_0\0\pid_0\0\pld_0\0\pph_0\0\rank_0\0\s1_0\0\s2_0\0\s3_0\0\s4_0\0\s5_0\0\score_0\0\suicides_0\0\time_0\0\tk_0\0\ttb_0\0
+		\auth_1\0\bod_1\0\havd_1\0\hed_1\0\k1_1\0\k2_1\0\k3_1\0\k4_1\0\k5_1\0\kills_1\0\lavd_1\0\mavd_1\0\medals_1\0\mv_1\0\ngp_1\0\pid_1\0\pld_1\0\pph_1\0\rank_1\0\s1_1\0\s2_1\0\s3_1\0\s4_1\0\s5_1\0\score_1\0\suicides_1\0\time_1\0\tk_1\0\ttb_1\0
+		\auth_2\0\bod_2\0\havd_2\0\hed_2\0\k1_2\0\k2_2\0\k3_2\0\k4_2\0\k5_2\0\kills_2\0\lavd_2\0\mavd_2\0\medals_2\0\mv_2\0\ngp_2\0\pid_2\0\pld_2\0\pph_2\0\rank_2\0\s1_2\0\s2_2\0\s3_2\0\s4_2\0\s5_2\0\score_2\0\suicides_2\0\time_2\0\tk_2\0\ttb_2\0
+		\auth_3\0\bod_3\0\havd_3\0\hed_3\0\k1_3\0\k2_3\0\k3_3\0\k4_3\0\k5_3\0\kills_3\0\lavd_3\0\mavd_3\0\medals_3\0\mv_3\0\ngp_3\0\pid_3\0\pld_3\0\pph_3\0\rank_3\0\s1_3\0\s2_3\0\s3_3\0\s4_3\0\s5_3\0\score_3\0\suicides_3\0\time_3\0\tk_3\0\ttb_3\0
+		\auth_4\0\bod_4\0\havd_4\0\hed_4\0\k1_4\0\k2_4\0\k3_4\0\k4_4\0\k5_4\0\kills_4\0\lavd_4\0\mavd_4\0\medals_4\0\mv_4\0\ngp_4\0\pid_4\0\pld_4\0\pph_4\0\rank_4\0\s1_4\0\s2_4\0\s3_4\0\s4_4\0\s5_4\0\score_4\0\suicides_4\0\time_4\0\tk_4\0\ttb_4\0
+		\auth_5\0\bod_5\0\havd_5\0\hed_5\0\k1_5\0\k2_5\0\k3_5\0\k4_5\0\k5_5\0\kills_5\0\lavd_5\0\mavd_5\0\medals_5\0\mv_5\0\ngp_5\0\pid_5\0\pld_5\0\pph_5\0\rank_5\0\s1_5\0\s2_5\0\s3_5\0\s4_5\0\s5_5\0\score_5\0\suicides_5\0\time_5\0\tk_5\0\ttb_5\0
+		\final\
 */
 static std::vector<unsigned char> example_E_request = {
 	0x1b, 0x14, 0x1d, 0x01, 0x34, 0x11, 0x14, 0x56, 0x18, 0x1b, 0x12, 0x08, 0x16, 0x20,
@@ -740,21 +452,7 @@ static std::vector<unsigned char> example_G_request = {
 };
 
 /*
-	\updgame\\sesskey\349913881\done\1\gamedata\
-	gametype
-	1
-	gamver
-	V1.31a
-	hostname
-	[CQ]BF2MC-SERVER1
-	mapid
-	0
-	numplayers
-	0
-	pplayers
-	0
-	tplayed
-	18\final\
+	\updgame\\sesskey\349913881\done\1\gamedata\\gametype\1\gamver\V1.31a\hostname\[CQ]BF2MC-SERVER1\mapid\0\numplayers\0\pplayers\0\tplayed\18\final\
 */
 static std::vector<unsigned char> example_H_request = {
 	0x1b, 0x14, 0x1d, 0x01, 0x34, 0x11, 0x14, 0x56, 0x18, 0x1b, 0x12, 0x08, 0x16, 0x20, 0x1b, 0x1c,
@@ -781,7 +479,7 @@ std::string GameStats::Client::Decrypt(const std::vector<unsigned char>& request
 		if(v > 0x20 && v < 0x7F)
 			msg += v;
 		else
-			msg += ".";
+			msg += "\\";
 	}
 	
 	msg += "\\final\\";

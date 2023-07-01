@@ -1040,7 +1040,7 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 
 void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/leaderboard/startrank=1&endrank=7.txt");
+	this->_SendFile("data/examples/leaderboard/startrank=1&endrank=7.txt");
 }
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
