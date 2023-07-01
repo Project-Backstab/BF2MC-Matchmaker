@@ -10,9 +10,11 @@
 #include <globals.h>
 #include <server.h>
 #include <database.h>
+#include "gamestats/client.h"
 
 // Globals
 Database*         g_database;
+Server*           g_qr_server;
 Server*           g_gpsp_server;
 Server*           g_gpcm_server;
 Server*           g_webserver_server;
@@ -50,6 +52,12 @@ void start_db()
 	g_database = new Database();
 }
 
+void start_qr_server()
+{
+	g_qr_server = new Server(Server::Type::QR);	
+	g_qr_server->UDPListen();
+}
+
 void start_gpsp_server()
 {
 	g_gpsp_server = new Server(Server::Type::GPSP);	
@@ -76,8 +84,6 @@ void start_browsing_server()
 	g_browsing_server = new Server(Server::Type::Browsing);	
 	g_browsing_server->Listen();
 }
-
-#include "gamestats/client.h"
 
 void start_gamestats_server()
 {	
@@ -128,6 +134,7 @@ int main(int argc, char const* argv[])
 	
 	// Start servers
 	std::thread t_db(&start_db);
+	std::thread t_qr(&start_qr_server);
 	std::thread t_gpsp(&start_gpsp_server);
 	std::thread t_gpcm(&start_gpcm_server);
 	std::thread t_webserver(&start_webserver_server);
@@ -135,6 +142,7 @@ int main(int argc, char const* argv[])
 	std::thread t_gamestats(&start_gamestats_server);
 	
 	t_db.detach();
+	t_qr.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
 	t_webserver.detach();

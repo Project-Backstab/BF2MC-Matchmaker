@@ -26,7 +26,8 @@ namespace GameStats
 			void requestChallenge();
 			void requestAuth(const GameSpy::Parameter& parameter);
 			void requestNewGame(const GameSpy::Parameter& parameter);
-			
+			void requestUpdateGame(const GameSpy::Parameter& parameter);
+		
 		private:
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 		

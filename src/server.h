@@ -10,6 +10,7 @@ class Server : public Net::Socket
 	public:
 		enum Type
 		{
+			QR,
 			GPSP,			// gpsp.gamespy.com
 			GPCM,			// gpcm.gamespy.com
 			Webserver,		// www.easports.com and bfmc.gamespy.com
@@ -27,6 +28,7 @@ class Server : public Net::Socket
 	public:
 		Server(Server::Type type);
 		void Listen();
+		void UDPListen();
 		void DisconnectAllClients();
 		void Close();
 		

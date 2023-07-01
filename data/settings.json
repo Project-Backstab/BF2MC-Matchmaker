@@ -6,6 +6,13 @@
 		"password": "bf2mcbackend2023",
 		"database_name": "BF2MC"
 	},
+	"qr":
+	{
+		"port": 27900,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
 	"gpcm":
 	{
 		"port": 29900,

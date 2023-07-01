@@ -14,7 +14,7 @@ namespace GPCM
 		std::string  challenge;
 		int          profileid = -1;
 		std::string  authtoken;
-		Client* client;
+		Client*      client;
 	};
 
 	class Client : public Net::Socket

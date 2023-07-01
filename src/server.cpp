@@ -26,12 +26,18 @@ Server::Server(Server::Type type)
 	
 	int port = -1;
 	int opt = 10; // After 10 seconds time out socket
+	int socket_type = SOCK_STREAM;
 	
 	this->_type = type;
 	
 	// setting
 	switch(type)
 	{
+		case Server::Type::QR:
+			port = g_settings["qr"]["port"].asInt();
+			opt = g_settings["qr"]["connection_time_out"].asInt();
+			socket_type = SOCK_DGRAM;
+		break;
 		case Server::Type::GPSP:
 			port = g_settings["gpsp"]["port"].asInt();
 			opt = g_settings["gpsp"]["connection_time_out"].asInt();
@@ -54,7 +60,7 @@ Server::Server(Server::Type type)
 		break;
 	}
 	
-	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	if ((this->_socket = socket(AF_INET, socket_type, 0)) < 0)
 	{
 		Logger::error("Server::Server() at socket");
 		exit(EXIT_FAILURE);
@@ -94,7 +100,7 @@ void Server::Listen()
 	while(true)
 	{
 		if ((client_socket = accept(this->_socket, (struct sockaddr*)&client_address, &client_address_len)) < 0)
-		{
+		{	
 			Logger::error("Server::Listen() on accept");
 			exit(EXIT_FAILURE);
 		}
@@ -161,6 +167,44 @@ void Server::Listen()
 				this->_clients.push_back(client);
 			}
 			break;
+		}
+	}
+}
+
+void Server::UDPListen()
+{
+	switch(this->_type)
+	{
+		case Server::Type::QR:
+			
+		break;
+	}
+	
+	int client_socket;
+	struct sockaddr_in client_address;
+	socklen_t client_address_len = sizeof(client_address);
+
+	char buffer[2048];
+
+	while (true)
+	{
+		ssize_t recv_size = recvfrom(this->_socket, buffer, 2048, 0, (struct sockaddr*)&client_address, &client_address_len);
+		
+		if (recv_size < 0)
+		{
+			Logger::error("Server::UDPListen() on recvfrom");
+			close(this->_socket);
+			return;
+		}
+		
+		if(buffer[0] == 0x9)
+		{
+			std::vector<unsigned char> response = {
+				0xFE, 0xFD, 0x9,
+				0x0, 0x0, 0x0, 0x0
+			};
+			
+			sendto(this->_socket, &(response[0]), response.size(), 0, (struct sockaddr*)&client_address, client_address_len);
 		}
 	}
 }
