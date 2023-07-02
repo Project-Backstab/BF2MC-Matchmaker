@@ -25,6 +25,9 @@ namespace Net
 			
 			void Send(const std::string& msg) const;
 			void Send(const std::vector<unsigned char>& msg) const;
+			
+			void UDPSend(const std::string& msg) const;
+			void UDPSend(const std::vector<unsigned char>& msg) const;
 	};
 }
 

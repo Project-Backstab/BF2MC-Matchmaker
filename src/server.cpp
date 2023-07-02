@@ -17,6 +17,7 @@
 #include <webserver/client.h>
 #include <browsing/client.h>
 #include <gamestats/client.h>
+#include <qr/client.h>
 
 #include <server.h>
 
@@ -173,22 +174,15 @@ void Server::Listen()
 
 void Server::UDPListen()
 {
-	switch(this->_type)
-	{
-		case Server::Type::QR:
-			
-		break;
-	}
-	
 	int client_socket;
 	struct sockaddr_in client_address;
 	socklen_t client_address_len = sizeof(client_address);
 
-	char buffer[2048];
-
 	while (true)
 	{
-		ssize_t recv_size = recvfrom(this->_socket, buffer, 2048, 0, (struct sockaddr*)&client_address, &client_address_len);
+		std::vector<unsigned char> buffer(2048, 0);
+		
+		ssize_t recv_size = recvfrom(this->_socket, &(buffer[0]), 2048, 0, (struct sockaddr*)&client_address, &client_address_len);
 		
 		if (recv_size < 0)
 		{
@@ -197,14 +191,17 @@ void Server::UDPListen()
 			return;
 		}
 		
-		if(buffer[0] == 0x9)
+		//Logger::debug("recv_size = " + std::to_string(recv_size));
+		
+		buffer.resize(recv_size);
+		
+		switch(this->_type)
 		{
-			std::vector<unsigned char> response = {
-				0xFE, 0xFD, 0x9,
-				0x0, 0x0, 0x0, 0x0
-			};
-			
-			sendto(this->_socket, &(response[0]), response.size(), 0, (struct sockaddr*)&client_address, client_address_len);
+			case Server::Type::QR:
+				QR::Client client = QR::Client(this->_socket, client_address);
+				
+				client.onRequest(buffer);
+			break;
 		}
 	}
 }

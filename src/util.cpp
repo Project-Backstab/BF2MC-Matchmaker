@@ -27,6 +27,13 @@ std::string Util::Buffer2String(const std::vector<char>& buffer)
 	return s;
 }
 
+std::string Util::Buffer2String(const std::vector<unsigned char>& buffer)
+{
+	std::vector<char> buffer2(buffer.begin(), buffer.end());
+	
+	return Util::Buffer2String(buffer2);
+}
+
 std::string Util::MD5hash(const std::string& input)
 {
 	unsigned char digest[MD5_DIGEST_LENGTH];

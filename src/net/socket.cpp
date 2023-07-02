@@ -47,3 +47,20 @@ void Net::Socket::Send(const std::vector<unsigned char>& msg) const
 	send(this->_socket, &(msg[0]), msg.size(), 0);
 }
 
+void Net::Socket::UDPSend(const std::string& msg) const
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	
+	socklen_t address_len = sizeof(this->_address);
+	
+	sendto(this->_socket, msg.c_str(), msg.size(), 0, (struct sockaddr*)&this->_address, address_len);
+}
+
+void Net::Socket::UDPSend(const std::vector<unsigned char>& msg) const
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	
+	socklen_t address_len = sizeof(this->_address);
+	
+	sendto(this->_socket, &(msg[0]), msg.size(), 0, (struct sockaddr*)&this->_address, address_len);
+}

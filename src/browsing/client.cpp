@@ -40,7 +40,6 @@ void Browsing::Client::Listen()
 {
 	while(true)
 	{
-		std::string request;
 		std::vector<unsigned char> buffer(4096, 0);
 		
 		int v = read(this->_socket, &(buffer[0]), 4096);
@@ -54,10 +53,7 @@ void Browsing::Client::Listen()
 		// Resize buffer
 		buffer.resize(v);
 		
-		std::vector<char> buffer2(buffer.begin(), buffer.end());
-		request = Util::Buffer2String(buffer2);
-		
-		this->_LogTransaction("-->", request);
+		this->_LogTransaction("-->", Util::Buffer2String(buffer));
 		
 		this->onRequest(buffer);
 	}
@@ -166,7 +162,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	{
 		Battlefield::GameServer game_server;
 
-		game_server.SetIp("86.87.139.235");
+		//game_server.SetIp("86.87.139.235");
+		game_server.SetIp("86.160.99.212");
 		game_server.SetPort(3658);
 		game_server.SetFlag(59);
 		

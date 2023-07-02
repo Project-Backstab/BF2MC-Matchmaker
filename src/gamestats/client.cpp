@@ -528,3 +528,4 @@ void GameStats::Client::Test()
 	
 	Logger::debug(Decrypt(example_H_request));
 }
+
