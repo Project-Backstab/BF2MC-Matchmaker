@@ -6,6 +6,8 @@
 #include <server.h>
 #include <globals.h>
 #include <util.h>
+#include <database.h>
+#include <battlefield/player.h>
 
 #include <gamestats/client.h>
 
@@ -183,7 +185,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	{
 		//
 		// Use pid and grab the stats from the database
-		// Copy over medals and pph.
+		// Copy over medals, pph and rank.
 		// All the other stats add up
 		// Then save the stats!
 		//
@@ -217,6 +219,50 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		Logger::debug(parameter[index + 52] + " = " + parameter[index + 53]); // time
 		Logger::debug(parameter[index + 54] + " = " + parameter[index + 55]); // tk
 		Logger::debug(parameter[index + 56] + " = " + parameter[index + 57]); // ttb
+		
+		Battlefield::Player player;
+		
+		// Get player stats from database
+		player.SetProfileId(parameter[index + 31]);
+		g_database->queryPlayerStats(player);
+		
+		//Update player stats
+		try
+		{
+			player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + std::stoi(parameter[index + 3])  ); // bod
+			player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + std::stoi(parameter[index + 5])  ); // havd
+			player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + std::stoi(parameter[index + 7])  ); // hed
+			player.SetKillsAssualtKit(         player.GetKillsAssualtKit()         + std::stoi(parameter[index + 9])  ); // k1
+			player.SetKillsSniperKit(          player.GetKillsSniperKit()          + std::stoi(parameter[index + 11]) ); // k2
+			player.SetKillsSpecialOpKit(       player.GetKillsSpecialOpKit()       + std::stoi(parameter[index + 13]) ); // k3
+			player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + std::stoi(parameter[index + 15]) ); // k4
+			player.SetKillsSupportKit(         player.GetKillsSupportKit()         + std::stoi(parameter[index + 17]) ); // k5
+			player.SetKills(                   player.GetKills()                   + std::stoi(parameter[index + 19]) ); // kills
+			player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + std::stoi(parameter[index + 21]) ); // lavd
+			player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + std::stoi(parameter[index + 23]) ); // mavd
+			player.SetTotalVictories(          player.GetTotalVictories()          + std::stoi(parameter[index + 27]) ); // mv
+			player.SetTotalGameSessions(       player.GetTotalGameSessions()       + std::stoi(parameter[index + 29]) ); // ngp
+			player.SetDeathsAssualtKit(        player.GetDeathsAssualtKit()        + std::stoi(parameter[index + 39]) ); // s1
+			player.SetDeathsSniperKit(         player.GetDeathsSniperKit()         + std::stoi(parameter[index + 41]) ); // s2
+			player.SetDeathsSpecialOpKit(      player.GetDeathsSpecialOpKit()      + std::stoi(parameter[index + 43]) ); // s3
+			player.SetDeathsCombatEngineerKit( player.GetDeathsCombatEngineerKit() + std::stoi(parameter[index + 45]) ); // s4
+			player.SetDeathsSupportKit(        player.GetDeathsSupportKit()        + std::stoi(parameter[index + 47]) ); // s5
+			player.SetScore(                   player.GetScore()                   + std::stoi(parameter[index + 49]) ); // score
+			player.SetSuicides(                player.GetSuicides()                + std::stoi(parameter[index + 51]) ); // suicides
+			player.SetTime(                    player.GetTime()                    + std::stoi(parameter[index + 53]) ); // time
+			player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + std::stoi(parameter[index + 57]) ); // ttb
+			
+			player.SetMedals( std::stoi(parameter[index + 25]) & Battlefield::PlayerStats::Medals::All_Medals ); // medals
+			player.SetPPH(    std::stoi(parameter[index + 35]) ); // pph
+			player.SetRank(   std::stoi(parameter[index + 37]) ); // rank
+			
+			// Update player stats on database
+			g_database->updatePlayerStats(player);
+		}
+		catch(int e)
+		{
+			Logger::error("Update stats player");
+		}
 		
 		index += 58;
 	}

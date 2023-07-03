@@ -1055,31 +1055,41 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 	// If player can be found and player is not in clan
 	if(player.GetProfileId() != -1 && clan.GetClanId() == -1)
 	{
-		Battlefield::Clan new_clan;
+		auto it = url_variables.find("tag");
 		
-		// Copy url variables into clan
-		new_clan.updateInformation(url_variables);
-		
-		// get clan by name or tag
-		g_database->queryClanByNameOrTag(new_clan);
-		
-		// Check Clan name is not in use
-		if(new_clan.GetClanId() == -1)
+		// clan tag is 3 characters
+		if(it->second.size() == 3)
 		{
-			// Insert clan in database
-			g_database->insertClan(new_clan);
+			Battlefield::Clan new_clan;
 			
-			// Get Clan id
+			// Copy url variables into clan
+			new_clan.updateInformation(url_variables);
+			
+			// get clan by name or tag
 			g_database->queryClanByNameOrTag(new_clan);
 			
-			// Make player leader of clan
-			g_database->insertClanRank(new_clan, player, Battlefield::Clan::Ranks::Leader);
-			
-			http_response.SetMessageBody("OK");        // Clan succesfull created!
+			// Check Clan name is not in use
+			if(new_clan.GetClanId() == -1)
+			{
+				// Insert clan in database
+				g_database->insertClan(new_clan);
+				
+				// Get Clan id
+				g_database->queryClanByNameOrTag(new_clan);
+				
+				// Make player leader of clan
+				g_database->insertClanRank(new_clan, player, Battlefield::Clan::Ranks::Leader);
+				
+				http_response.SetMessageBody("OK");        // Clan succesfull created!
+			}
+			else
+			{
+				http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
+			}
 		}
 		else
 		{
-			http_response.SetMessageBody("NAMEINUSE"); // Clan name already used
+			http_response.SetMessageBody("ERROR");
 		}
 	}
 	else

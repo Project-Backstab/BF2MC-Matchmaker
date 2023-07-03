@@ -259,6 +259,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::
 	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
 	{
 		client_challenge[i] = request[37 + i];
+		//client_challenge[i] = request[39 + i]; // BF2MC - BETA
 	}
 	
 	// Generate challenge encryption/decryption key
