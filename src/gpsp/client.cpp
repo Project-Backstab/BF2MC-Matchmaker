@@ -248,6 +248,22 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		email = email.substr(0, 49);
 	}
 	
+	// Check nick and uniquenick
+	if(nick.size() < 3 or uniquenick.size() < 3)
+	{
+		std::string response = GameSpy::Parameter2Response({
+			"nur", "516",
+			"pid", "-1",
+			"final"
+		});
+		
+		this->Send(response);
+		
+		this->_LogTransaction("<--", response);
+		
+		return;
+	}
+	
 	Battlefield::Players players;
 	
 	// Get players by email
