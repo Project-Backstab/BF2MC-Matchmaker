@@ -83,6 +83,8 @@ class Database
 		void OnDatabaseStart();
 	
 	private:
+		bool _connect();
+		bool _init(MYSQL_STMT** statement);
 		bool _prepare(MYSQL_STMT* statement, const std::string query);
 		bool _prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BIND* input_bind);
 		bool _execute(MYSQL_STMT* statement);

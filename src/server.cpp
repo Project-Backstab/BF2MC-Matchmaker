@@ -178,6 +178,8 @@ void Server::UDPListen()
 	struct sockaddr_in client_address;
 	socklen_t client_address_len = sizeof(client_address);
 
+	this->onServerListen();
+	
 	while (true)
 	{
 		std::vector<unsigned char> buffer(2048, 0);
@@ -242,8 +244,8 @@ void Server::Close()
 	Events
 */
 void Server::onServerListen() const
-{	
-	Logger::info("Server is now listening on " + this->GetAddress());
+{
+	Logger::info("Server is now listening on " + this->GetAddress() + " " + this->GetSocketType());
 }
 
 void Server::onServerShutdown() const

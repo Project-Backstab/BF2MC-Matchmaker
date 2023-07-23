@@ -22,6 +22,7 @@ namespace Net
 			std::string GetIP() const;
 			int GetPort() const;
 			std::string GetAddress() const;
+			std::string GetSocketType() const;
 			
 			void Send(const std::string& msg) const;
 			void Send(const std::vector<unsigned char>& msg) const;

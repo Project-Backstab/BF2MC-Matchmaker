@@ -33,6 +33,30 @@ std::string Net::Socket::GetAddress() const
 	return this->GetIP() + ":" + std::to_string(this->GetPort());
 }
 
+std::string Net::Socket::GetSocketType() const
+{
+	int socket_type;
+    socklen_t optlen = sizeof(socket_type);
+    
+	// Get socket type
+	getsockopt(this->_socket, SOL_SOCKET, SO_TYPE, &socket_type, &optlen);
+	
+	switch(socket_type)
+	{
+		case SOCK_STREAM:
+			return "tcp";
+		break;
+		
+		case SOCK_DGRAM:
+			return "udp";
+		break;
+		
+		default:
+			return "unknown";
+		break;
+	}
+}
+
 void Net::Socket::Send(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)

@@ -9,24 +9,11 @@
 
 Database::Database()
 {
-	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // Read only
-	
-	this->_connection = mysql_init(nullptr);
-
-	if (!mysql_real_connect(
-			this->_connection,
-			g_settings["database"]["host"].asString().c_str(),
-			g_settings["database"]["username"].asString().c_str(),
-			g_settings["database"]["password"].asString().c_str(),
-			g_settings["database"]["database_name"].asString().c_str(),
-			0, nullptr, 0))
+	if(!this->_connect())
 	{
-		Logger::error("Failed to connect to the database: " + std::string(mysql_error(this->_connection)));
-		Logger::error("Database::Database() at mysql_real_connect");
-		
 		exit(EXIT_FAILURE);
 	}
-
+	
 	this->OnDatabaseStart();
 }
 
@@ -69,11 +56,11 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	output_bind[4].buffer = output_md5password;
 	output_bind[4].buffer_length = 33;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -143,11 +130,11 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	output_bind[4].buffer = output_md5password;
 	output_bind[4].buffer_length = 33;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -219,11 +206,11 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 33;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -234,7 +221,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 		
 		return false;
 	}
-
+	
 	// Fetch and process rows
 	while (true)
 	{
@@ -311,11 +298,11 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 33;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -370,11 +357,11 @@ bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 	output_bind[0].buffer = &output_userid;
 	output_bind[0].is_unsigned = false;	
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -422,11 +409,11 @@ bool Database::updatePlayerLastLogin(Battlefield::Player& player, const std::str
 	input_bind[1].buffer = const_cast<int*>(&input_profileid);
 	input_bind[1].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -481,11 +468,11 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 	input_bind[4].buffer = const_cast<char*>(&(input_md5password[0]));
 	input_bind[4].buffer_length = input_md5password.size();
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -534,11 +521,11 @@ bool Database::queryPlayerFriends(Battlefield::Player& player)
 	output_bind[1].buffer = &output_target_profileid;
 	output_bind[1].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -589,11 +576,11 @@ bool Database::insertPlayerFriend(const Battlefield::Player& player, const Battl
 	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[1].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -643,11 +630,11 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 	input_bind[3].buffer = const_cast<int*>(&input_profileid);
 	input_bind[3].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -821,11 +808,11 @@ bool Database::queryPlayerStats(Battlefield::Player& player)
 	output_bind[26].buffer = const_cast<int*>(&output_ngp);
 	output_bind[26].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1032,11 +1019,11 @@ bool Database::updatePlayerStats(const Battlefield::Player& player)
 	input_bind[27].buffer = const_cast<int*>(&input_profileid);
 	input_bind[27].is_unsigned = false;
 	
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1069,11 +1056,11 @@ bool Database::insertPlayerStats(const Battlefield::Player& player)
 	input_bind[0].buffer = const_cast<int*>(&input_profileid);
 	input_bind[0].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1131,11 +1118,11 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	output_bind[3].buffer = &output_region;
 	output_bind[3].is_unsigned = false;	
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1188,11 +1175,11 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	output_bind[0].buffer = &output_clanid;
 	output_bind[0].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1258,11 +1245,11 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	output_bind[4].buffer = &output_region;
 	output_bind[4].is_unsigned = false;	
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1320,11 +1307,11 @@ bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 	output_bind[1].buffer = &output_rank;
 	output_bind[1].is_unsigned = false;	
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1392,11 +1379,11 @@ bool Database::insertClan(const Battlefield::Clan& clan)
 	input_bind[4].buffer = const_cast<int*>(&input_region);
 	input_bind[4].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1445,11 +1432,11 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	input_bind[4].buffer = const_cast<int*>(&input_clanid);
 	input_bind[4].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1482,11 +1469,11 @@ bool Database::removeClan(const Battlefield::Clan& clan)
 	input_bind[0].buffer = const_cast<int*>(&input_clanid);
 	input_bind[0].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1528,11 +1515,11 @@ bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::
 	input_bind[2].buffer = const_cast<int*>(&input_rank);
 	input_bind[2].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1573,11 +1560,11 @@ bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::
 	input_bind[2].buffer = const_cast<int*>(&input_profileid);
 	input_bind[2].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1614,11 +1601,11 @@ bool Database::removeClanRank(const Battlefield::Clan& clan, const Battlefield::
 	input_bind[1].buffer = const_cast<int*>(&input_profileid);
 	input_bind[1].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1651,11 +1638,11 @@ bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 	input_bind[0].buffer = const_cast<int*>(&input_clanid);
 	input_bind[0].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement)
 	)
@@ -1697,11 +1684,11 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	output_bind[2].buffer = &output_flag;
 	output_bind[2].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1796,11 +1783,11 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	output_bind[5].buffer = const_cast<int*>(&output_pph);
 	output_bind[5].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1881,11 +1868,11 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	output_bind[3].buffer = const_cast<int*>(&output_value);
 	output_bind[3].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -1991,11 +1978,11 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	output_bind[5].buffer = const_cast<int*>(&output_s);
 	output_bind[5].is_unsigned = false;
 	
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2228,11 +2215,11 @@ bool Database::queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players
 	output_bind[5].buffer = const_cast<int*>(&output_pph);
 	output_bind[5].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2412,11 +2399,11 @@ bool Database::queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players
 	output_bind[3].buffer = const_cast<int*>(&output_value);
 	output_bind[3].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2584,11 +2571,11 @@ bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_player
 	output_bind[5].buffer = const_cast<int*>(&output_s);
 	output_bind[5].is_unsigned = false;
 	
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2699,11 +2686,11 @@ bool Database::queryRankPlayersTopFriendsByRank(Battlefield::RankPlayers& rank_p
 	output_bind[5].buffer = const_cast<int*>(&output_pph);
 	output_bind[5].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2787,11 +2774,10 @@ bool Database::queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_p
 	output_bind[3].buffer = const_cast<int*>(&output_value);
 	output_bind[3].is_unsigned = false;
 
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
-
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2896,12 +2882,12 @@ bool Database::queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[5].buffer = const_cast<int*>(&output_s);
 	output_bind[5].is_unsigned = false;
-	
-	// Prepare the statement
-	MYSQL_STMT* statement = mysql_stmt_init(this->_connection);
 
 	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
 	if(
+		!this->_init(&statement) ||
 		!this->_prepare(statement, query) ||
 		!this->_execute(statement, output_bind)
 	)
@@ -2951,6 +2937,43 @@ bool Database::queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_
 }
 
 // Private functions
+bool Database::_connect()
+{	
+	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // Read only
+
+	this->_connection = mysql_init(nullptr);
+
+	if (!mysql_real_connect(
+			this->_connection,
+			g_settings["database"]["host"].asString().c_str(),
+			g_settings["database"]["username"].asString().c_str(),
+			g_settings["database"]["password"].asString().c_str(),
+			g_settings["database"]["database_name"].asString().c_str(),
+			0, nullptr, 0))
+	{
+		Logger::error("Failed to connect to the database: " + std::string(mysql_error(this->_connection)));
+		Logger::error("Database::Database() at mysql_real_connect");
+		
+		return false;
+	}
+	
+	return true;
+}
+
+bool Database::_init(MYSQL_STMT** statement)
+{
+	// Check if MySQL connection is still alive
+	if (mysql_ping(this->_connection) != 0) {
+		// In case disconnected, reconnect!
+		this->_connect();
+	}
+	
+	// Initialize statement
+	*statement = mysql_stmt_init(this->_connection);
+	
+	return true;
+}
+
 bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 {
 	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
@@ -2962,7 +2985,7 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 		
 		return false;
 	}
-
+	
 	return true;
 }
 
@@ -2972,7 +2995,7 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BI
 	{
 		return false;
 	}
-
+	
 	if (mysql_stmt_bind_param(statement, input_bind) != 0)
 	{
 		Logger::error("Failed to bind the input parameter: " + std::string(mysql_stmt_error(statement)));
@@ -3027,6 +3050,6 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 // Events
 void Database::OnDatabaseStart()
 {
-	Logger::info("Database started");
+	Logger::info("MySQL Database connected");
 }
 
