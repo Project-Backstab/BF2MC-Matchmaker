@@ -83,6 +83,8 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// Locale
 	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestLocaleLanguage     },
+	{ "/gamescripts/bfmc/ps2/Locale/brittish.pus",            &Webserver::Client::requestLocaleEnglish      },
+	{ "/gamescripts/bfmc/ps2/Locale/dutch.pus",               &Webserver::Client::requestLocaleEnglish      },
 	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestLocaleEnglish      },
 	{ "/gamescripts/bfmc/ps2/Locale/french.pus",              &Webserver::Client::requestLocaleFrench       },
 	{ "/gamescripts/bfmc/ps2/Locale/german.pus",              &Webserver::Client::requestLocaleGerman       },
@@ -92,6 +94,26 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/gamescripts/bfmc/ps2/Locale/swedish.pus",             &Webserver::Client::requestLocaleSwedish      },
 	
 	// Advertisements
+	{ "/gamescripts/bfmc/ps2/Ads/advert.de.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.de.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.en.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.en.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.es.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.es.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.gb.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.it.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.sux",             &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.txt",             &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.sux",              &Webserver::Client::requestAdvertSux          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.txt",              &Webserver::Client::requestAdvertTxt          },
 	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux          },
 	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestAdvertTxt          },
 	
