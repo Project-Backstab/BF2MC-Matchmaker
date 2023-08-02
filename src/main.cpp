@@ -47,8 +47,8 @@ void load_settings()
 void start_db()
 {	
 	// Initialize the MySQL library
-    mysql_library_init(0, nullptr, nullptr);
-	
+	mysql_library_init(0, nullptr, nullptr);
+
 	g_database = new Database();
 }
 

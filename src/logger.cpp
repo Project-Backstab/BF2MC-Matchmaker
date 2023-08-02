@@ -12,14 +12,14 @@ std::mutex    g_mutex_logger;
 void Logger::Initialize()
 {
 	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
-	
+
 	std::string path = "../data/log";
 
-    // Check if the directory already exists
-    if (!std::filesystem::exists(path))
+	// Check if the directory already exists
+	if (!std::filesystem::exists(path))
 	{
-        // Create the directory
-        if (std::filesystem::create_directory(path))
+		// Create the directory
+		if (std::filesystem::create_directory(path))
 		{
 			std::cout << "[INFO] Create \"data/log/\" directory!" << std::endl;
 		}
@@ -28,7 +28,7 @@ void Logger::Initialize()
 			std::cout << "[ERROR] Can't create \"data/log/\" directory!" << std::endl;
 		}
 	}
-	
+
 	g_logger.open(path + "/bf2mc-" + Util::GetNowDateTime() + ".log", std::ios::app);
 }
 

@@ -106,42 +106,42 @@ std::string Util::generateRandomAuthtoken()
 
 std::vector<int> Util::convertProfileIdToVector(const std::string& input)
 {
-    std::vector<int> result;
-    std::stringstream ss(input);
-    std::string item;
+	std::vector<int> result;
+	std::stringstream ss(input);
+	std::string item;
 
-    while (std::getline(ss, item, ',')) {
-        try
+	while (std::getline(ss, item, ',')) {
+		try
 		{
-            int value = std::stoi(item);
-            result.push_back(value);
-        }
+			int value = std::stoi(item);
+			result.push_back(value);
+		}
 		catch (...) {};
-    }
+	}
 
-    return result;
+	return result;
 }
 
 std::string Util::GetNowTime()
 {
-    char timeStr[9];
-	
+	char timeStr[9];
+
 	auto now = std::chrono::system_clock::now();
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
-    std::tm* timeInfo = std::localtime(&time);
-    std::strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeInfo);
-	
+	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	std::tm* timeInfo = std::localtime(&time);
+	std::strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeInfo);
+
 	return timeStr;
 }
 
 std::string Util::GetNowDateTime()
 {
-    auto now = std::chrono::system_clock::now();
-    std::time_t time = std::chrono::system_clock::to_time_t(now);
-    std::tm* timeInfo = std::localtime(&time);
+	auto now = std::chrono::system_clock::now();
+	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	std::tm* timeInfo = std::localtime(&time);
 
-    std::ostringstream oss;
-    oss << std::put_time(timeInfo, "%Y%m%d-%H%M%S");
-    return oss.str();
+	std::ostringstream oss;
+	oss << std::put_time(timeInfo, "%Y%m%d-%H%M%S");
+	return oss.str();
 }
 

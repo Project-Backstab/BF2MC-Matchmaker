@@ -10,29 +10,29 @@
 	{
 		"port": 27900,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false
+		"show_requests": true,
+		"show_responses": true
 	},
 	"gpcm":
 	{
 		"port": 29900,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false
+		"show_requests": true,
+		"show_responses": true
 	},
 	"gpsp":
 	{
 		"port": 29901,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false
+		"show_requests": true,
+		"show_responses": true
 	},
 	"webserver":
 	{
 		"port": 8080,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false,
+		"show_requests": true,
+		"show_responses": true,
 		"banned_requests":
 		[
 			"^/root/"
@@ -49,8 +49,8 @@
 	{
 		"port": 29920,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false,
+		"show_requests": true,
+		"show_responses": true,
 	},
 	"show_client_connect": false,
 	"show_client_disconnect": false
