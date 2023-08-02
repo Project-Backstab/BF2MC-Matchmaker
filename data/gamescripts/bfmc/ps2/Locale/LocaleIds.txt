@@ -1,0 +1,18 @@
+#
+# Locale identifiers
+#
+# Integer identifiers are implicitly assigned to each locale string by order, starting at 0.
+#
+#	Syntax:
+#	[locale identifier] [language to use] [VO to use] <normalback|circleback>
+#
+US		US		US		normalback
+UK		UK		UK		normalback
+FRENCH		FRENCH		FRENCH		normalback
+ITALIAN		ITALIAN		ITALIAN		normalback
+GERMAN		GERMAN		GERMAN		normalback
+SPANISH		SPANISH		SPANISH		normalback
+DUTCH		DUTCH		US		normalback
+SWEDISH		SWEDISH		US		normalback
+JAPANESE	JAPANESE	JAPANESE	circleback
+ROA		US		US		normalback
