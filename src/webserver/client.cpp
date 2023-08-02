@@ -23,11 +23,56 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 {
 	// www.easports.com
 	// News
+	{ "/gamescripts/bfmc/ps2/en/PS2news_de_DE.txt",           &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_en_GB.txt",           &Webserver::Client::requestNews               },
 	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_es_ES.txt",           &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_fr_FR.txt",           &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_it_IT.txt",           &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_jp.txt",              &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_nl.txt",              &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_sv.txt",              &Webserver::Client::requestNews               },
 	
-	// Licenses
+	// GameSpy Licenses
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.de",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.en",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.es",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.fr",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.gb",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.it",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.jp",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.nl",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.roa",                 &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.sv",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.uk",                  &Webserver::Client::requestLicenseGameSpy     },
 	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestLicenseGameSpy     },
+	
+	// EA Licenses
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.de",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.en",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.es",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.fr",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.gb",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.it",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.jp",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.nl",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.roa",                      &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.sv",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.uk",                       &Webserver::Client::requestLicenseEA          },
 	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestLicenseEA          },
+	
+	// PunkBuster Licenses
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.de",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.en",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.es",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.fr",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.gb",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.it",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.jp",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.nl",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.roa",              &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.sv",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.uk",               &Webserver::Client::requestLicensePunkBuster  },
 	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestLicensePunkBuster  },
 	
 	// Settings
