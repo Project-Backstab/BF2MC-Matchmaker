@@ -1,4 +1,4 @@
-Welkom bij BFMCSpy!
+   Welkom bij BFMCSpy!
 
 Bij het aanmaken van een account op onze service, wordt het ten zeerste aanbevolen om gedenkwaardige accountgegevens te gebruiken. Er is op dit moment geen functie 'wachtwoord opnieuw instellen' of 'account herstellen' beschikbaar. Met deze gegevens kunt u inloggen op onze website.
 

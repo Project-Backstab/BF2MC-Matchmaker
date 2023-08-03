@@ -1,4 +1,4 @@
-¡Bienvenido al servicio en línea de BF2:MC!
+   ¡Bienvenido al servicio en línea de BF2:MC!
 
 Al aceptar este acuerdo, usted acepta las siguientes reglas del servidor de juegos y comprende que las consecuencias de romper estas reglas pueden resultar en la revocación de su acceso a los servidores.
 

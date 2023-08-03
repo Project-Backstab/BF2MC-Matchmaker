@@ -1,4 +1,4 @@
-Welkom bij de BF2:MC Online-service!
+   Welkom bij de BF2:MC Online-service!
 
 Door deze overeenkomst te accepteren, gaat u akkoord met de volgende Game Server-regels en begrijpt u dat de gevolgen van het overtreden van deze regels ertoe kunnen leiden dat uw toegang tot de servers wordt ingetrokken.
 

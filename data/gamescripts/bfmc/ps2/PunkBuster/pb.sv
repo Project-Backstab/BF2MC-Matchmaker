@@ -1,4 +1,4 @@
-Välkommen till BF2:MC Online Service!
+   Välkommen till BF2:MC Online Service!
 
 Genom att acceptera detta avtal godkänner du följande spelserverregler och förstår att konsekvenserna av att bryta mot dessa regler kan resultera i att din åtkomst till servrarna återkallas.
 

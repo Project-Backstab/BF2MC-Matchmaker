@@ -1,4 +1,4 @@
-Bienvenue sur BFMCSpy!
+   Bienvenue sur BFMCSpy!
 
 Lors de la création d'un compte sur notre service, il est fortement recommandé d'utiliser des détails de compte mémorables. Il n'y a pas de fonction "réinitialiser le mot de passe" ou "récupérer le compte" disponible pour le moment. Vous pourrez utiliser ces informations pour vous connecter à notre site Web.
 

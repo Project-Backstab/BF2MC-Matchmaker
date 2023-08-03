@@ -1,4 +1,4 @@
-¡Bienvenido a BFMCSpy!
+   ¡Bienvenido a BFMCSpy!
 
 Al crear una cuenta en nuestro servicio, se recomienda encarecidamente utilizar detalles de cuenta fáciles de recordar. No hay ninguna función de 'restablecer contraseña' o 'recuperar cuenta' disponible en este momento. Podrá utilizar estos datos para iniciar sesión en nuestro sitio web.
 
