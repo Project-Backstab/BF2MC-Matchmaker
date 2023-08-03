@@ -38,48 +38,28 @@ namespace Webserver
 				Requests
 			*/
 			// www.easports.com
-			// News
-			void requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			
-			// Licenses
-			void requestLicenseGameSpy(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestLicenseEA(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestLicensePunkBuster(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			
-			// Settings
-			void requestSettingsGameModes(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestSettingsQuickMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestSettingsPlayList(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestSettingsClanMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			
-			// Locale
-			void requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestLocale(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			
-			// Advertisements
-			void requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestFile(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
 			
 			// bfmc.gamespy.com
 			// Stats
-			void requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestStats(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
 			
 			// Clan	
-			void requestClanInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestClanMembers(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestLeaderboard(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestCreateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestUpdateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestDisband(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestChangeRank(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestAddMember(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestDeleteMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestClanMessage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
-			void requestMeme(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestClanInfo(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestClanMembers(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestLeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestCreateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestUpdateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestDisband(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestChangeRank(const atomizes::HTTPMessage &http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestAddMember(const atomizes::HTTPMessage &http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestDeleteMember(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestClanMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
+			void requestMeme(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
 			
 			// Empty
-			void requestEmpty(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables);
+			void requestEmpty(const atomizes::HTTPMessage& http_request, const std::string& url_base, const UrlRequest::UrlVariables& url_variables);
 		
 		private:
 			atomizes::HTTPMessage _defaultResponseHeader() const;

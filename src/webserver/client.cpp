@@ -17,122 +17,122 @@
 
 using namespace atomizes;
 
-typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const UrlRequest::UrlVariables&);
+typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const std::string&, const UrlRequest::UrlVariables&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
 	// www.easports.com
 	// News
-	{ "/gamescripts/bfmc/ps2/en/PS2news_de_DE.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_en_GB.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_es_ES.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_fr_FR.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_it_IT.txt",           &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_jp.txt",              &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_nl.txt",              &Webserver::Client::requestNews               },
-	{ "/gamescripts/bfmc/ps2/en/PS2news_sv.txt",              &Webserver::Client::requestNews               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_de_DE.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_en_GB.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_en_US.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_es_ES.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_fr_FR.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_it_IT.txt",           &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_jp.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_nl.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/en/PS2news_sv.txt",              &Webserver::Client::requestFile               },
 	
 	// GameSpy Licenses
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.de",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.en",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.es",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.fr",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.gb",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.it",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.jp",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.nl",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.roa",                 &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.sv",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.uk",                  &Webserver::Client::requestLicenseGameSpy     },
-	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestLicenseGameSpy     },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.de",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.en",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.es",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.fr",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.gb",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.it",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.jp",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.nl",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.roa",                 &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.sv",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.uk",                  &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/GameSpy/gs.us",                  &Webserver::Client::requestFile               },
 	
 	// EA Licenses
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.de",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.en",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.es",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.fr",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.gb",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.it",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.jp",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.nl",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.roa",                      &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.sv",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.uk",                       &Webserver::Client::requestLicenseEA          },
-	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestLicenseEA          },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.de",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.en",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.es",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.fr",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.gb",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.it",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.jp",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.nl",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.roa",                      &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.sv",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.uk",                       &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ea/Ea.us",                       &Webserver::Client::requestFile               },
 	
 	// PunkBuster Licenses
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.de",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.en",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.es",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.fr",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.gb",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.it",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.jp",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.nl",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.roa",              &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.sv",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.uk",               &Webserver::Client::requestLicensePunkBuster  },
-	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestLicensePunkBuster  },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.de",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.en",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.es",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.fr",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.gb",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.it",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.jp",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.nl",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.roa",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.sv",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.uk",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/PunkBuster/pb.us",               &Webserver::Client::requestFile               },
 	
 	// Settings
-	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &Webserver::Client::requestSettingsGameModes  },
-	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &Webserver::Client::requestSettingsQuickMatch },
-	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &Webserver::Client::requestSettingsPlayList   },
-	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestSettingsClanMatch  },
+	{ "/gamescripts/bfmc/ps2/Settings/GameModes.txt",         &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt", &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Settings/PlayLists.txt",         &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt",  &Webserver::Client::requestFile               },
 	
 	// Locale
-	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestLocaleLanguage     },
-	{ "/gamescripts/bfmc/ps2/Locale/brittish.pus",            &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/dutch.pus",               &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/french.pus",              &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/german.pus",              &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/italian.pus",             &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/japanese.pus",            &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/spanish.pus",             &Webserver::Client::requestLocale             },
-	{ "/gamescripts/bfmc/ps2/Locale/swedish.pus",             &Webserver::Client::requestLocale             },
+	{ "/gamescripts/bfmc/ps2/Locale/language.hdt",            &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/brittish.pus",            &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/dutch.pus",               &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/english.pus",             &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/french.pus",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/german.pus",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/italian.pus",             &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/japanese.pus",            &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/spanish.pus",             &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Locale/swedish.pus",             &Webserver::Client::requestFile               },
 	
 	// Advertisements
-	{ "/gamescripts/bfmc/ps2/Ads/advert.de.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.de.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.en.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.en.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.es.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.es.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.gb.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.it.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.sux",             &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.txt",             &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.txt",              &Webserver::Client::requestAdvertTxt          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestAdvertSux          },
-	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestAdvertTxt          },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.de.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.de.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.en.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.en.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.es.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.es.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.fr.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.gb.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.it.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.jp.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.nl.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.sux",             &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.roa.txt",             &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.sv.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.uk.txt",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.sux",              &Webserver::Client::requestFile               },
+	{ "/gamescripts/bfmc/ps2/Ads/advert.us.txt",              &Webserver::Client::requestFile               },
 	
 	// bfmc.gamespy.com
 	// Stats
-	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo },  // Done
-	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats },          // Done
+	{ "/BFMC/Stats/getplayerinfo.aspx",                       &Webserver::Client::requestGetPlayerInfo      }, // Done
+	{ "/BFMC/Stats/stats.aspx",                               &Webserver::Client::requestStats              }, // Done
 	
 	// Clan
-	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo },       // Done
-	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers },    // Done
-	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard },    // 
-	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan },     // Done
-	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan },     // Done
-	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband },        // Done
-	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank },     // Done
-	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember },      // Done
-	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember },   // Done
-	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage },    // Done
+	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo           }, // Done
+	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers        }, // Done
+	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard        }, // 
+	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan         }, // Done
+	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan         }, // Done
+	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband            }, // Done
+	{ "/BFMC/Clans/changerank.aspx",                          &Webserver::Client::requestChangeRank         }, // Done
+	{ "/BFMC/Clans/addmember.aspx",                           &Webserver::Client::requestAddMember          }, // Done
+	{ "/BFMC/Clans/deletemember.aspx",                        &Webserver::Client::requestDeleteMember       }, // Done
+	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage        }, // Done
 	
 	// I like memes :D
 	{ "/",                                                    &Webserver::Client::requestMeme  },
@@ -213,7 +213,7 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 			RequestActionFunc func = it->second;
 		
 			// Execute action function with class object.
-			(this->*(func))(http_request, url_variables);
+			(this->*(func))(http_request, url_base, url_variables);
 		}
 		else
 		{		
@@ -256,68 +256,10 @@ void Webserver::Client::onUnimplementedAction(const std::string &action)
 }
 
 // www.easports.com
-// News
-void Webserver::Client::requestNews(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
-	this->_SendFile("data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt");
-}
-
-void Webserver::Client::requestLicenseGameSpy(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/GameSpy/gs.us");
-}
-
-void Webserver::Client::requestLicenseEA(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Ea/Ea.us");
-}
-
-void Webserver::Client::requestLicensePunkBuster(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/PunkBuster/pb.us");
-}
-
-// Settings
-void Webserver::Client::requestSettingsGameModes(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/GameModes.txt");
-}
-
-void Webserver::Client::requestSettingsQuickMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/QuickMatchOptions.txt");
-}
-
-void Webserver::Client::requestSettingsPlayList(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/PlayLists.txt");
-}
-
-void Webserver::Client::requestSettingsClanMatch(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Settings/ClanMatchOptions.txt");
-}
-
-// Locale
-void Webserver::Client::requestLocaleLanguage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/language.hdt");
-}
-
-void Webserver::Client::requestLocale(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Locale/english.pus");
-}
-
-// Advertisements
-void Webserver::Client::requestAdvertSux(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Ads/advert.us.sux");
-}
-
-void Webserver::Client::requestAdvertTxt(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
-{
-	this->_SendFile("data/gamescripts/bfmc/ps2/Ads/advert.us.txt");
+	this->_SendFile("data" + url_base);
 }
 
 // bfmc.gamespy.com
@@ -353,7 +295,8 @@ void Webserver::Client::requestAdvertTxt(const atomizes::HTTPMessage& http_reque
 		mv			Total mayor victories
 		ngp			Total Parcipated game sessions
 */
-void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request,  const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Player player;
@@ -382,7 +325,8 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::RankPlayers rank_players;
@@ -1013,7 +957,8 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 }
 
 // Clan
-void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	Battlefield::Clan clan;
 	Battlefield::Player player;
@@ -1050,7 +995,8 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	Battlefield::Clan clan;
 	
@@ -1074,12 +1020,14 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	this->_SendFile("data/examples/leaderboard/startrank=1&endrank=7.txt");
 }
 
-void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1141,7 +1089,8 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const UrlRequest::UrlVariables &url_variables)
+void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1189,7 +1138,8 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1239,7 +1189,8 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1337,7 +1288,8 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1400,7 +1352,8 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1489,7 +1442,8 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1541,7 +1495,8 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_req
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -1553,7 +1508,8 @@ void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, const UrlRequest::UrlVariables& url_variables)
+void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const UrlRequest::UrlVariables& url_variables)
 {
 	HTTPMessage http_response;
 	
