@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: 10.10.10.109    Database: BF2MC
+-- Host: 128.140.0.23    Database: BF2MC
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.22.04.2
+-- Server version	8.0.33-0ubuntu0.22.04.4
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +29,7 @@ CREATE TABLE `GameServer` (
   `flag` tinyint(1) DEFAULT '59',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `GameServer` (
 
 LOCK TABLES `GameServer` WRITE;
 /*!40000 ALTER TABLE `GameServer` DISABLE KEYS */;
-INSERT INTO `GameServer` VALUES (1,'168.119.189.149',3658,59),(2,'78.47.184.23',3658,59);
+INSERT INTO `GameServer` VALUES (1,'168.119.189.149',3658,59),(2,'78.47.184.23',3658,59),(4,'168.119.189.149',3659,59),(5,'86.87.139.235',3658,59);
 /*!40000 ALTER TABLE `GameServer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-08  8:02:44
+-- Dump completed on 2023-08-04 21:13:31
