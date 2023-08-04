@@ -15,16 +15,17 @@ typedef void (GPCM::Client::*RequestActionFunc)(const GameSpy::Parameter&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
-	{ "login",      &GPCM::Client::requestLogin },       // Working, but need to do extra investigation for client variable response
-	{ "inviteto",   &GPCM::Client::requestInviteTo },    // Done
-	{ "getprofile", &GPCM::Client::requestGetProfile },  // Done
-	{ "status",     &GPCM::Client::requestStatus },      // Working, but need to do investigation in msg value
-	{ "bm",         &GPCM::Client::requestBm },          // Done
-	{ "addbuddy",   &GPCM::Client::requestAddBuddy },    // Done
-	{ "authadd",    &GPCM::Client::requestAuthAdd },     // Done
-	{ "revoke",     &GPCM::Client::requestRevoke },      // Done
-	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy }, // Done
-	{ "logout",     &GPCM::Client::requestLogout },      // Done
+	{ "login",      &GPCM::Client::requestLogin },        // Working, but need to do extra investigation for client variable response
+	{ "inviteto",   &GPCM::Client::requestInviteTo },     // Done
+	{ "getprofile", &GPCM::Client::requestGetProfile },   // Done
+	{ "status",     &GPCM::Client::requestStatus },       // Working, but need to do investigation in msg value
+	{ "bm",         &GPCM::Client::requestBm },           // Done
+	{ "addbuddy",   &GPCM::Client::requestAddBuddy },     // Done
+	{ "authadd",    &GPCM::Client::requestAuthAdd },      // Done
+	{ "revoke",     &GPCM::Client::requestRevoke },       // Done
+	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy },  // Done
+	{ "pinvite",    &GPCM::Client::requestPlayerInvite }, // 
+	{ "logout",     &GPCM::Client::requestLogout },       // Done
 };
 
 GPCM::Client::Client(int socket, struct sockaddr_in address)
@@ -537,6 +538,15 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	//{
 	//	return;
 	//}
+}
+
+/*
+	Request:
+		\pinvite\\sesskey\1\profileid\10037095\productid\10307\final\
+*/
+void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
+{
+	
 }
 
 /*

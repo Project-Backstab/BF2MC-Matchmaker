@@ -50,6 +50,7 @@ namespace GPCM
 			void requestRevoke(const GameSpy::Parameter& parameter);
 			void requestDeleteBuddy(const GameSpy::Parameter& parameter);
 			void requestAuthAdd(const GameSpy::Parameter& parameter);
+			void requestPlayerInvite(const GameSpy::Parameter& parameter);
 			void requestLogout(const GameSpy::Parameter& parameter);
 			
 		private:
