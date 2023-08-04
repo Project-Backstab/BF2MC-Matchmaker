@@ -1845,6 +1845,7 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	query += "WHERE ";
 	query += "	Players.profileid = PlayerStats.profileid ";
 	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
 	query += "	`" + type + "` DESC ";
 	query += "LIMIT 10;";
 	
@@ -1947,6 +1948,7 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	query += "WHERE ";
 	query += "	Players.profileid = PlayerStats.profileid ";
 	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
 	query += "	`ratio` DESC ";
 	query += "LIMIT 10;";
 	
@@ -2852,6 +2854,7 @@ bool Database::queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_
 	query += "AND ";
 	query += "	Players.profileid IN (" + Util::ToString(friends) + ") ";
 	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
 	query += "	`ratio` DESC ";
 	query += "LIMIT 10;";
 	
