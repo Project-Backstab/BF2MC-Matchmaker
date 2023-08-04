@@ -2753,6 +2753,7 @@ bool Database::queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_p
 	query += "AND ";
 	query += "	Players.profileid IN (" + Util::ToString(friends) + ") ";
 	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
 	query += "	`" + type + "` DESC ";
 	query += "LIMIT 10;";
 	
