@@ -31,6 +31,66 @@ void Battlefield::PlayerStats::useExample()
 	this->SetTotalGameSessions(3613);
 }
 
+double Battlefield::PlayerStats::GetRatio() const
+{
+	if(this->_kills == 0 or this->_deaths == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_kills * 100) / this->_deaths;
+}
+
+double Battlefield::PlayerStats::GetRatioAssualtKit() const
+{
+	if(this->_k1 == 0 or this->_s1 == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_k1 * 100) / this->_s1;
+}
+
+double Battlefield::PlayerStats::GetRatioSniperKit() const
+{
+	if(this->_k2 == 0 or this->_s2 == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_k2 * 100) / this->_s2;
+}
+
+double Battlefield::PlayerStats::GetRatioSpecialOpKit() const
+{
+	if(this->_k3 == 0 or this->_s3 == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_k3 * 100) / this->_s3;
+}
+
+double Battlefield::PlayerStats::GetRatioCombatEngineerKit() const
+{
+	if(this->_k4 == 0 or this->_s4 == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_k4 * 100) / this->_s4;
+}
+
+double Battlefield::PlayerStats::GetRatioSupportKit() const
+{
+	if(this->_k5 == 0 or this->_s5 == 0)
+	{
+		return 0.0;
+	}
+	
+	return static_cast<double>(this->_k5 * 100) / this->_s5;
+}
+
 bool Battlefield::PlayerStats::SetScore(uint32_t score)
 {
 	this->_score = score;

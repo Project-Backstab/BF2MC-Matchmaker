@@ -118,12 +118,12 @@ namespace Battlefield
 			int GetTotalVictories() const          { return this->_mv;       }
 			int GetTotalGameSessions() const       { return this->_ngp;      }
 			
-			double GetRatio() const                  { return static_cast<double>(this->_kills * 100) / this->_deaths; }
-			double GetRatioAssualtKit() const        { return static_cast<double>(this->_k1 * 100) / this->_s1; }
-			double GetRatioSniperKit() const         { return static_cast<double>(this->_k2 * 100) / this->_s2; }
-			double GetRatioSpecialOpKit() const      { return static_cast<double>(this->_k3 * 100) / this->_s3; }
-			double GetRatioCombatEngineerKit() const { return static_cast<double>(this->_k4 * 100) / this->_s4; }
-			double GetRatioSupportKit() const        { return static_cast<double>(this->_k5 * 100) / this->_s5; }
+			double GetRatio() const;
+			double GetRatioAssualtKit() const;
+			double GetRatioSniperKit() const;
+			double GetRatioSpecialOpKit() const;
+			double GetRatioCombatEngineerKit() const;
+			double GetRatioSupportKit() const;
 			
 			bool SetScore(uint32_t score);
 			bool SetRank(uint32_t ran);
