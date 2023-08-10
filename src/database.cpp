@@ -1946,7 +1946,9 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	query += "	`Players`, ";
 	query += "	`PlayerStats` ";
 	query += "WHERE ";
-	query += "	Players.profileid = PlayerStats.profileid ";
+	query += "	Players.profileid = PlayerStats.profileid AND ";
+	query += "	PlayerStats." + k + " != 0 AND ";
+	query += "	PlayerStats." + s + " != 0 ";
 	query += "ORDER BY ";
 	query += "	`rank` ASC, ";
 	query += "	`ratio` DESC ";
@@ -2480,7 +2482,9 @@ bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_player
 	query += "		`Players`, ";
 	query += "		`PlayerStats` ";
 	query += "	WHERE ";
-	query += "		Players.profileid = PlayerStats.profileid ";
+	query += "		Players.profileid = PlayerStats.profileid AND ";
+	query += "		PlayerStats." + k + " != 0 AND ";
+	query += "		PlayerStats." + s + " != 0 ";
 	query += ") AS `ranked_players` ";
 	query += "WHERE ";
 	query += "	`rank` >= ( ";
@@ -2503,7 +2507,9 @@ bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_player
 	query += "				Players, ";
 	query += "				PlayerStats ";
 	query += "			WHERE ";
-	query += "				Players.profileid = PlayerStats.profileid ";
+	query += "				Players.profileid = PlayerStats.profileid AND ";
+	query += "				PlayerStats." + k + " != 0 AND ";
+	query += "				PlayerStats." + s + " != 0 ";
 	query += "		) AS `subquery` ";
 	query += "		WHERE ";
 	query += "			`subquery`.`profileid` = ? ";
@@ -2528,7 +2534,9 @@ bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_player
 	query += "					Players, ";
 	query += "					PlayerStats ";
 	query += "				WHERE ";
-	query += "					Players.profileid = PlayerStats.profileid ";
+	query += "					Players.profileid = PlayerStats.profileid AND ";
+	query += "					PlayerStats." + k + " != 0 AND ";
+	query += "					PlayerStats." + s + " != 0 ";
 	query += "			) AS `subquery` ";
 	query += "		WHERE `subquery`.`profileid` = ? ";
 	query += "	) ";
@@ -2851,7 +2859,9 @@ bool Database::queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_
 	query += "	`Players`, ";
 	query += "	`PlayerStats` ";
 	query += "WHERE ";
-	query += "	Players.profileid = PlayerStats.profileid ";
+	query += "	Players.profileid = PlayerStats.profileid  AND ";
+	query += "	PlayerStats." + k + " != 0 AND ";
+	query += "	PlayerStats." + s + " != 0 ";
 	query += "AND ";
 	query += "	Players.profileid IN (" + Util::ToString(friends) + ") ";
 	query += "ORDER BY ";
