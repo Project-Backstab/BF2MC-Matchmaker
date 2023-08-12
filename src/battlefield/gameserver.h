@@ -62,6 +62,14 @@ namespace Battlefield
 			int64_t     _xi;              //                                           ??? Unsure ???
 			uint8_t     _qm;              //                                           ??? Unsure ???
 			uint8_t     _region;          // Server region (65536: Europe, 1: Us, 2048: Japan)
+			
+			// Clan
+			int8_t      _c0;              // Clanid team 1
+			int8_t      _c1;              // Clanid team 2
+			std::string _n0;              //                                           ??? Unsure ???
+			std::string _n1;              //                                           ??? Unsure ???
+			uint8_t     _c0c;             // Team 1 is claimed (1: true, 0: false)
+			uint8_t     _c1c;             // Team 2 is claimed (1: true, 0: false)
 		
 		public:
 			void useExample();
