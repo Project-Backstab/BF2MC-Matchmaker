@@ -102,12 +102,15 @@ void signal_callback(int signum)
 	g_gpcm_server->DisconnectAllClients();
 	g_webserver_server->DisconnectAllClients();
 	g_browsing_server->DisconnectAllClients();
+	g_gamestats_server->DisconnectAllClients();
 	
 	// Close services
+	g_qr_server->Close();
 	g_gpsp_server->Close();
 	g_gpcm_server->Close();
 	g_webserver_server->Close();
 	g_browsing_server->Close();
+	g_gamestats_server->Close();
 	
 	// Exit application
 	exit(signum);

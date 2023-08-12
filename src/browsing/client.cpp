@@ -152,11 +152,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	//Logger::debug("filter = " + filter);
 	//Logger::debug("key_list = " + key_list);
 	
-	// Only execute once
-	if(filter.find("(region & 1)!=0") != std::string::npos)
-	{
-		g_database->queryGameServers(game_servers);
-	}
+	g_database->queryGameServers(game_servers);
 	
 	if(filter.find("hostname") != std::string::npos)
 	{

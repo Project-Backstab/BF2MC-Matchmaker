@@ -462,7 +462,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 		std::string response = GameSpy::Parameter2Response({
 			"bm", "100",
 			"f", std::to_string(player.GetProfileId()),
-			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3658|ip|3115326802|p|710",
 			"final"
 		});
 		
@@ -474,7 +474,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 		response = GameSpy::Parameter2Response({
 			"bm", "100",
 			"f", target_profileid,
-			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|3115326802|p|710",
+			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3658|ip|3115326802|p|710",
 			"final"
 		});
 		

@@ -63,13 +63,13 @@ Server::Server(Server::Type type)
 	
 	if ((this->_socket = socket(AF_INET, socket_type, 0)) < 0)
 	{
-		Logger::error("Server::Server() at socket");
+		Logger::error("Server::Server() at socket", this->_type);
 		exit(EXIT_FAILURE);
 	}
 	
 	if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
 	{
-		Logger::error("Server::Server() at setsockopt");
+		Logger::error("Server::Server() at setsockopt", this->_type);
 		exit(EXIT_FAILURE);
 	}
 
@@ -79,7 +79,7 @@ Server::Server(Server::Type type)
 
 	if (bind(this->_socket, (struct sockaddr*)&this->_address, sizeof(this->_address)) < 0)
 	{
-		Logger::error("Server::Server() at bind");
+		Logger::error("Server::Server() at bind", this->_type);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -92,7 +92,7 @@ void Server::Listen()
 	
 	if (listen(this->_socket, 3) < 0)
 	{
-		Logger::error("Server::Listen() on listen");
+		Logger::error("Server::Listen() on listen", this->_type);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -102,7 +102,7 @@ void Server::Listen()
 	{
 		if ((client_socket = accept(this->_socket, (struct sockaddr*)&client_address, &client_address_len)) < 0)
 		{	
-			Logger::error("Server::Listen() on accept");
+			Logger::error("Server::Listen() on accept", this->_type);
 			exit(EXIT_FAILURE);
 		}
 		
@@ -188,7 +188,7 @@ void Server::UDPListen()
 		
 		if (recv_size < 0)
 		{
-			Logger::error("Server::UDPListen() on recvfrom");
+			Logger::error("Server::UDPListen() on recvfrom", this->_type);
 			close(this->_socket);
 			return;
 		}
@@ -245,12 +245,12 @@ void Server::Close()
 */
 void Server::onServerListen() const
 {
-	Logger::info("Server is now listening on " + this->GetAddress() + " " + this->GetSocketType());
+	Logger::info("Server is now listening on " + this->GetAddress() + " " + this->GetSocketType(), this->_type);
 }
 
 void Server::onServerShutdown() const
 {
-	Logger::info("Server shutdown");
+	Logger::info("Server shutdown", this->_type);
 }
 
 void Server::onClientConnect(const Net::Socket& client) const
@@ -258,7 +258,7 @@ void Server::onClientConnect(const Net::Socket& client) const
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
 	Logger::info("Client " + client.GetAddress() + " connected",
-		Server::Type::None, g_settings["show_client_connect"].asBool());
+		this->_type, g_settings["show_client_connect"].asBool());
 }
 
 void Server::onClientDisconnect(const Net::Socket& client)
@@ -266,7 +266,7 @@ void Server::onClientDisconnect(const Net::Socket& client)
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
 	Logger::info("Client " + client.GetAddress() + " disconnected",
-			Server::Type::None, g_settings["show_client_disconnect"].asBool());
+			this->_type, g_settings["show_client_disconnect"].asBool());
 	
 	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
 	if (it != this->_clients.end())
