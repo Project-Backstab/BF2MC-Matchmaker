@@ -6,8 +6,14 @@
 
 namespace Util
 {
-	std::string Buffer2String(const std::vector<char>& buffer);
-	std::string Buffer2String(const std::vector<unsigned char>& buffer);
+	namespace Buffer
+	{
+		bool ReadString(const std::vector<char>& buffer, size_t& offset, std::string &str);
+		bool ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string &str);
+		
+		std::string ToString(const std::vector<char>& buffer);
+		std::string ToString(const std::vector<unsigned char>& buffer);
+	}
 	
 	std::string MD5hash(const std::string& input);
 	

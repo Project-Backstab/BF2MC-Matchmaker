@@ -53,7 +53,7 @@ void Browsing::Client::Listen()
 		// Resize buffer
 		buffer.resize(v);
 		
-		this->_LogTransaction("-->", Util::Buffer2String(buffer));
+		this->_LogTransaction("-->", Util::Buffer::ToString(buffer));
 		
 		this->onRequest(buffer);
 	}

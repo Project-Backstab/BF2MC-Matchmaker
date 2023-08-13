@@ -8,7 +8,32 @@
 
 #include <util.h>
 
-std::string Util::Buffer2String(const std::vector<char>& buffer)
+bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, std::string &str)
+{	
+	str.clear();
+	
+	for(;offset < buffer.size(); offset++)
+	{
+		if(buffer[offset] == 0)
+		{
+			offset++;
+			return true;
+		}
+		
+		str += buffer[offset];
+	}
+	
+	return false;
+}
+
+bool Util::Buffer::ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string &str)
+{
+	std::vector<char> buffer2(buffer.begin(), buffer.end());
+	
+	return Util::Buffer::ReadString(buffer2, offset, str);
+}
+
+std::string Util::Buffer::ToString(const std::vector<char>& buffer)
 {
 	std::string s;
 	
@@ -27,11 +52,11 @@ std::string Util::Buffer2String(const std::vector<char>& buffer)
 	return s;
 }
 
-std::string Util::Buffer2String(const std::vector<unsigned char>& buffer)
+std::string Util::Buffer::ToString(const std::vector<unsigned char>& buffer)
 {
 	std::vector<char> buffer2(buffer.begin(), buffer.end());
 	
-	return Util::Buffer2String(buffer2);
+	return Util::Buffer::ToString(buffer2);
 }
 
 std::string Util::MD5hash(const std::string& input)

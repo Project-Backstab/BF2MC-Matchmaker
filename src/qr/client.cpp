@@ -40,7 +40,7 @@ void QR::Client::onRequest(const std::vector<unsigned char>& request)
 		return;
 	}
 	
-	this->_LogTransaction("-->", Util::Buffer2String(request));
+	this->_LogTransaction("-->", Util::Buffer::ToString(request));
 	
 	int action = request[0];
 	
@@ -73,7 +73,7 @@ void QR::Client::requestChallenge(const std::vector<unsigned char>& request) con
 	
 	this->UDPSend(response);
 	
-	this->_LogTransaction("<--", Util::Buffer2String(response));
+	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
 /*
@@ -89,7 +89,7 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 	
 	this->UDPSend(response);
 	
-	this->_LogTransaction("<--", Util::Buffer2String(response));
+	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
 /*
@@ -138,6 +138,23 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 */
 void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) const
 {
+	size_t offset = 5;
+	std::string key, value;
+	
+	// Read request game server values
+	while(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
+	{
+		// Read value
+		Util::Buffer::ReadString(request, offset, value);
+		
+		if(value.size() > 0)
+		{
+			// Debug
+			Logger::debug(key + " = " + value);
+		}
+	}
+	
+	// Send response
 	std::vector<unsigned char> response = {
 		RESPONSE_MAGIC_1, RESPONSE_MAGIC_2,				// Magic
 		RESPONSE_HEARTBEAT,								// Challenge response action
@@ -150,7 +167,7 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	
 	this->UDPSend(response);
 	
-	this->_LogTransaction("<--", Util::Buffer2String(response));
+	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
 /*
@@ -167,7 +184,7 @@ void QR::Client::requestKeepAlive(const std::vector<unsigned char>& request) con
 	
 	this->UDPSend(response);
 	
-	this->_LogTransaction("<--", Util::Buffer2String(response));
+	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
 /*

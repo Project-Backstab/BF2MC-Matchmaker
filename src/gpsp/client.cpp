@@ -50,7 +50,7 @@ void GPSP::Client::Listen()
 		// Resize buffer
 		buffer.resize(v);
 		
-		request = Util::Buffer2String(buffer);
+		request = Util::Buffer::ToString(buffer);
 		
 		this->_LogTransaction("-->", request);
 		
