@@ -20,6 +20,10 @@ namespace Battlefield
 			uint16_t    _port;
 			uint8_t     _flag;
 			
+			// See reference:
+			//   https://documentation.help/GameSpy-SDK/Gamespy%20Query%20and%20Reporting%202%20SDK.html
+			//
+			
 			std::string _localip0;        // Local ip
 			std::string _localport;       // Local port
 			uint8_t     _natneg;          // Enable client-to-client connections (1: true, 0: false)                                       ??? Unsure ???
@@ -40,19 +44,28 @@ namespace Battlefield
 			uint8_t     _mapname;         // Map id
 			
 			uint8_t     _gc;              // Game type                                 ??? Unsure ???
-			std::string _gametype;        // Game id (conquest, capturetheflag)
+			std::string _gametype;        // String which specifies the type of game, or the mod being played.
+			                              // (conquest, capturetheflag)
 			
 			std::string _gamevariant;     // Game code name
 			uint8_t     _numplayers;      // Number of players
 			uint8_t     _maxplayers;      // Max players
 			uint8_t     _numteams;        // Number of teams
-			std::string _gamemode;        // Game status (openplaying)                 ??? Unsure ???
-			uint8_t     _teamplay;        // Is teamplay? (1: true, 0: false)          ??? Unsure ???
-			uint8_t     _fraglimit;       //                                           ??? Unsure ???
-			uint8_t     _teamfraglimit;   //                                           ??? Unsure ???
-			uint8_t     _timelimit;       // Total time in seconds
-			uint8_t     _timeelapsed;     // Total time elapsed in seconds
-			uint8_t     _password;        // Has password (1: true, 0: false)
+			std::string _gamemode;        // Game status (openwaiting,
+			                              //              closedwaiting,
+			                              //              closedplaying,
+			                              //              openplaying,
+			                              //              openstaging,
+			                              //              closedstaging,
+			                              //              exiting)
+			uint8_t     _teamplay;        // number which defines the type of teamplay in use, or 0 for no teamplay.
+			                              // Values > 0 are up to the developer
+			uint8_t     _fraglimit;       // Number of total kills or points before a level change or game restart
+			uint8_t     _teamfraglimit;   // Number of total kills or points for a team before a level change or
+			                              // game restart.
+			uint8_t     _timelimit;       // Amount of total time before a level change or game restart occurs in seconds
+			uint8_t     _timeelapsed;     // Amount of time (in seconds) since the current level or game started
+			uint8_t     _password;        // Has password requirement to join (1: true, 0: false)
 			uint8_t     _nr;              // Minimum Rank number filter
 			uint8_t     _xr;              // Maximum Rank number filter
 			uint8_t     _ff;              // Friendly fire (1: true, 0: false)
