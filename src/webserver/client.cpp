@@ -982,6 +982,15 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		g_database->queryClanByNameOrTag(clan);
 	}
 	
+	it = url_variables.find("clanid");
+	if(it != url_variables.end())
+	{
+		clan.SetClanId(it->second);
+		
+		g_database->queryClanByClanId(clan);
+	}
+	
+	
 	// Get clan information
 	g_database->queryClanByClanId(clan);
 	

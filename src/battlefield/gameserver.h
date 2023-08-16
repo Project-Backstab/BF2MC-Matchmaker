@@ -36,11 +36,11 @@ namespace Battlefield
 			std::string _rv;              // ??? (retail)                              ??? Unsure ???
 			
 			std::string _map;             // Map name
-			uint8_t     _mc;              // Map type (1: levelmap with mapname)
-			                              //          (2: All Maps)
-			                              //          (3: Assualt Maps)
-			                              //          (4: Incursion Maps)
-			                              //          (5: Domination Maps)
+			uint8_t     _mc;              // Map cycling (1: levelmap with mapname)
+			                              //             (2: All Maps)
+			                              //             (3: Assualt Maps)
+			                              //             (4: Incursion Maps)
+			                              //             (5: Domination Maps)
 			uint8_t     _mapname;         // Map id
 			
 			uint8_t     _gc;              // Game type                                 ??? Unsure ???
