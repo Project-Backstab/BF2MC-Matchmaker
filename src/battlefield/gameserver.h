@@ -70,17 +70,17 @@ namespace Battlefield
 			uint8_t     _xr;              // Maximum Rank number filter
 			uint8_t     _ff;              // Friendly fire (1: true, 0: false)
 			uint8_t     _sr;              // Stats tracking (1: true, 0: false)
-			uint8_t     _rc;              //                                           ??? Unsure ???
-			int64_t     _ni;              //                                           ??? Unsure ???
-			int64_t     _xi;              //                                           ??? Unsure ???
+			uint8_t     _rc;              // Server is reconfigurable (1: true, 0: false)
+			int64_t     _ni;              // Minimum IP range
+			int64_t     _xi;              // Maximum IP range
 			uint8_t     _qm;              //                                           ??? Unsure ???
 			uint8_t     _region;          // Server region (65536: Europe, 1: Us, 2048: Japan)
 			
 			// Clan
 			int8_t      _c0;              // Clanid team 1
 			int8_t      _c1;              // Clanid team 2
-			std::string _n0;              //                                           ??? Unsure ???
-			std::string _n1;              //                                           ??? Unsure ???
+			std::string _n0;              // Clan name team 1
+			std::string _n1;              // Clan name team 2
 			uint8_t     _c0c;             // Team 1 is claimed (1: true, 0: false)
 			uint8_t     _c1c;             // Team 2 is claimed (1: true, 0: false)
 		
