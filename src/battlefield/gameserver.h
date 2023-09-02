@@ -95,58 +95,57 @@ namespace Battlefield
 		public:
 			void useExample();
 			
-			const uint8_t* GetIp() const         { return this->_ip;   }
-			uint16_t       GetPort() const       { return this->_port; }
-			uint8_t        GetFlag() const       { return this->_flag; }
-			
-			std::string GetLocalIp() const        { return this->_localip0; }
-			uint16_t    GetLocalPort() const      { return this->_localport; }
-			uint8_t     GetNatNeg() const         { return this->_natneg; }
-			std::string GetGameName() const       { return this->_gamename; }
-			std::string GetHostName() const       { return this->_hostname; }
-			uint16_t    GetHostPort() const       { return this->_hostport; }
-			std::string GetGameVersion() const    { return this->_gamever; }
-			std::string GetClientVersion() const  { return this->_cl; }
-			std::string GetRV() const             { return this->_rv; }
-			std::string GetMap() const            { return this->_map; }
-			uint8_t     GetMapCycling() const     { return this->_mc; }
-			uint8_t     GetMapName() const        { return this->_mapname; }
-			uint8_t     GetGC() const             { return this->_gc; }
-			std::string GetGameType() const       { return this->_gametype; }
-			std::string GetGameVariant() const    { return this->_gamevariant; }
-			uint8_t     GetNumPlayers() const     { return this->_numplayers; }
-			uint8_t     GetMaxPlayers() const     { return this->_maxplayers; }
-			uint8_t     GetNumTeams() const       { return this->_numteams; }
-			std::string GetGameMode() const       { return this->_gamemode; }
-			uint8_t     GetTeamplay() const       { return this->_teamplay; }
-			uint8_t     GetFlagLimit() const      { return this->_fraglimit; }
-			uint8_t     GetTeamFragLimit() const  { return this->_teamfraglimit; }
-			uint8_t     GetTimeLimit() const      { return this->_timelimit; }
-			uint8_t     GetTimeElapsed() const    { return this->_timeelapsed; }
-			uint8_t     GetPassword() const       { return this->_password; }
-			int64_t     GetMinRank() const        { return this->_nr; }
-			int64_t     GetMaxRank() const        { return this->_xr; }
-			uint8_t     GetFriendlyFire() const   { return this->_ff; }
-			uint8_t     GetStatsTracking() const  { return this->_sr; }
-			uint8_t     GetReconfigurable() const { return this->_rc; }
-			uint8_t     GetMinIpRange() const     { return this->_ni; }
-			uint8_t     GetMaxIpRange() const     { return this->_xi; }
-			uint8_t     GetQM() const             { return this->_qm; }
-			uint8_t     GetRegion() const         { return this->_region; }
+			const uint8_t* GetIp() const             { return this->_ip;   }
+			uint16_t       GetPort() const           { return this->_port; }
+			uint8_t        GetFlag() const           { return this->_flag; }
+			std::string    GetLocalIp() const        { return this->_localip0; }
+			uint16_t       GetLocalPort() const      { return this->_localport; }
+			uint8_t        GetNatNeg() const         { return this->_natneg; }
+			std::string    GetGameName() const       { return this->_gamename; }
+			std::string    GetHostName() const       { return this->_hostname; }
+			uint16_t       GetHostPort() const       { return this->_hostport; }
+			std::string    GetGameVersion() const    { return this->_gamever; }
+			std::string    GetClientVersion() const  { return this->_cl; }
+			std::string    GetRV() const             { return this->_rv; }
+			std::string    GetMap() const            { return this->_map; }
+			uint8_t        GetMapCycling() const     { return this->_mc; }
+			uint8_t        GetMapName() const        { return this->_mapname; }
+			uint8_t        GetGC() const             { return this->_gc; }
+			std::string    GetGameType() const       { return this->_gametype; }
+			std::string    GetGameVariant() const    { return this->_gamevariant; }
+			uint8_t        GetNumPlayers() const     { return this->_numplayers; }
+			uint8_t        GetMaxPlayers() const     { return this->_maxplayers; }
+			uint8_t        GetNumTeams() const       { return this->_numteams; }
+			std::string    GetGameMode() const       { return this->_gamemode; }
+			uint8_t        GetTeamplay() const       { return this->_teamplay; }
+			uint8_t        GetFlagLimit() const      { return this->_fraglimit; }
+			uint8_t        GetTeamFragLimit() const  { return this->_teamfraglimit; }
+			uint8_t        GetTimeLimit() const      { return this->_timelimit; }
+			uint8_t        GetTimeElapsed() const    { return this->_timeelapsed; }
+			uint8_t        GetPassword() const       { return this->_password; }
+			int64_t        GetMinRank() const        { return this->_nr; }
+			int64_t        GetMaxRank() const        { return this->_xr; }
+			uint8_t        GetFriendlyFire() const   { return this->_ff; }
+			uint8_t        GetStatsTracking() const  { return this->_sr; }
+			uint8_t        GetReconfigurable() const { return this->_rc; }
+			uint8_t        GetMinIpRange() const     { return this->_ni; }
+			uint8_t        GetMaxIpRange() const     { return this->_xi; }
+			uint8_t        GetQM() const             { return this->_qm; }
+			uint8_t        GetRegion() const         { return this->_region; }
 			// Clan
-			int8_t      GetClanIdTeam1() const   { return this->_c0; }
-			int8_t      GetClanIdTeam2() const   { return this->_c1; }
-			std::string GetClanNameTeam1() const { return this->_n0; }
-			std::string GetClanNameTeam2() const { return this->_n1; }
-			uint8_t     GetClan1Claimed() const  { return this->_c0c; }
-			uint8_t     GetClan2Claimed() const  { return this->_c1c; }
+			int8_t         GetClanIdTeam1() const    { return this->_c0; }
+			int8_t         GetClanIdTeam2() const    { return this->_c1; }
+			std::string    GetClanNameTeam1() const  { return this->_n0; }
+			std::string    GetClanNameTeam2() const  { return this->_n1; }
+			uint8_t        GetClan1Claimed() const   { return this->_c0c; }
+			uint8_t        GetClan2Claimed() const   { return this->_c1c; }
 			
 			bool SetIp(uint8_t* ip);
 			bool SetIp(const std::string& str_ip);
 			bool SetPort(uint16_t port);
 			bool SetFlag(uint8_t flag);
-			bool SetLocalIp(const std::string& str_ip);
-			bool SetLocalPort(uint16_t port);
+			bool SetLocalIp(const std::string& localip);
+			bool SetLocalPort(uint16_t localport);
 			bool SetNatNeg(uint8_t natneg);
 			bool SetGameName(const std::string& gamename);
 			bool SetHostName(const std::string& hostname);
@@ -155,7 +154,7 @@ namespace Battlefield
 			bool SetClientVersion(const std::string& clientver);
 			bool SetRV(const std::string& rv);
 			bool SetMap(const std::string& map);
-			bool SetMapCycling(uint8_t map_cycling);
+			bool SetMapCycling(uint8_t mc);
 			bool SetMapName(uint8_t mapname);
 			bool SetGC(uint8_t gc);
 			bool SetGameType(const std::string& gametype);
@@ -169,7 +168,7 @@ namespace Battlefield
 			bool SetTeamFragLimit(uint8_t teamfraglimit);
 			bool SetTimeLimit(uint8_t timelimit);
 			bool SetTimeElapsed(uint8_t timeelapsed);
-			bool SetPassword(uint8_t timeelapsed);
+			bool SetPassword(uint8_t password);
 			bool SetMinRank(int64_t nr);
 			bool SetMaxRank(int64_t xr);
 			bool SetFriendlyFire(uint8_t ff);
