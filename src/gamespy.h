@@ -13,7 +13,8 @@ namespace GameSpy
 	GameSpy::Parameter Request2Parameter(const std::string& request);
 	std::string        Parameter2Response(const GameSpy::Parameter& parameter);
 	
-	std::string LoginProof(const std::string& password, const std::string& uniquenick, const std::string& client_challenge, const std::string& server_challenge);
+	std::string LoginProof(const std::string& password, const std::string& uniquenick,
+			const std::string& client_challenge, const std::string& server_challenge);
 }
 
 #endif // GAMESPY_H

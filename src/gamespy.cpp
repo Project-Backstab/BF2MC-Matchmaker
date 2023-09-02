@@ -57,7 +57,8 @@ std::string GameSpy::Parameter2Response(const GameSpy::Parameter& parameter)
 	return response;
 }
 
-std::string GameSpy::LoginProof(const std::string& password, const std::string& uniquenick, const std::string& client_challenge, const std::string& server_challenge)
+std::string GameSpy::LoginProof(const std::string& password, const std::string& uniquenick,
+		const std::string& client_challenge, const std::string& server_challenge)
 {
 	const std::string space = "                                                ";
 	

@@ -10,6 +10,17 @@
 namespace Battlefield
 {
 	/*
+		Forward declair
+	*/
+	class Player;
+	
+	/*
+		Type definitions
+	*/
+	typedef std::vector<Battlefield::Player> Players;
+	typedef std::map<int, Battlefield::Player> RankPlayers;
+	
+	/*
 		Player
 	*/
 	class Player : public PlayerStats
@@ -43,14 +54,7 @@ namespace Battlefield
 			bool SetPassword(const std::string& password);
 			bool SetMD5Password(const std::string& password);
 			bool AddFriend(int profileid);
-			
-			/*
-				Request responses
-			*/
 	};
-	
-	typedef std::vector<Battlefield::Player> Players;
-	typedef std::map<int, Battlefield::Player> RankPlayers;
 }
 
 #endif // BATTLEFIELD_PLAYER_H
