@@ -23,7 +23,7 @@ namespace Battlefield
 	class GameServer
 	{
 		private:
-			uint8_t     _ip[4];
+			std::string _ip;
 			uint16_t    _port;
 			uint8_t     _flag;
 			
@@ -95,7 +95,8 @@ namespace Battlefield
 		public:
 			void useExample();
 			
-			const uint8_t* GetIp() const             { return this->_ip;   }
+			std::string    GetIp() const             { return this->_ip;   }
+			void GetIpArray(uint8_t* ip) const;
 			uint16_t       GetPort() const           { return this->_port; }
 			uint8_t        GetFlag() const           { return this->_flag; }
 			std::string    GetLocalIp() const        { return this->_localip0; }
@@ -140,8 +141,7 @@ namespace Battlefield
 			uint8_t        GetClan1Claimed() const   { return this->_c0c; }
 			uint8_t        GetClan2Claimed() const   { return this->_c1c; }
 			
-			bool SetIp(uint8_t* ip);
-			bool SetIp(const std::string& str_ip);
+			bool SetIp(const std::string& ip);
 			bool SetPort(uint16_t port);
 			bool SetFlag(uint8_t flag);
 			bool SetLocalIp(const std::string& localip);

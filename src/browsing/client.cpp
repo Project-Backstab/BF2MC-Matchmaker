@@ -143,15 +143,30 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		return;
 	}
 	
-	const char* start = reinterpret_cast<const char*>(&request[0]) + 45;
-	std::string filter(start);
-	std::string key_list(start + filter.size() + 1);
-	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN + 8, 0x0);
-	Battlefield::GameServers game_servers;
+	size_t offset = 9;
 	
+	// Read for_gamename and from_gamename
+	std::string filter, key_list;
+	Util::Buffer::ReadString(request, offset, for_gamename);
+	Util::Buffer::ReadString(request, offset, from_gamename);
+	
+	// Copy client_challenge
+	std::vector<unsigned char> client_challenge;
+	client_challenge.assign(request.begin() + offset, request.begin() + offset + CHALLENGE_CLIENT_LEN);
+	offset += CHALLENGE_CLIENT_LEN;
+	
+	// Read filter and key_list
+	std::string filter, key_list;
+	Util::Buffer::ReadString(request, offset, filter);
+	Util::Buffer::ReadString(request, offset, key_list);
+	
+	// Debug
+	//Logger::debug("for_gamename = " + for_gamename);
+	//Logger::debug("from_gamename = " + from_gamename);
 	//Logger::debug("filter = " + filter);
 	//Logger::debug("key_list = " + key_list);
 	
+	Battlefield::GameServers game_servers;
 	g_database->queryGameServers(game_servers);
 	
 	if(filter.find("hostname") != std::string::npos)
@@ -166,11 +181,15 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		game_servers.push_back(game_server);
 	}
 	
+	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	for(Battlefield::GameServer game_server : game_servers)
 	{
 		//Battlefield::GameServer game_server;
 		//game_server.useExample();
-	
+		
+		uint8_t ip[4];
+		
+		game_server.GetIpArray(ip);
 		uint16_t port = game_server.GetPort();
 		uint8_t flag = game_server.GetFlag();
 		
@@ -178,7 +197,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		response.push_back(game_server.GetFlag());
 		
 		// wan ip
-		response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
+		response.insert(response.end(), ip, ip + 4);
 		
 		if(flag & FLAG_NONSTANDARD_PORT)         // -> wan port
 		{
@@ -188,7 +207,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		
 		if(flag & FLAG_PRIVATE_IP)               // -> localip0 ip
 		{              
-			response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
+			response.insert(response.end(), ip, ip + 4);
 		}
 		
 		if(flag & FLAG_NONSTANDARD_PRIVATE_PORT) // -> localport
@@ -199,14 +218,14 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		
 		if(flag & FLAG_ICMP_IP)                  // -> icmp ip
 		{
-			response.insert(response.end(), game_server.GetIp(), game_server.GetIp() + 4);
+			response.insert(response.end(), ip, ip + 4);
 		}
 	}
 	
 	// End data
 	response.push_back(0x00); // Empty flag means end of servers
 	
-	this->_Encrypt(request, response);
+	this->_Encrypt(client_challenge, response);
 	
 	this->Send(response);
 		
@@ -227,7 +246,7 @@ void Browsing::Client::_LogTransaction(const std::string& direction, const std::
 			Server::Type::Browsing, show_console);
 }
 
-void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response)
+void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request_client_challenge, std::vector<unsigned char>& response)
 {
 	uint8_t crypt_challenge[CHALLENGE_CRYPT_LEN];
 	uint8_t server_challenge[CHALLENGE_SERVER_LEN];
@@ -254,8 +273,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::
 	// Get client challenge
 	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
 	{
-		client_challenge[i] = request[37 + i];
-		//client_challenge[i] = request[39 + i]; // BF2MC - BETA
+		client_challenge[i] = request_client_challenge[i];
 	}
 	
 	// Generate challenge encryption/decryption key
@@ -275,7 +293,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request, std::
 	
 	// Encrypt data
 	GOACryptInit(&(m_crypt_state), (unsigned char *)(&client_challenge), CHALLENGE_CLIENT_LEN);
-	GOAEncrypt(&(m_crypt_state), &response[CHALLENGE_HEADER_LEN], response.size() - CHALLENGE_HEADER_LEN);
+	GOAEncrypt(&(m_crypt_state), &response[CHALLENGE_CRYPT_SERVER_LEN], response.size() - CHALLENGE_CRYPT_SERVER_LEN);
 }
 
 /*
