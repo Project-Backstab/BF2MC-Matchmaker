@@ -14,7 +14,7 @@ bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, s
 	
 	for(;offset < buffer.size(); offset++)
 	{
-		if(buffer[offset] == 0)
+		if(buffer[offset] == 0x0)
 		{
 			offset++;
 			return true;

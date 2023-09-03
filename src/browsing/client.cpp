@@ -146,7 +146,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	size_t offset = 9;
 	
 	// Read for_gamename and from_gamename
-	std::string filter, key_list;
+	std::string for_gamename, from_gamename;
 	Util::Buffer::ReadString(request, offset, for_gamename);
 	Util::Buffer::ReadString(request, offset, from_gamename);
 	
@@ -194,7 +194,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		uint8_t flag = game_server.GetFlag();
 		
 		// Server flag
-		response.push_back(game_server.GetFlag());
+		response.push_back(flag);
 		
 		// wan ip
 		response.insert(response.end(), ip, ip + 4);
