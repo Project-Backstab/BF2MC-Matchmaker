@@ -1,6 +1,6 @@
 #include <string>
 #include <arpa/inet.h>
-
+#include <logger.h>
 #include <browsing/constants.h>
 
 #include <battlefield/gameserver.h>
@@ -323,7 +323,7 @@ bool Battlefield::GameServer::SetTeamFragLimit(const std::string& str_teamfragli
 	return this->SetTeamFragLimit(teamfraglimit);
 }
 
-bool Battlefield::GameServer::SetTimeLimit(uint8_t timelimit)
+bool Battlefield::GameServer::SetTimeLimit(uint16_t timelimit)
 {
 	this->_timelimit = timelimit;
 	return true;
@@ -331,18 +331,18 @@ bool Battlefield::GameServer::SetTimeLimit(uint8_t timelimit)
 
 bool Battlefield::GameServer::SetTimeLimit(const std::string& str_timelimit)
 {
-	uint8_t timelimit = 0;
+	uint16_t timelimit = 0;
 	
 	try
 	{
-		timelimit = static_cast<uint8_t>(std::stoul(str_timelimit));
+		timelimit = static_cast<uint16_t>(std::stoul(str_timelimit));
 	}
 	catch(...) {};
 	
 	return this->SetTimeLimit(timelimit);
 }
 
-bool Battlefield::GameServer::SetTimeElapsed(uint8_t timeelapsed)
+bool Battlefield::GameServer::SetTimeElapsed(uint16_t timeelapsed)
 {
 	this->_timeelapsed = timeelapsed;
 	return true;
@@ -350,11 +350,11 @@ bool Battlefield::GameServer::SetTimeElapsed(uint8_t timeelapsed)
 
 bool Battlefield::GameServer::SetTimeElapsed(const std::string& str_timeelapsed)
 {
-	uint8_t timeelapsed = 0;
+	uint16_t timeelapsed = 0;
 	
 	try
 	{
-		timeelapsed = static_cast<uint8_t>(std::stoul(str_timeelapsed));
+		timeelapsed = static_cast<uint16_t>(std::stoul(str_timeelapsed));
 	}
 	catch(...) {};
 	
@@ -380,7 +380,7 @@ bool Battlefield::GameServer::SetPassword(const std::string& str_password)
 	return this->SetPassword(password);
 }
 
-bool Battlefield::GameServer::SetMinRank(int64_t nr)
+bool Battlefield::GameServer::SetMinRank(uint8_t nr)
 {
 	this->_nr = nr;
 	return true;
@@ -388,18 +388,18 @@ bool Battlefield::GameServer::SetMinRank(int64_t nr)
 
 bool Battlefield::GameServer::SetMinRank(const std::string& str_nr)
 {
-	int64_t nr = 0;
+	uint8_t nr = 0;
 	
 	try
 	{
-		nr = static_cast<int64_t>(std::stoll(str_nr));
+		nr = static_cast<uint8_t>(std::stoul(str_nr));
 	}
 	catch(...) {};
 	
 	return this->SetMinRank(nr);
 }
 
-bool Battlefield::GameServer::SetMaxRank(int64_t xr)
+bool Battlefield::GameServer::SetMaxRank(uint8_t xr)
 {
 	this->_xr = xr;
 	return true;
@@ -407,11 +407,11 @@ bool Battlefield::GameServer::SetMaxRank(int64_t xr)
 
 bool Battlefield::GameServer::SetMaxRank(const std::string& str_xr)
 {
-	int64_t xr = 0;
+	uint8_t xr = 0;
 	
 	try
 	{
-		xr = static_cast<int64_t>(std::stoll(str_xr));
+		xr = static_cast<uint8_t>(std::stoul(str_xr));
 	}
 	catch(...) {};
 	
@@ -475,7 +475,7 @@ bool Battlefield::GameServer::SetReconfigurable(const std::string& str_rc)
 	return this->SetReconfigurable(rc);
 }
 
-bool Battlefield::GameServer::SetMinIpRange(uint8_t ni)
+bool Battlefield::GameServer::SetMinIpRange(int64_t ni)
 {
 	this->_ni = ni;
 	return true;
@@ -483,18 +483,18 @@ bool Battlefield::GameServer::SetMinIpRange(uint8_t ni)
 
 bool Battlefield::GameServer::SetMinIpRange(const std::string& str_ni)
 {
-	uint8_t ni = 0;
+	int64_t ni = 0;
 	
 	try
 	{
-		ni = static_cast<uint8_t>(std::stoul(str_ni));
+		ni = static_cast<int64_t>(std::stoll(str_ni));
 	}
 	catch(...) {};
 	
 	return this->SetMinIpRange(ni);
 }
 
-bool Battlefield::GameServer::SetMaxIpRange(uint8_t xi)
+bool Battlefield::GameServer::SetMaxIpRange(int64_t xi)
 {
 	this->_xi = xi;
 	return true;
@@ -502,11 +502,11 @@ bool Battlefield::GameServer::SetMaxIpRange(uint8_t xi)
 
 bool Battlefield::GameServer::SetMaxIpRange(const std::string& str_xi)
 {
-	uint8_t xi = 0;
+	int64_t xi = 0;
 	
 	try
 	{
-		xi = static_cast<uint8_t>(std::stoul(str_xi));
+		xi = static_cast<int64_t>(std::stoll(str_xi));
 	}
 	catch(...) {};
 	
@@ -638,5 +638,53 @@ bool Battlefield::GameServer::SetClan2Claimed(const std::string& str_c1c)
 	catch(...) {};
 	
 	return this->SetClan2Claimed(c1c);
+}
+
+void Battlefield::GameServer::Debug()
+{
+	Logger::debug("============================");
+	Logger::debug("ip = "            + this->GetIp());
+	Logger::debug("port = "          + std::to_string(this->GetPort()));
+	Logger::debug("flag = "          + std::to_string(this->GetFlag()));
+	Logger::debug("localip0 = "      + this->GetLocalIp());
+	Logger::debug("localport = "     + std::to_string(this->GetLocalPort()));
+	Logger::debug("natneg = "        + std::to_string(this->GetNatNeg()));
+	Logger::debug("gamename = "      + this->GetGameName());
+	Logger::debug("hostname = "      + this->GetHostName());
+	Logger::debug("hostport = "      + std::to_string(this->GetHostPort()));
+	Logger::debug("gamever = "       + this->GetGameVersion());
+	Logger::debug("cl = "            + this->GetClientVersion());
+	Logger::debug("rv = "            + this->GetRV());
+	Logger::debug("map = "           + this->GetMap());
+	Logger::debug("mc = "            + std::to_string(this->GetMapCycling()));
+	Logger::debug("mapname = "       + std::to_string(this->GetMapName()));
+	Logger::debug("gc = "            + std::to_string(this->GetGC()));
+	Logger::debug("gametype = "      + this->GetGameType());
+	Logger::debug("gamevariant = "   + this->GetGameVariant());
+	Logger::debug("numplayers = "    + std::to_string(this->GetNumPlayers()));
+	Logger::debug("maxplayers = "    + std::to_string(this->GetMaxPlayers()));
+	Logger::debug("numteams = "      + std::to_string(this->GetNumTeams()));
+	Logger::debug("gamemode = "      + this->GetGameMode());
+	Logger::debug("teamplay = "      + std::to_string(this->GetTeamplay()));
+	Logger::debug("fraglimit = "     + std::to_string(this->GetFlagLimit()));
+	Logger::debug("teamfraglimit = " + std::to_string(this->GetTeamFragLimit()));
+	Logger::debug("timelimit = "     + std::to_string(this->GetTimeLimit()));
+	Logger::debug("timeelapsed = "   + std::to_string(this->GetTimeElapsed()));
+	Logger::debug("password = "      + std::to_string(this->GetPassword()));
+	Logger::debug("nr = "            + std::to_string(this->GetMinRank()));
+	Logger::debug("xr = "            + std::to_string(this->GetMaxRank()));
+	Logger::debug("ff = "            + std::to_string(this->GetFriendlyFire()));
+	Logger::debug("sr = "            + std::to_string(this->GetStatsTracking()));
+	Logger::debug("rc = "            + std::to_string(this->GetReconfigurable()));
+	Logger::debug("ni = "            + std::to_string(this->GetMinIpRange()));
+	Logger::debug("xi = "            + std::to_string(this->GetMaxIpRange()));
+	Logger::debug("qm = "            + std::to_string(this->GetQM()));
+	Logger::debug("region = "        + std::to_string(this->GetRegion()));
+	Logger::debug("c0 = "            + std::to_string(this->GetClanIdTeam1()));
+	Logger::debug("c1 = "            + std::to_string(this->GetClanIdTeam2()));
+	Logger::debug("n0 = "            + this->GetClanNameTeam1());
+	Logger::debug("n1 = "            + this->GetClanNameTeam2());
+	Logger::debug("c0c = "           + std::to_string(this->GetClan1Claimed()));
+	Logger::debug("c1c = "           + std::to_string(this->GetClan2Claimed()));
 }
 

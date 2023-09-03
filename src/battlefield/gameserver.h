@@ -24,8 +24,8 @@ namespace Battlefield
 	{
 		private:
 			std::string _ip;
-			uint16_t    _port;
-			uint8_t     _flag;
+			uint16_t    _port = 3658;
+			uint8_t     _flag = 59;
 			
 			// See reference:
 			//   https://documentation.help/GameSpy-SDK/Gamespy%20Query%20and%20Reporting%202%20SDK.html
@@ -69,8 +69,8 @@ namespace Battlefield
 			uint8_t     _fraglimit;       // Number of total kills or points before a level change or game restart
 			uint8_t     _teamfraglimit;   // Number of total kills or points for a team before a level change or
 			                              // game restart.
-			uint8_t     _timelimit;       // Amount of total time before a level change or game restart occurs in seconds
-			uint8_t     _timeelapsed;     // Amount of time (in seconds) since the current level or game started
+			uint16_t    _timelimit;       // Amount of total time before a level change or game restart occurs in seconds
+			uint16_t    _timeelapsed;     // Amount of time (in seconds) since the current level or game started
 			uint8_t     _password;        // Has password requirement to join (1: true, 0: false)
 			uint8_t     _nr;              // Minimum Rank number filter
 			uint8_t     _xr;              // Maximum Rank number filter
@@ -80,15 +80,15 @@ namespace Battlefield
 			int64_t     _ni;              // Minimum IP range
 			int64_t     _xi;              // Maximum IP range
 			uint8_t     _qm;              //                                           ??? Unsure ???
-			uint8_t     _region;          // Server region (65536: Europe, 1: Us, 2048: Japan)
+			uint8_t     _region = 1;      // Server region (65536: Europe, 1: Us, 2048: Japan)
 			
 			// Clan
-			int8_t      _c0;              // Clanid team 1
-			int8_t      _c1;              // Clanid team 2
+			int8_t      _c0 = -1;         // Clanid team 1
+			int8_t      _c1 = -1;         // Clanid team 2
 			std::string _n0;              // Clan name team 1
 			std::string _n1;              // Clan name team 2
-			uint8_t     _c0c;             // Team 1 is claimed (1: true, 0: false)
-			uint8_t     _c1c;             // Team 2 is claimed (1: true, 0: false)
+			uint8_t     _c0c = 0;         // Team 1 is claimed (1: true, 0: false)
+			uint8_t     _c1c = 0;         // Team 2 is claimed (1: true, 0: false)
 			
 			//std::vector<GameServerPlayer> _players;
 		
@@ -121,16 +121,16 @@ namespace Battlefield
 			uint8_t        GetTeamplay() const       { return this->_teamplay; }
 			uint8_t        GetFlagLimit() const      { return this->_fraglimit; }
 			uint8_t        GetTeamFragLimit() const  { return this->_teamfraglimit; }
-			uint8_t        GetTimeLimit() const      { return this->_timelimit; }
-			uint8_t        GetTimeElapsed() const    { return this->_timeelapsed; }
+			uint16_t       GetTimeLimit() const      { return this->_timelimit; }
+			uint16_t       GetTimeElapsed() const    { return this->_timeelapsed; }
 			uint8_t        GetPassword() const       { return this->_password; }
-			int64_t        GetMinRank() const        { return this->_nr; }
-			int64_t        GetMaxRank() const        { return this->_xr; }
+			uint8_t        GetMinRank() const        { return this->_nr; }
+			uint8_t        GetMaxRank() const        { return this->_xr; }
 			uint8_t        GetFriendlyFire() const   { return this->_ff; }
 			uint8_t        GetStatsTracking() const  { return this->_sr; }
 			uint8_t        GetReconfigurable() const { return this->_rc; }
-			uint8_t        GetMinIpRange() const     { return this->_ni; }
-			uint8_t        GetMaxIpRange() const     { return this->_xi; }
+			int64_t        GetMinIpRange() const     { return this->_ni; }
+			int64_t        GetMaxIpRange() const     { return this->_xi; }
 			uint8_t        GetQM() const             { return this->_qm; }
 			uint8_t        GetRegion() const         { return this->_region; }
 			// Clan
@@ -178,15 +178,15 @@ namespace Battlefield
 			bool SetFlagLimit(const std::string& str_fraglimit);
 			bool SetTeamFragLimit(uint8_t teamfraglimit);
 			bool SetTeamFragLimit(const std::string& str_teamfraglimit);
-			bool SetTimeLimit(uint8_t timelimit);
+			bool SetTimeLimit(uint16_t timelimit);
 			bool SetTimeLimit(const std::string& str_timelimit);
-			bool SetTimeElapsed(uint8_t timeelapsed);
+			bool SetTimeElapsed(uint16_t timeelapsed);
 			bool SetTimeElapsed(const std::string& str_timeelapsed);
 			bool SetPassword(uint8_t password);
 			bool SetPassword(const std::string& str_password);
-			bool SetMinRank(int64_t nr);
+			bool SetMinRank(uint8_t nr);
 			bool SetMinRank(const std::string& str_nr);
-			bool SetMaxRank(int64_t xr);
+			bool SetMaxRank(uint8_t xr);
 			bool SetMaxRank(const std::string& str_xr);
 			bool SetFriendlyFire(uint8_t ff);
 			bool SetFriendlyFire(const std::string& str_ff);
@@ -194,9 +194,9 @@ namespace Battlefield
 			bool SetStatsTracking(const std::string& str_sr);
 			bool SetReconfigurable(uint8_t rc);
 			bool SetReconfigurable(const std::string& str_rc);
-			bool SetMinIpRange(uint8_t ni);
+			bool SetMinIpRange(int64_t ni);
 			bool SetMinIpRange(const std::string& str_ni);
-			bool SetMaxIpRange(uint8_t xi);
+			bool SetMaxIpRange(int64_t xi);
 			bool SetMaxIpRange(const std::string& str_xi);
 			bool SetQM(uint8_t qm);
 			bool SetQM(const std::string& str_qm);
@@ -214,6 +214,8 @@ namespace Battlefield
 			bool SetClan1Claimed(const std::string& str_c0c);
 			bool SetClan2Claimed(uint8_t c1c);
 			bool SetClan2Claimed(const std::string& str_c1c);
+			
+			void Debug();
 	};
 	
 	/*

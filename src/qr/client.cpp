@@ -198,6 +198,9 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		}
 	}
 	
+	// Debug
+	game_server.Debug();
+	
 	// Send response
 	std::vector<unsigned char> response = {
 		RESPONSE_MAGIC_1, RESPONSE_MAGIC_2,				// Magic
