@@ -199,14 +199,73 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 			else if(key == "c1c")           game_server.SetClan2Claimed(value);
 			
 			// Debug
-			Logger::debug(key + " = " + value);
+			//Logger::debug(key + " = " + value);
 		}
 	}
 	
 	// Debug
-	game_server.Debug();
+	//game_server.Debug();
 	
 	g_database->updateGameServer(game_server);
+	
+	Logger::debug("=========================");
+	
+	// Read players information
+	std::string player, score, skill, ping, team, deaths, pid;
+	
+	offset += 2;
+	if(Util::Buffer::ReadString(request, offset, player) && player.size() > 0)
+	{
+		Util::Buffer::ReadString(request, offset, score);
+		Util::Buffer::ReadString(request, offset, skill);
+		Util::Buffer::ReadString(request, offset, ping);
+		Util::Buffer::ReadString(request, offset, team);
+		Util::Buffer::ReadString(request, offset, deaths);
+		Util::Buffer::ReadString(request, offset, pid);
+		offset += 1;
+		
+		while(Util::Buffer::ReadString(request, offset, player) && player.size() > 0)
+		{
+			Util::Buffer::ReadString(request, offset, score);
+			Util::Buffer::ReadString(request, offset, skill);
+			Util::Buffer::ReadString(request, offset, ping);
+			Util::Buffer::ReadString(request, offset, team);
+			Util::Buffer::ReadString(request, offset, deaths);
+			Util::Buffer::ReadString(request, offset, pid);
+			
+			Logger::debug("player = " + player);
+			Logger::debug("skill  = " + skill);
+			Logger::debug("ping   = " + ping);
+			Logger::debug("team   = " + team);
+			Logger::debug("deaths = " + deaths);
+			Logger::debug("pid    = " + pid);
+		}
+	}
+	
+	Logger::debug("=========================");
+	
+	// Read teams information
+	std::string team0, score0, team1, score1;
+	
+	offset += 1;
+	if(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
+	{
+		Util::Buffer::ReadString(request, offset, key);
+		offset += 1;
+		
+		// Read team 1
+		Util::Buffer::ReadString(request, offset, team0);
+		Util::Buffer::ReadString(request, offset, score0);
+		
+		// Read team 2
+		Util::Buffer::ReadString(request, offset, team1);
+		Util::Buffer::ReadString(request, offset, score1);
+		
+		Logger::debug("team0  = " + team0);
+		Logger::debug("score0 = " + score0);
+		Logger::debug("team1  = " + team1);
+		Logger::debug("score1 = " + score1);
+	}
 	
 	// Send response
 	std::vector<unsigned char> response = {
