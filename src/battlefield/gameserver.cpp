@@ -552,7 +552,7 @@ bool Battlefield::GameServer::SetRegion(const std::string& str_region)
 }
 
 // Clan
-bool Battlefield::GameServer::SetClanIdTeam1(int8_t c0)
+bool Battlefield::GameServer::SetClanIdTeam1(int c0)
 {
 	this->_c0 = c0;
 	return true;
@@ -560,18 +560,18 @@ bool Battlefield::GameServer::SetClanIdTeam1(int8_t c0)
 
 bool Battlefield::GameServer::SetClanIdTeam1(const std::string& str_c0)
 {
-	int8_t c0 = -1;
+	int c0 = -1;
 	
 	try
 	{
-		c0 = static_cast<int8_t>(std::stoi(str_c0));
+		c0 = static_cast<int>(std::stoi(str_c0));
 	}
 	catch(...) {};
 	
 	return this->SetClanIdTeam1(c0);
 }
 
-bool Battlefield::GameServer::SetClanIdTeam2(int8_t c1)
+bool Battlefield::GameServer::SetClanIdTeam2(int c1)
 {
 	this->_c1 = c1;
 	return true;
@@ -579,11 +579,11 @@ bool Battlefield::GameServer::SetClanIdTeam2(int8_t c1)
 
 bool Battlefield::GameServer::SetClanIdTeam2(const std::string& str_c1)
 {
-	int8_t c1 = -1;
+	int c1 = -1;
 	
 	try
 	{
-		c1 = static_cast<int8_t>(std::stoi(str_c1));
+		c1 = static_cast<int>(std::stoi(str_c1));
 	}
 	catch(...) {};
 	

@@ -1724,6 +1724,273 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	return true;
 }
 
+bool Database::updateGameServer(Battlefield::GameServer& game_server)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "INSERT INTO";
+	query += "	`GameServer` ";
+	query += "		(`ip`, `port`, `flag`, `localip0`, `localport`, `natneg`, `gamename`, `hostname`, `hostport`, ";
+	query += "		`gamever`, `cl`, `rv`, `map`, `mc`, `mapname`, `gc`, `gametype`, `gamevariant`, `numplayers`, ";
+	query += "		`maxplayers`, `numteams`, `gamemode`, `teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, ";
+	query += "		`timeelapsed`, `password`, `nr`, `xr`, `ff`, `sr`, `rc`, `ni`, `xi`, `qm`, `region`, ";
+	query += "		`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`) ";
+	query += "	VALUES ";
+	query += "		(?, ?, ?, ?, ?, ?, ?, ?, ?, ";
+	query += "		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
+	query += "		?, ?, ?, ?, ?, ?, ?, ";
+	query += "		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
+	query += "		?, ?, ?, ?, ?, ?) ";
+	query += "ON DUPLICATE KEY UPDATE ";
+	query += "	`flag` = ?, ";
+	query += "	`localip0` = ?, ";
+	query += "	`localport` = ?, ";
+	query += "	`natneg` = ?, ";
+	query += "	`gamename` = ?, ";
+	query += "	`hostname` = ?, ";
+	query += "	`hostport` = ?, ";
+	query += "	`gamever` = ?, ";
+	query += "	`cl` = ?, ";
+	query += "	`rv` = ?, ";
+	query += "	`map` = ?, ";
+	query += "	`mc` = ?, ";
+	query += "	`mapname` = ?, ";
+	query += "	`gc` = ?, ";
+	query += "	`gametype` = ?, ";
+	query += "	`gamevariant` = ?, ";
+	query += "	`numplayers` = ?, ";
+	query += "	`maxplayers` = ?, ";
+	query += "	`numteams` = ?, ";
+	query += "	`gamemode` = ?, ";
+	query += "	`teamplay` = ?, ";
+	query += "	`fraglimit` = ?, ";
+	query += "	`teamfraglimit` = ?, ";
+	query += "	`timelimit` = ?, ";
+	query += "	`timeelapsed` = ?, ";
+	query += "	`password` = ?, ";
+	query += "	`nr` = ?, ";
+	query += "	`xr` = ?, ";
+	query += "	`ff` = ?, ";
+	query += "	`sr` = ?, ";
+	query += "	`rc` = ?, ";
+	query += "	`ni` = ?, ";
+	query += "	`xi` = ?, ";
+	query += "	`qm` = ?, ";
+	query += "	`region` = ?, ";
+	query += "	`c0` = ?, ";
+	query += "	`c1` = ?, ";
+	query += "	`n0` = ?, ";
+	query += "	`n1` = ?, ";
+	query += "	`c0c` = ?, ";
+	query += "	`c1c` = ? ";
+	
+	std::string input_ip            = game_server.GetIp();
+	uint16_t    input_port          = game_server.GetPort();
+	uint8_t     input_flag          = game_server.GetFlag();
+	std::string input_localip       = game_server.GetLocalIp();
+	uint16_t    input_localport     = game_server.GetLocalPort();
+	uint8_t     input_natneg        = game_server.GetNatNeg();
+	std::string input_gamename      = game_server.GetGameName();
+	std::string input_hostname      = game_server.GetHostName();
+	uint16_t    input_hostport      = game_server.GetHostPort();
+	std::string input_gamever       = game_server.GetGameVersion();
+	std::string input_cl            = game_server.GetClientVersion();
+	std::string input_rv            = game_server.GetRV();
+	std::string input_map           = game_server.GetMap();
+	uint8_t     input_mc            = game_server.GetMapCycling();
+	uint8_t     input_mapname       = game_server.GetMapName();
+	uint8_t     input_gc            = game_server.GetGC();
+	std::string input_gametype      = game_server.GetGameType();
+	std::string input_gamevariant   = game_server.GetGameVariant();
+	uint8_t     input_numplayers    = game_server.GetNumPlayers();
+	uint8_t     input_maxplayers    = game_server.GetMaxPlayers();
+	uint8_t     input_numteams      = game_server.GetNumTeams();
+	std::string input_gamemode      = game_server.GetGameMode();
+	uint8_t     input_teamplay      = game_server.GetTeamplay();
+	uint8_t     input_fraglimit     = game_server.GetFlagLimit();
+	uint8_t     input_teamfraglimit = game_server.GetTeamFragLimit();
+	uint16_t    input_timelimit     = game_server.GetTimeLimit();
+	uint16_t    input_timeelapsed   = game_server.GetTimeElapsed();
+	uint8_t     input_password      = game_server.GetPassword();
+	uint8_t     input_nr            = game_server.GetMinRank();
+	uint8_t     input_xr            = game_server.GetMaxRank();
+	uint8_t     input_ff            = game_server.GetFriendlyFire();
+	uint8_t     input_sr            = game_server.GetStatsTracking();
+	uint8_t     input_rc            = game_server.GetReconfigurable();
+	int64_t     input_ni            = game_server.GetMinIpRange();
+	int64_t     input_xi            = game_server.GetMaxIpRange();
+	uint8_t     input_qm            = game_server.GetQM();
+	uint8_t     input_region        = game_server.GetRegion();
+	// Clan
+	int         input_c0            = game_server.GetClanIdTeam1();
+	int         input_c1            = game_server.GetClanIdTeam2();
+	std::string input_n0            = game_server.GetClanNameTeam1();
+	std::string input_n1            = game_server.GetClanNameTeam2();
+	uint8_t     input_c0c           = game_server.GetClan1Claimed();
+	uint8_t     input_c1c           = game_server.GetClan2Claimed();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(84, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(input_ip[0]));
+	input_bind[0].buffer_length = input_ip.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[1].buffer = &input_port;
+	input_bind[1].is_unsigned = true;
+	
+	int items = 2;
+	for(int i = 0; i < 2; i++)
+	{
+		input_bind[items    ].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items    ].buffer = &input_flag;
+		input_bind[items    ].is_unsigned = true;
+		input_bind[items + 1].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 1].buffer = const_cast<char*>(&(input_localip[0]));
+		input_bind[items + 1].buffer_length = input_localip.size();
+		input_bind[items + 2].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 2].buffer = &input_localport;
+		input_bind[items + 2].is_unsigned = true;
+		input_bind[items + 3].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 3].buffer = &input_natneg;
+		input_bind[items + 3].is_unsigned = true;
+		input_bind[items + 4].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 4].buffer = const_cast<char*>(&(input_gamename[0]));
+		input_bind[items + 4].buffer_length = input_gamename.size();
+		input_bind[items + 5].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 5].buffer = const_cast<char*>(&(input_hostname[0]));
+		input_bind[items + 5].buffer_length = input_hostname.size();
+		input_bind[items + 6].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 6].buffer = &input_hostport;
+		input_bind[items + 6].is_unsigned = true;
+		input_bind[items + 7].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 7].buffer = const_cast<char*>(&(input_gamever[0]));
+		input_bind[items + 7].buffer_length = input_gamever.size();
+		input_bind[items + 8].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 8].buffer = const_cast<char*>(&(input_cl[0]));
+		input_bind[items + 8].buffer_length = input_cl.size();
+		input_bind[items + 9].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 9].buffer = const_cast<char*>(&(input_rv[0]));
+		input_bind[items + 9].buffer_length = input_rv.size();
+		input_bind[items + 10].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 10].buffer = const_cast<char*>(&(input_map[0]));
+		input_bind[items + 10].buffer_length = input_map.size();
+		input_bind[items + 11].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 11].buffer = &input_mc;
+		input_bind[items + 11].is_unsigned = true;
+		input_bind[items + 12].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 12].buffer = &input_mapname;
+		input_bind[items + 12].is_unsigned = true;
+		input_bind[items + 13].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 13].buffer = &input_gc;
+		input_bind[items + 13].is_unsigned = true;
+		input_bind[items + 14].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 14].buffer = const_cast<char*>(&(input_gametype[0]));
+		input_bind[items + 14].buffer_length = input_gametype.size();
+		input_bind[items + 15].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 15].buffer = const_cast<char*>(&(input_gamevariant[0]));
+		input_bind[items + 15].buffer_length = input_gamevariant.size();
+		input_bind[items + 16].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 16].buffer = &input_numplayers;
+		input_bind[items + 16].is_unsigned = true;
+		input_bind[items + 17].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 17].buffer = &input_maxplayers;
+		input_bind[items + 17].is_unsigned = true;
+		input_bind[items + 18].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 18].buffer = &input_numteams;
+		input_bind[items + 18].is_unsigned = true;
+		input_bind[items + 19].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 19].buffer = const_cast<char*>(&(input_gamemode[0]));
+		input_bind[items + 19].buffer_length = input_gamemode.size();
+		input_bind[items + 20].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 20].buffer = &input_teamplay;
+		input_bind[items + 20].is_unsigned = true;
+		input_bind[items + 21].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 21].buffer = &input_fraglimit;
+		input_bind[items + 21].is_unsigned = true;
+		input_bind[items + 22].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 22].buffer = &input_teamfraglimit;
+		input_bind[items + 22].is_unsigned = true;
+		input_bind[items + 23].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 23].buffer = &input_timelimit;
+		input_bind[items + 23].is_unsigned = true;
+		input_bind[items + 24].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 24].buffer = &input_timeelapsed;
+		input_bind[items + 24].is_unsigned = true;
+		input_bind[items + 25].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 25].buffer = &input_password;
+		input_bind[items + 25].is_unsigned = true;
+		input_bind[items + 26].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 26].buffer = &input_nr;
+		input_bind[items + 26].is_unsigned = true;
+		input_bind[items + 27].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 27].buffer = &input_xr;
+		input_bind[items + 27].is_unsigned = true;
+		input_bind[items + 28].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 28].buffer = &input_ff;
+		input_bind[items + 28].is_unsigned = true;
+		input_bind[items + 29].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 29].buffer = &input_sr;
+		input_bind[items + 29].is_unsigned = true;
+		input_bind[items + 30].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 30].buffer = &input_rc;
+		input_bind[items + 30].is_unsigned = true;
+		input_bind[items + 31].buffer_type = MYSQL_TYPE_LONGLONG;
+		input_bind[items + 31].buffer = &input_ni;
+		input_bind[items + 31].is_unsigned = false;
+		input_bind[items + 32].buffer_type = MYSQL_TYPE_LONGLONG;
+		input_bind[items + 32].buffer = &input_xi;
+		input_bind[items + 32].is_unsigned = false;
+		input_bind[items + 33].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 33].buffer = &input_qm;
+		input_bind[items + 33].is_unsigned = true;
+		input_bind[items + 34].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 34].buffer = &input_region;
+		input_bind[items + 34].is_unsigned = true;
+		input_bind[items + 35].buffer_type = MYSQL_TYPE_LONG;
+		input_bind[items + 35].buffer = &input_c0;
+		input_bind[items + 35].is_unsigned = false;
+		input_bind[items + 36].buffer_type = MYSQL_TYPE_LONG;
+		input_bind[items + 36].buffer = &input_c1;
+		input_bind[items + 36].is_unsigned = false;
+		input_bind[items + 37].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 37].buffer = const_cast<char*>(&(input_n0[0]));
+		input_bind[items + 37].buffer_length = input_n0.size();
+		input_bind[items + 38].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 38].buffer = const_cast<char*>(&(input_n1[0]));
+		input_bind[items + 38].buffer_length = input_n1.size();
+		input_bind[items + 39].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 39].buffer = &input_c0c;
+		input_bind[items + 39].is_unsigned = true;
+		input_bind[items + 40].buffer_type = MYSQL_TYPE_TINY;
+		input_bind[items + 40].buffer = &input_c1c;
+		input_bind[items + 40].is_unsigned = true;
+		items += 41;
+	}
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		
+		return false;
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	
+	return true;
+}
+
 // Rank Players
 bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 {

@@ -23,7 +23,7 @@ std::string Net::Socket::GetIP() const
 	return std::string(ip);
 }
 
-int Net::Socket::GetPort() const
+uint16_t Net::Socket::GetPort() const
 {
 	return ntohs(this->_address.sin_port);
 }

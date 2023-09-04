@@ -4,9 +4,10 @@
 #include <logger.h>
 #include <util.h>
 #include <settings.h>
+#include <globals.h>
+#include <database.h>
 #include <qr/constants.h>
 #include <battlefield/gameserver.h>
-
 
 #include <qr/client.h>
 
@@ -144,7 +145,11 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	std::string key, value;
 	Battlefield::GameServer game_server;
 	
-	// Read request game server values
+	// Set game server ip
+	game_server.SetIp(this->GetIP());
+	game_server.SetPort(this->GetPort());
+	
+	// Read game server information
 	while(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
 	{
 		// Read value
@@ -152,7 +157,7 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		
 		if(value.size() > 0)
 		{
-			if(key == "localip0")           game_server.SetLocalIp(value);
+			if(     key == "localip0")      game_server.SetLocalIp(value);
 			else if(key == "localport")     game_server.SetLocalPort(value);
 			else if(key == "natneg")        game_server.SetNatNeg(value);
 			else if(key == "gamename")      game_server.SetGameName(value);
@@ -200,6 +205,8 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	
 	// Debug
 	game_server.Debug();
+	
+	g_database->updateGameServer(game_server);
 	
 	// Send response
 	std::vector<unsigned char> response = {

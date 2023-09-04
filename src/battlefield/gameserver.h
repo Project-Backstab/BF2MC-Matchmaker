@@ -134,8 +134,8 @@ namespace Battlefield
 			uint8_t        GetQM() const             { return this->_qm; }
 			uint8_t        GetRegion() const         { return this->_region; }
 			// Clan
-			int8_t         GetClanIdTeam1() const    { return this->_c0; }
-			int8_t         GetClanIdTeam2() const    { return this->_c1; }
+			int            GetClanIdTeam1() const    { return this->_c0; }
+			int            GetClanIdTeam2() const    { return this->_c1; }
 			std::string    GetClanNameTeam1() const  { return this->_n0; }
 			std::string    GetClanNameTeam2() const  { return this->_n1; }
 			uint8_t        GetClan1Claimed() const   { return this->_c0c; }
@@ -204,9 +204,9 @@ namespace Battlefield
 			bool SetRegion(const std::string& str_region);
 			
 			// Clan
-			bool SetClanIdTeam1(int8_t c0);
+			bool SetClanIdTeam1(int c0);
 			bool SetClanIdTeam1(const std::string& str_c0);
-			bool SetClanIdTeam2(int8_t c1);
+			bool SetClanIdTeam2(int c1);
 			bool SetClanIdTeam2(const std::string& str_c1);
 			bool SetClanNameTeam1(const std::string& n0);
 			bool SetClanNameTeam2(const std::string& n1);

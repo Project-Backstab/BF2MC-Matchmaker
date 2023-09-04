@@ -60,6 +60,7 @@ class Database
 		
 		//GameServer
 		bool queryGameServers(Battlefield::GameServers& game_servers);
+		bool updateGameServer(Battlefield::GameServer& game_server);
 		
 		// RankPlayers
 		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
