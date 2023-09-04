@@ -552,51 +552,51 @@ bool Battlefield::GameServer::SetRegion(const std::string& str_region)
 }
 
 // Clan
-bool Battlefield::GameServer::SetClanIdTeam1(int c0)
+bool Battlefield::GameServer::SetClan1Id(int32_t c0)
 {
 	this->_c0 = c0;
 	return true;
 }
 
-bool Battlefield::GameServer::SetClanIdTeam1(const std::string& str_c0)
+bool Battlefield::GameServer::SetClan1Id(const std::string& str_c0)
 {
-	int c0 = -1;
+	int32_t c0 = -1;
 	
 	try
 	{
-		c0 = static_cast<int>(std::stoi(str_c0));
+		c0 = static_cast<int32_t>(std::stoi(str_c0));
 	}
 	catch(...) {};
 	
-	return this->SetClanIdTeam1(c0);
+	return this->SetClan1Id(c0);
 }
 
-bool Battlefield::GameServer::SetClanIdTeam2(int c1)
+bool Battlefield::GameServer::SetClan2Id(int32_t c1)
 {
 	this->_c1 = c1;
 	return true;
 }
 
-bool Battlefield::GameServer::SetClanIdTeam2(const std::string& str_c1)
+bool Battlefield::GameServer::SetClan2Id(const std::string& str_c1)
 {
-	int c1 = -1;
+	int32_t c1 = -1;
 	
 	try
 	{
-		c1 = static_cast<int>(std::stoi(str_c1));
+		c1 = static_cast<int32_t>(std::stoi(str_c1));
 	}
 	catch(...) {};
 	
-	return this->SetClanIdTeam2(c1);
+	return this->SetClan2Id(c1);
 }
 
-bool Battlefield::GameServer::SetClanNameTeam1(const std::string& n0)
+bool Battlefield::GameServer::SetClan1Name(const std::string& n0)
 {
 	this->_n0 = n0;
 	return true;
 }
 
-bool Battlefield::GameServer::SetClanNameTeam2(const std::string& n1)
+bool Battlefield::GameServer::SetClan2Name(const std::string& n1)
 {
 	this->_n1 = n1;
 	return true;
@@ -640,6 +640,56 @@ bool Battlefield::GameServer::SetClan2Claimed(const std::string& str_c1c)
 	return this->SetClan2Claimed(c1c);
 }
 
+bool Battlefield::GameServer::SetTeam1Name(const std::string& team0)
+{
+	this->_team0 = team0;
+	return true;
+}
+
+bool Battlefield::GameServer::SetTeam2Name(const std::string& team1)
+{
+	this->_team1 = team1;
+	return true;
+}
+
+bool Battlefield::GameServer::SetTeam1Score(int16_t score0)
+{
+	this->_score0 = score0;
+	return true;
+}
+
+bool Battlefield::GameServer::SetTeam1Score(const std::string& str_score0)
+{
+	int16_t score0 = -1;
+	
+	try
+	{
+		score0 = static_cast<int16_t>(std::stoi(str_score0));
+	}
+	catch(...) {};
+	
+	return this->SetTeam1Score(score0);
+}
+
+bool Battlefield::GameServer::SetTeam2Score(int16_t score1)
+{
+	this->_score1 = score1;
+	return true;
+}
+
+bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
+{
+	int16_t score1 = -1;
+	
+	try
+	{
+		score1 = static_cast<int16_t>(std::stoi(str_score1));
+	}
+	catch(...) {};
+	
+	return this->SetTeam2Score(score1);
+}
+
 void Battlefield::GameServer::Debug()
 {
 	Logger::debug("============================");
@@ -680,11 +730,15 @@ void Battlefield::GameServer::Debug()
 	Logger::debug("xi = "            + std::to_string(this->GetMaxIpRange()));
 	Logger::debug("qm = "            + std::to_string(this->GetQM()));
 	Logger::debug("region = "        + std::to_string(this->GetRegion()));
-	Logger::debug("c0 = "            + std::to_string(this->GetClanIdTeam1()));
-	Logger::debug("c1 = "            + std::to_string(this->GetClanIdTeam2()));
-	Logger::debug("n0 = "            + this->GetClanNameTeam1());
-	Logger::debug("n1 = "            + this->GetClanNameTeam2());
+	Logger::debug("c0 = "            + std::to_string(this->GetClan1Id()));
+	Logger::debug("c1 = "            + std::to_string(this->GetClan2Id()));
+	Logger::debug("n0 = "            + this->GetClan1Name());
+	Logger::debug("n1 = "            + this->GetClan2Name());
 	Logger::debug("c0c = "           + std::to_string(this->GetClan1Claimed()));
 	Logger::debug("c1c = "           + std::to_string(this->GetClan2Claimed()));
+	Logger::debug("team0 = "         + this->GetTeam1Name());
+	Logger::debug("score0 = "        + std::to_string(this->GetTeam1Score()));
+	Logger::debug("team1 = "         + this->GetTeam2Name());
+	Logger::debug("score1 = "        + std::to_string(this->GetTeam2Score()));
 }
 

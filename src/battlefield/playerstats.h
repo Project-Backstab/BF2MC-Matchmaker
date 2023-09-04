@@ -57,7 +57,7 @@ namespace Battlefield
 			};
 		
 		private:
-			uint32_t  _score     = 0; // Total score
+			int32_t   _score     = 0; // Total score
 			uint32_t  _ran       = 0; // Rank
 			uint32_t  _pph       = 0; // Point per Hour
 			uint32_t  _kills     = 0; // Total kills
@@ -90,33 +90,33 @@ namespace Battlefield
 		public:
 			void useExample();
 			
-			int GetScore() const                   { return this->_score;    }
-			int GetRank() const                    { return this->_ran;      }
-			int GetPPH() const                     { return this->_pph;      }
-			int GetKills() const                   { return this->_kills;    }
-			int GetDeaths() const                  { return this->_deaths;   }
-			int GetSuicides() const                { return this->_suicides; }
-			int GetTime() const                    { return this->_time;     }
-			int GetVehiclesDestroyed() const       { return this->_vehicles; }
-			int GetLAVsDestroyed() const           { return this->_lavd;     }
-			int GetMAVsDestroyed() const           { return this->_mavd;     } 
-			int GetHAVsDestroyed() const           { return this->_havd;     }
-			int GetHelicoptersDestroyed() const    { return this->_hed;      }
-			int GetBoatsDestroyed() const          { return this->_bod;      }
-			int GetKillsAssualtKit() const         { return this->_k1;       }
-			int GetDeathsAssualtKit() const        { return this->_s1;       }
-			int GetKillsSniperKit() const          { return this->_k2;       }
-			int GetDeathsSniperKit() const         { return this->_s2;       }
-			int GetKillsSpecialOpKit() const       { return this->_k3;       }
-			int GetDeathsSpecialOpKit() const      { return this->_s3;       }
-			int GetKillsCombatEngineerKit() const  { return this->_k4;       }
-			int GetDeathsCombatEngineerKit() const { return this->_s4;       }
-			int GetKillsSupportKit() const         { return this->_k5;       }
-			int GetDeathsSupportKit() const        { return this->_s5;       }
-			int GetMedals() const                  { return this->_medals;   }
-			int GetTotalTopPlayer() const          { return this->_ttb;      }
-			int GetTotalVictories() const          { return this->_mv;       }
-			int GetTotalGameSessions() const       { return this->_ngp;      }
+			int32_t  GetScore() const                   { return this->_score;    }
+			uint32_t GetRank() const                    { return this->_ran;      }
+			uint32_t GetPPH() const                     { return this->_pph;      }
+			uint32_t GetKills() const                   { return this->_kills;    }
+			uint32_t GetDeaths() const                  { return this->_deaths;   }
+			uint32_t GetSuicides() const                { return this->_suicides; }
+			uint32_t GetTime() const                    { return this->_time;     }
+			uint32_t GetVehiclesDestroyed() const       { return this->_vehicles; }
+			uint32_t GetLAVsDestroyed() const           { return this->_lavd;     }
+			uint32_t GetMAVsDestroyed() const           { return this->_mavd;     } 
+			uint32_t GetHAVsDestroyed() const           { return this->_havd;     }
+			uint32_t GetHelicoptersDestroyed() const    { return this->_hed;      }
+			uint32_t GetBoatsDestroyed() const          { return this->_bod;      }
+			uint32_t GetKillsAssualtKit() const         { return this->_k1;       }
+			uint32_t GetDeathsAssualtKit() const        { return this->_s1;       }
+			uint32_t GetKillsSniperKit() const          { return this->_k2;       }
+			uint32_t GetDeathsSniperKit() const         { return this->_s2;       }
+			uint32_t GetKillsSpecialOpKit() const       { return this->_k3;       }
+			uint32_t GetDeathsSpecialOpKit() const      { return this->_s3;       }
+			uint32_t GetKillsCombatEngineerKit() const  { return this->_k4;       }
+			uint32_t GetDeathsCombatEngineerKit() const { return this->_s4;       }
+			uint32_t GetKillsSupportKit() const         { return this->_k5;       }
+			uint32_t GetDeathsSupportKit() const        { return this->_s5;       }
+			uint32_t GetMedals() const                  { return this->_medals;   }
+			uint32_t GetTotalTopPlayer() const          { return this->_ttb;      }
+			uint32_t GetTotalVictories() const          { return this->_mv;       }
+			uint32_t GetTotalGameSessions() const       { return this->_ngp;      }
 			
 			double GetRatio() const;
 			double GetRatioAssualtKit() const;
@@ -125,7 +125,7 @@ namespace Battlefield
 			double GetRatioCombatEngineerKit() const;
 			double GetRatioSupportKit() const;
 			
-			bool SetScore(uint32_t score);
+			bool SetScore(int32_t score);
 			bool SetRank(uint32_t ran);
 			bool SetPPH(uint32_t pph);
 			bool SetKills(uint32_t kills);

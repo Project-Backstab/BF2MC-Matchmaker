@@ -91,7 +91,7 @@ double Battlefield::PlayerStats::GetRatioSupportKit() const
 	return static_cast<double>(this->_k5 * 100) / this->_s5;
 }
 
-bool Battlefield::PlayerStats::SetScore(uint32_t score)
+bool Battlefield::PlayerStats::SetScore(int32_t score)
 {
 	this->_score = score;
 	return true;

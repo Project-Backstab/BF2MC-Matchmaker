@@ -1735,13 +1735,13 @@ bool Database::updateGameServer(Battlefield::GameServer& game_server)
 	query += "		`gamever`, `cl`, `rv`, `map`, `mc`, `mapname`, `gc`, `gametype`, `gamevariant`, `numplayers`, ";
 	query += "		`maxplayers`, `numteams`, `gamemode`, `teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, ";
 	query += "		`timeelapsed`, `password`, `nr`, `xr`, `ff`, `sr`, `rc`, `ni`, `xi`, `qm`, `region`, ";
-	query += "		`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`) ";
+	query += "		`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`, `team0`, `team1`, `score0`, `score1`) ";
 	query += "	VALUES ";
 	query += "		(?, ?, ?, ?, ?, ?, ?, ?, ?, ";
 	query += "		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
 	query += "		?, ?, ?, ?, ?, ?, ?, ";
 	query += "		?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
-	query += "		?, ?, ?, ?, ?, ?) ";
+	query += "		?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 	query += "ON DUPLICATE KEY UPDATE ";
 	query += "	`flag` = ?, ";
 	query += "	`localip0` = ?, ";
@@ -1783,7 +1783,11 @@ bool Database::updateGameServer(Battlefield::GameServer& game_server)
 	query += "	`n0` = ?, ";
 	query += "	`n1` = ?, ";
 	query += "	`c0c` = ?, ";
-	query += "	`c1c` = ? ";
+	query += "	`c1c` = ?, ";
+	query += "	`team0` = ?, ";
+	query += "	`team1` = ?, ";
+	query += "	`score0` = ?, ";
+	query += "	`score1` = ? ";
 	
 	std::string input_ip            = game_server.GetIp();
 	uint16_t    input_port          = game_server.GetPort();
@@ -1823,15 +1827,20 @@ bool Database::updateGameServer(Battlefield::GameServer& game_server)
 	uint8_t     input_qm            = game_server.GetQM();
 	uint8_t     input_region        = game_server.GetRegion();
 	// Clan
-	int         input_c0            = game_server.GetClanIdTeam1();
-	int         input_c1            = game_server.GetClanIdTeam2();
-	std::string input_n0            = game_server.GetClanNameTeam1();
-	std::string input_n1            = game_server.GetClanNameTeam2();
+	int32_t     input_c0            = game_server.GetClan1Id();
+	int32_t     input_c1            = game_server.GetClan2Id();
+	std::string input_n0            = game_server.GetClan1Name();
+	std::string input_n1            = game_server.GetClan2Name();
 	uint8_t     input_c0c           = game_server.GetClan1Claimed();
 	uint8_t     input_c1c           = game_server.GetClan2Claimed();
+	// Team
+	std::string input_team0         = game_server.GetTeam1Name();
+	std::string input_team1         = game_server.GetTeam2Name();
+	int16_t     input_score0        = game_server.GetTeam1Score();
+	int16_t     input_score1        = game_server.GetTeam2Score();
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(84, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(92, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[0].buffer = const_cast<char*>(&(input_ip[0]));
 	input_bind[0].buffer_length = input_ip.size();
@@ -1965,7 +1974,19 @@ bool Database::updateGameServer(Battlefield::GameServer& game_server)
 		input_bind[items + 40].buffer_type = MYSQL_TYPE_TINY;
 		input_bind[items + 40].buffer = &input_c1c;
 		input_bind[items + 40].is_unsigned = true;
-		items += 41;
+		input_bind[items + 41].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 41].buffer = const_cast<char*>(&(input_team0[0]));
+		input_bind[items + 41].buffer_length = input_team0.size();
+		input_bind[items + 42].buffer_type = MYSQL_TYPE_STRING;
+		input_bind[items + 42].buffer = const_cast<char*>(&(input_team1[0]));
+		input_bind[items + 42].buffer_length = input_team1.size();
+		input_bind[items + 43].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 43].buffer = &input_score0;
+		input_bind[items + 43].is_unsigned = false;
+		input_bind[items + 44].buffer_type = MYSQL_TYPE_SHORT;
+		input_bind[items + 44].buffer = &input_score1;
+		input_bind[items + 44].is_unsigned = false;
+		items += 45;
 	}
 	
 	// Prepare and execute with binds

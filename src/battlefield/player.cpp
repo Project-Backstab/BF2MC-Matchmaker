@@ -42,6 +42,19 @@ bool Battlefield::Player::SetUserId(int userid)
 	return false;
 }
 
+bool Battlefield::Player::SetUserId(const std::string& str_userid)
+{
+	int userid = -1;
+	
+	try
+	{
+		userid = std::stoi(str_userid);
+	}
+	catch(...) {};
+	
+	return this->SetUserId(userid);
+}
+
 bool Battlefield::Player::SetNick(const std::string& nick)
 {
 	if(nick.size() > 41)

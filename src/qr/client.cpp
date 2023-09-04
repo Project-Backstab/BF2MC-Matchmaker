@@ -142,7 +142,7 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) const
 {
 	size_t offset = 5;
-	std::string key, value;
+	std::string key, value, player, score, skill, ping, team, deaths, pid;;
 	Battlefield::GameServer game_server;
 	
 	// Set game server ip
@@ -191,10 +191,10 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 			else if(key == "xi")            game_server.SetMaxIpRange(value);
 			else if(key == "qm")            game_server.SetQM(value);
 			else if(key == "region")        game_server.SetRegion(value);
-			else if(key == "c0")            game_server.SetClanIdTeam1(value);
-			else if(key == "c1")            game_server.SetClanIdTeam2(value);
-			else if(key == "n0")            game_server.SetClanNameTeam1(value);
-			else if(key == "n1")            game_server.SetClanNameTeam2(value);
+			else if(key == "c0")            game_server.SetClan1Id(value);
+			else if(key == "c1")            game_server.SetClan2Id(value);
+			else if(key == "n0")            game_server.SetClan1Name(value);
+			else if(key == "n1")            game_server.SetClan2Name(value);
 			else if(key == "c0c")           game_server.SetClan1Claimed(value);
 			else if(key == "c1c")           game_server.SetClan2Claimed(value);
 			
@@ -203,16 +203,9 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		}
 	}
 	
-	// Debug
-	//game_server.Debug();
-	
-	g_database->updateGameServer(game_server);
-	
 	Logger::debug("=========================");
 	
 	// Read players information
-	std::string player, score, skill, ping, team, deaths, pid;
-	
 	offset += 2;
 	if(Util::Buffer::ReadString(request, offset, player) && player.size() > 0)
 	{
@@ -242,11 +235,9 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		}
 	}
 	
-	Logger::debug("=========================");
+	//Logger::debug("=========================");
 	
 	// Read teams information
-	std::string team0, score0, team1, score1;
-	
 	offset += 1;
 	if(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
 	{
@@ -254,18 +245,34 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		offset += 1;
 		
 		// Read team 1
-		Util::Buffer::ReadString(request, offset, team0);
-		Util::Buffer::ReadString(request, offset, score0);
+		Util::Buffer::ReadString(request, offset, team);
+		Util::Buffer::ReadString(request, offset, score);
+		
+		// Set Team name and score
+		game_server.SetTeam1Name(team);
+		game_server.SetTeam1Score(score);
+		
+		// Debug
+		//Logger::debug("team0  = " + team);
+		//Logger::debug("score0 = " + score);
 		
 		// Read team 2
-		Util::Buffer::ReadString(request, offset, team1);
-		Util::Buffer::ReadString(request, offset, score1);
+		Util::Buffer::ReadString(request, offset, team);
+		Util::Buffer::ReadString(request, offset, score);
 		
-		Logger::debug("team0  = " + team0);
-		Logger::debug("score0 = " + score0);
-		Logger::debug("team1  = " + team1);
-		Logger::debug("score1 = " + score1);
+		// Set Team name and score
+		game_server.SetTeam2Name(team);
+		game_server.SetTeam2Score(score);
+		
+		// Debug
+		//Logger::debug("team1  = " + team);
+		//Logger::debug("score1 = " + score);
 	}
+	
+	// Debug
+	//game_server.Debug();
+	
+	g_database->updateGameServer(game_server);
 	
 	// Send response
 	std::vector<unsigned char> response = {
