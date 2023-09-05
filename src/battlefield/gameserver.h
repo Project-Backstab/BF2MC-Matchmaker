@@ -10,12 +10,13 @@ namespace Battlefield
 		Forward declair
 	*/
 	class GameServer;
-	struct GameServerPlayer;
+	class GameServerPlayer;
 	
 	/*
 		Type definitions
 	*/
 	typedef std::vector<GameServer> GameServers;
+	typedef std::vector<GameServerPlayer> GameServerPlayers;
 	
 	/*
 		Game server information
@@ -23,6 +24,7 @@ namespace Battlefield
 	class GameServer
 	{
 		private:
+			int			_id = -1;
 			std::string _ip;
 			uint16_t    _port = 3658;
 			uint8_t     _flag = 59;
@@ -96,7 +98,7 @@ namespace Battlefield
 			int16_t     _score0;          // Team 1 score
 			int16_t     _score1;          // Team 2 score
 			
-			//std::vector<GameServerPlayer> _players;
+			std::vector<GameServerPlayer> _players;
 		
 		public:
 			void useExample();
@@ -151,6 +153,7 @@ namespace Battlefield
 			std::string    GetTeam2Name() const      { return this->_team1; }
 			int16_t        GetTeam1Score() const     { return this->_score0; }
 			int16_t        GetTeam2Score() const     { return this->_score1; }
+			GameServerPlayers GetPlayers() const     { return this->_players; }
 			
 			bool SetIp(const std::string& ip);
 			bool SetPort(uint16_t port);
@@ -234,20 +237,45 @@ namespace Battlefield
 			bool SetTeam2Score(int16_t score1);
 			bool SetTeam2Score(const std::string& str_score1);
 			
+			void AddPlayer(GameServerPlayer gsplayer);
+			
 			void Debug();
 	};
 	
-	/*
-	struct GameServerPlayer
+	class GameServerPlayer
 	{
-		uint16_t    _score     = 0;
-		std::string _skill     = "";
-		uint8_t     _ping      = 0;
-		uint8_t     _team      = 0;
-		uint16_t    _deaths    = 0;
-		int         _profileid = -1;
+		private:
+			int         _id        = -1;
+			std::string _name      = "";
+			int16_t     _score     = 0;
+			std::string _skill     = "";
+			uint8_t     _ping      = 0;
+			uint8_t     _team      = 0;
+			uint16_t    _deaths    = 0;
+			int         _profileid = -1;
+		
+		public:
+			std::string GetName() const      { return this->_name; }
+			int16_t     GetScore() const     { return this->_score; }
+			std::string GetSkill() const     { return this->_skill; }
+			uint8_t     GetPing() const      { return this->_ping; }
+			uint8_t     GetTeam() const      { return this->_team; }
+			uint16_t    GetDeaths() const    { return this->_deaths; }
+			int         GetProfileId() const { return this->_profileid; }
+			
+			bool SetName(const std::string name);
+			bool SetScore(int16_t score);
+			bool SetScore(const std::string str_score);
+			bool SetSkill(const std::string skill);
+			bool SetPing(uint8_t ping);
+			bool SetPing(const std::string str_ping);
+			bool SetTeam(uint8_t team);
+			bool SetTeam(const std::string str_team);
+			bool SetDeaths(uint16_t deaths);
+			bool SetDeaths(const std::string str_deaths);
+			bool SetProfileId(int profileid);
+			bool SetProfileId(const std::string str_profileid);
 	};
-	*/
 }
 
 #endif // BATTLEFIELD_GAMESERVER_H

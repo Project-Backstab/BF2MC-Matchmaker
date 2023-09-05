@@ -58,11 +58,17 @@ class Database
 		bool removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool removeClanRanksByClanId(const Battlefield::Clan& clan);
 		
-		//GameServer
+		//Game Server
 		bool queryGameServers(Battlefield::GameServers& game_servers);
-		bool updateGameServer(Battlefield::GameServer& game_server);
+		bool updateGameServer(const Battlefield::GameServer& game_server);
 		
-		// RankPlayers
+		//Game Server Player
+	private:
+		bool _insertGameServerPlayer(const Battlefield::GameServer& game_server, const Battlefield::GameServerPlayer& gsplayer);
+		bool _removeGameServerPlayers(const Battlefield::GameServer& game_server);
+	
+	public:
+		// Rank Players
 		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
 		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type);
 		bool queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s);

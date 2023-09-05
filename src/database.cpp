@@ -1666,7 +1666,7 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query = "SELECT `ip`, `port`, `flag` FROM `GameServer`";
+	std::string query = "SELECT `ip`, `port`, `flag` FROM `GameServers`";
 	
 	char output_ip[16];
 	int  output_port;
@@ -1724,13 +1724,13 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	return true;
 }
 
-bool Database::updateGameServer(Battlefield::GameServer& game_server)
+bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "";
 	query += "INSERT INTO";
-	query += "	`GameServer` ";
+	query += "	`GameServers` ";
 	query += "		(`ip`, `port`, `flag`, `localip0`, `localport`, `natneg`, `gamename`, `hostname`, `hostport`, ";
 	query += "		`gamever`, `cl`, `rv`, `map`, `mc`, `mapname`, `gc`, `gametype`, `gamevariant`, `numplayers`, ";
 	query += "		`maxplayers`, `numteams`, `gamemode`, `teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, ";
@@ -2004,6 +2004,155 @@ bool Database::updateGameServer(Battlefield::GameServer& game_server)
 		return false;
 	}
 	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	
+	// Update players to database
+	this->_removeGameServerPlayers(game_server);
+	for(Battlefield::GameServerPlayer gsplayer : game_server.GetPlayers())
+	{
+		this->_insertGameServerPlayer(game_server, gsplayer);
+	}
+	
+	return true;
+}
+
+/*
+
+*/
+// Game Server Player
+bool Database::_insertGameServerPlayer(const Battlefield::GameServer& game_server, const Battlefield::GameServerPlayer& gsplayer)
+{
+	//std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	
+	query += "INSERT INTO ";
+	query += "	`GameServerPlayers` ";
+	query += "		(`gameserverid`, `name`, `score`, `skill`, `ping`, `team`, `deaths`, `profileid`) ";
+	query += "SELECT ";
+	query += "	GameServers.id as `gameserverid`, ";
+	query += "	? AS `name`, ";
+	query += "	? AS `score`, ";
+	query += "	? AS `skill`, ";
+	query += "	? AS `ping`, ";
+	query += "	? AS `team`, ";
+	query += "	? AS `deaths`, ";
+	query += "	? AS `profileid` ";
+	query += "FROM ";
+	query += "	`GameServers` ";
+	query += "WHERE ";
+	query += "	`ip` = ? AND ";
+	query += "	`port` = ?";
+	
+	std::string input_name      = gsplayer.GetName();
+	int16_t     input_score     = gsplayer.GetScore();
+	std::string input_skill     = gsplayer.GetSkill();
+	uint8_t     input_ping      = gsplayer.GetPing();
+	uint8_t     input_team      = gsplayer.GetTeam();
+	uint16_t    input_deaths    = gsplayer.GetDeaths();
+	int         input_profileid = gsplayer.GetProfileId();
+	std::string input_ip        = game_server.GetIp();
+	uint16_t    input_port      = game_server.GetPort();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(input_name[0]));
+	input_bind[0].buffer_length = input_name.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[1].buffer = &input_score;
+	input_bind[1].is_unsigned = false;
+	input_bind[2].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[2].buffer = const_cast<char*>(&(input_skill[0]));
+	input_bind[2].buffer_length = input_skill.size();
+	input_bind[3].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[3].buffer = &input_ping;
+	input_bind[3].is_unsigned = true;
+	input_bind[4].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[4].buffer = &input_team;
+	input_bind[4].is_unsigned = true;
+	input_bind[5].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[5].buffer = &input_deaths;
+	input_bind[5].is_unsigned = true;
+	input_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[6].buffer = const_cast<int*>(&input_profileid);
+	input_bind[6].is_unsigned = false;
+	input_bind[7].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[7].buffer = const_cast<char*>(&(input_ip[0]));
+	input_bind[7].buffer_length = input_ip.size();
+	input_bind[8].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[8].buffer = &input_port;
+	input_bind[8].is_unsigned = true;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	
+	return true;
+}
+
+bool Database::_removeGameServerPlayers(const Battlefield::GameServer& game_server)
+{
+	//std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	
+	query += "DELETE `GameServerPlayers` ";
+	query += "FROM `GameServerPlayers` ";
+	query += "INNER JOIN ";
+	query += "	`GameServers` ";
+	query += "ON ";
+	query += "	GameServerPlayers.gameserverid = GameServers.id ";
+	query += "WHERE ";
+	query += "	GameServers.ip = ? AND ";
+	query += "	GameServers.port = ?";
+	
+	std::string input_ip        = game_server.GetIp();
+	uint16_t    input_port      = game_server.GetPort();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[0].buffer = const_cast<char*>(&(input_ip[0]));
+	input_bind[0].buffer_length = input_ip.size();
+	input_bind[1].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[1].buffer = &input_port;
+	input_bind[1].is_unsigned = true;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		
+		return false;
+	}
+
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);

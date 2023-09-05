@@ -203,8 +203,6 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		}
 	}
 	
-	Logger::debug("=========================");
-	
 	// Read players information
 	offset += 2;
 	if(Util::Buffer::ReadString(request, offset, player) && player.size() > 0)
@@ -226,16 +224,28 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 			Util::Buffer::ReadString(request, offset, deaths);
 			Util::Buffer::ReadString(request, offset, pid);
 			
-			Logger::debug("player = " + player);
-			Logger::debug("skill  = " + skill);
-			Logger::debug("ping   = " + ping);
-			Logger::debug("team   = " + team);
-			Logger::debug("deaths = " + deaths);
-			Logger::debug("pid    = " + pid);
+			Battlefield::GameServerPlayer gsplayer;
+			
+			gsplayer.SetName(player);
+			gsplayer.SetScore(score);
+			gsplayer.SetSkill(skill);
+			gsplayer.SetPing(ping);
+			gsplayer.SetTeam(team);
+			gsplayer.SetDeaths(deaths);
+			gsplayer.SetProfileId(pid);
+			
+			game_server.AddPlayer(gsplayer);
+			
+			// Debug
+			//Logger::debug("player = " + gsplayer.GetName());
+			//Logger::debug("score  = " + std::to_string(gsplayer.GetScore()));
+			//Logger::debug("skill  = " + gsplayer.GetSkill());
+			//Logger::debug("ping   = " + std::to_string(gsplayer.GetPing()));
+			//Logger::debug("team   = " + std::to_string(gsplayer.GetTeam()));
+			//Logger::debug("deaths = " + std::to_string(gsplayer.GetDeaths()));
+			//Logger::debug("pid    = " + std::to_string(gsplayer.GetProfileId()));
 		}
 	}
-	
-	//Logger::debug("=========================");
 	
 	// Read teams information
 	offset += 1;

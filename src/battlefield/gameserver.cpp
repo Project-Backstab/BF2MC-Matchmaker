@@ -690,6 +690,11 @@ bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
 	return this->SetTeam2Score(score1);
 }
 
+void Battlefield::GameServer::AddPlayer(GameServerPlayer gsplayer)
+{
+	this->_players.push_back(gsplayer);
+}
+
 void Battlefield::GameServer::Debug()
 {
 	Logger::debug("============================");
@@ -740,5 +745,113 @@ void Battlefield::GameServer::Debug()
 	Logger::debug("score0 = "        + std::to_string(this->GetTeam1Score()));
 	Logger::debug("team1 = "         + this->GetTeam2Name());
 	Logger::debug("score1 = "        + std::to_string(this->GetTeam2Score()));
+}
+
+
+bool Battlefield::GameServerPlayer::SetName(const std::string name)
+{
+	this->_name = name;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetScore(int16_t score)
+{
+	this->_score = score;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetScore(const std::string str_score)
+{
+	int16_t score = 0;
+	
+	try
+	{
+		score = static_cast<int16_t>(std::stoi(str_score));
+	}
+	catch(...) {};
+	
+	return this->SetScore(score);
+}
+
+bool Battlefield::GameServerPlayer::SetSkill(const std::string skill)
+{
+	this->_skill = skill;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetPing(uint8_t ping)
+{
+	this->_ping = ping;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetPing(const std::string str_ping)
+{
+	uint8_t ping = 0;
+	
+	try
+	{
+		ping = static_cast<uint8_t>(std::stoul(str_ping));
+	}
+	catch(...) {};
+	
+	return this->SetPing(ping);
+}
+
+bool Battlefield::GameServerPlayer::SetTeam(uint8_t team)
+{
+	this->_team = team;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetTeam(const std::string str_team)
+{
+	uint8_t team = 0;
+	
+	try
+	{
+		team = static_cast<uint8_t>(std::stoul(str_team));
+	}
+	catch(...) {};
+	
+	return this->SetTeam(team);
+}
+
+bool Battlefield::GameServerPlayer::SetDeaths(uint16_t deaths)
+{
+	this->_deaths = deaths;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetDeaths(const std::string str_deaths)
+{
+	uint16_t deaths = 0;
+	
+	try
+	{
+		deaths = static_cast<uint16_t>(std::stoul(str_deaths));
+	}
+	catch(...) {};
+	
+	return this->SetDeaths(deaths);
+}
+
+bool Battlefield::GameServerPlayer::SetProfileId(int profileid)
+{
+	this->_profileid = profileid;
+	return true;
+}
+
+bool Battlefield::GameServerPlayer::SetProfileId(const std::string str_profileid)
+{
+	int profileid = -1;
+	
+	try
+	{
+		profileid = std::stoi(str_profileid);
+	}
+	catch(...) {};
+	
+	return this->SetProfileId(profileid);
 }
 
