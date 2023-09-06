@@ -49,15 +49,15 @@ bool Battlefield::GameServer::SetLocalPort(uint16_t localport)
 
 bool Battlefield::GameServer::SetLocalPort(const std::string& str_localport)
 {
-	uint16_t localport = 0;
-	
 	try
 	{
-		localport = static_cast<uint16_t>(std::stoul(str_localport));
+		uint16_t localport = static_cast<uint16_t>(std::stoul(str_localport));
+		
+		return this->SetLocalPort(localport);
 	}
 	catch(...) {};
 	
-	return this->SetLocalPort(localport);
+	return false;
 }
 
 bool Battlefield::GameServer::SetNatNeg(uint8_t natneg)
@@ -68,15 +68,15 @@ bool Battlefield::GameServer::SetNatNeg(uint8_t natneg)
 
 bool Battlefield::GameServer::SetNatNeg(const std::string& str_natneg)
 {
-	uint8_t natneg = 0;
-	
 	try
 	{
-		natneg = static_cast<uint8_t>(std::stoul(str_natneg));
+		uint8_t natneg = static_cast<uint8_t>(std::stoul(str_natneg));
+		
+		return this->SetNatNeg(natneg);
 	}
 	catch(...) {};
 	
-	return this->SetNatNeg(natneg);
+	return false;
 }
 
 bool Battlefield::GameServer::SetGameName(const std::string& gamename)
@@ -99,15 +99,15 @@ bool Battlefield::GameServer::SetHostPort(uint16_t hostport)
 
 bool Battlefield::GameServer::SetHostPort(const std::string& str_hostport)
 {
-	uint16_t hostport = 0;
-	
 	try
 	{
-		hostport = static_cast<uint16_t>(std::stoul(str_hostport));
+		uint16_t hostport = static_cast<uint16_t>(std::stoul(str_hostport));
+		
+		return this->SetHostPort(hostport);
 	}
 	catch(...) {};
 	
-	return this->SetHostPort(hostport);
+	return false;
 }
 
 bool Battlefield::GameServer::SetGameVersion(const std::string& gamever)
@@ -142,15 +142,15 @@ bool Battlefield::GameServer::SetMapCycling(uint8_t mc)
 
 bool Battlefield::GameServer::SetMapCycling(const std::string& str_mc)
 {
-	uint8_t mc = 0;
-	
 	try
 	{
-		mc = static_cast<uint8_t>(std::stoul(str_mc));
+		uint8_t mc = static_cast<uint8_t>(std::stoul(str_mc));
+		
+		return this->SetMapCycling(mc);
 	}
 	catch(...) {};
 	
-	return this->SetMapCycling(mc);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMapName(uint8_t mapname)
@@ -161,15 +161,15 @@ bool Battlefield::GameServer::SetMapName(uint8_t mapname)
 
 bool Battlefield::GameServer::SetMapName(const std::string& str_mapname)
 {
-	uint8_t mapname = 0;
-	
 	try
 	{
-		mapname = static_cast<uint8_t>(std::stoul(str_mapname));
+		uint8_t mapname = static_cast<uint8_t>(std::stoul(str_mapname));
+		
+		return this->SetMapName(mapname);
 	}
 	catch(...) {};
 	
-	return this->SetMapName(mapname);
+	return false;
 }
 
 bool Battlefield::GameServer::SetGC(uint8_t gc)
@@ -180,15 +180,15 @@ bool Battlefield::GameServer::SetGC(uint8_t gc)
 
 bool Battlefield::GameServer::SetGC(const std::string& str_gc)
 {
-	uint8_t gc = 0;
-	
 	try
 	{
-		gc = static_cast<uint8_t>(std::stoul(str_gc));
+		uint8_t gc = static_cast<uint8_t>(std::stoul(str_gc));
+		
+		return this->SetGC(gc);
 	}
 	catch(...) {};
 	
-	return this->SetGC(gc);
+	return false;
 }
 
 bool Battlefield::GameServer::SetGameType(const std::string& gametype)
@@ -211,15 +211,15 @@ bool Battlefield::GameServer::SetNumPlayers(uint8_t numplayers)
 
 bool Battlefield::GameServer::SetNumPlayers(const std::string& str_numplayers)
 {
-	uint8_t numplayers = 0;
-	
 	try
 	{
-		numplayers = static_cast<uint8_t>(std::stoul(str_numplayers));
+		uint8_t numplayers = static_cast<uint8_t>(std::stoul(str_numplayers));
+		
+		return this->SetNumPlayers(numplayers);
 	}
 	catch(...) {};
 	
-	return this->SetNumPlayers(numplayers);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMaxPlayers(uint8_t maxplayers)
@@ -230,15 +230,15 @@ bool Battlefield::GameServer::SetMaxPlayers(uint8_t maxplayers)
 
 bool Battlefield::GameServer::SetMaxPlayers(const std::string& str_maxplayers)
 {
-	uint8_t maxplayers = 0;
-	
 	try
 	{
-		maxplayers = static_cast<uint8_t>(std::stoul(str_maxplayers));
+		uint8_t maxplayers = static_cast<uint8_t>(std::stoul(str_maxplayers));
+		
+		return this->SetMaxPlayers(maxplayers);
 	}
 	catch(...) {};
 	
-	return this->SetMaxPlayers(maxplayers);
+	return false;
 }
 
 bool Battlefield::GameServer::SetNumTeams(uint8_t numteams)
@@ -249,15 +249,15 @@ bool Battlefield::GameServer::SetNumTeams(uint8_t numteams)
 
 bool Battlefield::GameServer::SetNumTeams(const std::string& str_numteams)
 {
-	uint8_t numteams = 0;
-	
 	try
 	{
-		numteams = static_cast<uint8_t>(std::stoul(str_numteams));
+		uint8_t numteams = static_cast<uint8_t>(std::stoul(str_numteams));
+		
+		return this->SetNumTeams(numteams);
 	}
 	catch(...) {};
 	
-	return this->SetNumTeams(numteams);
+	return false;
 }
 
 bool Battlefield::GameServer::SetGameMode(const std::string& gamemode)
@@ -274,15 +274,15 @@ bool Battlefield::GameServer::SetTeamplay(uint8_t teamplay)
 
 bool Battlefield::GameServer::SetTeamplay(const std::string& str_teamplay)
 {
-	uint8_t teamplay = 0;
-	
 	try
 	{
-		teamplay = static_cast<uint8_t>(std::stoul(str_teamplay));
+		uint8_t teamplay = static_cast<uint8_t>(std::stoul(str_teamplay));
+		
+		return this->SetTeamplay(teamplay);
 	}
 	catch(...) {};
 	
-	return this->SetTeamplay(teamplay);
+	return false;
 }
 
 bool Battlefield::GameServer::SetFlagLimit(uint8_t fraglimit)
@@ -293,15 +293,15 @@ bool Battlefield::GameServer::SetFlagLimit(uint8_t fraglimit)
 
 bool Battlefield::GameServer::SetFlagLimit(const std::string& str_fraglimit)
 {
-	uint8_t fraglimit = 0;
-	
 	try
 	{
-		fraglimit = static_cast<uint8_t>(std::stoul(str_fraglimit));
+		uint8_t fraglimit = static_cast<uint8_t>(std::stoul(str_fraglimit));
+		
+		return this->SetFlagLimit(fraglimit);
 	}
 	catch(...) {};
 	
-	return this->SetFlagLimit(fraglimit);
+	return false;
 }
 
 bool Battlefield::GameServer::SetTeamFragLimit(uint8_t teamfraglimit)
@@ -312,15 +312,15 @@ bool Battlefield::GameServer::SetTeamFragLimit(uint8_t teamfraglimit)
 
 bool Battlefield::GameServer::SetTeamFragLimit(const std::string& str_teamfraglimit)
 {
-	uint8_t teamfraglimit = 0;
-	
 	try
 	{
-		teamfraglimit = static_cast<uint8_t>(std::stoul(str_teamfraglimit));
+		uint8_t teamfraglimit = static_cast<uint8_t>(std::stoul(str_teamfraglimit));
+		
+		return this->SetTeamFragLimit(teamfraglimit);
 	}
 	catch(...) {};
 	
-	return this->SetTeamFragLimit(teamfraglimit);
+	return false;
 }
 
 bool Battlefield::GameServer::SetTimeLimit(uint16_t timelimit)
@@ -331,15 +331,15 @@ bool Battlefield::GameServer::SetTimeLimit(uint16_t timelimit)
 
 bool Battlefield::GameServer::SetTimeLimit(const std::string& str_timelimit)
 {
-	uint16_t timelimit = 0;
-	
 	try
 	{
-		timelimit = static_cast<uint16_t>(std::stoul(str_timelimit));
+		uint16_t timelimit = static_cast<uint16_t>(std::stoul(str_timelimit));
+		
+		return this->SetTimeLimit(timelimit);
 	}
 	catch(...) {};
 	
-	return this->SetTimeLimit(timelimit);
+	return false;
 }
 
 bool Battlefield::GameServer::SetTimeElapsed(uint16_t timeelapsed)
@@ -350,15 +350,15 @@ bool Battlefield::GameServer::SetTimeElapsed(uint16_t timeelapsed)
 
 bool Battlefield::GameServer::SetTimeElapsed(const std::string& str_timeelapsed)
 {
-	uint16_t timeelapsed = 0;
-	
 	try
 	{
-		timeelapsed = static_cast<uint16_t>(std::stoul(str_timeelapsed));
+		uint16_t timeelapsed = static_cast<uint16_t>(std::stoul(str_timeelapsed));
+		
+		return this->SetTimeElapsed(timeelapsed);
 	}
 	catch(...) {};
 	
-	return this->SetTimeElapsed(timeelapsed);
+	return false;
 }
 
 bool Battlefield::GameServer::SetPassword(uint8_t password)
@@ -369,15 +369,15 @@ bool Battlefield::GameServer::SetPassword(uint8_t password)
 
 bool Battlefield::GameServer::SetPassword(const std::string& str_password)
 {
-	uint8_t password = 0;
-	
 	try
 	{
-		password = static_cast<uint8_t>(std::stoul(str_password));
+		uint8_t password = static_cast<uint8_t>(std::stoul(str_password));
+		
+		return this->SetPassword(password);
 	}
 	catch(...) {};
 	
-	return this->SetPassword(password);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMinRank(uint8_t nr)
@@ -388,15 +388,15 @@ bool Battlefield::GameServer::SetMinRank(uint8_t nr)
 
 bool Battlefield::GameServer::SetMinRank(const std::string& str_nr)
 {
-	uint8_t nr = 0;
-	
 	try
 	{
-		nr = static_cast<uint8_t>(std::stoul(str_nr));
+		uint8_t nr = static_cast<uint8_t>(std::stoul(str_nr));
+		
+		return this->SetMinRank(nr);
 	}
 	catch(...) {};
 	
-	return this->SetMinRank(nr);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMaxRank(uint8_t xr)
@@ -407,15 +407,15 @@ bool Battlefield::GameServer::SetMaxRank(uint8_t xr)
 
 bool Battlefield::GameServer::SetMaxRank(const std::string& str_xr)
 {
-	uint8_t xr = 0;
-	
 	try
 	{
-		xr = static_cast<uint8_t>(std::stoul(str_xr));
+		uint8_t xr = static_cast<uint8_t>(std::stoul(str_xr));
+		
+		return this->SetMaxRank(xr);
 	}
 	catch(...) {};
 	
-	return this->SetMaxRank(xr);
+	return false;
 }
 
 bool Battlefield::GameServer::SetFriendlyFire(uint8_t ff)
@@ -426,15 +426,15 @@ bool Battlefield::GameServer::SetFriendlyFire(uint8_t ff)
 
 bool Battlefield::GameServer::SetFriendlyFire(const std::string& str_ff)
 {
-	uint8_t ff = 0;
-	
 	try
 	{
-		ff = static_cast<uint8_t>(std::stoul(str_ff));
+		uint8_t ff = static_cast<uint8_t>(std::stoul(str_ff));
+		
+		return this->SetFriendlyFire(ff);
 	}
 	catch(...) {};
 	
-	return this->SetFriendlyFire(ff);
+	return false;
 }
 
 bool Battlefield::GameServer::SetStatsTracking(uint8_t sr)
@@ -445,15 +445,15 @@ bool Battlefield::GameServer::SetStatsTracking(uint8_t sr)
 
 bool Battlefield::GameServer::SetStatsTracking(const std::string& str_sr)
 {
-	uint8_t sr = 0;
-	
 	try
 	{
-		sr = static_cast<uint8_t>(std::stoul(str_sr));
+		uint8_t sr = static_cast<uint8_t>(std::stoul(str_sr));
+		
+		return this->SetStatsTracking(sr);
 	}
 	catch(...) {};
 	
-	return this->SetStatsTracking(sr);
+	return false;
 }
 
 bool Battlefield::GameServer::SetReconfigurable(uint8_t rc)
@@ -464,15 +464,15 @@ bool Battlefield::GameServer::SetReconfigurable(uint8_t rc)
 
 bool Battlefield::GameServer::SetReconfigurable(const std::string& str_rc)
 {
-	uint8_t rc = 0;
-	
 	try
 	{
-		rc = static_cast<uint8_t>(std::stoul(str_rc));
+		uint8_t rc = static_cast<uint8_t>(std::stoul(str_rc));
+		
+		return this->SetReconfigurable(rc);
 	}
 	catch(...) {};
 	
-	return this->SetReconfigurable(rc);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMinIpRange(int64_t ni)
@@ -483,15 +483,15 @@ bool Battlefield::GameServer::SetMinIpRange(int64_t ni)
 
 bool Battlefield::GameServer::SetMinIpRange(const std::string& str_ni)
 {
-	int64_t ni = 0;
-	
 	try
 	{
-		ni = static_cast<int64_t>(std::stoll(str_ni));
+		int64_t ni = static_cast<int64_t>(std::stoll(str_ni));
+	
+		return this->SetMinIpRange(ni);
 	}
 	catch(...) {};
 	
-	return this->SetMinIpRange(ni);
+	return false;
 }
 
 bool Battlefield::GameServer::SetMaxIpRange(int64_t xi)
@@ -502,15 +502,15 @@ bool Battlefield::GameServer::SetMaxIpRange(int64_t xi)
 
 bool Battlefield::GameServer::SetMaxIpRange(const std::string& str_xi)
 {
-	int64_t xi = 0;
-	
 	try
 	{
-		xi = static_cast<int64_t>(std::stoll(str_xi));
+		int64_t xi = static_cast<int64_t>(std::stoll(str_xi));
+		
+		return this->SetMaxIpRange(xi);
 	}
 	catch(...) {};
 	
-	return this->SetMaxIpRange(xi);
+	return false;
 }
 
 bool Battlefield::GameServer::SetQM(uint8_t qm)
@@ -521,15 +521,15 @@ bool Battlefield::GameServer::SetQM(uint8_t qm)
 
 bool Battlefield::GameServer::SetQM(const std::string& str_qm)
 {
-	uint8_t qm = 0;
-	
 	try
 	{
-		qm = static_cast<uint8_t>(std::stoul(str_qm));
+		uint8_t qm = static_cast<uint8_t>(std::stoul(str_qm));
+		
+		return this->SetQM(qm);
 	}
 	catch(...) {};
 	
-	return this->SetQM(qm);
+	return false;
 }
 
 bool Battlefield::GameServer::SetRegion(uint8_t region)
@@ -540,15 +540,15 @@ bool Battlefield::GameServer::SetRegion(uint8_t region)
 
 bool Battlefield::GameServer::SetRegion(const std::string& str_region)
 {
-	uint8_t region = 0;
-	
 	try
 	{
-		region = static_cast<uint8_t>(std::stoul(str_region));
+		uint8_t region = static_cast<uint8_t>(std::stoul(str_region));
+		
+		return this->SetRegion(region);
 	}
 	catch(...) {};
 	
-	return this->SetRegion(region);
+	return false;
 }
 
 // Clan
@@ -560,15 +560,15 @@ bool Battlefield::GameServer::SetClan1Id(int32_t c0)
 
 bool Battlefield::GameServer::SetClan1Id(const std::string& str_c0)
 {
-	int32_t c0 = -1;
-	
 	try
 	{
-		c0 = static_cast<int32_t>(std::stoi(str_c0));
+		int32_t c0 = static_cast<int32_t>(std::stoi(str_c0));
+		
+		return this->SetClan1Id(c0);
 	}
 	catch(...) {};
 	
-	return this->SetClan1Id(c0);
+	return false;
 }
 
 bool Battlefield::GameServer::SetClan2Id(int32_t c1)
@@ -579,15 +579,15 @@ bool Battlefield::GameServer::SetClan2Id(int32_t c1)
 
 bool Battlefield::GameServer::SetClan2Id(const std::string& str_c1)
 {
-	int32_t c1 = -1;
-	
 	try
 	{
-		c1 = static_cast<int32_t>(std::stoi(str_c1));
+		int32_t c1 = static_cast<int32_t>(std::stoi(str_c1));
+		
+		return this->SetClan2Id(c1);
 	}
 	catch(...) {};
 	
-	return this->SetClan2Id(c1);
+	return false;
 }
 
 bool Battlefield::GameServer::SetClan1Name(const std::string& n0)
@@ -610,15 +610,15 @@ bool Battlefield::GameServer::SetClan1Claimed(uint8_t c0c)
 
 bool Battlefield::GameServer::SetClan1Claimed(const std::string& str_c0c)
 {
-	uint8_t c0c = 0;
-	
 	try
 	{
-		c0c = static_cast<uint8_t>(std::stoul(str_c0c));
+		uint8_t c0c = static_cast<uint8_t>(std::stoul(str_c0c));
+		
+		return this->SetClan1Claimed(c0c);
 	}
 	catch(...) {};
 	
-	return this->SetClan1Claimed(c0c);
+	return false;
 }
 
 bool Battlefield::GameServer::SetClan2Claimed(uint8_t c1c)
@@ -629,15 +629,15 @@ bool Battlefield::GameServer::SetClan2Claimed(uint8_t c1c)
 
 bool Battlefield::GameServer::SetClan2Claimed(const std::string& str_c1c)
 {
-	uint8_t c1c = 0;
-	
 	try
 	{
-		c1c = static_cast<uint8_t>(std::stoul(str_c1c));
+		uint8_t c1c = static_cast<uint8_t>(std::stoul(str_c1c));
+		
+		return this->SetClan2Claimed(c1c);
 	}
 	catch(...) {};
 	
-	return this->SetClan2Claimed(c1c);
+	return false;
 }
 
 bool Battlefield::GameServer::SetTeam1Name(const std::string& team0)
@@ -660,15 +660,15 @@ bool Battlefield::GameServer::SetTeam1Score(int16_t score0)
 
 bool Battlefield::GameServer::SetTeam1Score(const std::string& str_score0)
 {
-	int16_t score0 = -1;
-	
 	try
 	{
-		score0 = static_cast<int16_t>(std::stoi(str_score0));
+		int16_t score0 = static_cast<int16_t>(std::stoi(str_score0));
+		
+		return this->SetTeam1Score(score0);
 	}
 	catch(...) {};
 	
-	return this->SetTeam1Score(score0);
+	return false;
 }
 
 bool Battlefield::GameServer::SetTeam2Score(int16_t score1)
@@ -679,18 +679,18 @@ bool Battlefield::GameServer::SetTeam2Score(int16_t score1)
 
 bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
 {
-	int16_t score1 = -1;
-	
 	try
 	{
-		score1 = static_cast<int16_t>(std::stoi(str_score1));
+		int16_t score1 = static_cast<int16_t>(std::stoi(str_score1));
+		
+		return this->SetTeam2Score(score1);
 	}
 	catch(...) {};
 	
-	return this->SetTeam2Score(score1);
+	return false;
 }
 
-void Battlefield::GameServer::AddPlayer(GameServerPlayer gsplayer)
+void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);
 }
@@ -762,15 +762,15 @@ bool Battlefield::GameServerPlayer::SetScore(int16_t score)
 
 bool Battlefield::GameServerPlayer::SetScore(const std::string str_score)
 {
-	int16_t score = 0;
-	
 	try
 	{
-		score = static_cast<int16_t>(std::stoi(str_score));
+		int16_t score = static_cast<int16_t>(std::stoi(str_score));
+		
+		return this->SetScore(score);
 	}
 	catch(...) {};
 	
-	return this->SetScore(score);
+	return false;
 }
 
 bool Battlefield::GameServerPlayer::SetSkill(const std::string skill)
@@ -787,15 +787,15 @@ bool Battlefield::GameServerPlayer::SetPing(uint8_t ping)
 
 bool Battlefield::GameServerPlayer::SetPing(const std::string str_ping)
 {
-	uint8_t ping = 0;
-	
 	try
 	{
-		ping = static_cast<uint8_t>(std::stoul(str_ping));
+		uint8_t ping = static_cast<uint8_t>(std::stoul(str_ping));
+	
+		return this->SetPing(ping);
 	}
 	catch(...) {};
 	
-	return this->SetPing(ping);
+	return false;
 }
 
 bool Battlefield::GameServerPlayer::SetTeam(uint8_t team)
@@ -806,15 +806,15 @@ bool Battlefield::GameServerPlayer::SetTeam(uint8_t team)
 
 bool Battlefield::GameServerPlayer::SetTeam(const std::string str_team)
 {
-	uint8_t team = 0;
-	
 	try
 	{
-		team = static_cast<uint8_t>(std::stoul(str_team));
+		uint8_t team = static_cast<uint8_t>(std::stoul(str_team));
+		
+		return this->SetTeam(team);
 	}
 	catch(...) {};
 	
-	return this->SetTeam(team);
+	return false;
 }
 
 bool Battlefield::GameServerPlayer::SetDeaths(uint16_t deaths)
@@ -825,15 +825,15 @@ bool Battlefield::GameServerPlayer::SetDeaths(uint16_t deaths)
 
 bool Battlefield::GameServerPlayer::SetDeaths(const std::string str_deaths)
 {
-	uint16_t deaths = 0;
-	
 	try
 	{
-		deaths = static_cast<uint16_t>(std::stoul(str_deaths));
+		uint16_t deaths = static_cast<uint16_t>(std::stoul(str_deaths));
+		
+		return this->SetDeaths(deaths);
 	}
 	catch(...) {};
 	
-	return this->SetDeaths(deaths);
+	return false;
 }
 
 bool Battlefield::GameServerPlayer::SetProfileId(int profileid)
@@ -844,14 +844,14 @@ bool Battlefield::GameServerPlayer::SetProfileId(int profileid)
 
 bool Battlefield::GameServerPlayer::SetProfileId(const std::string str_profileid)
 {
-	int profileid = -1;
-	
 	try
 	{
-		profileid = std::stoi(str_profileid);
+		int profileid = std::stoi(str_profileid);
+		
+		return this->SetProfileId(profileid);
 	}
 	catch(...) {};
 	
-	return this->SetProfileId(profileid);
+	return false;
 }
 

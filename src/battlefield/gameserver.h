@@ -237,7 +237,7 @@ namespace Battlefield
 			bool SetTeam2Score(int16_t score1);
 			bool SetTeam2Score(const std::string& str_score1);
 			
-			void AddPlayer(GameServerPlayer gsplayer);
+			void AddPlayer(const GameServerPlayer& gsplayer);
 			
 			void Debug();
 	};

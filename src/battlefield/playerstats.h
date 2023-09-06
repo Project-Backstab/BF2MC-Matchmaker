@@ -58,7 +58,7 @@ namespace Battlefield
 		
 		private:
 			int32_t   _score     = 0; // Total score
-			uint32_t  _ran       = 0; // Rank
+			uint32_t  _ran       = 1; // Rank
 			uint32_t  _pph       = 0; // Point per Hour
 			uint32_t  _kills     = 0; // Total kills
 			uint32_t  _deaths    = 0; // Total Deaths
@@ -102,6 +102,7 @@ namespace Battlefield
 			uint32_t GetMAVsDestroyed() const           { return this->_mavd;     } 
 			uint32_t GetHAVsDestroyed() const           { return this->_havd;     }
 			uint32_t GetHelicoptersDestroyed() const    { return this->_hed;      }
+			uint32_t GetPlanesDestroyed() const         { return this->_pld;      }
 			uint32_t GetBoatsDestroyed() const          { return this->_bod;      }
 			uint32_t GetKillsAssualtKit() const         { return this->_k1;       }
 			uint32_t GetDeathsAssualtKit() const        { return this->_s1;       }
@@ -113,6 +114,7 @@ namespace Battlefield
 			uint32_t GetDeathsCombatEngineerKit() const { return this->_s4;       }
 			uint32_t GetKillsSupportKit() const         { return this->_k5;       }
 			uint32_t GetDeathsSupportKit() const        { return this->_s5;       }
+			uint32_t GetTeamKills() const               { return this->_tk;       }
 			uint32_t GetMedals() const                  { return this->_medals;   }
 			uint32_t GetTotalTopPlayer() const          { return this->_ttb;      }
 			uint32_t GetTotalVictories() const          { return this->_mv;       }

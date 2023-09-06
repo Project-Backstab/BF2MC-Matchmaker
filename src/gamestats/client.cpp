@@ -8,6 +8,7 @@
 #include <util.h>
 #include <database.h>
 #include <battlefield/player.h>
+#include <battlefield/gamestat.h>
 
 #include <gamestats/client.h>
 
@@ -164,25 +165,105 @@ void GameStats::Client::requestNewGame(const GameSpy::Parameter& parameter)
 */
 void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 {
-	int index = 6;
+	int offset = 8;
+	std::string key, value;
+	Battlefield::GameStat game_stat;
 	
-	// Game information
-	while(parameter.size() > index + 2)
+	// Read Game stat information
+	while(parameter.size() > offset + 1)
 	{
-		index += 2;
+		key = parameter[offset];
+		value = parameter[offset + 1];
 		
-		if(std::equal(parameter[index].begin(), parameter[index].begin() + 5, "auth_"))
+		if(key == "auth_0")
 			break;
 		
-		if(parameter[index + 2] == "final")
-			return;
+		// Update
+		if(key == "gametype")        game_stat.SetGameType(value);
+		else if(key == "gamver")     game_stat.SetGameVersion(value);
+		else if(key == "hostname")   game_stat.SetHostName(value);
+		else if(key == "mapid")      game_stat.SetMapId(value);
+		else if(key == "numplayers") game_stat.SetNumPlayers(value);
+		else if(key == "pplayers")   game_stat.SetPPlayers(value);
+		else if(key == "tplayed")    game_stat.SetTimePlayed(value);
+		else if(key == "clanid_t0")  game_stat.SetTeam1ClanId(value);
+		else if(key == "clanid_t1")  game_stat.SetTeam2ClanId(value);
+		else if(key == "country_t0") game_stat.SetTeam1Country(value);
+		else if(key == "country_t1") game_stat.SetTeam2Country(value);
+		else if(key == "victory_t0") game_stat.SetTeam1Victory(value);
+		else if(key == "victory_t1") game_stat.SetTeam2Victory(value);
 		
-		Logger::debug(parameter[index] + " = " + parameter[index + 1]);
+		// Debug
+		//Logger::debug(key + " = " + value);
+		
+		offset += 2;
 	}
 	
-	// Player stats
-	while(parameter[index] != "final")
+	game_stat.Debug();
+	
+	Logger::debug("=============================");
+	
+	// Read Game stat player information
+	uint8_t player_index = 0;
+	while(parameter.size() > offset + 1)
 	{
+		Battlefield::GameStatPlayer gsplayer;
+		Logger::debug("player_index = " + std::to_string(player_index));
+		
+		while(parameter.size() > offset + 1)
+		{
+			key = parameter[offset];
+			value = parameter[offset + 1];
+			
+			// If we found the next auth_ key then we create new GameStatPlayer
+			if(key == "auth_" + std::to_string(player_index + 1))
+				break;
+			
+			// Update
+			if(     key == "auth_"     + std::to_string(player_index)) gsplayer.SetAuth(value);
+			else if(key == "pid_"      + std::to_string(player_index)) gsplayer.SetProfileId(value);
+			else if(key == "score_"    + std::to_string(player_index)) gsplayer.SetScore(value);
+			else if(key == "rank_"     + std::to_string(player_index)) gsplayer.SetRank(value);
+			else if(key == "pph_"      + std::to_string(player_index)) gsplayer.SetPPH(value);
+			else if(key == "kills_"    + std::to_string(player_index)) gsplayer.SetKills(value);
+			else if(key == "suicides_" + std::to_string(player_index)) gsplayer.SetSuicides(value);
+			else if(key == "time_"     + std::to_string(player_index)) gsplayer.SetTime(value);
+			else if(key == "lavd_"     + std::to_string(player_index)) gsplayer.SetLAVsDestroyed(value);
+			else if(key == "mavd_"     + std::to_string(player_index)) gsplayer.SetMAVsDestroyed(value);
+			else if(key == "hed_"      + std::to_string(player_index)) gsplayer.SetHelicoptersDestroyed(value);
+			else if(key == "pld_"      + std::to_string(player_index)) gsplayer.SetPlanesDestroyed(value);
+			else if(key == "bod_"      + std::to_string(player_index)) gsplayer.SetBoatsDestroyed(value);
+			else if(key == "k1_"       + std::to_string(player_index)) gsplayer.SetKillsAssualtKit(value);
+			else if(key == "s1_"       + std::to_string(player_index)) gsplayer.SetDeathsAssualtKit(value);
+			else if(key == "k2_"       + std::to_string(player_index)) gsplayer.SetKillsSniperKit(value);
+			else if(key == "s2_"       + std::to_string(player_index)) gsplayer.SetDeathsSniperKit(value);
+			else if(key == "k3_"       + std::to_string(player_index)) gsplayer.SetKillsSpecialOpKit(value);
+			else if(key == "s3_"       + std::to_string(player_index)) gsplayer.SetDeathsSpecialOpKit(value);
+			else if(key == "k4_"       + std::to_string(player_index)) gsplayer.SetKillsCombatEngineerKit(value);
+			else if(key == "s4_"       + std::to_string(player_index)) gsplayer.SetDeathsCombatEngineerKit(value);
+			else if(key == "k5_"       + std::to_string(player_index)) gsplayer.SetKillsSupportKit(value);
+			else if(key == "s5_"       + std::to_string(player_index)) gsplayer.SetDeathsSupportKit(value);
+			else if(key == "tk_"       + std::to_string(player_index)) gsplayer.SetTeamKills(value);
+			else if(key == "medals_"   + std::to_string(player_index)) gsplayer.SetMedals(value);
+			else if(key == "ttb_"      + std::to_string(player_index)) gsplayer.SetTotalTopPlayer(value);
+			else if(key == "mv_"       + std::to_string(player_index)) gsplayer.SetTotalVictories(value);
+			else if(key == "ngp_"      + std::to_string(player_index)) gsplayer.SetTotalGameSessions(value);
+			
+			// Debug
+			//Logger::debug(key + " = " + value);
+			
+			offset += 2;
+		}
+		
+		game_stat.AddPlayer(gsplayer);
+		player_index++;
+		
+		gsplayer.Debug();
+		
+		Logger::debug("=============================");
+	}
+	
+	/*
 		//
 		// Use pid and grab the stats from the database
 		// Copy over medals, pph and rank.
@@ -263,9 +344,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		{
 			Logger::error("Update stats player");
 		}
-		
-		index += 58;
-	}
+	*/
+	
 }
 
 /*

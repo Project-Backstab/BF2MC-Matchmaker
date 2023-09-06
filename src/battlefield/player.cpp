@@ -20,15 +20,15 @@ bool Battlefield::Player::SetProfileId(int profileid)
 
 bool Battlefield::Player::SetProfileId(const std::string& str_profileid)
 {
-	int profileid = -1;
-	
 	try
 	{
-		profileid = std::stoi(str_profileid);
+		int profileid = std::stoi(str_profileid);
+		
+		return this->SetProfileId(profileid);
 	}
 	catch(...) {};
 	
-	return this->SetProfileId(profileid);
+	return false;
 }
 
 bool Battlefield::Player::SetUserId(int userid)
@@ -44,15 +44,15 @@ bool Battlefield::Player::SetUserId(int userid)
 
 bool Battlefield::Player::SetUserId(const std::string& str_userid)
 {
-	int userid = -1;
-	
 	try
 	{
-		userid = std::stoi(str_userid);
+		int userid = std::stoi(str_userid);
+		
+		return this->SetUserId(userid);
 	}
 	catch(...) {};
 	
-	return this->SetUserId(userid);
+	return false;
 }
 
 bool Battlefield::Player::SetNick(const std::string& nick)
@@ -105,13 +105,13 @@ bool Battlefield::Player::SetPassword(const std::string& password)
 
 bool Battlefield::Player::SetMD5Password(const std::string& md5_password)
 {
-	if(md5_password.size() != 32)
+	if(md5_password.size() == 32)
 	{
-		return false;
+		this->_password = md5_password;
+		return true;
 	}
 	
-	this->_password = md5_password;
-	return true;
+	return false;
 }
 
 bool Battlefield::Player::AddFriend(int profileid)

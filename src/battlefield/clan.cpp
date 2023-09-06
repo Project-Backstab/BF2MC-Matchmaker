@@ -26,18 +26,15 @@ bool Battlefield::Clan::SetClanId(int clanid)
 
 bool Battlefield::Clan::SetClanId(const std::string& str_clanid)
 {
-	int clanid = -1;
-	
 	try
 	{
-		clanid = std::stoi(str_clanid);
+		int clanid = std::stoi(str_clanid);
+		
+		return this->SetClanId(clanid);
 	}
-	catch(...)
-	{
-		return false;
-	}
+	catch(...) {}
 	
-	return this->SetClanId(clanid);
+	return false;
 }
 
 bool Battlefield::Clan::SetName(const std::string& name)
@@ -104,12 +101,27 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 
 bool Battlefield::Clan::SetRegion(int int_region)
 {
-	return this->SetRegion(convertRegion(int_region));
+	if(int_region >= America && int_region <= Asia)
+	{
+		Battlefield::Clan::Regions region = static_cast<Regions>(int_region);
+		
+		return this->SetRegion(region);
+	}
+	
+	return false;
 }
 
 bool Battlefield::Clan::SetRegion(const std::string& str_region)
 {
-	return this->SetRegion(convertRegion(str_region));
+	try
+	{
+		int int_region = std::stoi(str_region);
+		
+		return this->SetRegion(int_region);
+	}
+	catch(...) {};
+	
+	return false;
 }
 
 bool Battlefield::Clan::SetDate(const std::string &date)
@@ -234,16 +246,15 @@ void Battlefield::Clan::updateInformation(const UrlRequest::UrlVariables &url_va
 */
 Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_rank)
 {
-	int int_rank = -1;
-	
 	try
 	{
-		int_rank = std::stoi(str_rank);
+		int int_rank = std::stoi(str_rank);
+		
+		return convertRank(int_rank);
 	}
 	catch(...) {};
 	
-	
-	return convertRank(int_rank);
+	return Unknown_Rank;
 }
 
 Battlefield::Clan::Ranks Battlefield::Clan::convertRank(int int_rank)
@@ -258,16 +269,15 @@ Battlefield::Clan::Ranks Battlefield::Clan::convertRank(int int_rank)
 
 Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& str_region)
 {
-	int int_region = -1;
-	
 	try
 	{
-		int_region = std::stoi(str_region);
+		int int_region = std::stoi(str_region);
+		
+		return convertRegion(int_region);
 	}
 	catch(...) {};
 	
-	
-	return convertRegion(int_region);
+	return Unknown_Region;
 }
 
 Battlefield::Clan::Regions Battlefield::Clan::convertRegion(int int_region)

@@ -37,6 +37,7 @@ add_executable(bf2mc
 	src/battlefield/playerstats.cpp
 	src/battlefield/clan.cpp
 	src/battlefield/gameserver.cpp
+	src/battlefield/gamestat.cpp
 	src/main.cpp
 )
 
