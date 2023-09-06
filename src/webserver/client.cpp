@@ -1067,9 +1067,6 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 				// Insert clan in database
 				g_database->insertClan(new_clan);
 				
-				// Get Clan id
-				g_database->queryClanByNameOrTag(new_clan);
-				
 				// Make player leader of clan
 				g_database->insertClanRank(new_clan, player, Battlefield::Clan::Ranks::Leader);
 				

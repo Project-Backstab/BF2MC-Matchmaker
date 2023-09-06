@@ -432,7 +432,7 @@ bool Database::updatePlayerLastLogin(Battlefield::Player& player, const std::str
 	return true;
 }
 
-bool Database::insertPlayer(const Battlefield::Player& player)
+bool Database::insertPlayer(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
@@ -482,7 +482,11 @@ bool Database::insertPlayer(const Battlefield::Player& player)
 		
 		return false;
 	}
-
+	
+	// Update Profile id
+	int profileid = mysql_stmt_insert_id(statement);
+	player.SetProfileId(profileid);
+	
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
@@ -1344,7 +1348,7 @@ bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::insertClan(const Battlefield::Clan& clan)
+bool Database::insertClan(Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -1353,7 +1357,7 @@ bool Database::insertClan(const Battlefield::Clan& clan)
 	query += "INSERT INTO `Clans` ";
 	query += "	(`name`, `tag`, `homepage`, `info`, `region`, `created_at`) ";
 	query += "VALUES ";
-	query += "(?, ?, ?, ?, ?, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'));";
+	query += "	(?, ?, ?, ?, ?, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'));";
 	
 	std::string  input_name     = clan.GetName();
 	std::string  input_tag      = clan.GetTag();
@@ -1393,7 +1397,11 @@ bool Database::insertClan(const Battlefield::Clan& clan)
 		
 		return false;
 	}
-
+	
+	// Update Clan id
+	int clanid = mysql_stmt_insert_id(statement);
+	clan.SetClanId(clanid);
+	
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
@@ -1729,7 +1737,7 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
 	std::string query = "";
-	query += "INSERT INTO";
+	query += "INSERT INTO ";
 	query += "	`GameServers` ";
 	query += "		(`ip`, `port`, `flag`, `localip0`, `localport`, `natneg`, `gamename`, `hostname`, `hostport`, ";
 	query += "		`gamever`, `cl`, `rv`, `map`, `mc`, `mapname`, `gc`, `gametype`, `gamevariant`, `numplayers`, ";
@@ -2153,6 +2161,102 @@ bool Database::_removeGameServerPlayers(const Battlefield::GameServer& game_serv
 		return false;
 	}
 
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	
+	return true;
+}
+
+// Game Stat
+bool Database::insertGameStat(Battlefield::GameStat& game_stat)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "INSERT INTO `GameStats` ";
+	query += "	(`gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
+	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`) ";
+	query += "VALUES ";
+	query += "	(?, ?, ?, ?, ?, ?, ?, ";
+	query += "	?, ?, ?, ?, ?, ?);";
+	
+	uint8_t     input_gametype   = game_stat.GetGameType();
+	std::string input_gamver     = game_stat.GetGameVersion();
+	std::string input_hostname   = game_stat.GetHostName();
+	uint8_t     input_mapid      = game_stat.GetMapId();
+	uint8_t     input_numplayers = game_stat.GetNumPlayers();
+	uint8_t     input_pplayers   = game_stat.GetPPlayers();
+	uint16_t    input_tplayed    = game_stat.GetTimePlayed();
+	uint8_t     input_clanid_t0  = game_stat.GetTeam1ClanId();
+	uint8_t     input_clanid_t1  = game_stat.GetTeam2ClanId();
+	uint8_t     input_country_t0 = game_stat.GetTeam1Country();
+	uint8_t     input_country_t1 = game_stat.GetTeam2Country();
+	uint8_t     input_victory_t0 = game_stat.GetTeam1Victory();
+	uint8_t     input_victory_t1 = game_stat.GetTeam2Victory();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(13, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[0].buffer = &input_gametype;
+	input_bind[0].is_unsigned = true;
+	input_bind[1].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[1].buffer = const_cast<char*>(&(input_gamver[0]));
+	input_bind[1].buffer_length = input_gamver.size();
+	input_bind[2].buffer_type = MYSQL_TYPE_STRING;
+	input_bind[2].buffer = const_cast<char*>(&(input_hostname[0]));
+	input_bind[2].buffer_length = input_hostname.size();
+	input_bind[3].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[3].buffer = &input_mapid;
+	input_bind[3].is_unsigned = true;
+	input_bind[4].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[4].buffer = &input_numplayers;
+	input_bind[4].is_unsigned = true;
+	input_bind[5].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[5].buffer = &input_pplayers;
+	input_bind[5].is_unsigned = true;
+	input_bind[6].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[6].buffer = &input_tplayed;
+	input_bind[6].is_unsigned = true;
+	input_bind[7].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[7].buffer = &input_clanid_t0;
+	input_bind[7].is_unsigned = true;
+	input_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[8].buffer = &input_clanid_t1;
+	input_bind[8].is_unsigned = true;
+	input_bind[9].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[9].buffer = &input_country_t0;
+	input_bind[9].is_unsigned = true;
+	input_bind[10].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[10].buffer = &input_country_t1;
+	input_bind[10].is_unsigned = true;
+	input_bind[11].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[11].buffer = &input_victory_t0;
+	input_bind[11].is_unsigned = true;
+	input_bind[12].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[12].buffer = &input_victory_t1;
+	input_bind[12].is_unsigned = true;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		
+		return false;
+	}
+	
+	// Update GameStat id
+	int id = mysql_stmt_insert_id(statement);
+	game_stat.SetId(id);
+	
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);

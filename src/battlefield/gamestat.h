@@ -19,11 +19,12 @@ namespace Battlefield
 	typedef std::vector<GameStatPlayer> GameStatPlayers;
 	
 	/*
-		Game server information
+		Game stat information
 	*/
 	class GameStat
 	{
 		private:
+			int         _id         = -1;
 			uint8_t     _gametype   = 0;
 			std::string _gamver     = "";
 			std::string _hostname   = "";
@@ -41,6 +42,7 @@ namespace Battlefield
 			GameStatPlayers _players;
 			
 		public:
+			int         GetId() const            { return this->_id;         }
 			uint8_t     GetGameType() const      { return this->_gametype;   }
 			std::string GetGameVersion() const   { return this->_gamver;     }
 			std::string GetHostName() const      { return this->_hostname;   }
@@ -57,6 +59,7 @@ namespace Battlefield
 			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
 			uint8_t     GetTeam2Victory() const  { return this->_victory_t1; }
 			
+			bool SetId(int id);
 			bool SetGameType(uint8_t gametype);
 			bool SetGameType(const std::string str_gametype);
 			bool SetGameVersion(const std::string gamver);
@@ -89,9 +92,14 @@ namespace Battlefield
 			void Debug();
 	};
 	
+	/*
+		Game stat player information
+	*/
 	class GameStatPlayer
 	{
 		private:
+			int         _id         = -1;
+			
 			// Player reference
 			std::string _auth     = "";
 			int         _pid      = -1;
@@ -126,6 +134,7 @@ namespace Battlefield
 			uint32_t    _ngp      = 0;
 		
 		public:
+			int         GetId() const                      { return this->_id;       }
 			std::string GetAuth() const                    { return this->_auth;     }
 			int         GetProfileId() const               { return this->_pid;      }
 			int32_t     GetScore() const                   { return this->_score;    }
@@ -156,6 +165,7 @@ namespace Battlefield
 			uint32_t    GetTotalVictories() const          { return this->_mv;       }
 			uint32_t    GetTotalGameSessions() const       { return this->_ngp;      }
 			
+			bool SetId(int id);
 			bool SetAuth(const std::string& auth);
 			bool SetProfileId(int pid);
 			bool SetProfileId(const std::string& str_pid);

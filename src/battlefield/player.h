@@ -26,12 +26,12 @@ namespace Battlefield
 	class Player : public PlayerStats
 	{
 		private:
-			int                 _profileid = -1;
-			int                 _userid = -1;
-			std::string         _nick = "";
+			int                 _profileid  = -1;
+			int                 _userid     = -1;
+			std::string         _nick       = "";
 			std::string         _uniquenick = "";
-			std::string         _email = "";
-			std::string         _password = "";
+			std::string         _email      = "";
+			std::string         _password   = "";
 			std::vector<int>    _friends;
 		
 		public:

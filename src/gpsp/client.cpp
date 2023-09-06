@@ -312,9 +312,6 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	// Insert player in database
 	g_database->insertPlayer(new_player);
 	
-	// Get missing profileid
-	g_database->queryPlayerByUniquenick(new_player);
-	
 	// Insert player status
 	g_database->insertPlayerStats(new_player);
 	

@@ -4,6 +4,12 @@
 
 #include <battlefield/gamestat.h>
 
+bool Battlefield::GameStat::SetId(int id)
+{
+	this->_id = id;
+	return true;
+}
+
 bool Battlefield::GameStat::SetGameType(uint8_t gametype)
 {
 	this->_gametype = gametype;
@@ -233,6 +239,7 @@ void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)
 
 void Battlefield::GameStat::Debug()
 {
+	Logger::debug("id = "         + std::to_string(this->GetId()));
 	Logger::debug("gametype = "   + std::to_string(this->GetGameType()));
 	Logger::debug("gamver = "     + this->GetGameVersion());
 	Logger::debug("hostname = "   + this->GetHostName());
@@ -249,6 +256,12 @@ void Battlefield::GameStat::Debug()
 }
 
 // Class GameStatPlayer
+bool Battlefield::GameStatPlayer::SetId(int id)
+{
+	this->_id = id;
+	return true;
+}
+
 bool Battlefield::GameStatPlayer::SetAuth(const std::string& auth)
 {
 	this->_auth = auth;
@@ -800,6 +813,7 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 
 void Battlefield::GameStatPlayer::Debug()
 {
+	Logger::debug("id = "       + std::to_string(this->GetId()));
 	Logger::debug("auth = "     + this->GetAuth());
 	Logger::debug("pid = "      + std::to_string(this->GetProfileId()));
 	Logger::debug("score = "    + std::to_string(this->GetScore()));

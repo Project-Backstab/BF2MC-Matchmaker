@@ -6,6 +6,7 @@
 #include <battlefield/player.h>
 #include <battlefield/clan.h>
 #include <battlefield/gameserver.h>
+#include <battlefield/gamestat.h>
 
 class MYSQL;
 class MYSQL_STMT;
@@ -31,7 +32,7 @@ class Database
 		bool queryPlayersByEmailAndUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick);
 		bool queryPlayerNewUserID(Battlefield::Player& player);
 		bool updatePlayerLastLogin(Battlefield::Player& player, const std::string& ip);
-		bool insertPlayer(const Battlefield::Player& player);
+		bool insertPlayer(Battlefield::Player& player);
 		
 		// Player friends
 		bool queryPlayerFriends(Battlefield::Player& player);
@@ -48,7 +49,7 @@ class Database
 		bool queryClanByNameOrTag(Battlefield::Clan& clan);
 		bool queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool queryClanRanksByClanId(Battlefield::Clan& clan);
-		bool insertClan(const Battlefield::Clan& clan);
+		bool insertClan(Battlefield::Clan& clan);
 		bool updateClan(const Battlefield::Clan& clan);
 		bool removeClan(const Battlefield::Clan& clan);
 		
@@ -68,6 +69,9 @@ class Database
 		bool _removeGameServerPlayers(const Battlefield::GameServer& game_server);
 	
 	public:
+		// Game Stat
+		bool insertGameStat(Battlefield::GameStat& game_stat);
+		
 		// Rank Players
 		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
 		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type);

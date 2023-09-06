@@ -263,6 +263,10 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		Logger::debug("=============================");
 	}
 	
+	// Insert GameStat in database
+	g_database->insertGameStat(game_stat);
+	game_stat.Debug();
+	
 	/*
 		//
 		// Use pid and grab the stats from the database
