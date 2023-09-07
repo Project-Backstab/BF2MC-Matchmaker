@@ -81,7 +81,8 @@ namespace Battlefield
 			uint8_t     _rc            = 0;    // Server is reconfigurable (1: true, 0: false)
 			int64_t     _ni            = 0;    // Minimum IP range
 			int64_t     _xi            = 0;    // Maximum IP range
-			uint8_t     _qm            = 0;    //                                           ??? Unsure ???
+			uint8_t     _qm            = 0;    // 0 = Resurved/User for clan matches
+			                                   // 5 = Unclaimed server free of use. Should be visable for everyone.
 			uint8_t     _region        = 1;    // Server region (65536: Europe, 1: Us, 2048: Japan)
 			
 			// Clan
