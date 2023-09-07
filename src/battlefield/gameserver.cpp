@@ -12,6 +12,12 @@ void Battlefield::GameServer::useExample()
 	this->SetFlag(FLAG_UNSOLICITED_UDP | FLAG_PRIVATE_IP | FLAG_ICMP_IP | FLAG_NONSTANDARD_PORT | FLAG_NONSTANDARD_PRIVATE_PORT);
 }
 
+bool Battlefield::GameServer::SetId(int id)
+{
+	this->_id = id;
+	return true;
+}
+
 void Battlefield::GameServer::GetIpArray(uint8_t* ip) const
 {	
 	inet_pton(AF_INET, this->_ip.c_str(), ip);
@@ -698,6 +704,7 @@ void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 void Battlefield::GameServer::Debug()
 {
 	Logger::debug("============================");
+	Logger::debug("id = "            + std::to_string(this->GetId()));
 	Logger::debug("ip = "            + this->GetIp());
 	Logger::debug("port = "          + std::to_string(this->GetPort()));
 	Logger::debug("flag = "          + std::to_string(this->GetFlag()));
@@ -747,6 +754,12 @@ void Battlefield::GameServer::Debug()
 	Logger::debug("score1 = "        + std::to_string(this->GetTeam2Score()));
 }
 
+// GameServerPlayer
+bool Battlefield::GameServerPlayer::SetId(int id)
+{
+	this->_id = id;
+	return true;
+}
 
 bool Battlefield::GameServerPlayer::SetName(const std::string name)
 {
