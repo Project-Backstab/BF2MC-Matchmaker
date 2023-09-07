@@ -149,6 +149,9 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	game_server.SetIp(this->GetIP());
 	game_server.SetPort(this->GetPort());
 	
+	// Check game server information in database
+	g_database->queryGameServerByIpAndPort(game_server);
+	
 	// Read game server information
 	while(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
 	{
@@ -282,7 +285,14 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	// Debug
 	//game_server.Debug();
 	
-	g_database->updateGameServer(game_server);
+	if(game_server.GetId() == -1)
+	{
+		g_database->insertGameServer(game_server);
+	}
+	else
+	{
+		g_database->updateGameServer(game_server);
+	}
 	
 	// Send response
 	std::vector<unsigned char> response = {
