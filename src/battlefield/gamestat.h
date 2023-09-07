@@ -58,6 +58,7 @@ namespace Battlefield
 			uint8_t     GetTeam2Country() const  { return this->_country_t1; }
 			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
 			uint8_t     GetTeam2Victory() const  { return this->_victory_t1; }
+			GameStatPlayers GetPlayers() const   { return this->_players;    }
 			
 			bool SetId(int id);
 			bool SetGameType(uint8_t gametype);

@@ -71,7 +71,12 @@ class Database
 	public:
 		// Game Stat
 		bool insertGameStat(Battlefield::GameStat& game_stat);
-		
+	
+	private:
+		// Game Stat Player
+		bool _insertGameStatPlayer(const Battlefield::GameStat& game_stat, Battlefield::GameStatPlayer& gsplayer);
+	
+	public:
 		// Rank Players
 		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players);
 		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type);

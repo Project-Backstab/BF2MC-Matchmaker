@@ -199,16 +199,18 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		offset += 2;
 	}
 	
-	game_stat.Debug();
-	
-	Logger::debug("=============================");
+	// Debug
+	//game_stat.Debug();
+	//Logger::debug("=============================");
 	
 	// Read Game stat player information
 	uint8_t player_index = 0;
 	while(parameter.size() > offset + 1)
 	{
 		Battlefield::GameStatPlayer gsplayer;
-		Logger::debug("player_index = " + std::to_string(player_index));
+		
+		// Debug
+		//Logger::debug("player_index = " + std::to_string(player_index));
 		
 		while(parameter.size() > offset + 1)
 		{
@@ -258,14 +260,14 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		game_stat.AddPlayer(gsplayer);
 		player_index++;
 		
-		gsplayer.Debug();
-		
-		Logger::debug("=============================");
+		// Debug
+		//gsplayer.Debug();
+		//Logger::debug("=============================");
 	}
 	
 	// Insert GameStat in database
 	g_database->insertGameStat(game_stat);
-	game_stat.Debug();
+	//game_stat.Debug();
 	
 	/*
 		//

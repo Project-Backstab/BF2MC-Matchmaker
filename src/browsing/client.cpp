@@ -186,7 +186,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	{
 		//Battlefield::GameServer game_server;
 		//game_server.useExample();
-		game_server.Debug();
+		//game_server.Debug();
 		
 		uint8_t ip[4];
 		
