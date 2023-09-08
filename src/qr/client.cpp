@@ -142,7 +142,7 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) const
 {
 	size_t offset = 5;
-	std::string key, value, player, score, skill, ping, team, deaths, pid;;
+	std::string key, value, player, score, skill, ping, team, deaths, pid;
 	Battlefield::GameServer game_server;
 	
 	// Set game server ip
@@ -151,12 +151,6 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	
 	// Check game server information in database
 	g_database->queryGameServerByIpAndPort(game_server);
-	
-	if(!game_server.isVerified())
-	{
-		Logger::warning("Server is not verified. Go to the database and verify the server.");
-		return;
-	}
 	
 	// Read game server information
 	while(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
