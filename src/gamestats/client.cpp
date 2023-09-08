@@ -168,6 +168,19 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	int offset = 8;
 	std::string key, value;
 	Battlefield::GameStat game_stat;
+	Battlefield::GameServer game_server;
+	
+	// Set game server ip
+	game_server.SetIp(this->GetIP());
+	
+	// Check game server information in database
+	g_database->queryGameServerByIp(game_server);
+	
+	if(!game_server.isVerified())
+	{
+		Logger::warning("Server is not verified. Go to the database and verify the server.");
+		return;
+	}
 	
 	// Read Game stat information
 	while(parameter.size() > offset + 1)

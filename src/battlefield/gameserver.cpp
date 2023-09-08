@@ -696,6 +696,12 @@ bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
 	return false;
 }
 
+bool Battlefield::GameServer::SetVerified(bool verified)
+{
+	this->_verified = verified;
+	return true;
+}
+
 void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);

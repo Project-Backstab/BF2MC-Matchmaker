@@ -184,6 +184,9 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	for(Battlefield::GameServer game_server : game_servers)
 	{
+		if(!game_server.isVerified())
+			break;
+		
 		//Battlefield::GameServer game_server;
 		//game_server.useExample();
 		//game_server.Debug();

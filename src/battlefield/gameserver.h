@@ -98,6 +98,7 @@ namespace Battlefield
 			std::string _team1         = "";   // Team 2 name
 			int16_t     _score0        = 0;    // Team 1 score
 			int16_t     _score1        = 0;    // Team 2 score
+			bool        _verified      = false; // Database check that a server is verified
 			
 			std::vector<GameServerPlayer> _players;
 		
@@ -155,6 +156,8 @@ namespace Battlefield
 			std::string       GetTeam2Name() const   { return this->_team1;         }
 			int16_t           GetTeam1Score() const  { return this->_score0;        }
 			int16_t           GetTeam2Score() const  { return this->_score1;        }
+			bool              isVerified() const     { return this->_verified;      }
+			
 			GameServerPlayers GetPlayers() const     { return this->_players;       }
 			
 			bool SetId(int id);
@@ -239,6 +242,8 @@ namespace Battlefield
 			bool SetTeam1Score(const std::string& str_score0);
 			bool SetTeam2Score(int16_t score1);
 			bool SetTeam2Score(const std::string& str_score1);
+			
+			bool SetVerified(bool verified);
 			
 			void AddPlayer(const GameServerPlayer& gsplayer);
 			

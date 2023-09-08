@@ -60,6 +60,7 @@ class Database
 		bool removeClanRanksByClanId(const Battlefield::Clan& clan);
 		
 		//Game Server
+		bool queryGameServerByIp(Battlefield::GameServer& game_server);
 		bool queryGameServerByIpAndPort(Battlefield::GameServer& game_server);
 		bool queryGameServers(Battlefield::GameServers& game_servers);
 		bool insertGameServer(Battlefield::GameServer& game_server);
