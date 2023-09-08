@@ -1,5 +1,8 @@
 #include <string>
 #include <logger.h>
+#include <globals.h>
+#include <database.h>
+#include <battlefield/player.h>
 #include <battlefield/playerstats.h>
 
 #include <battlefield/gamestat.h>
@@ -809,6 +812,45 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 	catch(...) {};
 	
 	return false;
+}
+
+void Battlefield::GameStatPlayer::UpdatePlayer()
+{
+	Battlefield::Player player;
+		
+	// Get player stats from database
+	player.SetProfileId(this->GetProfileId());
+	g_database->queryPlayerStats(player);
+
+	player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + this->GetBoatsDestroyed()          ); // bod
+	player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + this->GetHAVsDestroyed()           ); // havd
+	player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + this->GetHelicoptersDestroyed()    ); // hed
+	player.SetKillsAssualtKit(         player.GetKillsAssualtKit()         + this->GetKillsAssualtKit()         ); // k1
+	player.SetKillsSniperKit(          player.GetKillsSniperKit()          + this->GetKillsSniperKit()          ); // k2
+	player.SetKillsSpecialOpKit(       player.GetKillsSpecialOpKit()       + this->GetKillsSpecialOpKit()       ); // k3
+	player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + this->GetKillsCombatEngineerKit()  ); // k4
+	player.SetKillsSupportKit(         player.GetKillsSupportKit()         + this->GetKillsSupportKit()         ); // k5
+	player.SetKills(                   player.GetKills()                   + this->GetKills()                   ); // kills
+	player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + this->GetLAVsDestroyed()           ); // lavd
+	player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + this->GetMAVsDestroyed()           ); // mavd
+	player.SetTotalVictories(          player.GetTotalVictories()          + this->GetTotalVictories()          ); // mv
+	player.SetTotalGameSessions(       player.GetTotalGameSessions()       + this->GetTotalGameSessions()       ); // ngp
+	player.SetDeathsAssualtKit(        player.GetDeathsAssualtKit()        + this->GetDeathsAssualtKit()        ); // s1
+	player.SetDeathsSniperKit(         player.GetDeathsSniperKit()         + this->GetDeathsSniperKit()         ); // s2
+	player.SetDeathsSpecialOpKit(      player.GetDeathsSpecialOpKit()      + this->GetDeathsSpecialOpKit()      ); // s3
+	player.SetDeathsCombatEngineerKit( player.GetDeathsCombatEngineerKit() + this->GetDeathsCombatEngineerKit() ); // s4
+	player.SetDeathsSupportKit(        player.GetDeathsSupportKit()        + this->GetDeathsSupportKit()        ); // s5
+	player.SetScore(                   player.GetScore()                   + this->GetScore()                   ); // score
+	player.SetSuicides(                player.GetSuicides()                + this->GetSuicides()                ); // suicides
+	player.SetTime(                    player.GetTime()                    + this->GetTime()                    ); // time
+	player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + this->GetTotalTopPlayer()          ); // ttb
+	
+	player.SetMedals(this->GetMedals()); // medals
+	player.SetPPH(this->GetPPH());       // pph
+	player.SetRank(this->GetRank());     // rank
+	
+	// Update player stats on database
+	g_database->updatePlayerStats(player);
 }
 
 void Battlefield::GameStatPlayer::Debug()

@@ -1739,8 +1739,8 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	uint8_t  output_region;
 	int8_t   output_c0;
 	int8_t   output_c1;
-	char     output_n0[21];
-	char     output_n1[21];
+	char     output_n0[33];
+	char     output_n1[33];
 	uint8_t  output_c0c;
 	uint8_t  output_c1c;
 	char     output_team0[6];
@@ -2033,8 +2033,8 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	uint8_t  output_region;
 	int8_t   output_c0;
 	int8_t   output_c1;
-	char     output_n0[21];
-	char     output_n1[21];
+	char     output_n0[33];
+	char     output_n1[33];
 	uint8_t  output_c0c;
 	uint8_t  output_c1c;
 	char     output_team0[6];

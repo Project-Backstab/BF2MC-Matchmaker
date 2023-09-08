@@ -225,6 +225,7 @@ namespace Battlefield
 			bool SetTotalGameSessions(uint32_t ngp);
 			bool SetTotalGameSessions(const std::string& str_ngp);
 			
+			void UpdatePlayer();
 			void Debug();
 	};
 }
