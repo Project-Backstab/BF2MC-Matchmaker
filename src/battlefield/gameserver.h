@@ -48,7 +48,7 @@ namespace Battlefield
 			std::string _hostname      = "";   // Host name
 			uint16_t    _hostport      = 3658; // Host port
 			
-			std::string _gamever       = "";   // Game version
+			std::string _gamever       = "V1.31a"; // Game version
 			std::string _cl            = "";   // Client version
 			std::string _rv            = "";   // ??? (retail)                              ??? Unsure ???
 			

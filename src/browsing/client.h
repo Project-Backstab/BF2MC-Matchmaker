@@ -32,6 +32,7 @@ namespace Browsing
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 			
 			void _FilterServers(const std::string& filter, Battlefield::GameServers& game_servers);
+			bool _FilterServerGameVersion(const std::string& filter, const Battlefield::GameServer& game_server);
 			bool _FilterServerRegion(const std::string& filter, const Battlefield::GameServer& game_server);
 		
 		public:

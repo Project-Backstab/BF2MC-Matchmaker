@@ -258,7 +258,10 @@ void Browsing::Client::_FilterServers(const std::string& filter, Battlefield::Ga
 	for(game_server_it = game_servers.begin(); game_server_it != game_servers.end(); ++game_server_it)
 	{
 		// Check if server needs to be removed
-		if(this->_FilterServerRegion(filter, *game_server_it))
+		if(
+			this->_FilterServerGameVersion(filter, *game_server_it) ||
+			this->_FilterServerRegion(filter, *game_server_it)
+		)
 		{
 			// Remove the game server out of the list
 			game_servers.erase(game_server_it);
@@ -267,6 +270,25 @@ void Browsing::Client::_FilterServers(const std::string& filter, Battlefield::Ga
 			game_server_it--;
 		}
 	}
+}
+
+bool Browsing::Client::_FilterServerGameVersion(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: gamever='V1.31a'
+	pattern = std::regex(R"(gamever='([^]+)')");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		std::string gamever = matches[1];
+		
+		Logger::debug(gamever);
+		
+		return !(game_server.GetGameVersion() == gamever);
+	}
+
+	return false; // Dont remove server
 }
 
 bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Battlefield::GameServer& game_server)
