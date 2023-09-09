@@ -147,8 +147,11 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	
 	// Read for_gamename and from_gamename
 	std::string for_gamename, from_gamename;
-	Util::Buffer::ReadString(request, offset, for_gamename);
-	Util::Buffer::ReadString(request, offset, from_gamename);
+	if(!Util::Buffer::ReadString(request, offset, for_gamename) ||
+		!Util::Buffer::ReadString(request, offset, from_gamename))
+	{
+		return;
+	}
 	
 	// Copy client_challenge
 	std::vector<unsigned char> client_challenge;
@@ -157,8 +160,11 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	
 	// Read filter and key_list
 	std::string filter, key_list;
-	Util::Buffer::ReadString(request, offset, filter);
-	Util::Buffer::ReadString(request, offset, key_list);
+	if(!Util::Buffer::ReadString(request, offset, filter) ||
+		!Util::Buffer::ReadString(request, offset, key_list))
+	{
+		return;
+	}
 	
 	// Debug
 	//Logger::debug("for_gamename = " + for_gamename);
@@ -169,33 +175,22 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	Battlefield::GameServers game_servers;
 	g_database->queryGameServers(game_servers);
 	
-	if(filter.find("hostname") != std::string::npos)
-	{
-		Battlefield::GameServer game_server;
-
-		//game_server.SetIp("86.87.139.235");
-		game_server.SetIp("86.160.99.212");
-		game_server.SetPort(3658);
-		game_server.SetFlag(59);
-		
-		game_servers.push_back(game_server);
-	}
-	
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	for(Battlefield::GameServer game_server : game_servers)
 	{
-		if(!game_server.isVerified())
-			break;
+		uint8_t ip[4];
+		uint16_t port;
+		uint8_t flag;
 		
-		//Battlefield::GameServer game_server;
 		//game_server.useExample();
 		//game_server.Debug();
 		
-		uint8_t ip[4];
+		if(!game_server.isVerified())
+			break;
 		
 		game_server.GetIpArray(ip);
-		uint16_t port = game_server.GetPort();
-		uint8_t flag = game_server.GetFlag();
+		port = game_server.GetPort();
+		flag = game_server.GetFlag();
 		
 		// Server flag
 		response.push_back(flag);
@@ -232,8 +227,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	this->_Encrypt(client_challenge, response);
 	
 	this->Send(response);
-		
-	//this->_LogTransaction("<--", str_request);
+	
+	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
 /*
@@ -250,11 +245,10 @@ void Browsing::Client::_LogTransaction(const std::string& direction, const std::
 			Server::Type::Browsing, show_console);
 }
 
-void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request_client_challenge, std::vector<unsigned char>& response)
+void Browsing::Client::_Encrypt(const std::vector<unsigned char>& client_challenge, std::vector<unsigned char>& response)
 {
-	uint8_t crypt_challenge[CHALLENGE_CRYPT_LEN];
 	uint8_t server_challenge[CHALLENGE_SERVER_LEN];
-	uint8_t client_challenge[CHALLENGE_CLIENT_LEN];
+	uint8_t secret[CHALLENGE_CLIENT_LEN];
 	
 	GOACryptState m_crypt_state;
 	
@@ -262,8 +256,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request_client
 	response[0] = 0xe6; // CHALLENGE_CRYPT_LEN ^ 0xec = 0xe6
 	for(int i = 0; i < CHALLENGE_CRYPT_LEN; i++)
 	{
-		crypt_challenge[i] = 0x0;
-		response[1 + i] = crypt_challenge[i];
+		response[1 + i] = 0x0; // Emptry crypto challenge
 	}
 
 	// Push Server challenge
@@ -274,19 +267,19 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request_client
 		response[CHALLENGE_CRYPT_LEN + 2 + i] = server_challenge[i];
 	}
 	
-	// Get client challenge
+	// Copy client challenge to secret
 	for(int i = 0; i < CHALLENGE_CLIENT_LEN; i++)
 	{
-		client_challenge[i] = request_client_challenge[i];
+		secret[i] = client_challenge[i];
 	}
 	
-	// Generate challenge encryption/decryption key
+	// Generate secret encryption/decryption key
 	for (uint32_t i = 0 ; i < CHALLENGE_SERVER_LEN; i++)
 	{
 		uint8_t index = (i *  SECRET_KEY[i % SECRET_KEY_LEN]) % CHALLENGE_CLIENT_LEN;
-		uint8_t value = (client_challenge[i % CHALLENGE_CLIENT_LEN] ^ server_challenge[i]) & 0xFF;
+		uint8_t value = (secret[i % CHALLENGE_CLIENT_LEN] ^ server_challenge[i]) & 0xFF;
 		
-		client_challenge[index] ^= value;
+		secret[index] ^= value;
 	}
 	
 	// Add to data to say confirm decryption went correctly
@@ -296,7 +289,7 @@ void Browsing::Client::_Encrypt(const std::vector<unsigned char>& request_client
 	response.push_back(0xFF);
 	
 	// Encrypt data
-	GOACryptInit(&(m_crypt_state), (unsigned char *)(&client_challenge), CHALLENGE_CLIENT_LEN);
+	GOACryptInit(&(m_crypt_state), (unsigned char *)(&secret), CHALLENGE_CLIENT_LEN);
 	GOAEncrypt(&(m_crypt_state), &response[CHALLENGE_CRYPT_SERVER_LEN], response.size() - CHALLENGE_CRYPT_SERVER_LEN);
 }
 
@@ -567,7 +560,7 @@ std::vector<unsigned char> example_C_decrypt_data = {
 	0x56, 0x57, 0x8b, 0xeb,                                                       // Request ip: 86.87.139.235
 	0x19, 0x64,                                                                   // Requested: port 6500
 
-	// ?? Header information ??
+	// Accepted server values
 	0x1c, 0x00,                                                                   // Total header items: 28
 	0x68, 0x6f, 0x73, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x00,                   // hostname
 	0x67, 0x61, 0x6d, 0x65, 0x74, 0x79, 0x70, 0x65, 0x00, 0x00,                   // gametype
@@ -613,9 +606,12 @@ std::vector<unsigned char> example_C_decrypt_data = {
 	0x4e, 0x2f, 0xb8, 0x17,          // PRIVATE_IP_FLAG               -> localip0 ip: 78.47.184.23
 	0x0e, 0x4a,                      // NONSTANDARD_PRIVATE_PORT_FLAG -> localport:   3658
 	0x4e, 0x2f, 0xb8, 0x17,          // ICMP_IP_FLAG                  -> icmp ip:     78.47.184.23
-
+	
+	// No more server information
+	0x00,
+	
 	// End decrypted data
-	0x00, 0xff, 0xff, 0xff, 0xff
+	0xff, 0xff, 0xff, 0xff
 };
 
 std::vector<unsigned char> example_D_decrypt_data = {
@@ -623,7 +619,7 @@ std::vector<unsigned char> example_D_decrypt_data = {
 	0x56, 0x57, 0x8b, 0xeb,                                                       // Request ip: 86.87.139.235
 	0x19, 0x64,                                                                   // Requested: port 6500
 	
-	// ?? Header information ??
+	// Accepted server values
 	0x1c, 0x00,                                                                   // Total header items: 28
 	0x68, 0x6f, 0x73, 0x74, 0x6e, 0x61, 0x6d, 0x65, 0x00, 0x00,                   // hostname
 	0x67, 0x61, 0x6d, 0x65, 0x74, 0x79, 0x70, 0x65, 0x00, 0x00,                   // gametype
@@ -654,8 +650,11 @@ std::vector<unsigned char> example_D_decrypt_data = {
 	0x78, 0x69, 0x00, 0x00,                                                       // xi
 	0x71, 0x6d, 0x00, 0x00,                                                       // qm
 	
+	// No more server information
+	0x00, 
+	
 	// End decrypted data
-	0x00, 0xff, 0xff, 0xff, 0xff
+	0xff, 0xff, 0xff, 0xff
 };
 
 void Browsing::Client::Test()
