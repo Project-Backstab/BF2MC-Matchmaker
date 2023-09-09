@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <regex>
 
 #include <settings.h>
 #include <logger.h>
@@ -175,6 +176,9 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	Battlefield::GameServers game_servers;
 	g_database->queryGameServers(game_servers);
 	
+	// Filter Game servers
+	this->_FilterServers(filter, game_servers);
+	
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	for(Battlefield::GameServer game_server : game_servers)
 	{
@@ -184,6 +188,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		
 		//game_server.useExample();
 		//game_server.Debug();
+		
+		Logger::debug("name = " + game_server.GetHostName());
 		
 		if(!game_server.isVerified())
 			break;
@@ -243,6 +249,50 @@ void Browsing::Client::_LogTransaction(const std::string& direction, const std::
 	
 	Logger::info(this->GetAddress() + " " + direction + " " + response,
 			Server::Type::Browsing, show_console);
+}
+
+void Browsing::Client::_FilterServers(const std::string& filter, Battlefield::GameServers& game_servers)
+{
+	Battlefield::GameServers::const_iterator game_server_it;
+
+	for(game_server_it = game_servers.begin(); game_server_it != game_servers.end(); ++game_server_it)
+	{
+		// Check if server needs to be removed
+		if(this->_FilterServerRegion(filter, *game_server_it))
+		{
+			// Remove the game server out of the list
+			game_servers.erase(game_server_it);
+			
+			// Go back one item value
+			game_server_it--;
+		}
+	}
+}
+
+bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: (region & 1)!=0
+	pattern = std::regex(R"(\(region \& (\d+)\)!=0)");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint64_t v = std::stoull(matches[1]);
+		
+		return !((game_server.GetRegion() & v) != 0);
+	}
+	
+	// Find: (region & 1)=0
+	pattern = std::regex(R"(\(region \& (\d+)\)=0)");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint64_t v = std::stoull(matches[1]);
+		
+		return !((game_server.GetRegion() & v) == 0);
+	}
+
+	return false; // Dont remove server
 }
 
 void Browsing::Client::_Encrypt(const std::vector<unsigned char>& client_challenge, std::vector<unsigned char>& response)

@@ -23,6 +23,15 @@ namespace Battlefield
 	*/
 	class GameServer
 	{
+		public:
+			enum Regions
+			{
+				America        = 1,
+				Asia           = 2048,
+				Europe         = 65536,
+				Unknown_Region = -1,
+			};
+	
 		private:
 			int			_id            = -1;
 			std::string _ip            = "";
@@ -83,7 +92,7 @@ namespace Battlefield
 			int64_t     _xi            = 0;    // Maximum IP range
 			uint8_t     _qm            = 0;    // 0 = Resurved/User for clan matches
 			                                   // 5 = Unclaimed server free of use. Should be visable for everyone.
-			uint8_t     _region        = 1;    // Server region (65536: Europe, 1: Us, 2048: Japan)
+			uint64_t    _region        = 1;    // Server region (America: 1, Asia: 2048, Europe: 65536)
 			
 			// Clan
 			int8_t      _c0            = -1;   // Clanid team 1
@@ -143,7 +152,7 @@ namespace Battlefield
 			int64_t        GetMinIpRange() const     { return this->_ni;            }
 			int64_t        GetMaxIpRange() const     { return this->_xi;            }
 			uint8_t        GetQM() const             { return this->_qm;            }
-			uint8_t        GetRegion() const         { return this->_region;        }
+			uint64_t       GetRegion() const         { return this->_region;        }
 			// Clan
 			int32_t        GetClan1Id() const        { return this->_c0;            }
 			int32_t        GetClan2Id() const        { return this->_c1;            }
@@ -220,7 +229,7 @@ namespace Battlefield
 			bool SetMaxIpRange(const std::string& str_xi);
 			bool SetQM(uint8_t qm);
 			bool SetQM(const std::string& str_qm);
-			bool SetRegion(uint8_t region);
+			bool SetRegion(uint64_t region);
 			bool SetRegion(const std::string& str_region);
 			
 			// Clan

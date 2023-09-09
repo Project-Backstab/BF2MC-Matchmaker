@@ -1734,7 +1734,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	int64_t  output_ni;
 	int64_t  output_xi;
 	uint8_t  output_qm;
-	uint8_t  output_region;
+	uint64_t output_region;
 	int8_t   output_c0;
 	int8_t   output_c1;
 	char     output_n0[33];
@@ -1860,7 +1860,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	output_bind[34].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[34].buffer = &output_qm;
 	output_bind[34].is_unsigned = true;
-	output_bind[35].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[35].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[35].buffer = &output_region;
 	output_bind[35].is_unsigned = true;
 	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
@@ -2035,7 +2035,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	int64_t  output_ni;
 	int64_t  output_xi;
 	uint8_t  output_qm;
-	uint8_t  output_region;
+	uint64_t output_region;
 	int8_t   output_c0;
 	int8_t   output_c1;
 	char     output_n0[33];
@@ -2164,7 +2164,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	output_bind[34].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[34].buffer = &output_qm;
 	output_bind[34].is_unsigned = true;
-	output_bind[35].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[35].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[35].buffer = &output_region;
 	output_bind[35].is_unsigned = true;
 	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
@@ -2334,7 +2334,7 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	int64_t  output_ni;
 	int64_t  output_xi;
 	uint8_t  output_qm;
-	uint8_t  output_region;
+	uint64_t output_region;
 	int8_t   output_c0;
 	int8_t   output_c1;
 	char     output_n0[33];
@@ -2460,7 +2460,7 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[36].buffer = &output_qm;
 	output_bind[36].is_unsigned = true;
-	output_bind[37].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[37].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[37].buffer = &output_region;
 	output_bind[37].is_unsigned = true;
 	output_bind[38].buffer_type = MYSQL_TYPE_TINY;
@@ -2637,7 +2637,7 @@ bool Database::insertGameServer(Battlefield::GameServer& game_server)
 	int64_t     input_ni            = game_server.GetMinIpRange();
 	int64_t     input_xi            = game_server.GetMaxIpRange();
 	uint8_t     input_qm            = game_server.GetQM();
-	uint8_t     input_region        = game_server.GetRegion();
+	uint64_t    input_region        = game_server.GetRegion();
 	// Clan
 	int32_t     input_c0            = game_server.GetClan1Id();
 	int32_t     input_c1            = game_server.GetClan2Id();
@@ -2761,7 +2761,7 @@ bool Database::insertGameServer(Battlefield::GameServer& game_server)
 	input_bind[35].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[35].buffer = &input_qm;
 	input_bind[35].is_unsigned = true;
-	input_bind[36].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[36].buffer_type = MYSQL_TYPE_LONGLONG;
 	input_bind[36].buffer = &input_region;
 	input_bind[36].is_unsigned = true;
 	input_bind[37].buffer_type = MYSQL_TYPE_LONG;
@@ -2921,7 +2921,7 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 	int64_t     input_ni            = game_server.GetMinIpRange();
 	int64_t     input_xi            = game_server.GetMaxIpRange();
 	uint8_t     input_qm            = game_server.GetQM();
-	uint8_t     input_region        = game_server.GetRegion();
+	uint64_t    input_region        = game_server.GetRegion();
 	// Clan
 	int32_t     input_c0            = game_server.GetClan1Id();
 	int32_t     input_c1            = game_server.GetClan2Id();
@@ -3039,7 +3039,7 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 	input_bind[33].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[33].buffer = &input_qm;
 	input_bind[33].is_unsigned = true;
-	input_bind[34].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[34].buffer_type = MYSQL_TYPE_LONGLONG;
 	input_bind[34].buffer = &input_region;
 	input_bind[34].is_unsigned = true;
 	input_bind[35].buffer_type = MYSQL_TYPE_LONG;

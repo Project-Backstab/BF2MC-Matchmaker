@@ -538,7 +538,7 @@ bool Battlefield::GameServer::SetQM(const std::string& str_qm)
 	return false;
 }
 
-bool Battlefield::GameServer::SetRegion(uint8_t region)
+bool Battlefield::GameServer::SetRegion(uint64_t region)
 {
 	this->_region = region;
 	return true;
@@ -548,7 +548,7 @@ bool Battlefield::GameServer::SetRegion(const std::string& str_region)
 {
 	try
 	{
-		uint8_t region = static_cast<uint8_t>(std::stoul(str_region));
+		uint64_t region = static_cast<uint64_t>(std::stoull(str_region));
 		
 		return this->SetRegion(region);
 	}
