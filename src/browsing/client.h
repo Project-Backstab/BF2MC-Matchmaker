@@ -34,7 +34,13 @@ namespace Browsing
 			void _FilterServers(const std::string& filter, Battlefield::GameServers& game_servers);
 			bool _FilterServerGameVersion(const std::string& filter, const Battlefield::GameServer& game_server);
 			bool _FilterServerRegion(const std::string& filter, const Battlefield::GameServer& game_server);
-		
+			bool _FilterServerNumPlayers(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerGameType(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerMapName(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerStatsTracking(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerReconfigurable(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerClan(const std::string& filter, const Battlefield::GameServer& game_server);
+			
 		public:
 			static void Test();
 			static void Crack();

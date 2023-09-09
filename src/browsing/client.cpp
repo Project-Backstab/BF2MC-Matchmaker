@@ -189,10 +189,11 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		//game_server.useExample();
 		//game_server.Debug();
 		
-		Logger::debug("name = " + game_server.GetHostName());
-		
 		if(!game_server.isVerified())
-			break;
+			continue;
+		
+		// Debug
+		//Logger::debug("name = " + game_server.GetHostName());
 		
 		game_server.GetIpArray(ip);
 		port = game_server.GetPort();
@@ -260,7 +261,13 @@ void Browsing::Client::_FilterServers(const std::string& filter, Battlefield::Ga
 		// Check if server needs to be removed
 		if(
 			this->_FilterServerGameVersion(filter, *game_server_it) ||
-			this->_FilterServerRegion(filter, *game_server_it)
+			this->_FilterServerRegion(filter, *game_server_it) ||
+			this->_FilterServerNumPlayers(filter, *game_server_it) ||
+			this->_FilterServerGameType(filter, *game_server_it) ||
+			this->_FilterServerMapName(filter, *game_server_it) ||
+			this->_FilterServerStatsTracking(filter, *game_server_it) ||
+			this->_FilterServerReconfigurable(filter, *game_server_it) ||
+			this->_FilterServerClan(filter, *game_server_it)
 		)
 		{
 			// Remove the game server out of the list
@@ -278,14 +285,13 @@ bool Browsing::Client::_FilterServerGameVersion(const std::string& filter, const
 	std::smatch matches;
 	
 	// Find: gamever='V1.31a'
-	pattern = std::regex(R"(gamever='([^]+)')");
+	pattern = std::regex(R"(gamever='([^']+))");
 	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
 	{
 		std::string gamever = matches[1];
 		
-		Logger::debug(gamever);
-		
-		return !(game_server.GetGameVersion() == gamever);
+		if(!(game_server.GetGameVersion() == gamever))
+			return true; // remove server
 	}
 
 	return false; // Dont remove server
@@ -302,7 +308,8 @@ bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Batt
 	{
 		uint64_t v = std::stoull(matches[1]);
 		
-		return !((game_server.GetRegion() & v) != 0);
+		if(!((game_server.GetRegion() & v) != 0))
+			return true; // remove server
 	}
 	
 	// Find: (region & 1)=0
@@ -311,10 +318,142 @@ bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Batt
 	{
 		uint64_t v = std::stoull(matches[1]);
 		
-		return !((game_server.GetRegion() & v) == 0);
+		if(!((game_server.GetRegion() & v) == 0))
+			return true; // remove server
 	}
 
 	return false; // Dont remove server
+}
+
+bool Browsing::Client::_FilterServerNumPlayers(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: numplayers>=0
+	pattern = std::regex(R"(numplayers>=(\d+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint8_t numplayers = std::stoul(matches[1]);
+		
+		if(!(game_server.GetNumPlayers() >= numplayers))
+			return true; // remove server
+	}
+	
+	// Find: numplayers<=23
+	pattern = std::regex(R"(numplayers<=(\d+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint8_t numplayers = std::stoul(matches[1]);
+		
+		if(!(game_server.GetNumPlayers() <= numplayers))
+			return true; // remove server
+	}
+	
+	return false; // Dont remove server
+}
+
+bool Browsing::Client::_FilterServerGameType(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: gametype='conquest'
+	pattern = std::regex(R"(gametype='([^']+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		std::string gametype = matches[1];
+		
+		if(!(game_server.GetGameType() == gametype))
+			return true; // remove server
+	}
+
+	return false; // Dont remove server
+}
+
+bool Browsing::Client::_FilterServerMapName(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: mapname=2
+	pattern = std::regex(R"(mapname=(\d+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint8_t mapname = std::stoul(matches[1]);
+		
+		if(!(game_server.GetMapName() == mapname))
+			return true; // remove server
+	}
+	
+	return false;
+}
+
+bool Browsing::Client::_FilterServerStatsTracking(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: mapname=2
+	pattern = std::regex(R"(sr=(\d+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint8_t sr = std::stoul(matches[1]);
+		
+		if(!(game_server.GetStatsTracking() == sr))
+			return true; // remove server
+	}
+	
+	return false;
+}
+
+bool Browsing::Client::_FilterServerReconfigurable(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: mapname=2
+	pattern = std::regex(R"(rc=(\d+))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		uint8_t rc = std::stoul(matches[1]);
+		
+		if(!(game_server.GetReconfigurable() == rc))
+			return true; // remove server
+	}
+	
+	return false;
+}
+
+bool Browsing::Client::_FilterServerClan(const std::string& filter, const Battlefield::GameServer& game_server)
+{
+	std::regex pattern;
+	std::smatch matches;
+	
+	// Find: (c0=33 or c1=33)
+	pattern = std::regex(R"(\(c0=(\d+) or c1=(\d+)\))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		int32_t c0 = std::stoi(matches[1]);
+		int32_t c1 = std::stoi(matches[2]);
+		
+		if(!(game_server.GetClan1Id() == c0 || game_server.GetClan2Id() == c1))
+			return true; // remove server
+	}
+	
+	//Find: (c0=-1 or c1=-1 or c0=33 or c1=33)
+	pattern = std::regex(R"(\(c0=-1 or c1=-1 or c0=(\d+) or c1=(\d+)\))");
+	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	{
+		int32_t c0 = std::stoi(matches[1]);
+		int32_t c1 = std::stoi(matches[2]);
+		
+		if(!(game_server.GetClan1Id() == -1 || game_server.GetClan2Id() == -1 ||
+			game_server.GetClan1Id() == c0 || game_server.GetClan2Id() == c1))
+			return true; // remove server
+	}
+	
+	return false;
 }
 
 void Browsing::Client::_Encrypt(const std::vector<unsigned char>& client_challenge, std::vector<unsigned char>& response)
