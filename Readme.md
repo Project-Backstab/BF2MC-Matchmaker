@@ -14,7 +14,7 @@ The following domains needs to be redirected to this server:
 	*.easports.com
 	*.gamespy.com
 
-Read [here](dns/Readme.md) more about about it.
+Read [here](dns/Readme.md) more about it how to install your own DNS.
 
 
 ## Clone Project
