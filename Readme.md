@@ -10,11 +10,10 @@ It also has the possebility to save your stats and communicate with other player
 To let this server work there are some DNS changes required before it all works.
 The following domains needs to be redirected to this server:
 
-	www.easports.com
-	bfmc.gamespy.com
-	gpsp.gamespy.com
-	gpcm.gamespy.com
-	
+	*.dnas.playstation.org
+	*.easports.com
+	*.gamespy.com
+
 Read [here](dns/Readme.md) more about about it.
 
 
