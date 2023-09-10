@@ -10,16 +10,16 @@
 void Webserver::Client::Send(const Json::Value &value) const
 {
 	// Create a JSON writer
-    Json::StreamWriterBuilder writer;
-    std::string jsonString = Json::writeString(writer, value);
-	
+	Json::StreamWriterBuilder writer;
+	std::string jsonString = Json::writeString(writer, value);
+
 	// Create http response
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	http_response.SetStatusCode(200);
 	http_response.SetMessageBody(jsonString);
-	
+
 	//Logger::debug("json = " + jsonString);
-	
+
 	// Send http response
 	this->Send(http_response);
 }
@@ -29,10 +29,10 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 {
 	Json::Value response(Json::arrayValue);
 	Battlefield::GameServers game_servers;
-	
+
 	// Get game servers from database
 	g_database->queryGameServers(game_servers);
-	
+
 	for(Battlefield::GameServer game_server : game_servers)
 	{
 		// Get game server players from database
@@ -111,8 +111,8 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		
 		response.append(value);
 	}
-	
+
 	this->Send(response);
-	
+
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }

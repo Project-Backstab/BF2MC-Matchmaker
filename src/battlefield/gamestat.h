@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <vector>
 
+/*
+	Forward declarations
+*/
+struct MYSQL_TIME;
+
 namespace Battlefield
 {
 	/*
@@ -38,6 +43,7 @@ namespace Battlefield
 			uint8_t     _country_t1 = 0;
 			uint8_t     _victory_t0 = 0;
 			uint8_t     _victory_t1 = 0;
+			std::string _created_at = "";
 			
 			GameStatPlayers _players;
 			
@@ -58,6 +64,8 @@ namespace Battlefield
 			uint8_t     GetTeam2Country() const  { return this->_country_t1; }
 			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
 			uint8_t     GetTeam2Victory() const  { return this->_victory_t1; }
+			
+			std::string     GetCreatedAt() const { return this->_created_at; }
 			GameStatPlayers GetPlayers() const   { return this->_players;    }
 			
 			bool SetId(int id);
@@ -88,6 +96,7 @@ namespace Battlefield
 			bool SetTeam2Victory(uint8_t victory_t1);
 			bool SetTeam2Victory(const std::string str_victory_t1);
 			
+			bool SetCreatedAt(MYSQL_TIME created_at);
 			void AddPlayer(const GameStatPlayer& gsplayer);
 			
 			void Debug();

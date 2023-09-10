@@ -235,6 +235,26 @@ bool Battlefield::GameStat::SetTeam2Victory(const std::string str_victory_t1)
 	return false;
 }
 
+bool Battlefield::GameStat::SetCreatedAt(MYSQL_TIME created_at)
+{
+	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
+
+	// Set up the struct tm for strftime
+	struct tm timeinfo;
+	timeinfo.tm_year = created_at.year - 1900;
+	timeinfo.tm_mon = created_at.month - 1;
+	timeinfo.tm_mday = created_at.day;
+	timeinfo.tm_hour = created_at.hour;
+	timeinfo.tm_min = created_at.minute;
+	timeinfo.tm_sec = created_at.second;
+
+	strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
+	
+	this->_created_at = formatted_datetime;
+	return true;
+}
+
+
 void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);
