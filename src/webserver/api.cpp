@@ -35,18 +35,12 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 
 	for(Battlefield::GameServer game_server : game_servers)
 	{
+		Json::Value value;
+		
 		// Get game server players from database
 		g_database->queryGameServerPlayers(game_server);
 		
-		Json::Value value;
-		
-		// Secret
-		//value["ip"] = game_server.GetIp();
-		//value["port"] = game_server.GetPort();
-		//value["localip0"] = game_server.GetLocalIp();
-		//value["localport"] = game_server.GetLocalPort();
-		//value["hostport"] = game_server.GetHostPort();
-		
+		// Game Server information
 		value["id"] = game_server.GetId();
 		value["flag"] = game_server.GetFlag();
 		value["natneg"] = game_server.GetNatNeg();
@@ -92,6 +86,14 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		value["updated_at"] = game_server.GetUpdatedAt();
 		value["verified"] = game_server.isVerified();
 		
+		// Secret
+		//value["ip"] = game_server.GetIp();
+		//value["port"] = game_server.GetPort();
+		//value["localip0"] = game_server.GetLocalIp();
+		//value["localport"] = game_server.GetLocalPort();
+		//value["hostport"] = game_server.GetHostPort();
+		
+		// Game server player information
 		Json::Value players(Json::arrayValue);
 		for(const Battlefield::GameServerPlayer gsplayer : game_server.GetPlayers())
 		{
@@ -121,7 +123,6 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 		const Util::Url::Variables& url_variables)
 {
 	Json::Value response;
-	
 	Battlefield::Player player;
 	
 	// Get player profileid
@@ -129,27 +130,22 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	if (it != url_variables.end())
 	{
 		player.SetProfileId(it->second);
+		
+		// Get player information from database
+		g_database->queryPlayerByProfileid(player);
 	}
 	
-	g_database->queryPlayerByProfileid(player);
+	it = url_variables.find("uniquenick");
+	if (it != url_variables.end())
+	{
+		player.SetUniquenick(it->second);
+		
+		// Get player information from database
+		g_database->queryPlayerByUniquenick(player);
+	}
+	
+	// Get player Stats information from database
 	g_database->queryPlayerStats(player);
-	
-	/*
-	int              GetProfileId() const   { return this->_profileid;     }
-			int              GetUserId() const      { return this->_userid;        }
-			std::string      GetNick() const        { return this->_nick;          }
-			std::string      GetUniquenick() const  { return this->_uniquenick;    }
-			std::string      GetEmail() const       { return this->_email;         }
-			std::string      GetPassword() const    { return this->_password;      }
-			std::string      GetLastLogin() const   { return this->_last_login;    }
-			std::string      GetLastLoginIp() const { return this->_last_login_ip; }
-			std::string      GetCreatedAt() const   { return this->_created_at;    }
-	*/
-	
-	// Secret
-	//response["email"]         = player.GetEmail();
-	//response["password"]      = player.GetPassword();
-	//response["last_login_ip"] = player.GetLastLoginIp();
 	
 	// Player information
 	response["profileid"]  = player.GetProfileId();
@@ -158,6 +154,11 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	response["uniquenick"] = player.GetUniquenick();
 	response["last_login"] = player.GetLastLogin();
 	response["created_at"] = player.GetCreatedAt();
+	
+	// Secret
+	//response["email"]         = player.GetEmail();
+	//response["password"]      = player.GetPassword();
+	//response["last_login_ip"] = player.GetLastLoginIp();
 	
 	// Player stats informaton
 	response["score"] = player.GetScore();
