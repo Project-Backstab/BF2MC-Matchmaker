@@ -7,7 +7,7 @@
 namespace Battlefield
 {
 	/*
-		Forward declair
+		Forward declarations
 	*/
 	class GameStat;
 	class GameStatPlayer;

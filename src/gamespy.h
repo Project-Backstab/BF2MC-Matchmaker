@@ -6,7 +6,11 @@
 
 namespace GameSpy
 {
+	/*
+		Type definitions
+	*/
 	typedef std::vector<std::string> Parameter;
+	
 	
 	std::vector<std::string> RequestToRequests(const std::string& request);
 	

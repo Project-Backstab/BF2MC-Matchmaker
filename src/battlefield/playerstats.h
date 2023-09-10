@@ -154,8 +154,6 @@ namespace Battlefield
 			bool SetTotalTopPlayer(uint32_t total);
 			bool SetTotalVictories(uint32_t total);
 			bool SetTotalGameSessions(uint32_t total);
-			
-			std::vector<int> GetStatsVector();
 	};
 }
 

@@ -10,7 +10,7 @@
 namespace Battlefield
 {
 	/*
-		Forward declair
+		Forward declarations
 	*/
 	class Player;
 	

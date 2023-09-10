@@ -17,7 +17,7 @@
 
 using namespace atomizes;
 
-typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const std::string&, const UrlRequest::UrlVariables&);
+typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const std::string&, const Util::Url::Variables&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
@@ -199,12 +199,12 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 	if(http_request.GetMethod() == MessageMethod::GET)
 	{
 		std::string url_base;
-		UrlRequest::UrlVariables url_variables;
+		Util::Url::Variables url_variables;
 		
 		this->_LogTransaction("-->", http_request.GetPath());
 		
 		// Split url into url base and variables
-		UrlRequest::GetUrlElements(http_request.GetPath(), url_base, url_variables);
+		Util::Url::GetElements(http_request.GetPath(), url_base, url_variables);
 		
 		auto it = mRequestActions.find(url_base);
 		if (it != mRequestActions.end())
@@ -217,47 +217,14 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 		}
 		else
 		{		
-			this->onUnimplementedAction(url_base);
-		}
-	}
-}
-
-void Webserver::Client::onUnimplementedAction(const std::string &action)
-{
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
-	
-	Logger::warning("action \"" + action + "\" not implemented!", Server::Type::Webserver);
-	
-	Json::Value banned_requests = g_settings["webserver"]["banned_requests"];
-	
-	if(!banned_requests.isArray())
-	{
-		return;
-	}
-	
-	std::string client_ip = this->GetIP();
-	std::regex ip_pattern("^10.10.10.");
-	
-	for(Json::Value banned_request : banned_requests)
-	{
-		if(banned_request.isString())
-		{
-			std::regex pattern(banned_request.asString());
-			
-			if(std::regex_search(action, pattern) && !std::regex_search(client_ip, ip_pattern))
-			{
-				Logger::warning("Bannable action found \"" + action + "\" by " + client_ip, Server::Type::Webserver);
-				
-				std::string query = "sudo iptables -I INPUT -s " + client_ip + " -j DROP";
-				int result = system(query.c_str());
-			}
+			Logger::warning("action \"" + url_base + "\" not implemented!", Server::Type::Webserver);
 		}
 	}
 }
 
 // www.easports.com
 void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	this->_SendFile("data" + url_base);
 }
@@ -296,10 +263,11 @@ void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, c
 		ngp			Total Parcipated game sessions
 */
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request,  const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Player player;
+	std::string response;
 	
 	// Get player profileid
 	auto it = url_variables.find("pid");
@@ -315,10 +283,36 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 	// Get player stats
 	g_database->queryPlayerStats(player);
 	
-	std::vector<int> v_stats = player.GetStatsVector();
+	response += std::to_string(player.GetScore()) + ",";
+	response += std::to_string(player.GetRank()) + ",";
+	response += std::to_string(player.GetPPH()) + ",";
+	response += std::to_string(player.GetKills()) + ",";
+	response += std::to_string(player.GetSuicides()) + ",";
+	response += std::to_string(player.GetTime()) + ",";
+	response += std::to_string(player.GetLAVsDestroyed()) + ",";
+	response += std::to_string(player.GetMAVsDestroyed()) + ",";
+	response += std::to_string(player.GetHAVsDestroyed()) + ",";
+	response += std::to_string(player.GetHelicoptersDestroyed()) + ",";
+	response += std::to_string(player.GetPlanesDestroyed()) + ",";
+	response += std::to_string(player.GetBoatsDestroyed()) + ",";
+	response += std::to_string(player.GetKillsAssualtKit()) + ",";
+	response += std::to_string(player.GetDeathsAssualtKit()) + ",";
+	response += std::to_string(player.GetKillsSniperKit()) + ",";
+	response += std::to_string(player.GetDeathsSniperKit()) + ",";
+	response += std::to_string(player.GetKillsSpecialOpKit()) + ",";
+	response += std::to_string(player.GetDeathsSpecialOpKit()) + ",";
+	response += std::to_string(player.GetKillsCombatEngineerKit()) + ",";
+	response += std::to_string(player.GetDeathsCombatEngineerKit()) + ",";
+	response += std::to_string(player.GetKillsSupportKit()) + ",";
+	response += std::to_string(player.GetDeathsSupportKit()) + ",";
+	response += std::to_string(player.GetTeamKills()) + ",";
+	response += std::to_string(player.GetMedals()) + ",";
+	response += std::to_string(player.GetTotalTopPlayer()) + ",";
+	response += std::to_string(player.GetTotalVictories()) + ",";
+	response += std::to_string(player.GetTotalGameSessions());
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(Util::ToString(v_stats));
+	http_response.SetMessageBody(response);
 	
 	this->Send(http_response);
 	
@@ -326,7 +320,7 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 }
 
 void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::RankPlayers rank_players;
@@ -958,10 +952,12 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 
 // Clan
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	Battlefield::Clan clan;
 	Battlefield::Player player;
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	std::string response = "\r\n";
 	
 	// Get player
 	auto it = url_variables.find("profileid");
@@ -994,10 +990,27 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 	// Get clan information
 	g_database->queryClanByClanId(clan);
 	
-	HTTPMessage http_response = this->_defaultResponseHeader();
+	if(clan.GetClanId() != -1)
+	{
+		response = "OK\r\n";
+		response += "clanID," + std::to_string(clan.GetClanId()) + "\r\n";
+		response += "name," + clan.GetName() + "\r\n";
+		response += "tag," + clan.GetTag() + "\r\n";
+		response += "homepage," + clan.GetHomepage() + "\r\n";
+		response += "info," + clan.GetInfo() + "\r\n";
+		response += "region," + std::to_string(clan.GetRegion()) + "\r\n";
+		response += "lastreportdate," + clan.GetDate() + "\r\n";
+		
+		response += "rating," + std::to_string(clan.GetRating()) + "\r\n";
+		response += "wins," + std::to_string(clan.GetWins()) + "\r\n";
+		response += "losses," + std::to_string(clan.GetLosses()) + "\r\n";
+		response += "draws," + std::to_string(clan.GetDraws()) + "\r\n";
+		
+		response += "membercount," + std::to_string(clan.GetRanks().size()) + "\r\n";
+	}
 	
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(clan.responseGetClanInfo());
+	http_response.SetMessageBody(response);
 	
 	this->Send(http_response);
 	
@@ -1005,7 +1018,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 }
 
 void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	Battlefield::Clan clan;
 	
@@ -1019,10 +1032,22 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 	// Get clan information
 	g_database->queryClanRanksByClanId(clan);
 	
-	HTTPMessage http_response = this->_defaultResponseHeader();
+	// Create response
+	std::string response = "\r\n";
+	if(clan.GetClanId() != -1)
+	{
+		response = "OK\r\n";
+		
+		for (const auto& pair : clan.GetRanks())
+		{
+			response += "\r\n" + std::to_string(pair.first) + "," + std::to_string(pair.second);
+		}
+	}
 	
+	// Create http response
+	HTTPMessage http_response = this->_defaultResponseHeader();
 	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(clan.responseGetClanMembers());
+	http_response.SetMessageBody(response);
 	
 	this->Send(http_response);
 	
@@ -1030,13 +1055,13 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 }
 
 void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	this->_SendFile("data/examples/leaderboard/startrank=1&endrank=7.txt");
 }
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1056,7 +1081,7 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 			Battlefield::Clan new_clan;
 			
 			// Copy url variables into clan
-			new_clan.updateInformation(url_variables);
+			this->_updateClanInformation(new_clan, url_variables);
 			
 			// get clan by name or tag
 			g_database->queryClanByNameOrTag(new_clan);
@@ -1096,7 +1121,7 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 }
 
 void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables &url_variables)
+		const Util::Url::Variables &url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1120,7 +1145,7 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		if(rank == Battlefield::Clan::Ranks::Leader)
 		{
 			// Copy url variables into clan
-			clan.updateInformation(url_variables, true);
+			this->_updateClanInformation(clan, url_variables, true);
 			
 			// Insert clan in database
 			g_database->updateClan(clan);
@@ -1145,7 +1170,7 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 }
 
 void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1196,7 +1221,7 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request
 }
 
 void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1295,7 +1320,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 }
 
 void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1359,7 +1384,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 }
 
 void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1449,7 +1474,7 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 }
 
 void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	Battlefield::Clan clan;
@@ -1502,7 +1527,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_req
 }
 
 void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response = this->_defaultResponseHeader();
 	
@@ -1515,7 +1540,7 @@ void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, 
 }
 
 void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, const std::string& url_base,
-		const UrlRequest::UrlVariables& url_variables)
+		const Util::Url::Variables& url_variables)
 {
 	HTTPMessage http_response;
 	
@@ -1596,7 +1621,7 @@ void Webserver::Client::_SendFile(const std::string& file_name) const
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
-void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
+void Webserver::Client::_GetSessionPlayerAndClan(const Util::Url::Variables& url_variables, Battlefield::Clan& clan, Battlefield::Player& player) const
 {
 	GPCM::Session session;
 	
@@ -1618,5 +1643,31 @@ void Webserver::Client::_GetSessionPlayerAndClan(const UrlRequest::UrlVariables&
 	}
 }
 
-
+void Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
+		const Util::Url::Variables &url_variables, bool is_update)
+{
+	for(const auto &url_variable : url_variables)
+	{
+		if(url_variable.first == "name" && !is_update)
+		{
+			clan.SetName(url_variable.second);
+		}
+		else if(url_variable.first == "tag")
+		{
+			clan.SetTag(url_variable.second);
+		}
+		else if(url_variable.first == "homepage")
+		{
+			clan.SetHomepage(url_variable.second);
+		}
+		else if(url_variable.first == "info")
+		{
+			clan.SetInfo(url_variable.second);
+		}
+		else if(url_variable.first == "region")
+		{
+			clan.SetRegion(url_variable.second);
+		}
+	}
+}
 

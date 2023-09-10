@@ -4,7 +4,6 @@
 #include <string>
 #include <cstdint>
 #include <map>
-#include <urlrequest.h>
 
 namespace Battlefield
 {
@@ -48,11 +47,16 @@ namespace Battlefield
 			void useExample();
 			
 			int                         GetClanId() const   { return this->_clanid;   }
-			const std::string           GetName() const     { return this->_name;     }
-			const std::string           GetTag() const      { return this->_tag;      }
-			const std::string           GetHomepage() const { return this->_homepage; }
-			const std::string           GetInfo() const     { return this->_info;     }
+			std::string                 GetName() const     { return this->_name;     }
+			std::string                 GetTag() const      { return this->_tag;      }
+			std::string                 GetHomepage() const { return this->_homepage; }
+			std::string                 GetInfo() const     { return this->_info;     }
 			Regions                     GetRegion() const   { return this->_region;   }
+			std::string                 GetDate() const     { return this->_date;     }
+			uint32_t                    GetRating() const   { return this->_rating;   }
+			uint32_t                    GetWins() const     { return this->_wins;     }
+			uint32_t                    GetLosses() const   { return this->_losses;   }
+			uint32_t                    GetDraws() const    { return this->_draws;    }
 			const std::map<int, Ranks>  GetRanks() const    { return this->_ranks;    }
 			
 			bool SetClanId(int clanid);
@@ -69,13 +73,6 @@ namespace Battlefield
 			void AddRank(int profileid, Ranks rank);
 			void AddRank(int profileid, int int_rank);
 			Ranks GetRank(int profileid) const;
-			
-			/*
-				Request responses
-			*/
-			std::string responseGetClanInfo();
-			std::string responseGetClanMembers();
-			void updateInformation(const UrlRequest::UrlVariables& url_variables, bool is_update = false);
 			
 			/*
 				Static

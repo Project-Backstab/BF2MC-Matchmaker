@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace Util
 {
@@ -13,6 +14,16 @@ namespace Util
 		
 		std::string ToString(const std::vector<char>& buffer);
 		std::string ToString(const std::vector<unsigned char>& buffer);
+	}
+	
+	namespace Url
+	{
+		/*
+			Type definitions
+		*/
+		typedef std::map<std::string, std::string> Variables;
+		
+		void GetElements(const std::string& url, std::string& url_base, Util::Url::Variables& url_variables);
 	}
 	
 	std::string MD5hash(const std::string& input);

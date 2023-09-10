@@ -1293,69 +1293,6 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
-{
-	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
-
-	int input_clanid = clan.GetClanId();
-	
-	int output_profileid;
-	int output_rank;
-
-	std::string query = "SELECT `profileid`, `rank` FROM `ClanRanks` WHERE `clanid` = ?";
-
-	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
-	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = &input_clanid;
-	input_bind[0].is_unsigned = false;	
-	
-	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
-	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[0].buffer = &output_profileid;
-	output_bind[0].is_unsigned = false;	
-	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[1].buffer = &output_rank;
-	output_bind[1].is_unsigned = false;	
-
-	// Prepare and execute with binds
-	MYSQL_STMT* statement;
-	
-	if(
-		!this->_init(&statement) ||
-		!this->_prepare(statement, query, input_bind) ||
-		!this->_execute(statement, output_bind)
-	)
-	{
-		// Cleanup
-		free(input_bind);
-		free(output_bind);
-		
-		return false;
-	}
-
-	while(true)
-	{
-		int status = mysql_stmt_fetch(statement);
-
-		if (status == 1 || status == MYSQL_NO_DATA)
-		{
-			break;
-		}
-		
-		clan.AddRank(output_profileid, output_rank);
-	}
-
-	// Cleanup
-	mysql_stmt_free_result(statement);
-	mysql_stmt_close(statement);
-	free(input_bind);
-	free(output_bind);
-	
-	return true;
-}
-
 bool Database::insertClan(Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -1509,6 +1446,69 @@ bool Database::removeClan(const Battlefield::Clan& clan)
 }
 
 // Clan Rank
+bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	int input_clanid = clan.GetClanId();
+	
+	int output_profileid;
+	int output_rank;
+
+	std::string query = "SELECT `profileid`, `rank` FROM `ClanRanks` WHERE `clanid` = ?";
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_clanid;
+	input_bind[0].is_unsigned = false;	
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_profileid;
+	output_bind[0].is_unsigned = false;	
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = &output_rank;
+	output_bind[1].is_unsigned = false;	
+
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+		
+		clan.AddRank(output_profileid, output_rank);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
 bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
