@@ -135,8 +135,12 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/BFMC/Clans/clanmessage.aspx",                         &Webserver::Client::requestClanMessage        }, // Done
 	
 	// I like memes :D
-	{ "/",                                                    &Webserver::Client::requestMeme  },
-	{ "/favicon.ico",                                         &Webserver::Client::requestEmpty  },
+	{ "/",                                                    &Webserver::Client::requestMeme               },
+	{ "/favicon.ico",                                         &Webserver::Client::requestEmpty              },
+	
+	// API
+	{ "/API/servers/live",                                    &Webserver::Client::requestAPIServersLive     },
+	
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)

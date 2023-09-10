@@ -4,6 +4,11 @@
 #include <cstdint>
 #include <vector>
 
+/*
+	Forward declarations
+*/
+struct MYSQL_TIME;
+
 namespace Battlefield
 {
 	/*
@@ -77,6 +82,7 @@ namespace Battlefield
 			                                   //              exiting)
 			uint8_t     _teamplay      = 0;    // number which defines the type of teamplay in use, or 0 for no teamplay.
 			                                   // Values > 0 are up to the developer
+											   // 3 = Clan game
 			uint8_t     _fraglimit     = 0;    // Number of total kills or points before a level change or game restart
 			uint8_t     _teamfraglimit = 0;    // Number of total kills or points for a team before a level change or
 			                                   // game restart.
@@ -107,6 +113,8 @@ namespace Battlefield
 			std::string _team1         = "";   // Team 2 name
 			int16_t     _score0        = 0;    // Team 1 score
 			int16_t     _score1        = 0;    // Team 2 score
+			
+			std::string _updated_at    = "";    // Update information datetime
 			bool        _verified      = false; // Database check that a server is verified
 			
 			std::vector<GameServerPlayer> _players;
@@ -165,6 +173,8 @@ namespace Battlefield
 			std::string       GetTeam2Name() const   { return this->_team1;         }
 			int16_t           GetTeam1Score() const  { return this->_score0;        }
 			int16_t           GetTeam2Score() const  { return this->_score1;        }
+			
+			std::string       GetUpdatedAt() const   { return this->_updated_at;    }
 			bool              isVerified() const     { return this->_verified;      }
 			
 			GameServerPlayers GetPlayers() const     { return this->_players;       }
@@ -252,6 +262,7 @@ namespace Battlefield
 			bool SetTeam2Score(int16_t score1);
 			bool SetTeam2Score(const std::string& str_score1);
 			
+			bool SetUpdatedAt(MYSQL_TIME updated_at);
 			bool SetVerified(bool verified);
 			
 			void AddPlayer(const GameServerPlayer& gsplayer);

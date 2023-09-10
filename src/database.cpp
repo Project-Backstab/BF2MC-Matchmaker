@@ -24,13 +24,22 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 
 	int  input_profileid = player.GetProfileId();
 	
-	int  output_userid = 0;
-	char output_nick[42];
-	char output_uniquenick[33];
-	char output_email[51];
-	char output_md5password[33];
+	int        output_userid = 0;
+	char       output_nick[42];
+	char       output_uniquenick[33];
+	char       output_email[51];
+	char       output_md5password[33];
+	MYSQL_TIME output_last_login;
+	char       output_last_login_ip[16];
+	MYSQL_TIME output_created_at;
 
-	std::string query = "SELECT `userid`, `nick`, `uniquenick`, `email`, `password` FROM `Players` WHERE `profileid` = ?";
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "FROM ";
+	query += "	`Players` ";
+	query += "WHERE ";
+	query += "	`profileid` = ?";
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -39,7 +48,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	input_bind[0].is_unsigned = false;
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_userid;
 	output_bind[0].is_unsigned = false;
@@ -55,7 +64,14 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[4].buffer = output_md5password;
 	output_bind[4].buffer_length = 33;
-
+	output_bind[5].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[5].buffer = &output_last_login;
+	output_bind[6].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[6].buffer = output_last_login_ip;
+	output_bind[6].buffer_length = 16;
+	output_bind[7].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[7].buffer = &output_created_at;
+	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -81,6 +97,9 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 		player.SetUniquenick(output_uniquenick);
 		player.SetEmail(output_email);
 		player.SetMD5Password(output_md5password);
+		player.SetLastLogin(output_last_login);
+		player.SetLastLoginIp(output_last_login_ip);
+		player.SetCreatedAt(output_created_at);
 	}
 
 	// Cleanup
@@ -96,15 +115,24 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
-	std::string query = "SELECT `profileid`, `userid`, `nick`, `email`, `password` FROM `Players` WHERE `uniquenick` = ?";
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "FROM ";
+	query += "	`Players` ";
+	query += "WHERE ";
+	query += "	`uniquenick` = ?";
 	
 	std::string input_uniquenick = player.GetUniquenick();
 	
-	int  output_profileid = 0;
-	int  output_userid = 0;
-	char output_nick[42];
-	char output_email[51];
-	char output_md5password[33];
+	int        output_profileid = 0;
+	int        output_userid = 0;
+	char       output_nick[42];
+	char       output_email[51];
+	char       output_md5password[33];
+	MYSQL_TIME output_last_login;
+	char       output_last_login_ip[16];
+	MYSQL_TIME output_created_at;
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -113,7 +141,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	input_bind[0].buffer_length = input_uniquenick.size();
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -129,7 +157,14 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	output_bind[4].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[4].buffer = output_md5password;
 	output_bind[4].buffer_length = 33;
-
+	output_bind[5].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[5].buffer = &output_last_login;
+	output_bind[6].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[6].buffer = output_last_login_ip;
+	output_bind[6].buffer_length = 16;
+	output_bind[7].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[7].buffer = &output_created_at;
+	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -155,6 +190,9 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 		player.SetNick(output_nick);
 		player.SetEmail(output_email);
 		player.SetMD5Password(output_md5password);
+		player.SetLastLogin(output_last_login);
+		player.SetLastLoginIp(output_last_login_ip);
+		player.SetCreatedAt(output_created_at);
 	}
 
 	// Cleanup
@@ -170,14 +208,17 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query = "SELECT `profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`  FROM `Players` WHERE `email` = ?";
+	std::string query = "SELECT `profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` FROM `Players` WHERE `email` = ?";
 	
-	int  output_profileid = 0;
-	int  output_userid = 0;
-	char output_nick[42];
-	char output_uniquenick[33];
-	char output_email[51];
-	char output_md5password[33];
+	int        output_profileid = 0;
+	int        output_userid = 0;
+	char       output_nick[42];
+	char       output_uniquenick[33];
+	char       output_email[51];
+	char       output_md5password[33];
+	MYSQL_TIME output_last_login;
+	char       output_last_login_ip[16];
+	MYSQL_TIME output_created_at;
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -186,7 +227,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	input_bind[0].buffer_length = email.size();
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -205,7 +246,14 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 33;
-
+	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[6].buffer = &output_last_login;
+	output_bind[7].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[7].buffer = output_last_login_ip;
+	output_bind[7].buffer_length = 16;
+	output_bind[8].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[8].buffer = &output_created_at;
+	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -238,6 +286,9 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 		player.SetUniquenick(output_uniquenick);
 		player.SetEmail(output_email);
 		player.SetMD5Password(output_md5password);
+		player.SetLastLogin(output_last_login);
+		player.SetLastLoginIp(output_last_login_ip);
+		player.SetCreatedAt(output_created_at);
 		
 		players.push_back(player);
 	}
@@ -255,18 +306,25 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
-	std::string query;
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "FROM ";
+	query += "	`Players` ";
+	query += "WHERE ";
+	query += "	`email` = ? ";
+	query += "OR ";
+	query += "	`uniquenick` = ?";
 	
-	query += "SELECT `profileid`, `userid`, `nick`, `uniquenick`, `email`, `password` ";
-	query += "FROM `Players` ";
-	query += "WHERE `email` = ? OR `uniquenick` = ?";
-	
-	int  output_profileid = 0;
-	int  output_userid = 0;
-	char output_nick[42];
-	char output_uniquenick[33];
-	char output_email[51];
-	char output_md5password[33];
+	int        output_profileid = 0;
+	int        output_userid = 0;
+	char       output_nick[42];
+	char       output_uniquenick[33];
+	char       output_email[51];
+	char       output_md5password[33];
+	MYSQL_TIME output_last_login;
+	char       output_last_login_ip[16];
+	MYSQL_TIME output_created_at;
 
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -278,7 +336,7 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	input_bind[1].buffer_length = uniquenick.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -297,7 +355,14 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	output_bind[5].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[5].buffer = output_md5password;
 	output_bind[5].buffer_length = 33;
-
+	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[6].buffer = &output_last_login;
+	output_bind[7].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[7].buffer = output_last_login_ip;
+	output_bind[7].buffer_length = 16;
+	output_bind[8].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[8].buffer = &output_created_at;
+	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -330,6 +395,9 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 		player.SetUniquenick(output_uniquenick);
 		player.SetEmail(output_email);
 		player.SetMD5Password(output_md5password);
+		player.SetLastLogin(output_last_login);
+		player.SetLastLoginIp(output_last_login_ip);
+		player.SetCreatedAt(output_created_at);
 		
 		players.push_back(player);
 	}
@@ -1690,7 +1758,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	query += "	`teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, `timeelapsed`, `password`, ";
 	query += "	`nr`, `xr`, `ff`, `sr`, `rc`, `ni`, `xi`, `qm`, `region`, ";
 	query += "	`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`, ";
-	query += "	`team0`, `team1`, `score0`, `score1`, `verified`";
+	query += "	`team0`, `team1`, `score0`, `score1`, `updated_at`, `verified`";
 	query += "FROM ";
 	query += "	`GameServers`";
 	query += "WHERE ";
@@ -1699,53 +1767,54 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	std::string input_ip   = game_server.GetIp();
 	uint16_t    input_port = game_server.GetPort();
 	
-	int      output_id;
-	uint8_t  output_flag;
-	char     output_localip0[16];
-	uint16_t output_localport;
-	uint8_t  output_natneg;
-	char     output_gamename[46];
-	char     output_hostname[46];
-	uint16_t output_hostport;
-	char     output_gamever[21];
-	char     output_cl[21];
-	char     output_rv[21];
-	char     output_map[21];
-	uint8_t  output_mc;
-	uint8_t  output_mapname;
-	uint8_t  output_gc;
-	char     output_gametype[21];
-	char     output_gamevariant[21];
-	uint8_t  output_numplayers;
-	uint8_t  output_maxplayers;
-	uint8_t  output_numteams;
-	char     output_gamemode[16];
-	uint8_t  output_teamplay;
-	uint8_t  output_fraglimit;
-	uint8_t  output_teamfraglimit;
-	uint16_t output_timelimit;
-	uint16_t output_timeelapsed;
-	uint8_t  output_password;
-	uint8_t  output_nr;
-	uint8_t  output_xr;
-	uint8_t  output_ff;
-	uint8_t  output_sr;
-	uint8_t  output_rc;
-	int64_t  output_ni;
-	int64_t  output_xi;
-	uint8_t  output_qm;
-	uint64_t output_region;
-	int8_t   output_c0;
-	int8_t   output_c1;
-	char     output_n0[33];
-	char     output_n1[33];
-	uint8_t  output_c0c;
-	uint8_t  output_c1c;
-	char     output_team0[6];
-	char     output_team1[6];
-	int16_t  output_score0;
-	int16_t  output_score1;
-	uint8_t  output_verified;
+	int        output_id;
+	uint8_t    output_flag;
+	char       output_localip0[16];
+	uint16_t   output_localport;
+	uint8_t    output_natneg;
+	char       output_gamename[46];
+	char       output_hostname[46];
+	uint16_t   output_hostport;
+	char       output_gamever[21];
+	char       output_cl[21];
+	char       output_rv[21];
+	char       output_map[21];
+	uint8_t    output_mc;
+	uint8_t    output_mapname;
+	uint8_t    output_gc;
+	char       output_gametype[21];
+	char       output_gamevariant[21];
+	uint8_t    output_numplayers;
+	uint8_t    output_maxplayers;
+	uint8_t    output_numteams;
+	char       output_gamemode[16];
+	uint8_t    output_teamplay;
+	uint8_t    output_fraglimit;
+	uint8_t    output_teamfraglimit;
+	uint16_t   output_timelimit;
+	uint16_t   output_timeelapsed;
+	uint8_t    output_password;
+	uint8_t    output_nr;
+	uint8_t    output_xr;
+	uint8_t    output_ff;
+	uint8_t    output_sr;
+	uint8_t    output_rc;
+	int64_t    output_ni;
+	int64_t    output_xi;
+	uint8_t    output_qm;
+	uint64_t   output_region;
+	int8_t     output_c0;
+	int8_t     output_c1;
+	char       output_n0[33];
+	char       output_n1[33];
+	uint8_t    output_c0c;
+	uint8_t    output_c1c;
+	char       output_team0[6];
+	char       output_team1[6];
+	int16_t    output_score0;
+	int16_t    output_score1;
+	MYSQL_TIME output_updated_at;
+	uint8_t    output_verified;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -1754,7 +1823,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	input_bind[0].buffer_length = input_ip.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(47, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(48, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -1893,9 +1962,11 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	output_bind[45].buffer_type = MYSQL_TYPE_SHORT;
 	output_bind[45].buffer = &output_score1;
 	output_bind[45].is_unsigned = false;
-	output_bind[46].buffer_type = MYSQL_TYPE_TINY;
-	output_bind[46].buffer = &output_verified;
-	output_bind[46].is_unsigned = true;
+	output_bind[46].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[46].buffer = &output_updated_at;
+	output_bind[47].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[47].buffer = &output_verified;
+	output_bind[47].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1966,6 +2037,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 		game_server.SetTeam2Name(output_team1);
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
+		game_server.SetUpdatedAt(output_updated_at);
 		game_server.SetVerified(output_verified == 1);
 	}
 
@@ -1989,7 +2061,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	query += "	`teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, `timeelapsed`, `password`, ";
 	query += "	`nr`, `xr`, `ff`, `sr`, `rc`, `ni`, `xi`, `qm`, `region`, ";
 	query += "	`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`, ";
-	query += "	`team0`, `team1`, `score0`, `score1`, `verified`";
+	query += "	`team0`, `team1`, `score0`, `score1`, `updated_at`, `verified`";
 	query += "FROM ";
 	query += "	`GameServers`";
 	query += "WHERE ";
@@ -2000,53 +2072,54 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	std::string input_ip   = game_server.GetIp();
 	uint16_t    input_port = game_server.GetPort();
 	
-	int      output_id;
-	uint8_t  output_flag;
-	char     output_localip0[16];
-	uint16_t output_localport;
-	uint8_t  output_natneg;
-	char     output_gamename[46];
-	char     output_hostname[46];
-	uint16_t output_hostport;
-	char     output_gamever[21];
-	char     output_cl[21];
-	char     output_rv[21];
-	char     output_map[21];
-	uint8_t  output_mc;
-	uint8_t  output_mapname;
-	uint8_t  output_gc;
-	char     output_gametype[21];
-	char     output_gamevariant[21];
-	uint8_t  output_numplayers;
-	uint8_t  output_maxplayers;
-	uint8_t  output_numteams;
-	char     output_gamemode[16];
-	uint8_t  output_teamplay;
-	uint8_t  output_fraglimit;
-	uint8_t  output_teamfraglimit;
-	uint16_t output_timelimit;
-	uint16_t output_timeelapsed;
-	uint8_t  output_password;
-	uint8_t  output_nr;
-	uint8_t  output_xr;
-	uint8_t  output_ff;
-	uint8_t  output_sr;
-	uint8_t  output_rc;
-	int64_t  output_ni;
-	int64_t  output_xi;
-	uint8_t  output_qm;
-	uint64_t output_region;
-	int8_t   output_c0;
-	int8_t   output_c1;
-	char     output_n0[33];
-	char     output_n1[33];
-	uint8_t  output_c0c;
-	uint8_t  output_c1c;
-	char     output_team0[6];
-	char     output_team1[6];
-	int16_t  output_score0;
-	int16_t  output_score1;
-	uint8_t  output_verified;
+	int        output_id;
+	uint8_t    output_flag;
+	char       output_localip0[16];
+	uint16_t   output_localport;
+	uint8_t    output_natneg;
+	char       output_gamename[46];
+	char       output_hostname[46];
+	uint16_t   output_hostport;
+	char       output_gamever[21];
+	char       output_cl[21];
+	char       output_rv[21];
+	char       output_map[21];
+	uint8_t    output_mc;
+	uint8_t    output_mapname;
+	uint8_t    output_gc;
+	char       output_gametype[21];
+	char       output_gamevariant[21];
+	uint8_t    output_numplayers;
+	uint8_t    output_maxplayers;
+	uint8_t    output_numteams;
+	char       output_gamemode[16];
+	uint8_t    output_teamplay;
+	uint8_t    output_fraglimit;
+	uint8_t    output_teamfraglimit;
+	uint16_t   output_timelimit;
+	uint16_t   output_timeelapsed;
+	uint8_t    output_password;
+	uint8_t    output_nr;
+	uint8_t    output_xr;
+	uint8_t    output_ff;
+	uint8_t    output_sr;
+	uint8_t    output_rc;
+	int64_t    output_ni;
+	int64_t    output_xi;
+	uint8_t    output_qm;
+	uint64_t   output_region;
+	int8_t     output_c0;
+	int8_t     output_c1;
+	char       output_n0[33];
+	char       output_n1[33];
+	uint8_t    output_c0c;
+	uint8_t    output_c1c;
+	char       output_team0[6];
+	char       output_team1[6];
+	int16_t    output_score0;
+	int16_t    output_score1;
+	MYSQL_TIME output_updated_at;
+	uint8_t    output_verified;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -2058,7 +2131,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	input_bind[1].is_unsigned = true;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(47, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(48, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -2197,9 +2270,11 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	output_bind[45].buffer_type = MYSQL_TYPE_SHORT;
 	output_bind[45].buffer = &output_score1;
 	output_bind[45].is_unsigned = false;
-	output_bind[46].buffer_type = MYSQL_TYPE_TINY;
-	output_bind[46].buffer = &output_verified;
-	output_bind[46].is_unsigned = true;
+	output_bind[46].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[46].buffer = &output_updated_at;
+	output_bind[47].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[47].buffer = &output_verified;
+	output_bind[47].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -2270,6 +2345,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 		game_server.SetTeam2Name(output_team1);
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
+		game_server.SetUpdatedAt(output_updated_at);
 		game_server.SetVerified(output_verified == 1);
 	}
 
@@ -2293,62 +2369,63 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	query += "	`teamplay`, `fraglimit`, `teamfraglimit`, `timelimit`, `timeelapsed`, `password`, ";
 	query += "	`nr`, `xr`, `ff`, `sr`, `rc`, `ni`, `xi`, `qm`, `region`, ";
 	query += "	`c0`, `c1`, `n0`, `n1`, `c0c`, `c1c`, ";
-	query += "	`team0`, `team1`, `score0`, `score1`, `verified`";
+	query += "	`team0`, `team1`, `score0`, `score1`, `updated_at`, `verified`";
 	query += "FROM ";
 	query += "	`GameServers`";
 	
-	int      output_id;
-	char     output_ip[16];
-	uint16_t output_port;
-	uint8_t  output_flag;
-	char     output_localip0[16];
-	uint16_t output_localport;
-	uint8_t  output_natneg;
-	char     output_gamename[46];
-	char     output_hostname[46];
-	uint16_t output_hostport;
-	char     output_gamever[21];
-	char     output_cl[21];
-	char     output_rv[21];
-	char     output_map[21];
-	uint8_t  output_mc;
-	uint8_t  output_mapname;
-	uint8_t  output_gc;
-	char     output_gametype[21];
-	char     output_gamevariant[21];
-	uint8_t  output_numplayers;
-	uint8_t  output_maxplayers;
-	uint8_t  output_numteams;
-	char     output_gamemode[16];
-	uint8_t  output_teamplay;
-	uint8_t  output_fraglimit;
-	uint8_t  output_teamfraglimit;
-	uint16_t output_timelimit;
-	uint16_t output_timeelapsed;
-	uint8_t  output_password;
-	uint8_t  output_nr;
-	uint8_t  output_xr;
-	uint8_t  output_ff;
-	uint8_t  output_sr;
-	uint8_t  output_rc;
-	int64_t  output_ni;
-	int64_t  output_xi;
-	uint8_t  output_qm;
-	uint64_t output_region;
-	int8_t   output_c0;
-	int8_t   output_c1;
-	char     output_n0[33];
-	char     output_n1[33];
-	uint8_t  output_c0c;
-	uint8_t  output_c1c;
-	char     output_team0[6];
-	char     output_team1[6];
-	int16_t  output_score0;
-	int16_t  output_score1;
-	uint8_t  output_verified;
+	int        output_id;
+	char       output_ip[16];
+	uint16_t   output_port;
+	uint8_t    output_flag;
+	char       output_localip0[16];
+	uint16_t   output_localport;
+	uint8_t    output_natneg;
+	char       output_gamename[46];
+	char       output_hostname[46];
+	uint16_t   output_hostport;
+	char       output_gamever[21];
+	char       output_cl[21];
+	char       output_rv[21];
+	char       output_map[21];
+	uint8_t    output_mc;
+	uint8_t    output_mapname;
+	uint8_t    output_gc;
+	char       output_gametype[21];
+	char       output_gamevariant[21];
+	uint8_t    output_numplayers;
+	uint8_t    output_maxplayers;
+	uint8_t    output_numteams;
+	char       output_gamemode[16];
+	uint8_t    output_teamplay;
+	uint8_t    output_fraglimit;
+	uint8_t    output_teamfraglimit;
+	uint16_t   output_timelimit;
+	uint16_t   output_timeelapsed;
+	uint8_t    output_password;
+	uint8_t    output_nr;
+	uint8_t    output_xr;
+	uint8_t    output_ff;
+	uint8_t    output_sr;
+	uint8_t    output_rc;
+	int64_t    output_ni;
+	int64_t    output_xi;
+	uint8_t    output_qm;
+	uint64_t   output_region;
+	int8_t     output_c0;
+	int8_t     output_c1;
+	char       output_n0[33];
+	char       output_n1[33];
+	uint8_t    output_c0c;
+	uint8_t    output_c1c;
+	char       output_team0[6];
+	char       output_team1[6];
+	int16_t    output_score0;
+	int16_t    output_score1;
+	MYSQL_TIME output_updated_at;
+	uint8_t    output_verified;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(49, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(50, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -2493,9 +2570,11 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	output_bind[47].buffer_type = MYSQL_TYPE_SHORT;
 	output_bind[47].buffer = &output_score1;
 	output_bind[47].is_unsigned = false;
-	output_bind[48].buffer_type = MYSQL_TYPE_TINY;
-	output_bind[48].buffer = &output_verified;
-	output_bind[48].is_unsigned = true;
+	output_bind[48].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[48].buffer = &output_updated_at;
+	output_bind[49].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[49].buffer = &output_verified;
+	output_bind[49].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -2570,6 +2649,7 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 		game_server.SetTeam2Name(output_team1);
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
+		game_server.SetUpdatedAt(output_updated_at);
 		game_server.SetVerified(output_verified == 1);
 		
 		game_servers.push_back(game_server);
@@ -3107,6 +3187,110 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 }
 
 // Game Server Player
+bool Database::queryGameServerPlayers(Battlefield::GameServer& game_server)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`id`, `name`, `score`, `skill`, `ping`, `team`, `deaths`, `profileid`";
+	query += "FROM ";
+	query += "	`GameServerPlayers`";
+	query += "WHERE ";
+	query += "	`gameserverid` = ? ";
+	
+	int      input_gameserverid = game_server.GetId();
+	
+	int      output_id;
+	char     output_name[46];
+	int16_t  output_score;
+	char     output_skill[46];
+	uint8_t  output_ping;
+	uint8_t  output_team;
+	uint16_t output_deaths;
+	int      output_profileid;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_gameserverid;
+	input_bind[0].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_id;
+	output_bind[0].is_unsigned = false;	
+	output_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[1].buffer = output_name;
+	output_bind[1].buffer_length = 46;	
+	output_bind[2].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[2].buffer = &output_score;
+	output_bind[2].is_unsigned = false;
+	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[3].buffer = output_skill;
+	output_bind[3].buffer_length = 46;
+	output_bind[4].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[4].buffer = &output_ping;
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[5].buffer = &output_team;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[6].buffer = &output_deaths;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_profileid;
+	output_bind[7].is_unsigned = false;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+		
+		Battlefield::GameServerPlayer gsplayer;
+		
+		gsplayer.SetId(output_id);
+		gsplayer.SetName(output_name);
+		gsplayer.SetScore(output_score);
+		gsplayer.SetSkill(output_skill);
+		gsplayer.SetPing(output_ping);
+		gsplayer.SetTeam(output_team);
+		gsplayer.SetDeaths(output_deaths);
+		gsplayer.SetProfileId(output_profileid);
+		
+		game_server.AddPlayer(gsplayer);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
 bool Database::_insertGameServerPlayer(const Battlefield::GameServer& game_server, Battlefield::GameServerPlayer& gsplayer)
 {
 	//std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)

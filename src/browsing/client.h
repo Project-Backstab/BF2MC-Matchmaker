@@ -40,6 +40,7 @@ namespace Browsing
 			bool _FilterServerStatsTracking(const std::string& filter, const Battlefield::GameServer& game_server);
 			bool _FilterServerReconfigurable(const std::string& filter, const Battlefield::GameServer& game_server);
 			bool _FilterServerClan(const std::string& filter, const Battlefield::GameServer& game_server);
+			bool _FilterServerTeamplay(const std::string& filter, const Battlefield::GameServer& game_server);
 			
 		public:
 			static void Test();

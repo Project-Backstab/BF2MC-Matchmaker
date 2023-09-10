@@ -10,6 +10,11 @@ namespace atomizes
 	class HTTPMessage;
 };
 
+namespace Json
+{
+	class Value;
+};
+
 namespace Battlefield
 {
 	class Clan;
@@ -27,6 +32,7 @@ namespace Webserver
 			void Listen();
 			void Disconnect();
 			void Send(const atomizes::HTTPMessage& http_response) const;
+			void Send(const Json::Value &value) const;
 			
 			/*
 				Events
@@ -59,7 +65,10 @@ namespace Webserver
 			
 			// Empty
 			void requestEmpty(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
-		
+			
+			// API
+			void requestAPIServersLive(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+			
 		private:
 			atomizes::HTTPMessage _defaultResponseHeader() const;
 			void _LogTransaction(const std::string& direction, const std::string& response) const;

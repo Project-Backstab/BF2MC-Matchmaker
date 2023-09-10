@@ -1,5 +1,7 @@
 #include <string>
 #include <arpa/inet.h>
+#include <mysql/mysql_time.h>
+
 #include <logger.h>
 #include <browsing/constants.h>
 
@@ -694,6 +696,25 @@ bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
 	catch(...) {};
 	
 	return false;
+}
+
+bool Battlefield::GameServer::SetUpdatedAt(MYSQL_TIME updated_at)
+{
+	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
+
+	// Set up the struct tm for strftime
+	struct tm timeinfo;
+	timeinfo.tm_year = updated_at.year - 1900;
+	timeinfo.tm_mon = updated_at.month - 1;
+	timeinfo.tm_mday = updated_at.day;
+	timeinfo.tm_hour = updated_at.hour;
+	timeinfo.tm_min = updated_at.minute;
+	timeinfo.tm_sec = updated_at.second;
+
+	strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
+	
+	this->_updated_at = formatted_datetime;
+	return true;
 }
 
 bool Battlefield::GameServer::SetVerified(bool verified)

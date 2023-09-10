@@ -67,6 +67,8 @@ class Database
 		bool updateGameServer(const Battlefield::GameServer& game_server);
 		
 		//Game Server Player
+		bool queryGameServerPlayers(Battlefield::GameServer& game_server);
+		
 	private:
 		bool _insertGameServerPlayer(const Battlefield::GameServer& game_server, Battlefield::GameServerPlayer& gsplayer);
 		bool _removeGameServerPlayers(const Battlefield::GameServer& game_server);
