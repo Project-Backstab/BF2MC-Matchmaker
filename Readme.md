@@ -33,33 +33,60 @@ sudo apt-get install libmysqlclient-dev
 ## Compile project
 
 ```
+./make_release_build.sh
+```
+This will create the bf2mc executable and copy the data to the "BF2MC-Matchmaker-release" directory.
+
+For development:
+```
+cd BF2MC-Matchmaker
 mkdir build
 cd build
+
 cmake ..
 make -j 4
-
-cmake --install . --prefix ../../BF2MC-Matchmaker-release
 ```
-
-This will create the bf2mc executable.
 
 ## Database
 
 This project requires a mysql database to save/extract information.
 Read [here](database/Readme.md) to setup. 
 
-## Run
+## Firewall
 
 ```
-cd BF2MC-Matchmaker-release/bin
-sudo ./bf2mc
+sudo ufw allow 80/tcp
+sudo ufw allow 8080/tcp
+sudo ufw allow 27900/udp
+sudo ufw allow 28910/tcp
+sudo ufw allow 29900/tcp
+sudo ufw allow 29901/tcp
+sudo ufw allow 29920/tcp
 ```
 
-This will run 4 services on TCP port: 80, 28910, 29900 and 29901.
+For MySQL:
+```
+sudo ufw allow from <myip> to any port 3306
+```
 
 If you want to avoid to run the application as sudo you must Preroute port 80 to 8080
 ```
 sudo iptables -A PREROUTING -t nat -i <network interface> -p tcp --dport 80 -j REDIRECT --to-port 8080
-sudo ufw allow 8080
 ```
-Also in data/settings.json, change "webserver" -> "port" to 8080.
+
+## Run
+
+```
+cd BF2MC-Matchmaker-release/bin
+./bf2mc
+```
+
+For development:
+```
+cd BF2MC-Matchmaker/build
+./bin/bf2mc
+```
+
+## Services
+
+If you want to run this project as a services you can read more about it over [here](service/Readme.md).

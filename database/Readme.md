@@ -24,14 +24,14 @@ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 ```
 Modify that bind-address from: 127.0.0.1 to 0.0.0.0
 
-Execute mysql as root ans show all users.
+Execute mysql as root and then show all users.
 ```
 sudo mysql
 
 SELECT User, Host FROM mysql.user;
 ```
 
-Add root account to remote controll mysql server with your ip.
+Add root account to remote control mysql server with your ip.
 ```
 CREATE USER 'root'@'<your_ip>' IDENTIFIED WITH mysql_native_password BY '<your_password>';
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'<your_ip>' WITH GRANT OPTION;
