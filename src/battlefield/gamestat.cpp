@@ -1,4 +1,6 @@
 #include <string>
+#include <mysql/mysql_time.h>
+
 #include <logger.h>
 #include <globals.h>
 #include <database.h>

@@ -980,7 +980,7 @@ bool Database::updatePlayerStats(const Battlefield::Player& player)
 	query += "	`ttb` = ?, ";
 	query += "	`mv` = ?, ";
 	query += "	`ngp` = ? ";
-	query += "WHERE "
+	query += "WHERE ";
 	query += "	`profileid` = ?";
 	
 	int input_score     = player.GetScore();

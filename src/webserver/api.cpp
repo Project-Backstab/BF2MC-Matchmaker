@@ -116,3 +116,82 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
+
+void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value response;
+	
+	Battlefield::Player player;
+	
+	// Get player profileid
+	auto it = url_variables.find("profileid");
+	if (it != url_variables.end())
+	{
+		player.SetProfileId(it->second);
+	}
+	
+	g_database->queryPlayerByProfileid(player);
+	g_database->queryPlayerStats(player);
+	
+	/*
+	int              GetProfileId() const   { return this->_profileid;     }
+			int              GetUserId() const      { return this->_userid;        }
+			std::string      GetNick() const        { return this->_nick;          }
+			std::string      GetUniquenick() const  { return this->_uniquenick;    }
+			std::string      GetEmail() const       { return this->_email;         }
+			std::string      GetPassword() const    { return this->_password;      }
+			std::string      GetLastLogin() const   { return this->_last_login;    }
+			std::string      GetLastLoginIp() const { return this->_last_login_ip; }
+			std::string      GetCreatedAt() const   { return this->_created_at;    }
+	*/
+	
+	// Secret
+	//response["email"]         = player.GetEmail();
+	//response["password"]      = player.GetPassword();
+	//response["last_login_ip"] = player.GetLastLoginIp();
+	
+	// Player information
+	response["profileid"]  = player.GetProfileId();
+	response["userid"]     = player.GetUserId();
+	response["nick"]       = player.GetNick();
+	response["uniquenick"] = player.GetUniquenick();
+	response["last_login"] = player.GetLastLogin();
+	response["created_at"] = player.GetCreatedAt();
+	
+	// Player stats informaton
+	response["score"] = player.GetScore();
+	response["ran"] = player.GetRank();
+	response["pph"] = player.GetPPH();
+	response["kills"] = player.GetKills();
+	response["deaths"] = player.GetDeaths();
+	response["suicides"] = player.GetSuicides();
+	response["time"] = player.GetTime();
+	response["vehicles"] = player.GetVehiclesDestroyed();
+	response["lavd"] = player.GetLAVsDestroyed();
+	response["mavd"] = player.GetMAVsDestroyed();
+	response["havd"] = player.GetHAVsDestroyed();
+	response["hed"] = player.GetHelicoptersDestroyed();
+	response["pld"] = player.GetPlanesDestroyed();
+	response["bod"] = player.GetBoatsDestroyed();
+	response["k1"] = player.GetKillsAssualtKit();
+	response["s1"] = player.GetDeathsAssualtKit();
+	response["k2"] = player.GetKillsSniperKit();
+	response["s2"] = player.GetDeathsSniperKit();
+	response["k3"] = player.GetKillsSpecialOpKit();
+	response["s3"] = player.GetDeathsSpecialOpKit();
+	response["k4"] = player.GetKillsCombatEngineerKit();
+	response["s4"] = player.GetDeathsCombatEngineerKit();
+	response["k5"] = player.GetKillsSupportKit();
+	response["s5"] = player.GetDeathsSupportKit();
+	response["tk"] = player.GetTeamKills();
+	response["medals"] = player.GetMedals();
+	response["ttb"] = player.GetTotalTopPlayer();
+	response["mv"] = player.GetTotalVictories();
+	response["ngp"] = player.GetTotalGameSessions();
+	
+	this->Send(response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+

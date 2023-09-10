@@ -140,7 +140,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// API
 	{ "/API/servers/live",                                    &Webserver::Client::requestAPIServersLive     },
-	
+	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
