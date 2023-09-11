@@ -86,10 +86,12 @@ class Database
 	
 	public:
 		// Rank Players
-		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players, uint32_t offset = 0);
-		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type, uint32_t offset = 0);
+		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
+				uint32_t limit = 0, uint32_t offset = 0);
+		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+				uint32_t limit = 0, uint32_t offset = 0);
 		bool queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s, 
-				uint32_t offset = 0);
+				uint32_t limit = 0, uint32_t offset = 0);
 		
 		bool queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
 		bool queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid);

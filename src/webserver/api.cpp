@@ -374,9 +374,19 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 {
 	Json::Value response(Json::arrayValue);
 	std::string sort = "";
+	uint32_t limit = 10;
 	uint32_t offset = 0;
 	
-	auto it = url_variables.find("offset");
+	auto it = url_variables.find("limit");
+	if (it != url_variables.end())
+	{
+		if(it->second == "25")       limit = 25;
+		else if(it->second == "50")  limit = 50;
+		else if(it->second == "75")  limit = 75;
+		else if(it->second == "100") limit = 100;
+	}
+	
+	it = url_variables.find("offset");
 	if (it != url_variables.end())
 	{
 		try
@@ -393,27 +403,27 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 	{
 		sort = it->second;
 		
-		if(sort == "rank")          g_database->queryRankPlayersTopByRank(rank_players, offset);
-		else if(sort == "score")    g_database->queryRankPlayersTopByType(rank_players, "score", offset);
-		else if(sort == "pph")      g_database->queryRankPlayersTopByType(rank_players, "pph", offset);
-		else if(sort == "k1")       g_database->queryRankPlayersTopByType(rank_players, "k1", offset);
-		else if(sort == "k2")       g_database->queryRankPlayersTopByType(rank_players, "k2", offset);
-		else if(sort == "k3")       g_database->queryRankPlayersTopByType(rank_players, "k3", offset);
-		else if(sort == "k4")       g_database->queryRankPlayersTopByType(rank_players, "k4", offset);
-		else if(sort == "k5")       g_database->queryRankPlayersTopByType(rank_players, "k5", offset);
-		else if(sort == "kills")    g_database->queryRankPlayersTopByType(rank_players, "kills", offset);
-		else if(sort == "lavd")     g_database->queryRankPlayersTopByType(rank_players, "lavd", offset);
-		else if(sort == "mavd")     g_database->queryRankPlayersTopByType(rank_players, "mavd", offset);
-		else if(sort == "havd")     g_database->queryRankPlayersTopByType(rank_players, "havd", offset);
-		else if(sort == "hed")      g_database->queryRankPlayersTopByType(rank_players, "hed", offset);
-		else if(sort == "bod")      g_database->queryRankPlayersTopByType(rank_players, "bod", offset);
-		else if(sort == "vehicles") g_database->queryRankPlayersTopByType(rank_players, "vehicles", offset);
-		else if(sort == "ratio_k1") g_database->queryRankPlayersTopByRatio(rank_players, "k1", "s1", offset);
-		else if(sort == "ratio_k2") g_database->queryRankPlayersTopByRatio(rank_players, "k2", "s2", offset);
-		else if(sort == "ratio_k3") g_database->queryRankPlayersTopByRatio(rank_players, "k3", "s3", offset);
-		else if(sort == "ratio_k4") g_database->queryRankPlayersTopByRatio(rank_players, "k4", "s4", offset);
-		else if(sort == "ratio_k5") g_database->queryRankPlayersTopByRatio(rank_players, "k5", "s5", offset);
-		else if(sort == "ratio_kd") g_database->queryRankPlayersTopByRatio(rank_players, "kills", "deaths", offset);
+		if(sort == "rank")          g_database->queryRankPlayersTopByRank(rank_players, limit, offset);
+		else if(sort == "score")    g_database->queryRankPlayersTopByType(rank_players, "score", limit, offset);
+		else if(sort == "pph")      g_database->queryRankPlayersTopByType(rank_players, "pph", limit, offset);
+		else if(sort == "k1")       g_database->queryRankPlayersTopByType(rank_players, "k1", limit, offset);
+		else if(sort == "k2")       g_database->queryRankPlayersTopByType(rank_players, "k2", limit, offset);
+		else if(sort == "k3")       g_database->queryRankPlayersTopByType(rank_players, "k3", limit, offset);
+		else if(sort == "k4")       g_database->queryRankPlayersTopByType(rank_players, "k4", limit, offset);
+		else if(sort == "k5")       g_database->queryRankPlayersTopByType(rank_players, "k5", limit, offset);
+		else if(sort == "kills")    g_database->queryRankPlayersTopByType(rank_players, "kills", limit, offset);
+		else if(sort == "lavd")     g_database->queryRankPlayersTopByType(rank_players, "lavd", limit, offset);
+		else if(sort == "mavd")     g_database->queryRankPlayersTopByType(rank_players, "mavd", limit, offset);
+		else if(sort == "havd")     g_database->queryRankPlayersTopByType(rank_players, "havd", limit, offset);
+		else if(sort == "hed")      g_database->queryRankPlayersTopByType(rank_players, "hed", limit, offset);
+		else if(sort == "bod")      g_database->queryRankPlayersTopByType(rank_players, "bod", limit, offset);
+		else if(sort == "vehicles") g_database->queryRankPlayersTopByType(rank_players, "vehicles", limit, offset);
+		else if(sort == "ratio_k1") g_database->queryRankPlayersTopByRatio(rank_players, "k1", "s1", limit, offset);
+		else if(sort == "ratio_k2") g_database->queryRankPlayersTopByRatio(rank_players, "k2", "s2", limit, offset);
+		else if(sort == "ratio_k3") g_database->queryRankPlayersTopByRatio(rank_players, "k3", "s3", limit, offset);
+		else if(sort == "ratio_k4") g_database->queryRankPlayersTopByRatio(rank_players, "k4", "s4", limit, offset);
+		else if(sort == "ratio_k5") g_database->queryRankPlayersTopByRatio(rank_players, "k5", "s5", limit, offset);
+		else if(sort == "ratio_kd") g_database->queryRankPlayersTopByRatio(rank_players, "kills", "deaths", limit, offset);
 	}
 	
 	// Write leaderboard

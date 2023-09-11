@@ -4273,7 +4273,8 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 }
 
 // Rank Players
-bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players, uint32_t offset)
+bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
+		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4300,7 +4301,7 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
 	query += "	`ran` DESC, ";
 	query += "	`score` DESC, ";
 	query += "	`pph` DESC ";
-	query += "LIMIT 10 OFFSET ?";
+	query += "LIMIT ? OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
@@ -4312,8 +4313,11 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = &offset;
+	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &offset;
+	input_bind[1].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
@@ -4380,7 +4384,8 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
 	return true;
 }
 
-bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type, uint32_t offset)
+bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4401,7 +4406,7 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	query += "ORDER BY ";
 	query += "	`rank` ASC, ";
 	query += "	`" + type + "` DESC ";
-	query += "LIMIT 10 OFFSET ?";
+	query += "LIMIT ? OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
@@ -4411,8 +4416,11 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = &offset;
+	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &offset;
+	input_bind[1].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
@@ -4489,7 +4497,7 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 
 */
 bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s,
-		uint32_t offset)
+		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4514,7 +4522,7 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	query += "ORDER BY ";
 	query += "	`rank` ASC, ";
 	query += "	`ratio` DESC ";
-	query += "LIMIT 10 OFFSET ?";
+	query += "LIMIT ? OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
@@ -4526,8 +4534,11 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = &offset;
+	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &offset;
+	input_bind[1].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
