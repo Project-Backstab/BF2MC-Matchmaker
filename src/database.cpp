@@ -3764,7 +3764,7 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_STRING;
 	output_bind[1].buffer = output_auth;
-	output_bind[1].buffer_length = 21;
+	output_bind[1].buffer_length = 33;
 	output_bind[2].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[2].buffer = &output_pid;
 	output_bind[2].is_unsigned = false;
