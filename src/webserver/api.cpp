@@ -368,3 +368,88 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
+
+void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value response(Json::arrayValue);
+	std::string sort = "";
+	uint32_t offset = 0;
+	
+	auto it = url_variables.find("offset");
+	if (it != url_variables.end())
+	{
+		try
+		{
+			offset = std::stoul(it->second);
+		}
+		catch(...) {}
+	}
+	
+	// Get leaderboard from Database 
+	Battlefield::RankPlayers rank_players;
+	it = url_variables.find("sort");
+	if (it != url_variables.end())
+	{
+		sort = it->second;
+		
+		if(sort == "rank")          g_database->queryRankPlayersTopByRank(rank_players, offset);
+		else if(sort == "score")    g_database->queryRankPlayersTopByType(rank_players, "score", offset);
+		else if(sort == "pph")      g_database->queryRankPlayersTopByType(rank_players, "pph", offset);
+		else if(sort == "k1")       g_database->queryRankPlayersTopByType(rank_players, "k1", offset);
+		else if(sort == "k2")       g_database->queryRankPlayersTopByType(rank_players, "k2", offset);
+		else if(sort == "k3")       g_database->queryRankPlayersTopByType(rank_players, "k3", offset);
+		else if(sort == "k4")       g_database->queryRankPlayersTopByType(rank_players, "k4", offset);
+		else if(sort == "k5")       g_database->queryRankPlayersTopByType(rank_players, "k5", offset);
+		else if(sort == "kills")    g_database->queryRankPlayersTopByType(rank_players, "kills", offset);
+		else if(sort == "lavd")     g_database->queryRankPlayersTopByType(rank_players, "lavd", offset);
+		else if(sort == "mavd")     g_database->queryRankPlayersTopByType(rank_players, "mavd", offset);
+		else if(sort == "havd")     g_database->queryRankPlayersTopByType(rank_players, "havd", offset);
+		else if(sort == "hed")      g_database->queryRankPlayersTopByType(rank_players, "hed", offset);
+		else if(sort == "bod")      g_database->queryRankPlayersTopByType(rank_players, "bod", offset);
+		else if(sort == "vehicles") g_database->queryRankPlayersTopByType(rank_players, "vehicles", offset);
+		else if(sort == "ratio_k1") g_database->queryRankPlayersTopByRatio(rank_players, "k1", "s1", offset);
+		else if(sort == "ratio_k2") g_database->queryRankPlayersTopByRatio(rank_players, "k2", "s2", offset);
+		else if(sort == "ratio_k3") g_database->queryRankPlayersTopByRatio(rank_players, "k3", "s3", offset);
+		else if(sort == "ratio_k4") g_database->queryRankPlayersTopByRatio(rank_players, "k4", "s4", offset);
+		else if(sort == "ratio_k5") g_database->queryRankPlayersTopByRatio(rank_players, "k5", "s5", offset);
+		else if(sort == "ratio_kd") g_database->queryRankPlayersTopByRatio(rank_players, "kills", "deaths", offset);
+	}
+	
+	// Write leaderboard
+	for (const auto& pair : rank_players)
+	{
+		Json::Value item;
+		
+		item["position"]   = pair.first;
+		item["uniquenick"] = pair.second.GetUniquenick();
+		
+		if(sort == "rank")                         item["rank"]     = pair.second.GetRank();
+		if(sort == "pph" || sort == "rank")        item["pph"]      = pair.second.GetPPH();
+		if(sort == "score" || sort == "rank")      item["score"]    = pair.second.GetScore();
+		else if(sort == "k1")                      item["k1"]       = pair.second.GetKillsAssualtKit();
+		else if(sort == "k2")                      item["k2"]       = pair.second.GetKillsSniperKit();
+		else if(sort == "k3")                      item["k3"]       = pair.second.GetKillsSpecialOpKit();
+		else if(sort == "k4")                      item["k4"]       = pair.second.GetKillsCombatEngineerKit();
+		else if(sort == "k5")                      item["k5"]       = pair.second.GetKillsSupportKit();
+		else if(sort == "kills")                   item["kills"]    = pair.second.GetKills();
+		else if(sort == "lavd")                    item["lavd"]     = pair.second.GetLAVsDestroyed();
+		else if(sort == "mavd")                    item["mavd"]     = pair.second.GetMAVsDestroyed();
+		else if(sort == "havd")                    item["havd"]     = pair.second.GetHAVsDestroyed();
+		else if(sort == "hed")                     item["hed"]      = pair.second.GetHelicoptersDestroyed();
+		else if(sort == "bod")                     item["bod"]      = pair.second.GetBoatsDestroyed();
+		else if(sort == "vehicles")                item["vehicles"] = pair.second.GetVehiclesDestroyed();
+		else if(sort == "ratio_k1")                item["ratio"]    = pair.second.GetRatioAssualtKit();
+		else if(sort == "ratio_k2")                item["ratio"]    = pair.second.GetRatioSniperKit();
+		else if(sort == "ratio_k3")                item["ratio"]    = pair.second.GetRatioSpecialOpKit();
+		else if(sort == "ratio_k4")                item["ratio"]    = pair.second.GetRatioCombatEngineerKit();
+		else if(sort == "ratio_k5")                item["ratio"]    = pair.second.GetRatioSupportKit();
+		else if(sort == "ratio_kd")                item["ratio"]    = pair.second.GetRatio();
+		
+		response.append(item);
+	}
+	
+	this->Send(response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}

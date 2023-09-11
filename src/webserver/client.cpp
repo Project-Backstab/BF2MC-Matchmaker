@@ -144,6 +144,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/API/games",                                           &Webserver::Client::requestAPIGames           },
 	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
 	{ "/API/clan",                                            &Webserver::Client::requestAPIClan            },
+	{ "/API/leaderboard",                                     &Webserver::Client::requestAPILeaderboard     },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)

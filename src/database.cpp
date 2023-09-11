@@ -1217,7 +1217,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	output_bind[4].buffer_length = 1025;
 	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[5].buffer = &output_region;
-	output_bind[5].is_unsigned = false;	
+	output_bind[5].is_unsigned = true;	
 	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[6].buffer = &output_created_at;	
 
@@ -1308,7 +1308,7 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	output_bind[4].buffer_length = 1025;
 	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[5].buffer = &output_region;
-	output_bind[5].is_unsigned = false;	
+	output_bind[5].is_unsigned = true;	
 	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[6].buffer = &output_created_at;
 	
@@ -1393,7 +1393,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	output_bind[3].buffer_length = 1025;
 	output_bind[4].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[4].buffer = &output_region;
-	output_bind[4].is_unsigned = false;	
+	output_bind[4].is_unsigned = true;	
 	output_bind[5].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[5].buffer = &output_created_at;
 	
@@ -4273,7 +4273,7 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 }
 
 // Rank Players
-bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
+bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4300,7 +4300,7 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	query += "	`ran` DESC, ";
 	query += "	`score` DESC, ";
 	query += "	`pph` DESC ";
-	query += "LIMIT 10";
+	query += "LIMIT 10 OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
@@ -4308,6 +4308,12 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	int  output_score = -1;
 	int  output_ran = -1;
 	int  output_pph = -1;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &offset;
+	input_bind[0].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
@@ -4335,11 +4341,12 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	
 	if(
 		!this->_init(&statement) ||
-		!this->_prepare(statement, query) ||
+		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
 	{
 		// Cleanup
+		free(input_bind);
 		free(output_bind);
 		
 		return false;
@@ -4367,12 +4374,13 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players)
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 		
 	return true;
 }
 
-bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type)
+bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4393,12 +4401,18 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	query += "ORDER BY ";
 	query += "	`rank` ASC, ";
 	query += "	`" + type + "` DESC ";
-	query += "LIMIT 10;";
+	query += "LIMIT 10 OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
 	char output_uniquenick[33];
 	int  output_value;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &offset;
+	input_bind[0].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
@@ -4414,17 +4428,18 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[3].buffer = const_cast<int*>(&output_value);
 	output_bind[3].is_unsigned = false;
-
+	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
 	if(
 		!this->_init(&statement) ||
-		!this->_prepare(statement, query) ||
+		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
 	{
 		// Cleanup
+		free(input_bind);
 		free(output_bind);
 		
 		return false;
@@ -4464,6 +4479,7 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 		
 	return true;
@@ -4472,7 +4488,8 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 /*
 
 */
-bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s)
+bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s,
+		uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4497,7 +4514,7 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	query += "ORDER BY ";
 	query += "	`rank` ASC, ";
 	query += "	`ratio` DESC ";
-	query += "LIMIT 10;";
+	query += "LIMIT 10 OFFSET ?";
 	
 	int  output_rank;
 	int  output_profileid;
@@ -4505,6 +4522,12 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	int  output_ratio;
 	int  output_k;
 	int  output_s;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &offset;
+	input_bind[0].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
@@ -4532,11 +4555,12 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	
 	if(
 		!this->_init(&statement) ||
-		!this->_prepare(statement, query) ||
+		!this->_prepare(statement, query, input_bind) ||
 		!this->_execute(statement, output_bind)
 	)
 	{
 		// Cleanup
+		free(input_bind);
 		free(output_bind);
 		
 		return false;
@@ -4575,6 +4599,7 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 		
 	return true;

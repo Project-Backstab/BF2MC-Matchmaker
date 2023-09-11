@@ -64,7 +64,7 @@ namespace Battlefield
 			uint32_t                    GetDraws() const     { return this->_draws;      }
 			std::string                 GetCreatedAt() const { return this->_created_at; }
 			
-			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;    }
+			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;      }
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
