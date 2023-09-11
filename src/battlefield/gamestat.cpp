@@ -15,6 +15,19 @@ bool Battlefield::GameStat::SetId(int id)
 	return true;
 }
 
+bool Battlefield::GameStat::SetId(const std::string str_id)
+{
+	try
+	{
+		int id = std::stoi(str_id);
+		
+		return this->SetId(id);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
 bool Battlefield::GameStat::SetGameType(uint8_t gametype)
 {
 	this->_gametype = gametype;

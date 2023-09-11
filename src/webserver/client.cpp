@@ -140,6 +140,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// API
 	{ "/API/servers/live",                                    &Webserver::Client::requestAPIServersLive     },
+	{ "/API/game",                                            &Webserver::Client::requestAPIGame            },
 	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
 };
 

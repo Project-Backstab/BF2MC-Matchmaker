@@ -119,6 +119,87 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
+void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value response;
+	Battlefield::GameStat game_stat;
+	
+	// Get Game Stats
+	auto it = url_variables.find("id");
+	if (it != url_variables.end())
+	{
+		game_stat.SetId(it->second);
+		
+		// Get Game Stat information from database
+		g_database->queryGameStatById(game_stat);
+	}
+	
+	// Get Game stat player information from database
+	g_database->queryGameStatPlayers(game_stat);
+	
+	// Game Stat information
+	response["id"]         = game_stat.GetId();
+	response["gametype"]   = game_stat.GetGameType();
+	response["gamver"]     = game_stat.GetGameVersion();
+	response["hostname"]   = game_stat.GetHostName();
+	response["mapid"]      = game_stat.GetMapId();
+	response["numplayers"] = game_stat.GetNumPlayers();
+	response["pplayers"]   = game_stat.GetPPlayers();
+	response["tplayed"]    = game_stat.GetTimePlayed();
+	response["clanid_t0"]  = game_stat.GetTeam1ClanId();
+	response["clanid_t1"]  = game_stat.GetTeam2ClanId();
+	response["country_t0"] = game_stat.GetTeam1Country();
+	response["country_t1"] = game_stat.GetTeam2Country();
+	response["victory_t0"] = game_stat.GetTeam1Victory();
+	response["victory_t1"] = game_stat.GetTeam2Victory();
+	
+	// Game server player information
+	Json::Value players(Json::arrayValue);
+	for(const Battlefield::GameStatPlayer gsplayer : game_stat.GetPlayers())
+	{
+		Json::Value player;
+		
+		player["id"]       = gsplayer.GetId();
+		player["auth"]     = gsplayer.GetAuth();
+		player["pid"]      = gsplayer.GetProfileId();
+		player["score"]    = gsplayer.GetScore();
+		player["rank"]     = gsplayer.GetRank();
+		player["pph"]      = gsplayer.GetPPH();
+		player["kills"]    = gsplayer.GetKills();
+		player["suicides"] = gsplayer.GetSuicides();
+		player["time"]     = gsplayer.GetTime();
+		player["lavd"]     = gsplayer.GetLAVsDestroyed();
+		player["mavd"]     = gsplayer.GetMAVsDestroyed();
+		player["havd"]     = gsplayer.GetHAVsDestroyed();
+		player["hed"]      = gsplayer.GetHelicoptersDestroyed();
+		player["pld"]      = gsplayer.GetPlanesDestroyed();
+		player["bod"]      = gsplayer.GetBoatsDestroyed();
+		player["k1"]       = gsplayer.GetKillsAssualtKit();
+		player["s1"]       = gsplayer.GetDeathsAssualtKit();
+		player["k2"]       = gsplayer.GetKillsSniperKit();
+		player["s2"]       = gsplayer.GetDeathsSniperKit();
+		player["k3"]       = gsplayer.GetKillsSpecialOpKit();
+		player["s3"]       = gsplayer.GetDeathsSpecialOpKit();
+		player["k4"]       = gsplayer.GetKillsCombatEngineerKit();
+		player["s4"]       = gsplayer.GetDeathsCombatEngineerKit();
+		player["k5"]       = gsplayer.GetKillsSupportKit();
+		player["s5"]       = gsplayer.GetDeathsSupportKit();
+		player["tk"]       = gsplayer.GetTeamKills();
+		player["medals"]   = gsplayer.GetMedals();
+		player["ttb"]      = gsplayer.GetTotalTopPlayer();
+		player["mv"]       = gsplayer.GetTotalVictories();
+		player["ngp"]      = gsplayer.GetTotalGameSessions();
+		
+		players.append(player);
+	}
+	response["players"] = players;
+	
+	this->Send(response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
 void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {

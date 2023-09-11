@@ -69,6 +69,7 @@ namespace Battlefield
 			GameStatPlayers GetPlayers() const   { return this->_players;    }
 			
 			bool SetId(int id);
+			bool SetId(const std::string str_id);
 			bool SetGameType(uint8_t gametype);
 			bool SetGameType(const std::string str_gametype);
 			bool SetGameVersion(const std::string gamver);
@@ -181,8 +182,8 @@ namespace Battlefield
 			bool SetProfileId(const std::string& str_pid);
 			bool SetScore(int32_t score);
 			bool SetScore(const std::string& str_score);
-			bool SetRank(uint32_t ran);
-			bool SetRank(const std::string& str_ran);
+			bool SetRank(uint32_t rank);
+			bool SetRank(const std::string& str_rank);
 			bool SetPPH(uint32_t pph);
 			bool SetPPH(const std::string& str_pph);
 			bool SetKills(uint32_t kills);

@@ -75,10 +75,12 @@ class Database
 	
 	public:
 		// Game Stat
+		bool queryGameStatById(Battlefield::GameStat& game_stat);
 		bool insertGameStat(Battlefield::GameStat& game_stat);
 	
-	private:
 		// Game Stat Player
+		bool queryGameStatPlayers(Battlefield::GameStat& game_stat);
+	private:
 		bool _insertGameStatPlayer(const Battlefield::GameStat& game_stat, Battlefield::GameStatPlayer& gsplayer);
 	
 	public:

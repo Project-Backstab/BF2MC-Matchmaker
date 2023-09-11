@@ -3471,6 +3471,137 @@ bool Database::_removeGameServerPlayers(const Battlefield::GameServer& game_serv
 }
 
 // Game Stat
+bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
+	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
+	query += "	`created_at` ";
+	query += "FROM ";
+	query += "	`GameStats` ";
+	query += "WHERE ";
+	query += "	`id` = ?";
+	
+	int        input_id = game_stat.GetId();
+	
+	uint8_t    output_gametype;
+	char       output_gamever[21];
+	char       output_hostname[46];
+	uint8_t    output_mapid;
+	uint8_t    output_numplayers;
+	uint8_t    output_pplayers;
+	uint16_t   output_tplayed;
+	uint8_t    output_clanid_t0;
+	uint8_t    output_clanid_t1;
+	uint8_t    output_country_t0;
+	uint8_t    output_country_t1;
+	uint8_t    output_victory_t0;
+	uint8_t    output_victory_t1;
+	MYSQL_TIME output_created_at;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_id;
+	input_bind[0].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(14, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[0].buffer = &output_gametype;
+	output_bind[0].is_unsigned = true;
+	output_bind[1].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[1].buffer = output_gamever;
+	output_bind[1].buffer_length = 21;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = output_hostname;
+	output_bind[2].buffer_length = 46;
+	output_bind[3].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[3].buffer = &output_mapid;
+	output_bind[3].is_unsigned = true;
+	output_bind[4].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[4].buffer = &output_numplayers;
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[5].buffer = &output_pplayers;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[6].buffer = &output_tplayed;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[7].buffer = &output_clanid_t0;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[8].buffer = &output_clanid_t1;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[9].buffer = &output_country_t0;
+	output_bind[9].is_unsigned = true;
+	output_bind[10].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[10].buffer = &output_country_t1;
+	output_bind[10].is_unsigned = true;
+	output_bind[11].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[11].buffer = &output_victory_t0;
+	output_bind[11].is_unsigned = true;
+	output_bind[12].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[12].buffer = &output_victory_t1;
+	output_bind[12].is_unsigned = true;
+	output_bind[13].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[13].buffer = &output_created_at;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+		
+		game_stat.SetGameType(output_gametype);
+		game_stat.SetGameVersion(output_gamever);
+		game_stat.SetHostName(output_hostname);
+		game_stat.SetMapId(output_mapid);
+		game_stat.SetNumPlayers(output_numplayers);
+		game_stat.SetPPlayers(output_pplayers);
+		game_stat.SetTimePlayed(output_tplayed);
+		game_stat.SetTeam1ClanId(output_clanid_t0);
+		game_stat.SetTeam2ClanId(output_clanid_t1);
+		game_stat.SetTeam1Country(output_country_t0);
+		game_stat.SetTeam2Country(output_country_t1);
+		game_stat.SetTeam1Victory(output_victory_t0);
+		game_stat.SetTeam2Victory(output_victory_t1);
+		game_stat.SetCreatedAt(output_created_at);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
 bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -3571,10 +3702,228 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	return true;
 }
 
+// Game Stat Player
+bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`id`, `auth`, `pid`, `score`, `rank`, `pph`, `kills`, `suicides`, `time`, ";
+	query += "	`lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
+	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
+	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp` ";
+	query += "FROM ";
+	query += "	`GameStatPlayers` ";
+	query += "WHERE ";
+	query += "	`gamestatid` = ?";
+	
+	int      input_gamestatid = game_stat.GetId();
+	
+	int      output_id;
+	char     output_auth[33];
+	int      output_pid;
+	int32_t  output_score;
+	uint32_t output_rank;
+	uint32_t output_pph;
+	uint32_t output_kills;
+	uint32_t output_suicides;
+	uint32_t output_time;
+	uint32_t output_lavd;
+	uint32_t output_mavd;
+	uint32_t output_havd;
+	uint32_t output_hed;
+	uint32_t output_pld;
+	uint32_t output_bod;
+	uint32_t output_k1;
+	uint32_t output_s1;
+	uint32_t output_k2;
+	uint32_t output_s2;
+	uint32_t output_k3;
+	uint32_t output_s3;
+	uint32_t output_k4;
+	uint32_t output_s4;
+	uint32_t output_k5;
+	uint32_t output_s5;
+	uint32_t output_tk;
+	uint32_t output_medals;
+	uint32_t output_ttb;
+	uint32_t output_mv;
+	uint32_t output_ngp;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_gamestatid;
+	input_bind[0].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_id;
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_STRING;
+	output_bind[1].buffer = output_auth;
+	output_bind[1].buffer_length = 21;
+	output_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[2].buffer = &output_pid;
+	output_bind[2].is_unsigned = false;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = &output_score;
+	output_bind[3].is_unsigned = false;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = &output_rank;
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = &output_pph;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = &output_kills;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_suicides;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = &output_time;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[9].buffer = &output_lavd;
+	output_bind[9].is_unsigned = true;
+	output_bind[10].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[10].buffer = &output_mavd;
+	output_bind[10].is_unsigned = true;
+	output_bind[11].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[11].buffer = &output_havd;
+	output_bind[11].is_unsigned = true;
+	output_bind[12].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[12].buffer = &output_hed;
+	output_bind[12].is_unsigned = true;
+	output_bind[13].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[13].buffer = &output_pld;
+	output_bind[13].is_unsigned = true;
+	output_bind[14].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[14].buffer = &output_bod;
+	output_bind[14].is_unsigned = true;
+	output_bind[15].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[15].buffer = &output_k1;
+	output_bind[15].is_unsigned = true;
+	output_bind[16].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[16].buffer = &output_s1;
+	output_bind[16].is_unsigned = true;
+	output_bind[17].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[17].buffer = &output_k2;
+	output_bind[17].is_unsigned = true;
+	output_bind[18].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[18].buffer = &output_s2;
+	output_bind[18].is_unsigned = true;
+	output_bind[19].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[19].buffer = &output_k3;
+	output_bind[19].is_unsigned = true;
+	output_bind[20].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[20].buffer = &output_s3;
+	output_bind[20].is_unsigned = true;
+	output_bind[21].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[21].buffer = &output_k4;
+	output_bind[21].is_unsigned = true;
+	output_bind[22].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[22].buffer = &output_s4;
+	output_bind[22].is_unsigned = true;
+	output_bind[23].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[23].buffer = &output_k5;
+	output_bind[23].is_unsigned = true;
+	output_bind[24].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[24].buffer = &output_s5;
+	output_bind[24].is_unsigned = true;
+	output_bind[25].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[25].buffer = &output_tk;
+	output_bind[25].is_unsigned = true;
+	output_bind[26].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[26].buffer = &output_medals;
+	output_bind[26].is_unsigned = true;
+	output_bind[27].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[27].buffer = &output_ttb;
+	output_bind[27].is_unsigned = true;
+	output_bind[28].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[28].buffer = &output_mv;
+	output_bind[28].is_unsigned = true;
+	output_bind[29].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[29].buffer = &output_ngp;
+	output_bind[29].is_unsigned = true;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+		
+		Battlefield::GameStatPlayer gsplayer;
+		
+		gsplayer.SetId(output_id);
+		gsplayer.SetAuth(output_auth);
+		gsplayer.SetProfileId(output_pid);
+		gsplayer.SetScore(output_score);
+		gsplayer.SetRank(output_rank);
+		gsplayer.SetPPH(output_pph);
+		gsplayer.SetKills(output_kills);
+		gsplayer.SetSuicides(output_suicides);
+		gsplayer.SetTime(output_time);
+		gsplayer.SetLAVsDestroyed(output_lavd);
+		gsplayer.SetMAVsDestroyed(output_mavd);
+		gsplayer.SetHAVsDestroyed(output_havd);
+		gsplayer.SetHelicoptersDestroyed(output_hed);
+		gsplayer.SetPlanesDestroyed(output_pld);
+		gsplayer.SetBoatsDestroyed(output_bod);
+		gsplayer.SetKillsAssualtKit(output_k1);
+		gsplayer.SetDeathsAssualtKit(output_s1);
+		gsplayer.SetKillsSniperKit(output_k2);
+		gsplayer.SetDeathsSniperKit(output_s2);
+		gsplayer.SetKillsSpecialOpKit(output_k3);
+		gsplayer.SetDeathsSpecialOpKit(output_s3);
+		gsplayer.SetKillsCombatEngineerKit(output_k4);
+		gsplayer.SetDeathsCombatEngineerKit(output_s4);
+		gsplayer.SetKillsSupportKit(output_k5);
+		gsplayer.SetDeathsSupportKit(output_s5);
+		gsplayer.SetTeamKills(output_tk);
+		gsplayer.SetMedals(output_medals);
+		gsplayer.SetTotalTopPlayer(output_ttb);
+		gsplayer.SetTotalVictories(output_mv);
+		gsplayer.SetTotalGameSessions(output_ngp);
+		
+		game_stat.AddPlayer(gsplayer);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
 bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Battlefield::GameStatPlayer& gsplayer)
 {
 	std::string query = "";
-	query += "INSERT INTO `GameStatPlayer` ";
+	query += "INSERT INTO `GameStatPlayers` ";
 	query += "	(`gamestatid`, `auth`, `pid`, `score`, `rank`, `pph`, `kills`, ";
 	query += "	`suicides`, `time`, `lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
 	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
