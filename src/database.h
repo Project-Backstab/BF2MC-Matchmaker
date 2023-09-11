@@ -48,12 +48,12 @@ class Database
 		bool queryClanByClanId(Battlefield::Clan& clan);
 		bool queryClanByNameOrTag(Battlefield::Clan& clan);
 		bool queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player);
-		bool queryClanRanksByClanId(Battlefield::Clan& clan);
 		bool insertClan(Battlefield::Clan& clan);
 		bool updateClan(const Battlefield::Clan& clan);
 		bool removeClan(const Battlefield::Clan& clan);
 		
 		// Clan Rank
+		bool queryClanRanksByClanId(Battlefield::Clan& clan);
 		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
 		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
 		bool removeClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player);

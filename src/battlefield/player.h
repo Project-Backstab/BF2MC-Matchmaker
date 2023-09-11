@@ -68,6 +68,7 @@ namespace Battlefield
 			bool SetLastLogin(MYSQL_TIME last_login);
 			bool SetLastLoginIp(const std::string& last_login_ip);
 			bool SetCreatedAt(MYSQL_TIME created_at);
+			
 			bool AddFriend(int profileid);
 	};
 }

@@ -1,3 +1,5 @@
+#include <mysql/mysql_time.h>
+
 #include <battlefield/clan.h>
 
 void Battlefield::Clan::useExample()
@@ -8,7 +10,6 @@ void Battlefield::Clan::useExample()
 	this->SetHomepage("UMBRELLA");
 	this->SetInfo("G%2dVIRUS");
 	this->SetRegion(Regions::Europe);
-	this->SetDate("1%2f16%2f2013+3%3a10%3a41+AM");
 	this->SetStats(1851, 1671, 10, 40);
 }
 
@@ -99,7 +100,7 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 	return true;
 }
 
-bool Battlefield::Clan::SetRegion(int int_region)
+bool Battlefield::Clan::SetRegion(uint8_t int_region)
 {
 	if(int_region >= America && int_region <= Asia)
 	{
@@ -115,27 +116,13 @@ bool Battlefield::Clan::SetRegion(const std::string& str_region)
 {
 	try
 	{
-		int int_region = std::stoi(str_region);
+		uint8_t int_region = static_cast<uint8_t>(std::stoul(str_region));
 		
 		return this->SetRegion(int_region);
 	}
 	catch(...) {};
 	
 	return false;
-}
-
-bool Battlefield::Clan::SetDate(const std::string &date)
-{
-	if(date.size() > 15)
-	{
-		this->_date = date.substr(0, 15);
-	}
-	else
-	{
-		this->_date = date;
-	}
-	
-	return true;
 }
 
 bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws)
@@ -147,12 +134,31 @@ bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses
 	return true;
 }
 
+bool Battlefield::Clan::SetCreatedAt(MYSQL_TIME created_at)
+{
+	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
+
+	// Set up the struct tm for strftime
+	struct tm timeinfo;
+	timeinfo.tm_year = created_at.year - 1900;
+	timeinfo.tm_mon = created_at.month - 1;
+	timeinfo.tm_mday = created_at.day;
+	timeinfo.tm_hour = created_at.hour;
+	timeinfo.tm_min = created_at.minute;
+	timeinfo.tm_sec = created_at.second;
+
+	strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
+	
+	this->_created_at = formatted_datetime;
+	return true;
+}
+
 void Battlefield::Clan::AddRank(int profileid, Ranks rank)
 {
 	this->_ranks.insert(std::make_pair(profileid, rank));
 }
 
-void Battlefield::Clan::AddRank(int profileid, int int_rank)
+void Battlefield::Clan::AddRank(int profileid, uint8_t int_rank)
 {	
 	this->AddRank(profileid, convertRank(int_rank));
 }
@@ -184,7 +190,7 @@ Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_r
 	return Unknown_Rank;
 }
 
-Battlefield::Clan::Ranks Battlefield::Clan::convertRank(int int_rank)
+Battlefield::Clan::Ranks Battlefield::Clan::convertRank(uint8_t int_rank)
 {
 	if(int_rank >= Leader && int_rank <= Member)
 	{
@@ -198,7 +204,7 @@ Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& s
 {
 	try
 	{
-		int int_region = std::stoi(str_region);
+		uint8_t int_region = static_cast<uint8_t>(std::stoul(str_region));
 		
 		return convertRegion(int_region);
 	}
@@ -207,7 +213,7 @@ Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& s
 	return Unknown_Region;
 }
 
-Battlefield::Clan::Regions Battlefield::Clan::convertRegion(int int_region)
+Battlefield::Clan::Regions Battlefield::Clan::convertRegion(uint8_t int_region)
 {
 	if(int_region >= America && int_region <= Asia)
 	{

@@ -143,6 +143,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/API/game",                                            &Webserver::Client::requestAPIGame            },
 	{ "/API/games",                                           &Webserver::Client::requestAPIGames           },
 	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
+	{ "/API/clan",                                            &Webserver::Client::requestAPIClan            },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -992,9 +993,8 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		g_database->queryClanByClanId(clan);
 	}
 	
-	
-	// Get clan information
-	g_database->queryClanByClanId(clan);
+	// Get clan ranks information from database
+	g_database->queryClanRanksByClanId(clan);
 	
 	if(clan.GetClanId() != -1)
 	{
@@ -1005,7 +1005,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		response += "homepage," + clan.GetHomepage() + "\r\n";
 		response += "info," + clan.GetInfo() + "\r\n";
 		response += "region," + std::to_string(clan.GetRegion()) + "\r\n";
-		response += "lastreportdate," + clan.GetDate() + "\r\n";
+		response += "lastreportdate,69_1337_69\r\n";
 		
 		response += "rating," + std::to_string(clan.GetRating()) + "\r\n";
 		response += "wins," + std::to_string(clan.GetWins()) + "\r\n";

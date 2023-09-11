@@ -153,6 +153,7 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 	response["country_t1"] = game_stat.GetTeam2Country();
 	response["victory_t0"] = game_stat.GetTeam1Victory();
 	response["victory_t1"] = game_stat.GetTeam2Victory();
+	response["created_at"] = game_stat.GetCreatedAt();
 	
 	// Game server player information
 	Json::Value players(Json::arrayValue);
@@ -232,6 +233,7 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 {
 	Json::Value response;
 	Battlefield::Player player;
+	Battlefield::Clan clan;
 	
 	// Get player profileid
 	auto it = url_variables.find("profileid");
@@ -254,6 +256,9 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	
 	// Get player Stats information from database
 	g_database->queryPlayerStats(player);
+	
+	// Get player Stats information from database
+	g_database->queryClanByPlayer(clan, player);
 	
 	// Player information
 	response["profileid"]  = player.GetProfileId();
@@ -299,8 +304,67 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	response["mv"] = player.GetTotalVictories();
 	response["ngp"] = player.GetTotalGameSessions();
 	
+	Json::Value json_clan;
+	
+	json_clan["clanid"]   = clan.GetClanId();
+	json_clan["name"]     = clan.GetName();
+	json_clan["tag"]      = clan.GetTag();
+	
+	response["clan"] = json_clan;
+	
 	this->Send(response);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
+void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value response;
+	Battlefield::Clan clan;
+	
+	// Get player profileid
+	auto it = url_variables.find("clanid");
+	if (it != url_variables.end())
+	{
+		clan.SetClanId(it->second);
+		
+		// Get clan information from database
+		g_database->queryClanByClanId(clan);
+	}
+	
+	// Get clan ranks information from database
+	g_database->queryClanRanksByClanId(clan);
+	
+	// Clan information
+	response["clanid"]     = clan.GetClanId();
+	response["name"]       = clan.GetName();
+	response["tag"]        = clan.GetTag();
+	response["homepage"]   = clan.GetHomepage();
+	response["info"]       = clan.GetInfo();
+	response["region"]     = clan.GetRegion();
+	response["created_at"] = clan.GetCreatedAt();
+	
+	// Secret
+	//response["rating"] = clan.GetRating();
+	//response["wins"]   = clan.GetWins();
+	//response["losses"] = clan.GetLosses();
+	//response["draws"]  = clan.GetDraws();
+	
+	// Clan ranks information
+	Json::Value members(Json::arrayValue);
+	for (const auto& pair : clan.GetRanks())
+	{
+		Json::Value rank;
+		
+		rank["profileid"] = pair.first;
+		rank["rank"] = pair.second;
+		
+		members.append(rank);
+	}
+	response["members"] = members;
+	
+	this->Send(response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
