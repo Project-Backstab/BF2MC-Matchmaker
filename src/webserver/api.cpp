@@ -200,6 +200,33 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
+void Webserver::Client::requestAPIGames(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value response(Json::arrayValue);
+	Battlefield::GameStats game_stats;
+	
+	// Get Game Stats
+	auto it = url_variables.find("date");
+	if (it != url_variables.end())
+	{
+		std::string date = it->second;
+		
+		// Get Game Stat information from database
+		g_database->queryGameStatsByDate(game_stats, date);
+	}
+	
+	for(Battlefield::GameStat game_stat : game_stats)
+	{
+		response.append(game_stat.GetId());
+	}
+	
+	
+	this->Send(response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
 void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {

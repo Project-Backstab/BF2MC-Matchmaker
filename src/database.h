@@ -75,6 +75,7 @@ class Database
 	
 	public:
 		// Game Stat
+		bool queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string date);
 		bool queryGameStatById(Battlefield::GameStat& game_stat);
 		bool insertGameStat(Battlefield::GameStat& game_stat);
 	

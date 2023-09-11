@@ -69,6 +69,7 @@ namespace Webserver
 			// API
 			void requestAPIServersLive(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			void requestAPIGame(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+			void requestAPIGames(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			void requestAPIPlayer(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			
 		private:
