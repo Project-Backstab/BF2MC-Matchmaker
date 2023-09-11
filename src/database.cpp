@@ -1265,11 +1265,13 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`clanid`, `name`, `tag`, `homepage`, `info`, `region`, `created_at` ";
+	query += "	Clans.clanid as `clanid`, `name`, `tag`, `homepage`, `info`, `region`, `created_at` ";
 	query += "FROM ";
-	query += "	`ClanRanks` ";
+	query += "	`Clans`, `ClanRanks` ";
 	query += "WHERE ";
-	query += "	`profileid` = ?";
+	query += "	Clans.clanid = ClanRanks.clanid  ";
+	query += "AND ";
+	query += "	ClanRanks.profileid = ?";
 	
 	int input_profileid = player.GetProfileId();
 	
