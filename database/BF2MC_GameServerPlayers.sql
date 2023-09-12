@@ -24,17 +24,19 @@ DROP TABLE IF EXISTS `GameServerPlayers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `GameServerPlayers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `gameserverid` int DEFAULT NULL,
-  `name` varchar(45) DEFAULT NULL,
-  `score` smallint DEFAULT NULL,
-  `skill` varchar(45) DEFAULT NULL,
-  `ping` tinyint unsigned DEFAULT NULL,
-  `team` tinyint unsigned DEFAULT NULL,
-  `deaths` smallint unsigned DEFAULT NULL,
-  `profileid` int DEFAULT NULL,
+  `gameserverid` int NOT NULL DEFAULT '-1',
+  `name` varchar(45) NOT NULL DEFAULT '',
+  `score` smallint NOT NULL DEFAULT '0',
+  `skill` varchar(45) NOT NULL DEFAULT '',
+  `ping` tinyint unsigned NOT NULL DEFAULT '0',
+  `team` tinyint unsigned NOT NULL DEFAULT '0',
+  `deaths` smallint unsigned NOT NULL DEFAULT '0',
+  `profileid` int NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=264 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `gameserverid_idx` (`gameserverid`),
+  CONSTRAINT `FK_GameServerPlayers_gameserverid` FOREIGN KEY (`gameserverid`) REFERENCES `GameServers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=607 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +45,6 @@ CREATE TABLE `GameServerPlayers` (
 
 LOCK TABLES `GameServerPlayers` WRITE;
 /*!40000 ALTER TABLE `GameServerPlayers` DISABLE KEYS */;
-INSERT INTO `GameServerPlayers` VALUES (263,2865,'IamLupo',0,'rookie',0,0,0,10036819);
 /*!40000 ALTER TABLE `GameServerPlayers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-06 22:50:02
+-- Dump completed on 2023-09-12 22:52:34

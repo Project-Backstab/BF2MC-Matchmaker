@@ -24,57 +24,59 @@ DROP TABLE IF EXISTS `GameServers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `GameServers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ip` varchar(15) DEFAULT NULL,
-  `port` smallint unsigned DEFAULT '3658',
-  `flag` tinyint unsigned DEFAULT '59',
-  `localip0` varchar(15) DEFAULT NULL,
-  `localport` smallint unsigned DEFAULT NULL,
-  `natneg` tinyint unsigned DEFAULT NULL,
-  `gamename` varchar(45) DEFAULT NULL,
-  `hostname` varchar(45) DEFAULT NULL,
-  `hostport` smallint unsigned DEFAULT NULL,
-  `gamever` varchar(20) DEFAULT NULL,
-  `cl` varchar(20) DEFAULT NULL,
-  `rv` varchar(20) DEFAULT NULL,
-  `map` varchar(20) DEFAULT NULL,
-  `mc` tinyint unsigned DEFAULT NULL,
-  `mapname` tinyint unsigned DEFAULT NULL,
-  `gc` tinyint unsigned DEFAULT NULL,
-  `gametype` varchar(20) DEFAULT NULL,
-  `gamevariant` varchar(20) DEFAULT NULL,
-  `numplayers` tinyint unsigned DEFAULT NULL,
-  `maxplayers` tinyint unsigned DEFAULT NULL,
-  `numteams` tinyint unsigned DEFAULT NULL,
-  `gamemode` varchar(15) DEFAULT NULL,
-  `teamplay` tinyint unsigned DEFAULT NULL,
-  `fraglimit` tinyint unsigned DEFAULT NULL,
-  `teamfraglimit` tinyint unsigned DEFAULT NULL,
-  `timelimit` smallint unsigned DEFAULT NULL,
-  `timeelapsed` smallint unsigned DEFAULT NULL,
-  `password` tinyint unsigned DEFAULT NULL,
-  `nr` tinyint unsigned DEFAULT NULL,
-  `xr` tinyint unsigned DEFAULT NULL,
-  `ff` tinyint unsigned DEFAULT NULL,
-  `sr` tinyint unsigned DEFAULT NULL,
-  `rc` tinyint unsigned DEFAULT NULL,
-  `ni` bigint DEFAULT NULL,
-  `xi` bigint DEFAULT NULL,
-  `qm` tinyint unsigned DEFAULT NULL,
-  `region` tinyint unsigned DEFAULT NULL,
-  `c0` int DEFAULT NULL,
-  `c1` int DEFAULT NULL,
-  `n0` varchar(20) DEFAULT NULL,
-  `n1` varchar(20) DEFAULT NULL,
-  `c0c` tinyint unsigned DEFAULT NULL,
-  `c1c` tinyint unsigned DEFAULT NULL,
-  `team0` varchar(5) DEFAULT NULL,
-  `team1` varchar(5) DEFAULT NULL,
-  `score0` smallint DEFAULT NULL,
-  `score1` smallint DEFAULT NULL,
+  `ip` varchar(15) NOT NULL DEFAULT '',
+  `port` smallint unsigned NOT NULL DEFAULT '3658',
+  `flag` tinyint unsigned NOT NULL DEFAULT '59',
+  `localip0` varchar(15) NOT NULL DEFAULT '',
+  `localport` smallint unsigned NOT NULL DEFAULT '3658',
+  `natneg` tinyint unsigned NOT NULL DEFAULT '0',
+  `gamename` varchar(45) NOT NULL DEFAULT '',
+  `hostname` varchar(45) NOT NULL DEFAULT '',
+  `hostport` smallint unsigned NOT NULL DEFAULT '3658',
+  `gamever` varchar(20) NOT NULL DEFAULT 'V1.31a',
+  `cl` varchar(20) NOT NULL DEFAULT '',
+  `rv` varchar(20) NOT NULL DEFAULT '',
+  `map` varchar(20) NOT NULL DEFAULT '',
+  `mc` tinyint unsigned NOT NULL DEFAULT '0',
+  `mapname` tinyint unsigned NOT NULL DEFAULT '0',
+  `gc` tinyint unsigned NOT NULL DEFAULT '0',
+  `gametype` varchar(20) NOT NULL DEFAULT '',
+  `gamevariant` varchar(20) NOT NULL DEFAULT '',
+  `numplayers` tinyint unsigned NOT NULL DEFAULT '0',
+  `maxplayers` tinyint unsigned NOT NULL DEFAULT '0',
+  `numteams` tinyint unsigned NOT NULL DEFAULT '0',
+  `gamemode` varchar(15) NOT NULL DEFAULT '',
+  `teamplay` tinyint unsigned NOT NULL DEFAULT '0',
+  `fraglimit` tinyint unsigned NOT NULL DEFAULT '0',
+  `teamfraglimit` tinyint unsigned NOT NULL DEFAULT '0',
+  `timelimit` smallint unsigned NOT NULL DEFAULT '0',
+  `timeelapsed` smallint unsigned NOT NULL DEFAULT '0',
+  `password` tinyint unsigned NOT NULL DEFAULT '0',
+  `nr` tinyint unsigned NOT NULL DEFAULT '0',
+  `xr` tinyint unsigned NOT NULL DEFAULT '0',
+  `ff` tinyint unsigned NOT NULL DEFAULT '0',
+  `sr` tinyint unsigned NOT NULL DEFAULT '0',
+  `rc` tinyint unsigned NOT NULL DEFAULT '0',
+  `ni` bigint NOT NULL DEFAULT '0',
+  `xi` bigint NOT NULL DEFAULT '0',
+  `qm` tinyint unsigned NOT NULL DEFAULT '0',
+  `region` bigint unsigned NOT NULL DEFAULT '1',
+  `c0` int NOT NULL DEFAULT '-1',
+  `c1` int NOT NULL DEFAULT '-1',
+  `n0` varchar(32) NOT NULL DEFAULT '',
+  `n1` varchar(32) NOT NULL DEFAULT '',
+  `c0c` tinyint unsigned NOT NULL DEFAULT '0',
+  `c1c` tinyint unsigned NOT NULL DEFAULT '0',
+  `team0` varchar(5) NOT NULL DEFAULT '',
+  `team1` varchar(5) NOT NULL DEFAULT '',
+  `score0` smallint NOT NULL DEFAULT '0',
+  `score1` smallint NOT NULL DEFAULT '0',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `verified` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `ip_port_UNIQUE` (`ip`,`port`)
-) ENGINE=InnoDB AUTO_INCREMENT=3339 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=404 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +85,7 @@ CREATE TABLE `GameServers` (
 
 LOCK TABLES `GameServers` WRITE;
 /*!40000 ALTER TABLE `GameServers` DISABLE KEYS */;
-INSERT INTO `GameServers` VALUES (1,'168.119.189.149',3658,59,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'78.47.184.23',3658,59,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(32,'168.119.189.149',3659,59,'168.119.189.149',3659,1,'bfield1942ps2','test-server',3659,'V1.31a','100.216335.alpha','retail','thenest',1,12,0,'conquest','Border',0,6,2,'openplaying',0,0,0,1200,0,0,1,20,1,1,0,-2147483648,2147483647,0,0,-1,-1,'','',0,0,'AC','US',450,450),(2865,'86.87.139.235',3658,59,'10.10.10.110',3658,1,'bfield1942ps2','[CQ]BF2MC-IamLupo',3658,'V1.31a','100.216335.alpha','retail','bridgetoofar',1,2,0,'conquest','Border',1,24,2,'openplaying',0,0,0,1200,60,0,1,20,1,1,1,-2147483648,2147483647,0,0,-1,-1,'','',0,0,'CH','US',450,450);
+INSERT INTO `GameServers` VALUES (398,'86.87.139.235',3658,59,'10.10.10.110',3658,1,'bfield1942ps2','[CQ]BF2MC-IamLupo',3658,'V1.31a','100.216335.alpha','retail','bridgetoofar',1,2,0,'conquest','Border',0,24,2,'openplaying',0,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,34,-1,'','',0,0,'CH','US',450,450,'2023-09-11 22:03:45',0),(399,'168.119.189.149',3659,59,'168.119.189.149',3659,1,'bfield1942ps2','test-server',3659,'V1.31a','100.216335.alpha','retail','harboredge',1,4,0,'conquest','Border',0,6,2,'openplaying',0,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,-1,-1,'','',0,0,'CH','US',450,450,'2023-09-09 20:19:27',1),(400,'168.119.189.149',3658,59,'',3658,0,'','[CTF]BF2MC-Server2',3658,'V1.31a','','','',0,0,0,'','',0,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1,-1,'','',0,0,'','',0,0,'2023-09-07 21:14:33',1),(401,'78.47.184.23',3658,59,'',3658,0,'','[CQ]BF2MC-Server1',3658,'V1.31a','','','',0,0,0,'conquest','',5,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1,-1,'','',0,0,'','',0,0,'2023-09-07 21:14:33',1),(403,'168.119.189.149',3660,59,'168.119.189.149',3660,1,'bfield1942ps2','test-server',3660,'V1.31a','100.216335.alpha','retail','BackStab',1,0,0,'conquest','Border',0,24,2,'openplaying',1,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,-1,-1,'JMMREVIEWTEST','JMMREVIEWTEST',0,0,'AC','US',450,450,'2023-09-12 16:31:54',1);
 /*!40000 ALTER TABLE `GameServers` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -96,4 +98,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-06 22:50:03
+-- Dump completed on 2023-09-12 22:52:33
