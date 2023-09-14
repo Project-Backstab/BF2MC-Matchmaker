@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 #include <settings.h>
 #include <logger.h>
@@ -201,9 +202,28 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	std::string response = GameSpy::Parameter2Response({
-		"vr", "1", "final"
-	});
+	std::string email = parameter[3];
+	// Convert email to lowercase
+	std::transform(email.begin(), email.end(), email.begin(), [](unsigned char c){ return std::tolower(c); });
+	
+	Battlefield::Players players;
+	std::string response;
+	
+	// Get players from database by email
+	g_database->queryPlayersByEmail(players, email);
+	
+	if(players.size() >= 1)
+	{
+		response = GameSpy::Parameter2Response({
+			"vr", "1", "final"
+		});
+	}
+	else
+	{
+		response = GameSpy::Parameter2Response({
+			"vr", "0", "final"
+		});
+	}
 	
 	this->Send(response);
 	
@@ -238,7 +258,13 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	}
 	
 	std::string nick = parameter[3];
+	
+	// Fix: Else account with capital email address is stored in database.
+	// If this happends then he cant login anymore because magicly the ps2 desides that it cant send capital email address xD
 	std::string email = parameter[5];
+	// Convert email to lowercase
+	std::transform(email.begin(), email.end(), email.begin(), [](unsigned char c){ return std::tolower(c); });
+	
 	std::string password = parameter[7];
 	std::string uniquenick = parameter[13];
 	
