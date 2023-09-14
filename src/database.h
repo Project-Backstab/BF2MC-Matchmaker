@@ -106,6 +106,8 @@ class Database
 		bool queryLeaderboardTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
 				const std::string& k, const std::string& s);
 		
+		bool createLeaderboards();
+		
 		/*
 			Events
 		*/

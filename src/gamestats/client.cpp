@@ -286,6 +286,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	{
 		gsplayer.UpdatePlayer();
 	}
+	
+	g_database->createLeaderboards();
 }
 
 /*

@@ -5347,6 +5347,32 @@ bool Database::queryLeaderboardTopFriendsByRatio(Battlefield::RankPlayers& rank_
 	return true;
 }
 
+bool Database::createLeaderboards()
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "CALL CreateLeaderboards()";
+
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement)
+	)
+	{
+		return false;
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+		
+	return true;
+}
+
 // Private functions
 bool Database::_connect()
 {	
