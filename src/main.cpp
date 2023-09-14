@@ -130,10 +130,10 @@ int main(int argc, char const* argv[])
 	
 	// Register signal callbacks
 	signal(SIGINT, signal_callback);
-	signal(SIGINT, signal_callback);
 	signal(SIGTERM, signal_callback);
 	signal(SIGQUIT, signal_callback);
 	signal(SIGTSTP, signal_callback);
+	signal(SIGKILL, signal_callback);
 	
 	// Start servers
 	std::thread t_db(&start_db);

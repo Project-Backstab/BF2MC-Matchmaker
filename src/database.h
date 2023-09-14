@@ -87,11 +87,11 @@ class Database
 	public:
 		// Leaderboard - Top
 		bool queryLeaderboardTopByRank(Battlefield::RankPlayers& rank_players,
-				uint32_t limit = 0, uint32_t offset = 0);
+				uint32_t limit = 10, uint32_t offset = 0);
 		bool queryLeaderboardTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
-				uint32_t limit = 0, uint32_t offset = 0);
+				uint32_t limit = 10, uint32_t offset = 0);
 		bool queryLeaderboardTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s, 
-				uint32_t limit = 0, uint32_t offset = 0);
+				uint32_t limit = 10, uint32_t offset = 0);
 		
 		// Leaderboard - Self
 		bool queryLeaderboardSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
