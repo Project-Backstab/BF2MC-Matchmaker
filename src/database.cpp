@@ -4272,8 +4272,8 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	return true;
 }
 
-// Rank Players
-bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
+// Leaderboard - Top
+bool Database::queryLeaderboardTopByRank(Battlefield::RankPlayers& rank_players,
 		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -4384,7 +4384,7 @@ bool Database::queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
 	return true;
 }
 
-bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+bool Database::queryLeaderboardTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
 		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -4496,7 +4496,7 @@ bool Database::queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players,
 /*
 
 */
-bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s,
+bool Database::queryLeaderboardTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s,
 		uint32_t limit, uint32_t offset)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -4616,6 +4616,7 @@ bool Database::queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players
 	return true;
 }
 
+// Leaderboard - Self
 /*
 SELECT *
 FROM (
@@ -4679,7 +4680,7 @@ AND `rank` <= (
 )
 LIMIT 10;
 */
-bool Database::queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid)
+bool Database::queryLeaderboardSelfByRank(Battlefield::RankPlayers& rank_players, int profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4891,7 +4892,7 @@ AND `rank` <= (
 )
 LIMIT 10;
 */
-bool Database::queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid)
+bool Database::queryLeaderboardSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -5038,7 +5039,7 @@ bool Database::queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players
 	return true;
 }
 
-bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_players, int profileid, const std::string& k,
+bool Database::queryLeaderboardSelfByRatio(Battlefield::RankPlayers& rank_players, int profileid, const std::string& k,
 		const std::string& s)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -5214,7 +5215,8 @@ bool Database::queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_player
 	return true;
 }
 
-bool Database::queryRankPlayersTopFriendsByRank(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends)
+// Leaderboard - Top Friends
+bool Database::queryLeaderboardTopFriendsByRank(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -5314,7 +5316,7 @@ bool Database::queryRankPlayersTopFriendsByRank(Battlefield::RankPlayers& rank_p
 	return true;
 }
 
-bool Database::queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+bool Database::queryLeaderboardTopFriendsByType(Battlefield::RankPlayers& rank_players, const std::string& type,
 		const std::vector<int>& friends)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -5413,7 +5415,7 @@ bool Database::queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_p
 	return true;
 }
 
-bool Database::queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
+bool Database::queryLeaderboardTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
 		const std::string& k, const std::string& s)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)

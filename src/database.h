@@ -85,23 +85,25 @@ class Database
 		bool _insertGameStatPlayer(const Battlefield::GameStat& game_stat, Battlefield::GameStatPlayer& gsplayer);
 	
 	public:
-		// Rank Players
-		bool queryRankPlayersTopByRank(Battlefield::RankPlayers& rank_players,
+		// Leaderboard - Top
+		bool queryLeaderboardTopByRank(Battlefield::RankPlayers& rank_players,
 				uint32_t limit = 0, uint32_t offset = 0);
-		bool queryRankPlayersTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+		bool queryLeaderboardTopByType(Battlefield::RankPlayers& rank_players, const std::string& type,
 				uint32_t limit = 0, uint32_t offset = 0);
-		bool queryRankPlayersTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s, 
+		bool queryLeaderboardTopByRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s, 
 				uint32_t limit = 0, uint32_t offset = 0);
 		
-		bool queryRankPlayersSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
-		bool queryRankPlayersSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid);
-		bool queryRankPlayersSelfByRatio(Battlefield::RankPlayers& rank_players, int profileid, const std::string& k,
+		// Leaderboard - Self
+		bool queryLeaderboardSelfByRank(Battlefield::RankPlayers& rank_players, int profileid);
+		bool queryLeaderboardSelfByType(Battlefield::RankPlayers& rank_players, const std::string& type, int profileid);
+		bool queryLeaderboardSelfByRatio(Battlefield::RankPlayers& rank_players, int profileid, const std::string& k,
 				const std::string& s);
 		
-		bool queryRankPlayersTopFriendsByRank(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends);
-		bool queryRankPlayersTopFriendsByType(Battlefield::RankPlayers& rank_players, const std::string& type,
+		// Leaderboard - Top Friends
+		bool queryLeaderboardTopFriendsByRank(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends);
+		bool queryLeaderboardTopFriendsByType(Battlefield::RankPlayers& rank_players, const std::string& type,
 				const std::vector<int>& friends);
-		bool queryRankPlayersTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
+		bool queryLeaderboardTopFriendsByRatio(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends,
 				const std::string& k, const std::string& s);
 		
 		/*
