@@ -66,20 +66,20 @@ std::string Util::Time::GetDateTime(MYSQL_TIME datetime)
 {
 	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
 
-    // Set up the struct tm for strftime
-    struct tm timeinfo;
-    timeinfo.tm_year = datetime.year - 1900;
-    timeinfo.tm_mon = datetime.month - 1;
-    timeinfo.tm_mday = datetime.day;
-    timeinfo.tm_hour = datetime.hour;
-    timeinfo.tm_min = datetime.minute;
-    timeinfo.tm_sec = datetime.second;
+	// Set up the struct tm for strftime
+	struct tm timeinfo;
+	timeinfo.tm_year = datetime.year - 1900;
+	timeinfo.tm_mon = datetime.month - 1;
+	timeinfo.tm_mday = datetime.day;
+	timeinfo.tm_hour = datetime.hour;
+	timeinfo.tm_min = datetime.minute;
+	timeinfo.tm_sec = datetime.second;
 
-    strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
-	
+	strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
+
 	std::string formatted_datetime_string(formatted_datetime);
-	
-    return formatted_datetime_string + " " + Util::Time::GetTimeZone();
+
+	return formatted_datetime_string + " " + Util::Time::GetTimeZone();
 }
 
 std::string Util::Time::GetTimeZone()
