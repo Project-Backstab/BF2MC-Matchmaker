@@ -5,6 +5,11 @@
 #include <vector>
 #include <map>
 
+/*
+	Forward declarations
+*/
+struct MYSQL_TIME;
+
 namespace Util
 {
 	namespace Buffer
@@ -24,6 +29,12 @@ namespace Util
 		typedef std::map<std::string, std::string> Variables;
 		
 		void GetElements(const std::string& url, std::string& url_base, Util::Url::Variables& url_variables);
+	}
+	
+	namespace Time
+	{
+		std::string GetDateTime(MYSQL_TIME datetime);
+		std::string GetTimeZone();
 	}
 	
 	std::string MD5hash(const std::string& input);

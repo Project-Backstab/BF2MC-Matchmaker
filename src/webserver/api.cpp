@@ -403,27 +403,27 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 	{
 		sort = it->second;
 		
-		if(sort == "rank")          g_database->queryLeaderboardTopByRank(rank_players, limit, offset);
-		else if(sort == "score")    g_database->queryLeaderboardTopByType(rank_players, "score", limit, offset);
-		else if(sort == "pph")      g_database->queryLeaderboardTopByType(rank_players, "pph", limit, offset);
-		else if(sort == "k1")       g_database->queryLeaderboardTopByType(rank_players, "k1", limit, offset);
-		else if(sort == "k2")       g_database->queryLeaderboardTopByType(rank_players, "k2", limit, offset);
-		else if(sort == "k3")       g_database->queryLeaderboardTopByType(rank_players, "k3", limit, offset);
-		else if(sort == "k4")       g_database->queryLeaderboardTopByType(rank_players, "k4", limit, offset);
-		else if(sort == "k5")       g_database->queryLeaderboardTopByType(rank_players, "k5", limit, offset);
-		else if(sort == "kills")    g_database->queryLeaderboardTopByType(rank_players, "kills", limit, offset);
-		else if(sort == "lavd")     g_database->queryLeaderboardTopByType(rank_players, "lavd", limit, offset);
-		else if(sort == "mavd")     g_database->queryLeaderboardTopByType(rank_players, "mavd", limit, offset);
-		else if(sort == "havd")     g_database->queryLeaderboardTopByType(rank_players, "havd", limit, offset);
-		else if(sort == "hed")      g_database->queryLeaderboardTopByType(rank_players, "hed", limit, offset);
-		else if(sort == "bod")      g_database->queryLeaderboardTopByType(rank_players, "bod", limit, offset);
-		else if(sort == "vehicles") g_database->queryLeaderboardTopByType(rank_players, "vehicles", limit, offset);
-		else if(sort == "ratio_k1") g_database->queryLeaderboardTopByRatio(rank_players, "k1", "s1", limit, offset);
-		else if(sort == "ratio_k2") g_database->queryLeaderboardTopByRatio(rank_players, "k2", "s2", limit, offset);
-		else if(sort == "ratio_k3") g_database->queryLeaderboardTopByRatio(rank_players, "k3", "s3", limit, offset);
-		else if(sort == "ratio_k4") g_database->queryLeaderboardTopByRatio(rank_players, "k4", "s4", limit, offset);
-		else if(sort == "ratio_k5") g_database->queryLeaderboardTopByRatio(rank_players, "k5", "s5", limit, offset);
-		else if(sort == "ratio_kd") g_database->queryLeaderboardTopByRatio(rank_players, "kills", "deaths", limit, offset);
+		if(sort == "rank")          g_database->queryLeaderboardRank(rank_players, limit, offset);
+		else if(sort == "score")    g_database->queryLeaderboardType(rank_players, "score", limit, offset);
+		else if(sort == "pph")      g_database->queryLeaderboardType(rank_players, "pph", limit, offset);
+		else if(sort == "k1")       g_database->queryLeaderboardType(rank_players, "k1", limit, offset);
+		else if(sort == "k2")       g_database->queryLeaderboardType(rank_players, "k2", limit, offset);
+		else if(sort == "k3")       g_database->queryLeaderboardType(rank_players, "k3", limit, offset);
+		else if(sort == "k4")       g_database->queryLeaderboardType(rank_players, "k4", limit, offset);
+		else if(sort == "k5")       g_database->queryLeaderboardType(rank_players, "k5", limit, offset);
+		else if(sort == "kills")    g_database->queryLeaderboardType(rank_players, "kills", limit, offset);
+		else if(sort == "lavd")     g_database->queryLeaderboardType(rank_players, "lavd", limit, offset);
+		else if(sort == "mavd")     g_database->queryLeaderboardType(rank_players, "mavd", limit, offset);
+		else if(sort == "havd")     g_database->queryLeaderboardType(rank_players, "havd", limit, offset);
+		else if(sort == "hed")      g_database->queryLeaderboardType(rank_players, "hed", limit, offset);
+		else if(sort == "bod")      g_database->queryLeaderboardType(rank_players, "bod", limit, offset);
+		else if(sort == "vehicles") g_database->queryLeaderboardType(rank_players, "vehicles", limit, offset);
+		else if(sort == "ratio_k1") g_database->queryLeaderboardRatio(rank_players, "k1", "s1", limit, offset);
+		else if(sort == "ratio_k2") g_database->queryLeaderboardRatio(rank_players, "k2", "s2", limit, offset);
+		else if(sort == "ratio_k3") g_database->queryLeaderboardRatio(rank_players, "k3", "s3", limit, offset);
+		else if(sort == "ratio_k4") g_database->queryLeaderboardRatio(rank_players, "k4", "s4", limit, offset);
+		else if(sort == "ratio_k5") g_database->queryLeaderboardRatio(rank_players, "k5", "s5", limit, offset);
+		else if(sort == "ratio_kd") g_database->queryLeaderboardRatio(rank_players, "kills", "deaths", limit, offset);
 	}
 	
 	// Write leaderboard

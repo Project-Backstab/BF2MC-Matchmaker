@@ -5,6 +5,7 @@
 #include <numeric>
 #include <random>
 #include <chrono>
+#include <mysql/mysql_time.h>
 
 #include <util.h>
 
@@ -58,6 +59,43 @@ std::string Util::Buffer::ToString(const std::vector<unsigned char>& buffer)
 	std::vector<char> buffer2(buffer.begin(), buffer.end());
 	
 	return Util::Buffer::ToString(buffer2);
+}
+
+//Util::Time
+std::string Util::Time::GetDateTime(MYSQL_TIME datetime)
+{
+	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
+
+    // Set up the struct tm for strftime
+    struct tm timeinfo;
+    timeinfo.tm_year = datetime.year - 1900;
+    timeinfo.tm_mon = datetime.month - 1;
+    timeinfo.tm_mday = datetime.day;
+    timeinfo.tm_hour = datetime.hour;
+    timeinfo.tm_min = datetime.minute;
+    timeinfo.tm_sec = datetime.second;
+
+    strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
+	
+	std::string formatted_datetime_string(formatted_datetime);
+	
+    return formatted_datetime_string + " " + Util::Time::GetTimeZone();
+}
+
+std::string Util::Time::GetTimeZone()
+{
+	// Fetch and append the time zone information dynamically
+	std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+	std::time_t current_time = std::chrono::system_clock::to_time_t(now);
+	struct tm* local_time = std::localtime(&current_time);
+
+	char timezone_buffer[10]; // Assuming timezone abbreviation is less than 10 characters
+	strftime(timezone_buffer, sizeof(timezone_buffer), "%Z", local_time);
+
+	// Construct a std::string from the C-style string
+	std::string timezone_string(timezone_buffer);
+
+	return timezone_string;	
 }
 
 // Util::Url

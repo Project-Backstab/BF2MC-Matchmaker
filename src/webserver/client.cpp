@@ -356,15 +356,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 		{
 			if(profileids.size() == 0)
 			{
-				g_database->queryLeaderboardTopByRank(rank_players);
+				g_database->queryLeaderboardRank(rank_players);
 			}
 			else if(profileids.size() == 1)
 			{
-				g_database->queryLeaderboardSelfByRank(rank_players, self_profileid);
+				g_database->queryLeaderboardRankByProfileid(rank_players, self_profileid);
 			}
 			else
 			{
-				g_database->queryLeaderboardTopFriendsByRank(rank_players, profileids);
+				g_database->queryLeaderboardRankByFriends(rank_players, profileids);
 			}
 			
 			for (const auto& pair : rank_players)
@@ -385,15 +385,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 		{	
 			if(profileids.size() == 0)
 			{
-				g_database->queryLeaderboardTopByType(rank_players, "score");
+				g_database->queryLeaderboardType(rank_players, "score");
 			}
 			else if(profileids.size() == 1)
 			{
-				g_database->queryLeaderboardSelfByType(rank_players, "score", self_profileid);
+				g_database->queryLeaderboardTypeByProfileid(rank_players, "score", self_profileid);
 			}
 			else
 			{
-				g_database->queryLeaderboardTopFriendsByType(rank_players, "score", profileids);
+				g_database->queryLeaderboardTypeByFriends(rank_players, "score", profileids);
 			}
 			
 			for (const auto& pair : rank_players)
@@ -412,15 +412,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 		{
 			if(profileids.size() == 0)
 			{
-				g_database->queryLeaderboardTopByType(rank_players, "pph");
+				g_database->queryLeaderboardType(rank_players, "pph");
 			}
 			else if(profileids.size() == 1)
 			{
-				g_database->queryLeaderboardSelfByType(rank_players, "pph", self_profileid);
+				g_database->queryLeaderboardTypeByProfileid(rank_players, "pph", self_profileid);
 			}
 			else
 			{
-				g_database->queryLeaderboardTopFriendsByType(rank_players, "pph", profileids);
+				g_database->queryLeaderboardTypeByFriends(rank_players, "pph", profileids);
 			}
 			
 			for (const auto& pair : rank_players)
@@ -446,15 +446,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "k1");
+						g_database->queryLeaderboardType(rank_players, "k1");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "k1", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "k1", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "k1", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "k1", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -473,15 +473,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "k2");
+						g_database->queryLeaderboardType(rank_players, "k2");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "k2", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "k2", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "k2", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "k2", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -500,15 +500,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "k3");
+						g_database->queryLeaderboardType(rank_players, "k3");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "k3", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "k3", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "k3", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "k3", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -527,15 +527,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "k4");
+						g_database->queryLeaderboardType(rank_players, "k4");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "k4", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "k4", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "k4", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "k4", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -554,15 +554,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "k5");
+						g_database->queryLeaderboardType(rank_players, "k5");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "k5", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "k5", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "k5", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "k5", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -582,15 +582,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			{
 				if(profileids.size() == 0)
 				{
-					g_database->queryLeaderboardTopByType(rank_players, "kills");
+					g_database->queryLeaderboardType(rank_players, "kills");
 				}
 				else if(profileids.size() == 1)
 				{
-					g_database->queryLeaderboardSelfByType(rank_players, "kills", self_profileid);
+					g_database->queryLeaderboardTypeByProfileid(rank_players, "kills", self_profileid);
 				}
 				else
 				{
-					g_database->queryLeaderboardTopFriendsByType(rank_players, "kills", profileids);
+					g_database->queryLeaderboardTypeByFriends(rank_players, "kills", profileids);
 				}
 				
 				for (const auto& pair : rank_players)
@@ -617,15 +617,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByRatio(rank_players, "k1", "s1");
+						g_database->queryLeaderboardRatio(rank_players, "k1", "s1");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "k1", "s1");
+						g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "k1", "s1");
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "k1", "s1");
+						g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "k1", "s1");
 					}
 					
 					for (const auto& pair : rank_players)
@@ -644,15 +644,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByRatio(rank_players, "k2", "s2");
+						g_database->queryLeaderboardRatio(rank_players, "k2", "s2");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "k2", "s2");
+						g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "k2", "s2");
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "k2", "s2");
+						g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "k2", "s2");
 					}
 					
 					for (const auto& pair : rank_players)
@@ -671,15 +671,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByRatio(rank_players, "k3", "s3");
+						g_database->queryLeaderboardRatio(rank_players, "k3", "s3");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "k3", "s3");
+						g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "k3", "s3");
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "k3", "s3");
+						g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "k3", "s3");
 					}
 					
 					for (const auto& pair : rank_players)
@@ -698,15 +698,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByRatio(rank_players, "k4", "s4");
+						g_database->queryLeaderboardRatio(rank_players, "k4", "s4");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "k4", "s4");
+						g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "k4", "s4");
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "k4", "s4");
+						g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "k4", "s4");
 					}
 					
 					for (const auto& pair : rank_players)
@@ -725,15 +725,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByRatio(rank_players, "k5", "s5");
+						g_database->queryLeaderboardRatio(rank_players, "k5", "s5");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "k5", "s5");
+						g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "k5", "s5");
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "k5", "s5");
+						g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "k5", "s5");
 					}
 					
 					for (const auto& pair : rank_players)
@@ -753,15 +753,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			{
 				if(profileids.size() == 0)
 				{
-					g_database->queryLeaderboardTopByRatio(rank_players, "kills", "deaths");
+					g_database->queryLeaderboardRatio(rank_players, "kills", "deaths");
 				}
 				else if(profileids.size() == 1)
 				{
-					g_database->queryLeaderboardSelfByRatio(rank_players, self_profileid, "kills", "deaths");
+					g_database->queryLeaderboardRatioByProfileid(rank_players, self_profileid, "kills", "deaths");
 				}
 				else
 				{
-					g_database->queryLeaderboardTopFriendsByRatio(rank_players, profileids, "kills", "deaths");
+					g_database->queryLeaderboardRatioByFriends(rank_players, profileids, "kills", "deaths");
 				}
 				
 				for (const auto& pair : rank_players)
@@ -788,15 +788,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "lavd");
+						g_database->queryLeaderboardType(rank_players, "lavd");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "lavd", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "lavd", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "lavd", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "lavd", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -815,15 +815,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "mavd");
+						g_database->queryLeaderboardType(rank_players, "mavd");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "mavd", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "mavd", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "mavd", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "mavd", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -842,15 +842,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "havd");
+						g_database->queryLeaderboardType(rank_players, "havd");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "havd", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "havd", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "havd", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "havd", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -869,15 +869,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "hed");
+						g_database->queryLeaderboardType(rank_players, "hed");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "hed", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "hed", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "hed", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "hed", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -896,15 +896,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 				{
 					if(profileids.size() == 0)
 					{
-						g_database->queryLeaderboardTopByType(rank_players, "bod");
+						g_database->queryLeaderboardType(rank_players, "bod");
 					}
 					else if(profileids.size() == 1)
 					{
-						g_database->queryLeaderboardSelfByType(rank_players, "bod", self_profileid);
+						g_database->queryLeaderboardTypeByProfileid(rank_players, "bod", self_profileid);
 					}
 					else
 					{
-						g_database->queryLeaderboardTopFriendsByType(rank_players, "bod", profileids);
+						g_database->queryLeaderboardTypeByFriends(rank_players, "bod", profileids);
 					}
 					
 					for (const auto& pair : rank_players)
@@ -924,15 +924,15 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			{
 				if(profileids.size() == 0)
 				{
-					g_database->queryLeaderboardTopByType(rank_players, "vehicles");
+					g_database->queryLeaderboardType(rank_players, "vehicles");
 				}
 				else if(profileids.size() == 1)
 				{
-					g_database->queryLeaderboardSelfByType(rank_players, "vehicles", self_profileid);
+					g_database->queryLeaderboardTypeByProfileid(rank_players, "vehicles", self_profileid);
 				}				
 				else
 				{
-					g_database->queryLeaderboardTopFriendsByType(rank_players, "vehicles", profileids);
+					g_database->queryLeaderboardTypeByFriends(rank_players, "vehicles", profileids);
 				}
 				
 				for (const auto& pair : rank_players)

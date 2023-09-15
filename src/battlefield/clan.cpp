@@ -1,5 +1,7 @@
 #include <mysql/mysql_time.h>
 
+#include <util.h>
+
 #include <battlefield/clan.h>
 
 void Battlefield::Clan::useExample()
@@ -136,20 +138,8 @@ bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses
 
 bool Battlefield::Clan::SetCreatedAt(MYSQL_TIME created_at)
 {
-	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
+	this->_created_at = Util::Time::GetDateTime(created_at);
 
-	// Set up the struct tm for strftime
-	struct tm timeinfo;
-	timeinfo.tm_year = created_at.year - 1900;
-	timeinfo.tm_mon = created_at.month - 1;
-	timeinfo.tm_mday = created_at.day;
-	timeinfo.tm_hour = created_at.hour;
-	timeinfo.tm_min = created_at.minute;
-	timeinfo.tm_sec = created_at.second;
-
-	strftime(formatted_datetime, sizeof(formatted_datetime), "%Y-%m-%d %H:%M:%S", &timeinfo);
-	
-	this->_created_at = formatted_datetime;
 	return true;
 }
 
