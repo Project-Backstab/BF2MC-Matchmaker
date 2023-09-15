@@ -183,9 +183,9 @@ void Webserver::Client::Listen()
 		
 		// Trigger onRequest event
 		this->onRequest(http_request);
+		
+		this->Disconnect();
 	}
-	
-	this->Disconnect();
 }
 
 void Webserver::Client::Disconnect()

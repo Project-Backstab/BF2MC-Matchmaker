@@ -17,22 +17,22 @@
 	{
 		"port": 29900,
 		"connection_time_out": 2,
-		"show_requests": true,
-		"show_responses": true
+		"show_requests": false,
+		"show_responses": false
 	},
 	"gpsp":
 	{
 		"port": 29901,
 		"connection_time_out": 2,
-		"show_requests": true,
-		"show_responses": true
+		"show_requests": false,
+		"show_responses": false
 	},
 	"webserver":
 	{
 		"port": 8080,
 		"connection_time_out": 2,
-		"show_requests": false,
-		"show_responses": false,
+		"show_requests": true,
+		"show_responses": true,
 		"banned_requests":
 		[
 			"^/root/"

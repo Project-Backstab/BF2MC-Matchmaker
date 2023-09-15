@@ -433,6 +433,7 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 		Json::Value item;
 		
 		item["position"]   = pair.first;
+		item["profileid"] = pair.second.GetProfileId();
 		item["uniquenick"] = pair.second.GetUniquenick();
 		
 		if(sort == "rank")                         item["rank"]     = pair.second.GetRank();
