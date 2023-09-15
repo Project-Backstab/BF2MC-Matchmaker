@@ -36,17 +36,8 @@ CREATE TABLE `GameServerPlayers` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `gameserverid_idx` (`gameserverid`),
   CONSTRAINT `FK_GameServerPlayers_gameserverid` FOREIGN KEY (`gameserverid`) REFERENCES `GameServers` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=607 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `GameServerPlayers`
---
-
-LOCK TABLES `GameServerPlayers` WRITE;
-/*!40000 ALTER TABLE `GameServerPlayers` DISABLE KEYS */;
-/*!40000 ALTER TABLE `GameServerPlayers` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -57,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-12 22:52:34
+-- Dump completed on 2023-09-15  6:11:28

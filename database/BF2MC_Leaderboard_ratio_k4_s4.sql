@@ -16,31 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `GameStats`
+-- Table structure for table `Leaderboard_ratio_k4_s4`
 --
 
-DROP TABLE IF EXISTS `GameStats`;
+DROP TABLE IF EXISTS `Leaderboard_ratio_k4_s4`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `GameStats` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `gametype` tinyint unsigned NOT NULL DEFAULT '0',
-  `gamver` varchar(20) NOT NULL DEFAULT '',
-  `hostname` varchar(45) NOT NULL DEFAULT '',
-  `mapid` tinyint unsigned NOT NULL DEFAULT '0',
-  `numplayers` tinyint unsigned NOT NULL DEFAULT '0',
-  `pplayers` tinyint unsigned NOT NULL DEFAULT '0',
-  `tplayed` smallint unsigned NOT NULL DEFAULT '0',
-  `clanid_t0` tinyint unsigned NOT NULL DEFAULT '0',
-  `clanid_t1` tinyint unsigned NOT NULL DEFAULT '0',
-  `country_t0` tinyint unsigned NOT NULL DEFAULT '0',
-  `country_t1` tinyint unsigned NOT NULL DEFAULT '0',
-  `victory_t0` tinyint unsigned NOT NULL DEFAULT '0',
-  `victory_t1` tinyint unsigned NOT NULL DEFAULT '0',
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=396 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `Leaderboard_ratio_k4_s4` (
+  `rank` bigint unsigned NOT NULL DEFAULT '0',
+  `profileid` int NOT NULL DEFAULT '0',
+  `uniquenick` varchar(32) NOT NULL DEFAULT '',
+  `ratio` decimal(14,4) unsigned DEFAULT NULL,
+  `k4` int unsigned NOT NULL DEFAULT '0',
+  `s4` int unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +41,4 @@ CREATE TABLE `GameStats` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15  6:11:18
+-- Dump completed on 2023-09-15  6:11:17

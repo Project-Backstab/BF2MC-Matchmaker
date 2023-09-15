@@ -76,18 +76,8 @@ CREATE TABLE `GameServers` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `ip_port_UNIQUE` (`ip`,`port`)
-) ENGINE=InnoDB AUTO_INCREMENT=404 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=405 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `GameServers`
---
-
-LOCK TABLES `GameServers` WRITE;
-/*!40000 ALTER TABLE `GameServers` DISABLE KEYS */;
-INSERT INTO `GameServers` VALUES (398,'86.87.139.235',3658,59,'10.10.10.110',3658,1,'bfield1942ps2','[CQ]BF2MC-IamLupo',3658,'V1.31a','100.216335.alpha','retail','bridgetoofar',1,2,0,'conquest','Border',0,24,2,'openplaying',0,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,34,-1,'','',0,0,'CH','US',450,450,'2023-09-11 22:03:45',0),(399,'168.119.189.149',3659,59,'168.119.189.149',3659,1,'bfield1942ps2','test-server',3659,'V1.31a','100.216335.alpha','retail','harboredge',1,4,0,'conquest','Border',0,6,2,'openplaying',0,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,-1,-1,'','',0,0,'CH','US',450,450,'2023-09-09 20:19:27',1),(400,'168.119.189.149',3658,59,'',3658,0,'','[CTF]BF2MC-Server2',3658,'V1.31a','','','',0,0,0,'','',0,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1,-1,'','',0,0,'','',0,0,'2023-09-07 21:14:33',1),(401,'78.47.184.23',3658,59,'',3658,0,'','[CQ]BF2MC-Server1',3658,'V1.31a','','','',0,0,0,'conquest','',5,0,0,'',0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,-1,-1,'','',0,0,'','',0,0,'2023-09-07 21:14:33',1),(403,'168.119.189.149',3660,59,'168.119.189.149',3660,1,'bfield1942ps2','test-server',3660,'V1.31a','100.216335.alpha','retail','BackStab',1,0,0,'conquest','Border',0,24,2,'openplaying',1,0,0,1200,0,0,1,20,1,1,1,-2147483648,2147483647,5,65536,-1,-1,'JMMREVIEWTEST','JMMREVIEWTEST',0,0,'AC','US',450,450,'2023-09-12 16:31:54',1);
-/*!40000 ALTER TABLE `GameServers` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -98,4 +88,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-12 22:52:33
+-- Dump completed on 2023-09-15  6:11:19
