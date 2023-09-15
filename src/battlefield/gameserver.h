@@ -267,6 +267,8 @@ namespace Battlefield
 			
 			void AddPlayer(const GameServerPlayer& gsplayer);
 			
+			bool IsAlive();
+			
 			void Debug();
 	};
 	

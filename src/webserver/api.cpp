@@ -85,6 +85,7 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		value["score1"] = game_server.GetTeam2Score();
 		value["updated_at"] = game_server.GetUpdatedAt();
 		value["verified"] = game_server.isVerified();
+		value["is_alive"] = game_server.IsAlive();
 		
 		// Secret
 		//value["ip"] = game_server.GetIp();
@@ -113,7 +114,7 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		
 		response.append(value);
 	}
-
+	
 	this->Send(response);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");

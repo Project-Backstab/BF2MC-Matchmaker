@@ -717,6 +717,30 @@ void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 	this->_players.push_back(gsplayer);
 }
 
+bool Battlefield::GameServer::IsAlive()
+{
+	struct tm timeinfo;
+	
+	if (strptime(this->GetUpdatedAt().c_str(), "%Y-%m-%d %H:%M:%S %Z", &timeinfo) != nullptr)
+	{
+		std::chrono::system_clock::time_point current_time_point = std::chrono::system_clock::now();
+		std::chrono::system_clock::time_point two_minutes_ago = current_time_point - std::chrono::minutes(2);
+
+		// get time_t
+		std::time_t current_time = std::chrono::system_clock::to_time_t(current_time_point);
+		std::time_t two_minutes_ago_time = std::chrono::system_clock::to_time_t(two_minutes_ago);
+		std::time_t target_time = std::mktime(&timeinfo);
+
+		//Logger::debug("target_time: " + std::string(std::ctime(&target_time)));
+		//Logger::debug("current_time: " + std::string(std::ctime(&current_time)));
+		//Logger::debug("two_minutes_ago_time: " + std::string(std::ctime(&two_minutes_ago_time)));
+		
+		return (std::difftime(target_time, current_time) <= 0 && std::difftime(target_time, two_minutes_ago_time) >= 0);
+	}
+	
+	return false;
+}
+
 void Battlefield::GameServer::Debug()
 {
 	Logger::debug("============================");
