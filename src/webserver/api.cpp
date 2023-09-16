@@ -27,7 +27,7 @@ void Webserver::Client::Send(const Json::Value &value) const
 void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response(Json::arrayValue);
+	Json::Value json_game_servers(Json::arrayValue);
 	Battlefield::GameServers game_servers;
 
 	// Get game servers from database
@@ -35,87 +35,87 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 
 	for(Battlefield::GameServer game_server : game_servers)
 	{
-		Json::Value value;
+		Json::Value json_game_server;
 		
 		// Get game server players from database
 		g_database->queryGameServerPlayers(game_server);
 		
 		// Game Server information
-		value["id"] = game_server.GetId();
-		value["flag"] = game_server.GetFlag();
-		value["natneg"] = game_server.GetNatNeg();
-		value["gamename"] = game_server.GetGameName();
-		value["hostname"] = game_server.GetHostName();
-		value["gamever"] = game_server.GetGameVersion();
-		value["cl"] = game_server.GetClientVersion();
-		value["rv"] = game_server.GetRV();
-		value["map"] = game_server.GetMap();
-		value["mc"] = game_server.GetMapCycling();
-		value["mapname"] = game_server.GetMapName();
-		value["gc"] = game_server.GetGC();
-		value["gametype"] = game_server.GetGameType();
-		value["numplayers"] = game_server.GetNumPlayers();
-		value["maxplayers"] = game_server.GetMaxPlayers();
-		value["numteams"] = game_server.GetNumTeams();
-		value["gamemode"] = game_server.GetGameMode();
-		value["teamplay"] = game_server.GetTeamplay();
-		value["fraglimit"] = game_server.GetFlagLimit();
-		value["teamfraglimit"] = game_server.GetTeamFragLimit();
-		value["timelimit"] = game_server.GetTimeLimit();
-		value["timeelapsed"] = game_server.GetTimeElapsed();
-		value["password"] = game_server.GetPassword();
-		value["nr"] = game_server.GetMinRank();
-		value["xr"] = game_server.GetMaxRank();
-		value["ff"] = game_server.GetFriendlyFire();
-		value["sr"] = game_server.GetStatsTracking();
-		value["rc"] = game_server.GetReconfigurable();
-		value["ni"] = game_server.GetMinIpRange();
-		value["xi"] = game_server.GetMaxIpRange();
-		value["qm"] = game_server.GetQM();
-		value["region"] = game_server.GetRegion();
-		value["c0"] = game_server.GetClan1Id();
-		value["c1"] = game_server.GetClan2Id();
-		value["n0"] = game_server.GetClan1Name();
-		value["n1"] = game_server.GetClan2Name();
-		value["c0c"] = game_server.GetClan1Claimed();
-		value["c1c"] = game_server.GetClan2Claimed();
-		value["team0"] = game_server.GetTeam1Name();
-		value["team1"] = game_server.GetTeam2Name();
-		value["score0"] = game_server.GetTeam1Score();
-		value["score1"] = game_server.GetTeam2Score();
-		value["updated_at"] = game_server.GetUpdatedAt();
-		value["verified"] = game_server.isVerified();
-		value["is_alive"] = game_server.IsAlive();
+		json_game_server["id"] = game_server.GetId();
+		json_game_server["flag"] = game_server.GetFlag();
+		json_game_server["natneg"] = game_server.GetNatNeg();
+		json_game_server["gamename"] = game_server.GetGameName();
+		json_game_server["hostname"] = game_server.GetHostName();
+		json_game_server["gamever"] = game_server.GetGameVersion();
+		json_game_server["cl"] = game_server.GetClientVersion();
+		json_game_server["rv"] = game_server.GetRV();
+		json_game_server["map"] = game_server.GetMap();
+		json_game_server["mc"] = game_server.GetMapCycling();
+		json_game_server["mapname"] = game_server.GetMapName();
+		json_game_server["gc"] = game_server.GetGC();
+		json_game_server["gametype"] = game_server.GetGameType();
+		json_game_server["numplayers"] = game_server.GetNumPlayers();
+		json_game_server["maxplayers"] = game_server.GetMaxPlayers();
+		json_game_server["numteams"] = game_server.GetNumTeams();
+		json_game_server["gamemode"] = game_server.GetGameMode();
+		json_game_server["teamplay"] = game_server.GetTeamplay();
+		json_game_server["fraglimit"] = game_server.GetFlagLimit();
+		json_game_server["teamfraglimit"] = game_server.GetTeamFragLimit();
+		json_game_server["timelimit"] = game_server.GetTimeLimit();
+		json_game_server["timeelapsed"] = game_server.GetTimeElapsed();
+		json_game_server["password"] = game_server.GetPassword();
+		json_game_server["nr"] = game_server.GetMinRank();
+		json_game_server["xr"] = game_server.GetMaxRank();
+		json_game_server["ff"] = game_server.GetFriendlyFire();
+		json_game_server["sr"] = game_server.GetStatsTracking();
+		json_game_server["rc"] = game_server.GetReconfigurable();
+		json_game_server["ni"] = game_server.GetMinIpRange();
+		json_game_server["xi"] = game_server.GetMaxIpRange();
+		json_game_server["qm"] = game_server.GetQM();
+		json_game_server["region"] = game_server.GetRegion();
+		json_game_server["c0"] = game_server.GetClan1Id();
+		json_game_server["c1"] = game_server.GetClan2Id();
+		json_game_server["n0"] = game_server.GetClan1Name();
+		json_game_server["n1"] = game_server.GetClan2Name();
+		json_game_server["c0c"] = game_server.GetClan1Claimed();
+		json_game_server["c1c"] = game_server.GetClan2Claimed();
+		json_game_server["team0"] = game_server.GetTeam1Name();
+		json_game_server["team1"] = game_server.GetTeam2Name();
+		json_game_server["score0"] = game_server.GetTeam1Score();
+		json_game_server["score1"] = game_server.GetTeam2Score();
+		json_game_server["updated_at"] = game_server.GetUpdatedAt();
+		json_game_server["verified"] = game_server.isVerified();
+		json_game_server["is_alive"] = game_server.IsAlive();
 		
 		// Secret
-		//value["ip"] = game_server.GetIp();
-		//value["port"] = game_server.GetPort();
-		//value["localip0"] = game_server.GetLocalIp();
-		//value["localport"] = game_server.GetLocalPort();
-		//value["hostport"] = game_server.GetHostPort();
+		//json_game_server["ip"] = game_server.GetIp();
+		//json_game_server["port"] = game_server.GetPort();
+		//json_game_server["localip0"] = game_server.GetLocalIp();
+		//json_game_server["localport"] = game_server.GetLocalPort();
+		//json_game_server["hostport"] = game_server.GetHostPort();
 		
 		// Game server player information
-		Json::Value players(Json::arrayValue);
+		Json::Value json_players(Json::arrayValue);
 		for(const Battlefield::GameServerPlayer gsplayer : game_server.GetPlayers())
 		{
-			Json::Value player;
+			Json::Value json_player;
 			
-			player["name"] = gsplayer.GetName();
-			player["score"] = gsplayer.GetScore();
-			player["skill"] = gsplayer.GetSkill();
-			player["ping"] = gsplayer.GetPing();
-			player["team"] = gsplayer.GetTeam();
-			player["deaths"] = gsplayer.GetDeaths();
-			player["profileid"] = gsplayer.GetProfileId();
+			json_player["name"] = gsplayer.GetName();
+			json_player["score"] = gsplayer.GetScore();
+			json_player["skill"] = gsplayer.GetSkill();
+			json_player["ping"] = gsplayer.GetPing();
+			json_player["team"] = gsplayer.GetTeam();
+			json_player["deaths"] = gsplayer.GetDeaths();
+			json_player["profileid"] = gsplayer.GetProfileId();
 			
-			players.append(player);
+			json_players.append(json_player);
 		}
-		value["players"] = players;
+		json_game_server["players"] = json_players;
 		
-		response.append(value);
+		json_game_servers.append(json_game_server);
 	}
 	
-	this->Send(response);
+	this->Send(json_game_servers);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -123,7 +123,7 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response;
+	Json::Value json_game_stat;
 	Battlefield::GameStat game_stat;
 	
 	// Get Game Stats
@@ -140,64 +140,64 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 	g_database->queryGameStatPlayers(game_stat);
 	
 	// Game Stat information
-	response["id"]         = game_stat.GetId();
-	response["gametype"]   = game_stat.GetGameType();
-	response["gamver"]     = game_stat.GetGameVersion();
-	response["hostname"]   = game_stat.GetHostName();
-	response["mapid"]      = game_stat.GetMapId();
-	response["numplayers"] = game_stat.GetNumPlayers();
-	response["pplayers"]   = game_stat.GetPPlayers();
-	response["tplayed"]    = game_stat.GetTimePlayed();
-	response["clanid_t0"]  = game_stat.GetTeam1ClanId();
-	response["clanid_t1"]  = game_stat.GetTeam2ClanId();
-	response["country_t0"] = game_stat.GetTeam1Country();
-	response["country_t1"] = game_stat.GetTeam2Country();
-	response["victory_t0"] = game_stat.GetTeam1Victory();
-	response["victory_t1"] = game_stat.GetTeam2Victory();
-	response["created_at"] = game_stat.GetCreatedAt();
+	json_game_stat["id"]         = game_stat.GetId();
+	json_game_stat["gametype"]   = game_stat.GetGameType();
+	json_game_stat["gamver"]     = game_stat.GetGameVersion();
+	json_game_stat["hostname"]   = game_stat.GetHostName();
+	json_game_stat["mapid"]      = game_stat.GetMapId();
+	json_game_stat["numplayers"] = game_stat.GetNumPlayers();
+	json_game_stat["pplayers"]   = game_stat.GetPPlayers();
+	json_game_stat["tplayed"]    = game_stat.GetTimePlayed();
+	json_game_stat["clanid_t0"]  = game_stat.GetTeam1ClanId();
+	json_game_stat["clanid_t1"]  = game_stat.GetTeam2ClanId();
+	json_game_stat["country_t0"] = game_stat.GetTeam1Country();
+	json_game_stat["country_t1"] = game_stat.GetTeam2Country();
+	json_game_stat["victory_t0"] = game_stat.GetTeam1Victory();
+	json_game_stat["victory_t1"] = game_stat.GetTeam2Victory();
+	json_game_stat["created_at"] = game_stat.GetCreatedAt();
 	
 	// Game server player information
-	Json::Value players(Json::arrayValue);
+	Json::Value json_players(Json::arrayValue);
 	for(const Battlefield::GameStatPlayer gsplayer : game_stat.GetPlayers())
 	{
-		Json::Value player;
+		Json::Value json_player;
 		
-		player["id"]       = gsplayer.GetId();
-		player["auth"]     = gsplayer.GetAuth();
-		player["pid"]      = gsplayer.GetProfileId();
-		player["score"]    = gsplayer.GetScore();
-		player["rank"]     = gsplayer.GetRank();
-		player["pph"]      = gsplayer.GetPPH();
-		player["kills"]    = gsplayer.GetKills();
-		player["suicides"] = gsplayer.GetSuicides();
-		player["time"]     = gsplayer.GetTime();
-		player["lavd"]     = gsplayer.GetLAVsDestroyed();
-		player["mavd"]     = gsplayer.GetMAVsDestroyed();
-		player["havd"]     = gsplayer.GetHAVsDestroyed();
-		player["hed"]      = gsplayer.GetHelicoptersDestroyed();
-		player["pld"]      = gsplayer.GetPlanesDestroyed();
-		player["bod"]      = gsplayer.GetBoatsDestroyed();
-		player["k1"]       = gsplayer.GetKillsAssualtKit();
-		player["s1"]       = gsplayer.GetDeathsAssualtKit();
-		player["k2"]       = gsplayer.GetKillsSniperKit();
-		player["s2"]       = gsplayer.GetDeathsSniperKit();
-		player["k3"]       = gsplayer.GetKillsSpecialOpKit();
-		player["s3"]       = gsplayer.GetDeathsSpecialOpKit();
-		player["k4"]       = gsplayer.GetKillsCombatEngineerKit();
-		player["s4"]       = gsplayer.GetDeathsCombatEngineerKit();
-		player["k5"]       = gsplayer.GetKillsSupportKit();
-		player["s5"]       = gsplayer.GetDeathsSupportKit();
-		player["tk"]       = gsplayer.GetTeamKills();
-		player["medals"]   = gsplayer.GetMedals();
-		player["ttb"]      = gsplayer.GetTotalTopPlayer();
-		player["mv"]       = gsplayer.GetTotalVictories();
-		player["ngp"]      = gsplayer.GetTotalGameSessions();
+		json_player["id"]       = gsplayer.GetId();
+		json_player["auth"]     = gsplayer.GetAuth();
+		json_player["pid"]      = gsplayer.GetProfileId();
+		json_player["score"]    = gsplayer.GetScore();
+		json_player["rank"]     = gsplayer.GetRank();
+		json_player["pph"]      = gsplayer.GetPPH();
+		json_player["kills"]    = gsplayer.GetKills();
+		json_player["suicides"] = gsplayer.GetSuicides();
+		json_player["time"]     = gsplayer.GetTime();
+		json_player["lavd"]     = gsplayer.GetLAVsDestroyed();
+		json_player["mavd"]     = gsplayer.GetMAVsDestroyed();
+		json_player["havd"]     = gsplayer.GetHAVsDestroyed();
+		json_player["hed"]      = gsplayer.GetHelicoptersDestroyed();
+		json_player["pld"]      = gsplayer.GetPlanesDestroyed();
+		json_player["bod"]      = gsplayer.GetBoatsDestroyed();
+		json_player["k1"]       = gsplayer.GetKillsAssualtKit();
+		json_player["s1"]       = gsplayer.GetDeathsAssualtKit();
+		json_player["k2"]       = gsplayer.GetKillsSniperKit();
+		json_player["s2"]       = gsplayer.GetDeathsSniperKit();
+		json_player["k3"]       = gsplayer.GetKillsSpecialOpKit();
+		json_player["s3"]       = gsplayer.GetDeathsSpecialOpKit();
+		json_player["k4"]       = gsplayer.GetKillsCombatEngineerKit();
+		json_player["s4"]       = gsplayer.GetDeathsCombatEngineerKit();
+		json_player["k5"]       = gsplayer.GetKillsSupportKit();
+		json_player["s5"]       = gsplayer.GetDeathsSupportKit();
+		json_player["tk"]       = gsplayer.GetTeamKills();
+		json_player["medals"]   = gsplayer.GetMedals();
+		json_player["ttb"]      = gsplayer.GetTotalTopPlayer();
+		json_player["mv"]       = gsplayer.GetTotalVictories();
+		json_player["ngp"]      = gsplayer.GetTotalGameSessions();
 		
-		players.append(player);
+		json_players.append(json_player);
 	}
-	response["players"] = players;
+	json_game_stat["players"] = json_players;
 	
-	this->Send(response);
+	this->Send(json_game_stat);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -205,7 +205,7 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 void Webserver::Client::requestAPIGames(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response(Json::arrayValue);
+	Json::Value json_game_stats(Json::arrayValue);
 	Battlefield::GameStats game_stats;
 	
 	// Get Game Stats
@@ -220,11 +220,11 @@ void Webserver::Client::requestAPIGames(const atomizes::HTTPMessage& http_reques
 	
 	for(Battlefield::GameStat game_stat : game_stats)
 	{
-		response.append(game_stat.GetId());
+		json_game_stats.append(game_stat.GetId());
 	}
 	
 	
-	this->Send(response);
+	this->Send(json_game_stats);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -232,7 +232,7 @@ void Webserver::Client::requestAPIGames(const atomizes::HTTPMessage& http_reques
 void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response;
+	Json::Value json_player;
 	Battlefield::Player player;
 	Battlefield::Clan clan;
 	
@@ -262,48 +262,48 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	g_database->queryClanByPlayer(clan, player);
 	
 	// Player information
-	response["profileid"]  = player.GetProfileId();
-	response["userid"]     = player.GetUserId();
-	response["nick"]       = player.GetNick();
-	response["uniquenick"] = player.GetUniquenick();
-	response["last_login"] = player.GetLastLogin();
-	response["created_at"] = player.GetCreatedAt();
+	json_player["profileid"]  = player.GetProfileId();
+	json_player["userid"]     = player.GetUserId();
+	json_player["nick"]       = player.GetNick();
+	json_player["uniquenick"] = player.GetUniquenick();
+	json_player["last_login"] = player.GetLastLogin();
+	json_player["created_at"] = player.GetCreatedAt();
 	
 	// Secret
-	//response["email"]         = player.GetEmail();
-	//response["password"]      = player.GetPassword();
-	//response["last_login_ip"] = player.GetLastLoginIp();
+	//json_player["email"]         = player.GetEmail();
+	//json_player["password"]      = player.GetPassword();
+	//json_player["last_login_ip"] = player.GetLastLoginIp();
 	
 	// Player stats informaton
-	response["score"] = player.GetScore();
-	response["ran"] = player.GetRank();
-	response["pph"] = player.GetPPH();
-	response["kills"] = player.GetKills();
-	response["deaths"] = player.GetDeaths();
-	response["suicides"] = player.GetSuicides();
-	response["time"] = player.GetTime();
-	response["vehicles"] = player.GetVehiclesDestroyed();
-	response["lavd"] = player.GetLAVsDestroyed();
-	response["mavd"] = player.GetMAVsDestroyed();
-	response["havd"] = player.GetHAVsDestroyed();
-	response["hed"] = player.GetHelicoptersDestroyed();
-	response["pld"] = player.GetPlanesDestroyed();
-	response["bod"] = player.GetBoatsDestroyed();
-	response["k1"] = player.GetKillsAssualtKit();
-	response["s1"] = player.GetDeathsAssualtKit();
-	response["k2"] = player.GetKillsSniperKit();
-	response["s2"] = player.GetDeathsSniperKit();
-	response["k3"] = player.GetKillsSpecialOpKit();
-	response["s3"] = player.GetDeathsSpecialOpKit();
-	response["k4"] = player.GetKillsCombatEngineerKit();
-	response["s4"] = player.GetDeathsCombatEngineerKit();
-	response["k5"] = player.GetKillsSupportKit();
-	response["s5"] = player.GetDeathsSupportKit();
-	response["tk"] = player.GetTeamKills();
-	response["medals"] = player.GetMedals();
-	response["ttb"] = player.GetTotalTopPlayer();
-	response["mv"] = player.GetTotalVictories();
-	response["ngp"] = player.GetTotalGameSessions();
+	json_player["score"] = player.GetScore();
+	json_player["ran"] = player.GetRank();
+	json_player["pph"] = player.GetPPH();
+	json_player["kills"] = player.GetKills();
+	json_player["deaths"] = player.GetDeaths();
+	json_player["suicides"] = player.GetSuicides();
+	json_player["time"] = player.GetTime();
+	json_player["vehicles"] = player.GetVehiclesDestroyed();
+	json_player["lavd"] = player.GetLAVsDestroyed();
+	json_player["mavd"] = player.GetMAVsDestroyed();
+	json_player["havd"] = player.GetHAVsDestroyed();
+	json_player["hed"] = player.GetHelicoptersDestroyed();
+	json_player["pld"] = player.GetPlanesDestroyed();
+	json_player["bod"] = player.GetBoatsDestroyed();
+	json_player["k1"] = player.GetKillsAssualtKit();
+	json_player["s1"] = player.GetDeathsAssualtKit();
+	json_player["k2"] = player.GetKillsSniperKit();
+	json_player["s2"] = player.GetDeathsSniperKit();
+	json_player["k3"] = player.GetKillsSpecialOpKit();
+	json_player["s3"] = player.GetDeathsSpecialOpKit();
+	json_player["k4"] = player.GetKillsCombatEngineerKit();
+	json_player["s4"] = player.GetDeathsCombatEngineerKit();
+	json_player["k5"] = player.GetKillsSupportKit();
+	json_player["s5"] = player.GetDeathsSupportKit();
+	json_player["tk"] = player.GetTeamKills();
+	json_player["medals"] = player.GetMedals();
+	json_player["ttb"] = player.GetTotalTopPlayer();
+	json_player["mv"] = player.GetTotalVictories();
+	json_player["ngp"] = player.GetTotalGameSessions();
 	
 	Json::Value json_clan;
 	
@@ -311,9 +311,9 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	json_clan["name"]     = clan.GetName();
 	json_clan["tag"]      = clan.GetTag();
 	
-	response["clan"] = json_clan;
+	json_player["clan"] = json_clan;
 	
-	this->Send(response);
+	this->Send(json_player);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -321,7 +321,7 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response;
+	Json::Value json_clan;
 	Battlefield::Clan clan;
 	
 	// Get player profileid
@@ -338,34 +338,34 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	g_database->queryClanRanksByClanId(clan);
 	
 	// Clan information
-	response["clanid"]     = clan.GetClanId();
-	response["name"]       = clan.GetName();
-	response["tag"]        = clan.GetTag();
-	response["homepage"]   = clan.GetHomepage();
-	response["info"]       = clan.GetInfo();
-	response["region"]     = clan.GetRegion();
-	response["created_at"] = clan.GetCreatedAt();
+	json_clan["clanid"]     = clan.GetClanId();
+	json_clan["name"]       = clan.GetName();
+	json_clan["tag"]        = clan.GetTag();
+	json_clan["homepage"]   = clan.GetHomepage();
+	json_clan["info"]       = clan.GetInfo();
+	json_clan["region"]     = clan.GetRegion();
+	json_clan["created_at"] = clan.GetCreatedAt();
 	
 	// Secret
-	//response["rating"] = clan.GetRating();
-	//response["wins"]   = clan.GetWins();
-	//response["losses"] = clan.GetLosses();
-	//response["draws"]  = clan.GetDraws();
+	//json_clan["rating"] = clan.GetRating();
+	//json_clan["wins"]   = clan.GetWins();
+	//json_clan["losses"] = clan.GetLosses();
+	//json_clan["draws"]  = clan.GetDraws();
 	
 	// Clan ranks information
-	Json::Value members(Json::arrayValue);
+	Json::Value json_members(Json::arrayValue);
 	for (const auto& pair : clan.GetRanks())
 	{
-		Json::Value rank;
+		Json::Value json_member;
 		
-		rank["profileid"] = pair.first;
-		rank["rank"] = pair.second;
+		json_member["profileid"] = pair.first;
+		json_member["rank"] = pair.second;
 		
-		members.append(rank);
+		json_members.append(json_member);
 	}
-	response["members"] = members;
+	json_clan["members"] = json_members;
 	
-	this->Send(response);
+	this->Send(json_clan);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
@@ -373,7 +373,7 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value response(Json::arrayValue);
+	Json::Value json_leaderboard(Json::arrayValue);
 	std::string sort = "";
 	uint32_t limit = 10;
 	uint32_t offset = 0;
@@ -430,38 +430,38 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 	// Write leaderboard
 	for (const auto& pair : rank_players)
 	{
-		Json::Value item;
+		Json::Value json_player;
 		
-		item["position"]   = pair.first;
-		item["profileid"] = pair.second.GetProfileId();
-		item["uniquenick"] = pair.second.GetUniquenick();
+		json_player["position"]   = pair.first;
+		json_player["profileid"] = pair.second.GetProfileId();
+		json_player["uniquenick"] = pair.second.GetUniquenick();
 		
-		if(sort == "rank")                         item["rank"]     = pair.second.GetRank();
-		if(sort == "pph" || sort == "rank")        item["pph"]      = pair.second.GetPPH();
-		if(sort == "score" || sort == "rank")      item["score"]    = pair.second.GetScore();
-		else if(sort == "k1")                      item["k1"]       = pair.second.GetKillsAssualtKit();
-		else if(sort == "k2")                      item["k2"]       = pair.second.GetKillsSniperKit();
-		else if(sort == "k3")                      item["k3"]       = pair.second.GetKillsSpecialOpKit();
-		else if(sort == "k4")                      item["k4"]       = pair.second.GetKillsCombatEngineerKit();
-		else if(sort == "k5")                      item["k5"]       = pair.second.GetKillsSupportKit();
-		else if(sort == "kills")                   item["kills"]    = pair.second.GetKills();
-		else if(sort == "lavd")                    item["lavd"]     = pair.second.GetLAVsDestroyed();
-		else if(sort == "mavd")                    item["mavd"]     = pair.second.GetMAVsDestroyed();
-		else if(sort == "havd")                    item["havd"]     = pair.second.GetHAVsDestroyed();
-		else if(sort == "hed")                     item["hed"]      = pair.second.GetHelicoptersDestroyed();
-		else if(sort == "bod")                     item["bod"]      = pair.second.GetBoatsDestroyed();
-		else if(sort == "vehicles")                item["vehicles"] = pair.second.GetVehiclesDestroyed();
-		else if(sort == "ratio_k1")                item["ratio"]    = pair.second.GetRatioAssualtKit();
-		else if(sort == "ratio_k2")                item["ratio"]    = pair.second.GetRatioSniperKit();
-		else if(sort == "ratio_k3")                item["ratio"]    = pair.second.GetRatioSpecialOpKit();
-		else if(sort == "ratio_k4")                item["ratio"]    = pair.second.GetRatioCombatEngineerKit();
-		else if(sort == "ratio_k5")                item["ratio"]    = pair.second.GetRatioSupportKit();
-		else if(sort == "ratio_kd")                item["ratio"]    = pair.second.GetRatio();
+		if(sort == "rank")                    json_player["rank"]     = pair.second.GetRank();
+		if(sort == "pph" || sort == "rank")   json_player["pph"]      = pair.second.GetPPH();
+		if(sort == "score" || sort == "rank") json_player["score"]    = pair.second.GetScore();
+		else if(sort == "k1")                 json_player["k1"]       = pair.second.GetKillsAssualtKit();
+		else if(sort == "k2")                 json_player["k2"]       = pair.second.GetKillsSniperKit();
+		else if(sort == "k3")                 json_player["k3"]       = pair.second.GetKillsSpecialOpKit();
+		else if(sort == "k4")                 json_player["k4"]       = pair.second.GetKillsCombatEngineerKit();
+		else if(sort == "k5")                 json_player["k5"]       = pair.second.GetKillsSupportKit();
+		else if(sort == "kills")              json_player["kills"]    = pair.second.GetKills();
+		else if(sort == "lavd")               json_player["lavd"]     = pair.second.GetLAVsDestroyed();
+		else if(sort == "mavd")               json_player["mavd"]     = pair.second.GetMAVsDestroyed();
+		else if(sort == "havd")               json_player["havd"]     = pair.second.GetHAVsDestroyed();
+		else if(sort == "hed")                json_player["hed"]      = pair.second.GetHelicoptersDestroyed();
+		else if(sort == "bod")                json_player["bod"]      = pair.second.GetBoatsDestroyed();
+		else if(sort == "vehicles")           json_player["vehicles"] = pair.second.GetVehiclesDestroyed();
+		else if(sort == "ratio_k1")           json_player["ratio"]    = pair.second.GetRatioAssualtKit();
+		else if(sort == "ratio_k2")           json_player["ratio"]    = pair.second.GetRatioSniperKit();
+		else if(sort == "ratio_k3")           json_player["ratio"]    = pair.second.GetRatioSpecialOpKit();
+		else if(sort == "ratio_k4")           json_player["ratio"]    = pair.second.GetRatioCombatEngineerKit();
+		else if(sort == "ratio_k5")           json_player["ratio"]    = pair.second.GetRatioSupportKit();
+		else if(sort == "ratio_kd")           json_player["ratio"]    = pair.second.GetRatio();
 		
-		response.append(item);
+		json_leaderboard.append(json_player);
 	}
 	
-	this->Send(response);
+	this->Send(json_leaderboard);
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
