@@ -36,6 +36,7 @@ class Server : public Net::Socket
 		// Events
 		void onServerListen() const;
 		void onServerShutdown() const;
+		void onClientConnect(const Net::Socket& client) const;
 		void onClientConnect(const std::shared_ptr<Net::Socket>& client) const;
 		void onClientDisconnect(const Net::Socket& client);
 };

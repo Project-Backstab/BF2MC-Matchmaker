@@ -93,7 +93,7 @@ void Server::Listen()
 	if (listen(this->_socket, 3) < 0)
 	{
 		Logger::error("Server::Listen() on listen", this->_type);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	
 	this->onServerListen();
@@ -103,7 +103,7 @@ void Server::Listen()
 		if ((client_socket = accept(this->_socket, (struct sockaddr*)&client_address, &client_address_len)) < 0)
 		{	
 			Logger::error("Server::Listen() on accept", this->_type);
-			exit(EXIT_FAILURE);
+			return;
 		}
 		
 		switch(this->_type)
@@ -115,7 +115,7 @@ void Server::Listen()
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					static_cast<GPSP::Client*>(client.get())->Listen();
+					dynamic_cast<GPSP::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -129,7 +129,7 @@ void Server::Listen()
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					static_cast<GPCM::Client*>(client.get())->Listen();
+					dynamic_cast<GPCM::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -143,7 +143,7 @@ void Server::Listen()
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					static_cast<Browsing::Client*>(client.get())->Listen();
+					dynamic_cast<Browsing::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -157,7 +157,7 @@ void Server::Listen()
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					static_cast<Webserver::Client*>(client.get())->Listen();
+					dynamic_cast<Webserver::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -171,7 +171,7 @@ void Server::Listen()
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					static_cast<GameStats::Client*>(client.get())->Listen();
+					dynamic_cast<GameStats::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -182,9 +182,14 @@ void Server::Listen()
 	}
 }
 
+// 
+// ChatGPT:
+// You are correct that UDP is a stateless protocol, and there is no inherent mechanism to determine
+// if a client is still connected in the same way as TCP. In UDP, you won't receive disconnection notifications,
+// and you can't rely on the absence of incoming packets to detect disconnections, as you would in TCP.
+//
 void Server::UDPListen()
 {
-	int client_socket;
 	struct sockaddr_in client_address;
 	socklen_t client_address_len = sizeof(client_address);
 
@@ -194,26 +199,35 @@ void Server::UDPListen()
 	{
 		std::vector<unsigned char> buffer(2048, 0);
 		
-		ssize_t recv_size = recvfrom(this->_socket, &(buffer[0]), 2048, 0, (struct sockaddr*)&client_address, &client_address_len);
+		// recieve data from udp connection
+		ssize_t recv_size = recvfrom(
+			this->_socket,                                         // Listening socket
+			&(buffer[0]), 2048,                                    // Data
+			0,                                                     // Flags
+			(struct sockaddr*)&client_address, &client_address_len // Address
+		);
 		
-		if (recv_size < 0)
+		if (recv_size > 0)
 		{
-			Logger::error("Server::UDPListen() on recvfrom", this->_type);
-			close(this->_socket);
-			return;
+			buffer.resize(recv_size);
+		
+			switch(this->_type)
+			{
+				case Server::Type::QR:
+					QR::Client client = QR::Client(this->_socket, client_address);
+					
+					this->onClientConnect(client);
+					
+					client.onRequest(buffer);
+					
+					this->onClientDisconnect(client);
+				break;
+			}
 		}
-		
-		//Logger::debug("recv_size = " + std::to_string(recv_size));
-		
-		buffer.resize(recv_size);
-		
-		switch(this->_type)
+		else
 		{
-			case Server::Type::QR:
-				QR::Client client = QR::Client(this->_socket, client_address);
-				
-				client.onRequest(buffer);
-			break;
+			Logger::error("Server::UDPListen() on recvfrom with state \"" + std::to_string(recv_size) + "\"", this->_type);
+			return;
 		}
 	}
 }
@@ -225,19 +239,19 @@ void Server::DisconnectAllClients()
 		switch(this->_type)
 		{
 			case Server::Type::GPSP:
-				static_cast<GPSP::Client*>(client.get())->Disconnect();
+				dynamic_cast<GPSP::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::GPCM:
-				static_cast<GPCM::Client*>(client.get())->Disconnect();
+				dynamic_cast<GPCM::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::Browsing:
-				static_cast<Browsing::Client*>(client.get())->Disconnect();
+				dynamic_cast<Browsing::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::Webserver:
-				static_cast<Webserver::Client*>(client.get())->Disconnect();
+				dynamic_cast<Webserver::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::GameStats:
-				static_cast<GameStats::Client*>(client.get())->Disconnect();
+				dynamic_cast<GameStats::Client*>(client.get())->Disconnect();
 			break;
 		}
 	}
@@ -263,6 +277,14 @@ void Server::onServerShutdown() const
 	Logger::info("Server shutdown", this->_type);
 }
 
+void Server::onClientConnect(const Net::Socket& client) const
+{
+	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	
+	Logger::info("Client " + client.GetAddress() + " connected",
+		this->_type, g_settings["show_client_connect"].asBool());
+}
+
 void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
@@ -275,21 +297,29 @@ void Server::onClientDisconnect(const Net::Socket& client)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	Logger::info("Client " + client.GetAddress() + " disconnected",
-			this->_type, g_settings["show_client_disconnect"].asBool());
-	
-	// Find shared pointer in clients list
-    auto it = std::find_if(this->clients.begin(), this->clients.end(),
-        [rawPtrToSearch = const_cast<Net::Socket*>(&client)](const std::shared_ptr<Net::Socket>& ptr)
-		{
-            return ptr.get() == rawPtrToSearch;
-        }
-    );
-	
-	// When found remove client
-	if (it != this->clients.end())
+	if(this->GetSocketType() == "tcp")
 	{
-		this->clients.erase(it);
+		// Find shared pointer in clients list
+		auto it = std::find_if(this->clients.begin(), this->clients.end(),
+			[rawPtrToSearch = const_cast<Net::Socket*>(&client)](const std::shared_ptr<Net::Socket>& ptr)
+			{
+				return ptr.get() == rawPtrToSearch;
+			}
+		);
+		
+		// When found remove client
+		if (it != this->clients.end())
+		{
+			Logger::info("Client " + client.GetAddress() + " disconnected",
+				this->_type, g_settings["show_client_disconnect"].asBool());
+			
+			this->clients.erase(it);
+		}
+	}
+	else
+	{
+		Logger::info("Client " + client.GetAddress() + " disconnected",
+			this->_type, g_settings["show_client_disconnect"].asBool());
 	}
 }
 

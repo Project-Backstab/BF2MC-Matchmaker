@@ -37,12 +37,6 @@ QR::Client::~Client()
 */
 void QR::Client::onRequest(const std::vector<unsigned char>& request)
 {
-	// One close services it will send empty requests
-	if(this->GetAddress() == "0.0.0.0:0")
-	{
-		return;
-	}
-	
 	this->_LogTransaction("-->", Util::Buffer::ToString(request));
 	
 	int action = request[0];
