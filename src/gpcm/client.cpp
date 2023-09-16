@@ -613,9 +613,9 @@ GPCM::Session GPCM::Client::findSessionByProfileId(int profileid)
 {
 	GPCM::Session session;
 	
-	for(Net::Socket* client : g_gpcm_server->_clients)
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->clients)
 	{
-		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
+		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
 		
 		// Find session
 		session = gpcm_client->GetSession();
@@ -634,9 +634,9 @@ GPCM::Session GPCM::Client::findSessionByAuthtoken(const std::string& authtoken)
 {
 	GPCM::Session session;
 	
-	for(Net::Socket* client : g_gpcm_server->_clients)
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->clients)
 	{
-		GPCM::Client* gpcm_client = static_cast<GPCM::Client*>(client);
+		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
 		
 		// Find session
 		session = gpcm_client->GetSession();

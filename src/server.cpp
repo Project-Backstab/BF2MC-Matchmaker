@@ -110,62 +110,72 @@ void Server::Listen()
 		{
 			case Server::Type::GPSP:
 			{
-				Net::Socket* client = new GPSP::Client(client_socket, client_address);
+				std::shared_ptr<Net::Socket> client = std::make_shared<GPSP::Client>(client_socket, client_address);
 				
-				this->onClientConnect(*client);
+				this->onClientConnect(client);
 				
-				std::thread t(&GPSP::Client::Listen, (GPSP::Client*)client);
+				std::thread t([client = client]() {
+					static_cast<GPSP::Client*>(client.get())->Listen();
+				});
 				t.detach();
 				
-				this->_clients.push_back(client);
-			}	
+				this->clients.push_back(std::move(client));
+			}
 			break;
 			case Server::Type::GPCM:
 			{
-				Net::Socket* client = new GPCM::Client(client_socket, client_address);
+				std::shared_ptr<Net::Socket> client = std::make_shared<GPCM::Client>(client_socket, client_address);
 				
-				this->onClientConnect(*client);
+				this->onClientConnect(client);
 				
-				std::thread t(&GPCM::Client::Listen, (GPCM::Client*)client);
+				std::thread t([client = client]() {
+					static_cast<GPCM::Client*>(client.get())->Listen();
+				});
 				t.detach();
 				
-				this->_clients.push_back(client);
+				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::Browsing:
 			{
-				Net::Socket* client = new Browsing::Client(client_socket, client_address);
+				std::shared_ptr<Net::Socket> client = std::make_shared<Browsing::Client>(client_socket, client_address);
 				
-				this->onClientConnect(*client);
+				this->onClientConnect(client);
 				
-				std::thread t(&Browsing::Client::Listen, (Browsing::Client*)client);
+				std::thread t([client = client]() {
+					static_cast<Browsing::Client*>(client.get())->Listen();
+				});
 				t.detach();
 				
-				this->_clients.push_back(client);
+				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::Webserver:
 			{
-				Net::Socket* client = new Webserver::Client(client_socket, client_address);
+				std::shared_ptr<Net::Socket> client = std::make_shared<Webserver::Client>(client_socket, client_address);
 				
-				this->onClientConnect(*client);
+				this->onClientConnect(client);
 				
-				std::thread t(&Webserver::Client::Listen, (Webserver::Client*)client);
+				std::thread t([client = client]() {
+					static_cast<Webserver::Client*>(client.get())->Listen();
+				});
 				t.detach();
 				
-				this->_clients.push_back(client);
+				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::GameStats:
 			{
-				Net::Socket* client = new GameStats::Client(client_socket, client_address);
+				std::shared_ptr<Net::Socket> client = std::make_shared<GameStats::Client>(client_socket, client_address);
 				
-				this->onClientConnect(*client);
+				this->onClientConnect(client);
 				
-				std::thread t(&GameStats::Client::Listen, (GameStats::Client*)client);
+				std::thread t([client = client]() {
+					static_cast<GameStats::Client*>(client.get())->Listen();
+				});
 				t.detach();
 				
-				this->_clients.push_back(client);
+				this->clients.push_back(std::move(client));
 			}
 			break;
 		}
@@ -210,24 +220,24 @@ void Server::UDPListen()
 
 void Server::DisconnectAllClients()
 {
-	for(Net::Socket* client : this->_clients)
+	for(std::shared_ptr<Net::Socket> client : this->clients)
 	{
 		switch(this->_type)
 		{
 			case Server::Type::GPSP:
-				((GPSP::Client*)client)->Disconnect();
+				static_cast<GPSP::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::GPCM:
-				((GPCM::Client*)client)->Disconnect();
+				static_cast<GPCM::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::Browsing:
-				((Browsing::Client*)client)->Disconnect();
+				static_cast<Browsing::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::Webserver:
-				((Webserver::Client*)client)->Disconnect();
+				static_cast<Webserver::Client*>(client.get())->Disconnect();
 			break;
 			case Server::Type::GameStats:
-				((GameStats::Client*)client)->Disconnect();
+				static_cast<GameStats::Client*>(client.get())->Disconnect();
 			break;
 		}
 	}
@@ -253,11 +263,11 @@ void Server::onServerShutdown() const
 	Logger::info("Server shutdown", this->_type);
 }
 
-void Server::onClientConnect(const Net::Socket& client) const
+void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
 	
-	Logger::info("Client " + client.GetAddress() + " connected",
+	Logger::info("Client " + client->GetAddress() + " connected",
 		this->_type, g_settings["show_client_connect"].asBool());
 }
 
@@ -268,12 +278,18 @@ void Server::onClientDisconnect(const Net::Socket& client)
 	Logger::info("Client " + client.GetAddress() + " disconnected",
 			this->_type, g_settings["show_client_disconnect"].asBool());
 	
-	auto it = std::find(this->_clients.begin(), this->_clients.end(), const_cast<Net::Socket*>(&client));
-	if (it != this->_clients.end())
+	// Find shared pointer in clients list
+    auto it = std::find_if(this->clients.begin(), this->clients.end(),
+        [rawPtrToSearch = const_cast<Net::Socket*>(&client)](const std::shared_ptr<Net::Socket>& ptr)
+		{
+            return ptr.get() == rawPtrToSearch;
+        }
+    );
+	
+	// When found remove client
+	if (it != this->clients.end())
 	{
-		this->_clients.erase(it);
-		
-		delete &client;
+		this->clients.erase(it);
 	}
 }
 

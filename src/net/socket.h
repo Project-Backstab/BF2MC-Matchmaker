@@ -29,6 +29,12 @@ namespace Net
 			
 			void UDPSend(const std::string& msg) const;
 			void UDPSend(const std::vector<unsigned char>& msg) const;
+			
+			// ChatGPT:
+			// In C++, you cannot directly cast a base class pointer (std::shared_ptr<Net::Socket>) to a derived class pointer
+			// (std::shared_ptr<GPCM::Client>) using static_cast when the base class is not polymorphic (i.e., it doesn't have at
+			// least one virtual function). This is because static_cast requires a polymorphic base class for a safe cast.
+			virtual void WTF_WHY_AM_I_HERE_1337() { /* Empty virtual function */ }
 	};
 }
 

@@ -2,6 +2,7 @@
 #define SERVER_H
 
 #include <vector>
+#include <memory>
 
 #include <net/socket.h>
 
@@ -20,7 +21,7 @@ class Server : public Net::Socket
 		};
 	
 	public:
-		std::vector<Net::Socket*> _clients;
+		std::vector<std::shared_ptr<Net::Socket>> clients;
 	
 	private:
 		Server::Type              _type;
@@ -35,7 +36,7 @@ class Server : public Net::Socket
 		// Events
 		void onServerListen() const;
 		void onServerShutdown() const;
-		void onClientConnect(const Net::Socket& client) const;
+		void onClientConnect(const std::shared_ptr<Net::Socket>& client) const;
 		void onClientDisconnect(const Net::Socket& client);
 };
 

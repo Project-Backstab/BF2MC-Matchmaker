@@ -1594,7 +1594,7 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	std::ifstream input;
 	std::string data;
 	
-	input.open("../" + file_name, std::ifstream::in);
+	input.open("../" + file_name, std::ifstream::in | std::ifstream::binary);
 	
 	if(input.is_open())
 	{

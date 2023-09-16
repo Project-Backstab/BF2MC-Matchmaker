@@ -11,10 +11,10 @@ namespace GPCM
 	
 	struct Session
 	{
-		std::string  challenge;
-		int          profileid = -1;
-		std::string  authtoken;
-		Client*      client;
+		std::string             challenge;
+		int                     profileid = -1;
+		std::string             authtoken;
+		std::shared_ptr<Client> client;
 	};
 
 	class Client : public Net::Socket
