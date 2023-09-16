@@ -46,34 +46,31 @@ void GPCM::Client::Listen()
 	
 	while(true)
 	{
-		std::string request;
 		std::vector<char> buffer(4096, 0);
 		
-		int v = read(this->_socket, &(buffer[0]), 4096);
+		int recv_size = read(this->_socket, &(buffer[0]), 4096);
 		
 		// If error or no data is recieved we end the connection
-		if(v <= 0)
+		if(recv_size <= 0)
 		{
 			break;
 		}
 		
 		// Resize buffer
-		buffer.resize(v);
-		
-		request = Util::Buffer::ToString(buffer);
+		buffer.resize(recv_size);
 		
 		// Debug
 		//Logger::debug("--- START ----------------------------------------" << std::endl;
-		//Logger::debug("size = " + std::to_string(v));
-		//Logger::debug("request = " + request);
+		//Logger::debug("recv_size = " + std::to_string(recv_size));
+		//Logger::debug("request = " + Util::Buffer::ToString(buffer));
 		
-		std::vector<std::string> requests = GameSpy::RequestToRequests(request);
+		std::vector<std::string> requests = GameSpy::RequestToRequests(Util::Buffer::ToString(buffer));
 		
-		for(std::string v : requests)
+		for(std::string request : requests)
 		{
-			this->_LogTransaction("-->", v);
+			this->_LogTransaction("-->", request);
 		
-			this->onRequest(v);
+			this->onRequest(request);
 			
 			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}

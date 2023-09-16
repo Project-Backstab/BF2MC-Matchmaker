@@ -167,16 +167,16 @@ void Webserver::Client::Listen()
 		HTTPMessage http_request;
 		
 		// Read socket
-		int v = read(this->_socket, &(buffer[0]), 4096);
+		int recv_size = read(this->_socket, &(buffer[0]), 4096);
 		
 		// If error or no data is recieved we end the connection
-		if(v <= 0)
+		if(recv_size <= 0)
 		{
 			break;
 		}
 		
 		// Resize buffer
-		buffer.resize(v);
+		buffer.resize(recv_size);
 		
 		// Parse buffer to http header
 		http_parser.Parse(&http_request, &(buffer[0]));
