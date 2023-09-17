@@ -719,7 +719,7 @@ void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 
 bool Battlefield::GameServer::IsAlive()
 {
-	struct tm timeinfo;
+	struct tm timeinfo = {};
 	
 	if (strptime(this->GetUpdatedAt().c_str(), "%Y-%m-%d %H:%M:%S %Z", &timeinfo) != nullptr)
 	{

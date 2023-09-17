@@ -33,6 +33,7 @@ namespace Util
 	
 	namespace Time
 	{
+		std::string GetNowDateTime(const std::string& format);
 		std::string GetDateTime(MYSQL_TIME datetime);
 		std::string GetTimeZone();
 	}
@@ -45,9 +46,6 @@ namespace Util
 	std::string generateRandomAuthtoken();
 	
 	std::vector<int> convertProfileIdToVector(const std::string& input);
-	
-	std::string GetNowTime();
-	std::string GetNowDateTime();
 }
 
 #endif // UTIL_H

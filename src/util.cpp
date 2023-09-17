@@ -62,12 +62,24 @@ std::string Util::Buffer::ToString(const std::vector<unsigned char>& buffer)
 }
 
 //Util::Time
+std::string Util::Time::GetNowDateTime(const std::string& format)
+{
+	auto now = std::chrono::system_clock::now();
+	std::time_t time = std::chrono::system_clock::to_time_t(now);
+	std::tm* timeInfo = std::localtime(&time);
+
+	std::ostringstream oss;
+	oss << std::put_time(timeInfo, format.c_str());
+	
+	return oss.str();
+}
+
 std::string Util::Time::GetDateTime(MYSQL_TIME datetime)
 {
 	char formatted_datetime[20]; // Sufficient to hold "YYYY-MM-DD HH:mm:SS\0"
 
 	// Set up the struct tm for strftime
-	struct tm timeinfo;
+	struct tm timeinfo = {};
 	timeinfo.tm_year = datetime.year - 1900;
 	timeinfo.tm_mon = datetime.month - 1;
 	timeinfo.tm_mday = datetime.day;
@@ -222,26 +234,5 @@ std::vector<int> Util::convertProfileIdToVector(const std::string& input)
 	return result;
 }
 
-std::string Util::GetNowTime()
-{
-	char timeStr[9];
 
-	auto now = std::chrono::system_clock::now();
-	std::time_t time = std::chrono::system_clock::to_time_t(now);
-	std::tm* timeInfo = std::localtime(&time);
-	std::strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeInfo);
-
-	return timeStr;
-}
-
-std::string Util::GetNowDateTime()
-{
-	auto now = std::chrono::system_clock::now();
-	std::time_t time = std::chrono::system_clock::to_time_t(now);
-	std::tm* timeInfo = std::localtime(&time);
-
-	std::ostringstream oss;
-	oss << std::put_time(timeInfo, "%Y%m%d-%H%M%S");
-	return oss.str();
-}
 
