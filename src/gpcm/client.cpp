@@ -144,7 +144,7 @@ void GPCM::Client::requestChallenge()
 		\login\\challenge\otMLwtUZyLCV85ERGzg5mVER8nknWX0B\uniquenick\IamLupo\response\b836c6a19b240bb9fb2a31179b28062b\firewall\1\port\0\productid\10307\gamename\bfield1942ps2\namespaceid\13\id\1\final\
 	Response:
 		\lc\2\sesskey\1\userid\64679\profileid\10036819\uniquenick\IamLupo\lt\ee5540bbd764b321378ccedd\proof\70eabd6f5b004fc0b42056ac3cef5c7b\id\1\final\
-		
+	
 	To do:
 		- The client sends in the login request parameter "response". We have to figure out how this response is been generated.
 */
@@ -159,12 +159,31 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	std::string client_challenge = parameter[3];
 	std::string id = parameter[19];
 	std::string server_challenge = this->_session.challenge;
+	std::string client_response = parameter[7];
 	
 	Battlefield::Player player;
 	player.SetUniquenick(uniquenick);
 	
 	// Get player information
 	g_database->queryPlayerByUniquenick(player);
+	
+	if(client_response != GameSpy::LoginResponse(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge))
+	{
+		std::string response = GameSpy::Parameter2Response({
+			"error", "",
+			"err", "260",
+			"fatal", "",
+			"errmsg", "The password provided was incorrect.",
+			"id", "1",
+			"final"
+		});
+		
+		this->Send(response);
+	
+		this->_LogTransaction("<--", response);
+		
+		return;
+	}
 	
 	// Generate proof
 	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge);
