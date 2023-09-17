@@ -10,7 +10,7 @@
 #include <globals.h>
 #include <server.h>
 #include <database.h>
-#include "gamestats/client.h"
+#include <gamestats/client.h>
 
 // Globals
 Database*         g_database;
