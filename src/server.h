@@ -24,7 +24,8 @@ class Server : public Net::Socket
 		std::vector<std::shared_ptr<Net::Socket>> clients;
 	
 	private:
-		Server::Type              _type;
+		Server::Type        _type;
+		mutable std::mutex  _mutex;
 	
 	public:
 		Server(Server::Type type);

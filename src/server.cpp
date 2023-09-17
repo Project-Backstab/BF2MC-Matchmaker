@@ -110,12 +110,16 @@ void Server::Listen()
 		{
 			case Server::Type::GPSP:
 			{
-				std::shared_ptr<Net::Socket> client = std::make_shared<GPSP::Client>(client_socket, client_address);
+				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+				
+				this->clients.push_back(std::make_shared<GPSP::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->clients.back();
 				
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					dynamic_cast<GPSP::Client*>(client.get())->Listen();
+					static_cast<GPSP::Client*>(client.get())->Listen();
 				});
 				t.detach();
 				
@@ -124,58 +128,66 @@ void Server::Listen()
 			break;
 			case Server::Type::GPCM:
 			{
-				std::shared_ptr<Net::Socket> client = std::make_shared<GPCM::Client>(client_socket, client_address);
+				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+				
+				this->clients.push_back(std::make_shared<GPCM::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->clients.back();
 				
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					dynamic_cast<GPCM::Client*>(client.get())->Listen();
+					static_cast<GPCM::Client*>(client.get())->Listen();
 				});
 				t.detach();
-				
-				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::Browsing:
 			{
-				std::shared_ptr<Net::Socket> client = std::make_shared<Browsing::Client>(client_socket, client_address);
+				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+				
+				this->clients.push_back(std::make_shared<Browsing::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->clients.back();
 				
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					dynamic_cast<Browsing::Client*>(client.get())->Listen();
+					static_cast<Browsing::Client*>(client.get())->Listen();
 				});
 				t.detach();
-				
-				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::Webserver:
 			{
-				std::shared_ptr<Net::Socket> client = std::make_shared<Webserver::Client>(client_socket, client_address);
+				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+				
+				this->clients.push_back(std::make_shared<Webserver::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->clients.back();
 				
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					dynamic_cast<Webserver::Client*>(client.get())->Listen();
+					static_cast<Webserver::Client*>(client.get())->Listen();
 				});
 				t.detach();
-				
-				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::GameStats:
 			{
-				std::shared_ptr<Net::Socket> client = std::make_shared<GameStats::Client>(client_socket, client_address);
+				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+				
+				this->clients.push_back(std::make_shared<GameStats::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->clients.back();
 				
 				this->onClientConnect(client);
 				
 				std::thread t([client = client]() {
-					dynamic_cast<GameStats::Client*>(client.get())->Listen();
+					static_cast<GameStats::Client*>(client.get())->Listen();
 				});
 				t.detach();
-				
-				this->clients.push_back(std::move(client));
 			}
 			break;
 		}
@@ -296,6 +308,7 @@ void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 void Server::onClientDisconnect(const Net::Socket& client)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	if(this->GetSocketType() == "tcp")
 	{
