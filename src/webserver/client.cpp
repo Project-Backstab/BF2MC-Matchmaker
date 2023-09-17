@@ -1591,17 +1591,32 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
 
 std::string Webserver::Client::_readFile(const std::string &file_name) const
 {
-	std::ifstream input;
+	bool finished = false;
 	std::string data;
 	
-	input.open("../" + file_name, std::ifstream::in | std::ifstream::binary);
-	
-	if(input.is_open())
+	while(!finished)
 	{
-		data.append((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+		std::ifstream input;
 	
-		input.close();
+		try
+		{
+			input.open("../" + file_name, std::ifstream::in | std::ifstream::binary);
+
+			if(input.is_open())
+			{
+				data.append((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+				
+				input.close();
+				
+				finished = true;
+			}
+		}
+		catch(...) {
+			Logger::error(file_name);
+		}
 	}
+	
+	//Logger::debug(std::to_string(data.size()));
 	
 	return data;
 }
