@@ -88,3 +88,4 @@ void Net::Socket::UDPSend(const std::vector<unsigned char>& msg) const
 	
 	sendto(this->_socket, &(msg[0]), msg.size(), 0, (struct sockaddr*)&this->_address, address_len);
 }
+

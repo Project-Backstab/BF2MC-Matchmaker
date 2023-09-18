@@ -413,14 +413,23 @@ bool Browsing::Client::_FilterServerReconfigurable(const std::string& filter, co
 	std::regex pattern;
 	std::smatch matches;
 	
-	// Find: mapname=2
-	pattern = std::regex(R"(rc=(\d+))");
+	// Find: (rc=1 or teamplay!=0)
+	pattern = std::regex(R"(rc=(\d+) or teamplay!=(\d+))");
 	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
 	{
-		uint8_t rc = std::stoul(matches[1]);
 		
-		if(!(game_server.GetReconfigurable() == rc))
-			return true; // remove server
+	}
+	else
+	{
+		// Find: rc=2
+		pattern = std::regex(R"(rc=(\d+))");
+		if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+		{
+			uint8_t rc = std::stoul(matches[1]);
+			
+			if(!(game_server.GetReconfigurable() == rc))
+				return true; // remove server
+		}
 	}
 	
 	return false;
@@ -431,24 +440,37 @@ bool Browsing::Client::_FilterServerTeamplay(const std::string& filter, const Ba
 	std::regex pattern;
 	std::smatch matches;
 	
-	// Find: teamplay=0
-	pattern = std::regex(R"(teamplay=(\d+))");
+	// Find: (rc=1 or teamplay!=0)
+	pattern = std::regex(R"(rc=(\d+) or teamplay!=(\d+))");
 	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
 	{
-		uint8_t teamplay = std::stoul(matches[1]);
+		uint8_t rc = std::stoul(matches[1]);
+		uint8_t teamplay = std::stoul(matches[2]);
 		
-		if(!(game_server.GetTeamplay() == teamplay))
+		if(!(game_server.GetReconfigurable() == rc || game_server.GetTeamplay() != teamplay))
 			return true; // remove server
 	}
-	
-	// Find: teamplay!=0
-	pattern = std::regex(R"(teamplay!=(\d+))");
-	if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+	else
 	{
-		uint8_t teamplay = std::stoul(matches[1]);
+		// Find: teamplay=0
+		pattern = std::regex(R"(teamplay=(\d+))");
+		if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+		{
+			uint8_t teamplay = std::stoul(matches[1]);
+			
+			if(!(game_server.GetTeamplay() == teamplay))
+				return true; // remove server
+		}
 		
-		if(!(game_server.GetTeamplay() != teamplay))
-			return true; // remove server
+		// Find: teamplay!=0
+		pattern = std::regex(R"(teamplay!=(\d+))");
+		if (std::regex_search(filter, matches, pattern) && matches.size() >= 2)
+		{
+			uint8_t teamplay = std::stoul(matches[1]);
+			
+			if(!(game_server.GetTeamplay() != teamplay))
+				return true; // remove server
+		}
 	}
 
 	return false; // Dont remove server

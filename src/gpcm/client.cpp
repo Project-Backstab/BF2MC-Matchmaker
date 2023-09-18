@@ -170,11 +170,11 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	if(client_response != GameSpy::LoginResponse(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge))
 	{
 		std::string response = GameSpy::Parameter2Response({
-			"error", "",
-			"err", "260",
-			"fatal", "",
+			"error",  "",
+			"err",    "260",
+			"fatal",  "",
 			"errmsg", "The password provided was incorrect.",
-			"id", "1",
+			"id",     "1",
 			"final"
 		});
 		
@@ -193,14 +193,14 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	this->_session.authtoken = Util::generateRandomAuthtoken();
 	
 	std::string response = GameSpy::Parameter2Response({
-		"lc", "2",
-		"sesskey", "1",
-		"userid", std::to_string(player.GetUserId()),
-		"profileid", std::to_string(player.GetProfileId()),
+		"lc",         "2",
+		"sesskey",    "1",
+		"userid",     std::to_string(player.GetUserId()),
+		"profileid",  std::to_string(player.GetProfileId()),
 		"uniquenick", player.GetUniquenick(),
-		"lt", this->_session.authtoken,
-		"proof", proof,
-		"id", id,
+		"lt",         this->_session.authtoken,
+		"proof",      proof,
+		"id",         id,
 		"final"
 	});
 	
@@ -238,7 +238,7 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 	std::vector<int> player_friends = player.GetFriends();
 	
 	std::string response = GameSpy::Parameter2Response({
-		"bdy", std::to_string(player_friends.size()),
+		"bdy",  std::to_string(player_friends.size()),
 		"list", Util::ToString(player_friends),
 		"final"
 	});
@@ -289,42 +289,42 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	if(player.GetUserId() != -1)
 	{
 		response = GameSpy::Parameter2Response({
-			"pi", "",
-			"profileid", std::to_string(player.GetProfileId()),
-			"userid", std::to_string(player.GetUserId()),
-			"nick", player.GetNick(),
-			"uniquenick", player.GetUniquenick(),
-			"email", player.GetEmail(),
-			"sex", "0",
-			"birthday", "0",
-			"countrycode", "",
-			"aim", "",
+			"pi",               "",
+			"profileid",        std::to_string(player.GetProfileId()),
+			"userid",           std::to_string(player.GetUserId()),
+			"nick",             player.GetNick(),
+			"uniquenick",       player.GetUniquenick(),
+			"email",            player.GetEmail(),
+			"sex",              "0",
+			"birthday",         "0",
+			"countrycode",      "",
+			"aim",              "",
 			"videocard1string", "",
 			"videocard2string", "",
-			"osstring", "",
-			"id", id,
-			"sig", "d41d8cd98f00b204e9800998ecf8427e",
+			"osstring",         "",
+			"id",               id,
+			"sig",              "d41d8cd98f00b204e9800998ecf8427e",
 			"final"
 		});
 	}
 	else	
 	{
 		response = GameSpy::Parameter2Response({
-			"pi", "",
-			"profileid", profileid,
-			"userid", std::to_string(-1),
-			"nick", "<Unknown>",
-			"uniquenick", "<Unknown>",
-			"email", "<Unknown>",
-			"sex", "0",
-			"birthday", "0",
-			"countrycode", "",
-			"aim", "",
+			"pi",               "",
+			"profileid",        profileid,
+			"userid",           std::to_string(-1),
+			"nick",             "<Unknown>",
+			"uniquenick",       "<Unknown>",
+			"email",            "<Unknown>",
+			"sex",              "0",
+			"birthday",         "0",
+			"countrycode",      "",
+			"aim",              "",
 			"videocard1string", "",
 			"videocard2string", "",
-			"osstring", "",
-			"id", id,
-			"sig", "d41d8cd98f00b204e9800998ecf8427e",
+			"osstring",         "",
+			"id",               id,
+			"sig",              "d41d8cd98f00b204e9800998ecf8427e",
 			"final"
 		});
 	}
@@ -389,11 +389,12 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 	
 	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
 	
+	//	To-do: Needs extra check that accually friends with the target
 	if(session.profileid != -1)
 	{
 		std::string response = GameSpy::Parameter2Response({
-			"bm", "1",
-			"f", std::to_string(this->_session.profileid),
+			"bm",  "1",
+			"f",   std::to_string(this->_session.profileid),
 			"msg", msg,
 			"final"
 		});
@@ -431,8 +432,8 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter)
 	if(session.profileid != -1)
 	{
 		std::string response = GameSpy::Parameter2Response({
-			"bm", "2",
-			"f", std::to_string(this->_session.profileid),
+			"bm",  "2",
+			"f",   std::to_string(this->_session.profileid),
 			"msg", "|signed|d41d8cd98f00b204e9800998ecf8427e",
 			"final"
 		});
@@ -476,8 +477,8 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	{
 		// Send friendlist update to friendship sender
 		std::string response = GameSpy::Parameter2Response({
-			"bm", "100",
-			"f", std::to_string(player.GetProfileId()),
+			"bm",   "100",
+			"f",    std::to_string(player.GetProfileId()),
 			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3658|ip|3115326802|p|710",
 			"final"
 		});
