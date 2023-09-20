@@ -46,6 +46,14 @@ GRANT EXECUTE ON PROCEDURE BF2MC.CreateLeaderboards TO 'backend'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
+And create webserver account to run Gee his website with:
+```
+CREATE USER 'webserver'@'localhost' IDENTIFIED WITH mysql_native_password BY 'bf2mcbackend2023';
+GRANT SELECT ON `BF2MC`.* TO `webserver`@`localhost`;
+GRANT EXECUTE ON PROCEDURE BF2MC.* TO 'webserver'@'localhost';
+FLUSH PRIVILEGES;
+```
+
 Last we patch the firewall.
 ```
 sudo ufw allow from <myip> to any port 3306
