@@ -436,10 +436,26 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 		json_player["profileid"] = pair.second.GetProfileId();
 		json_player["uniquenick"] = pair.second.GetUniquenick();
 		
-		if(sort == "rank")                    json_player["rank"]     = pair.second.GetRank();
+		if(sort == "rank")
+		{
+			json_player["rank"] = pair.second.GetRank();
+		}
+		else
+		{
+			// to-do: optimization to get full list in one query
+			Battlefield::Player player;
+			
+			player.SetProfileId(pair.second.GetProfileId());
+			
+			g_database->queryPlayerByProfileid(player);
+			
+			json_player["rank"] = player.GetRank();
+		}
+		
 		if(sort == "pph" || sort == "rank")   json_player["pph"]      = pair.second.GetPPH();
 		if(sort == "score" || sort == "rank") json_player["score"]    = pair.second.GetScore();
-		else if(sort == "k1")                 json_player["k1"]       = pair.second.GetKillsAssualtKit();
+		
+		if(sort == "k1")                      json_player["k1"]       = pair.second.GetKillsAssualtKit();
 		else if(sort == "k2")                 json_player["k2"]       = pair.second.GetKillsSniperKit();
 		else if(sort == "k3")                 json_player["k3"]       = pair.second.GetKillsSpecialOpKit();
 		else if(sort == "k4")                 json_player["k4"]       = pair.second.GetKillsCombatEngineerKit();

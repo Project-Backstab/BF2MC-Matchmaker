@@ -20,15 +20,16 @@ class Server : public Net::Socket
 			None,
 		};
 	
-	public:
-		std::vector<std::shared_ptr<Net::Socket>> clients;
-	
 	private:
+		std::vector<std::shared_ptr<Net::Socket>> _clients;
 		Server::Type        _type;
 		mutable std::mutex  _mutex;
 	
 	public:
 		Server(Server::Type type);
+		
+		std::vector<std::shared_ptr<Net::Socket>> GetClients();
+		
 		void Listen();
 		void UDPListen();
 		void DisconnectAllClients();

@@ -150,6 +150,12 @@ bool Battlefield::Player::SetCreatedAt(MYSQL_TIME created_at)
     return true;
 }
 
+bool Battlefield::Player::SetVerified(bool verified)
+{
+	this->_verified = verified;
+	return true;
+}
+
 bool Battlefield::Player::AddFriend(int profileid)
 {
 	this->_friends.push_back(profileid);

@@ -40,6 +40,7 @@ namespace Battlefield
 			std::string         _last_login    = "";
 			std::string         _last_login_ip = "";
 			std::string         _created_at    = "";
+			bool                _verified      = false; // Database check that a player is verified
 			std::vector<int>    _friends;
 		
 		public:
@@ -55,6 +56,7 @@ namespace Battlefield
 			std::string      GetLastLoginIp() const { return this->_last_login_ip; }
 			std::string      GetCreatedAt() const   { return this->_created_at;    }
 			std::vector<int> GetFriends() const     { return this->_friends;       }
+			bool             isVerified() const     { return this->_verified;      }
 			
 			bool SetProfileId(int profileid);
 			bool SetProfileId(const std::string& str_profileid);
@@ -68,6 +70,7 @@ namespace Battlefield
 			bool SetLastLogin(MYSQL_TIME last_login);
 			bool SetLastLoginIp(const std::string& last_login_ip);
 			bool SetCreatedAt(MYSQL_TIME created_at);
+			bool SetVerified(bool verified);
 			
 			bool AddFriend(int profileid);
 	};

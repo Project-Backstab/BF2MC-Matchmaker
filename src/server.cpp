@@ -84,6 +84,13 @@ Server::Server(Server::Type type)
 	}
 }
 
+std::vector<std::shared_ptr<Net::Socket>> Server::GetClients()
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+	
+	return this->_clients;
+}
+
 void Server::Listen()
 {
 	int client_socket;
@@ -112,9 +119,9 @@ void Server::Listen()
 			{
 				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 				
-				this->clients.push_back(std::make_shared<GPSP::Client>(client_socket, client_address));
+				this->_clients.push_back(std::make_shared<GPSP::Client>(client_socket, client_address));
 				
-				std::shared_ptr<Net::Socket> client = this->clients.back();
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
 				
 				this->onClientConnect(client);
 				
@@ -122,17 +129,15 @@ void Server::Listen()
 					static_cast<GPSP::Client*>(client.get())->Listen();
 				});
 				t.detach();
-				
-				this->clients.push_back(std::move(client));
 			}
 			break;
 			case Server::Type::GPCM:
 			{
 				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 				
-				this->clients.push_back(std::make_shared<GPCM::Client>(client_socket, client_address));
+				this->_clients.push_back(std::make_shared<GPCM::Client>(client_socket, client_address));
 				
-				std::shared_ptr<Net::Socket> client = this->clients.back();
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
 				
 				this->onClientConnect(client);
 				
@@ -146,9 +151,9 @@ void Server::Listen()
 			{
 				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 				
-				this->clients.push_back(std::make_shared<Browsing::Client>(client_socket, client_address));
+				this->_clients.push_back(std::make_shared<Browsing::Client>(client_socket, client_address));
 				
-				std::shared_ptr<Net::Socket> client = this->clients.back();
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
 				
 				this->onClientConnect(client);
 				
@@ -162,9 +167,9 @@ void Server::Listen()
 			{
 				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 				
-				this->clients.push_back(std::make_shared<Webserver::Client>(client_socket, client_address));
+				this->_clients.push_back(std::make_shared<Webserver::Client>(client_socket, client_address));
 				
-				std::shared_ptr<Net::Socket> client = this->clients.back();
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
 				
 				this->onClientConnect(client);
 				
@@ -178,9 +183,9 @@ void Server::Listen()
 			{
 				std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 				
-				this->clients.push_back(std::make_shared<GameStats::Client>(client_socket, client_address));
+				this->_clients.push_back(std::make_shared<GameStats::Client>(client_socket, client_address));
 				
-				std::shared_ptr<Net::Socket> client = this->clients.back();
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
 				
 				this->onClientConnect(client);
 				
@@ -246,7 +251,7 @@ void Server::UDPListen()
 
 void Server::DisconnectAllClients()
 {
-	for(std::shared_ptr<Net::Socket> client : this->clients)
+	for(std::shared_ptr<Net::Socket> client : this->_clients)
 	{
 		switch(this->_type)
 		{
@@ -308,12 +313,13 @@ void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 void Server::onClientDisconnect(const Net::Socket& client)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
-	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	if(this->GetSocketType() == "tcp")
 	{
+		std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+		
 		// Find shared pointer in clients list
-		auto it = std::find_if(this->clients.begin(), this->clients.end(),
+		auto it = std::find_if(this->_clients.begin(), this->_clients.end(),
 			[rawPtrToSearch = const_cast<Net::Socket*>(&client)](const std::shared_ptr<Net::Socket>& ptr)
 			{
 				return ptr.get() == rawPtrToSearch;
@@ -321,12 +327,12 @@ void Server::onClientDisconnect(const Net::Socket& client)
 		);
 		
 		// When found remove client
-		if (it != this->clients.end())
+		if (it != this->_clients.end())
 		{
 			Logger::info("Client " + client.GetAddress() + " disconnected",
 				this->_type, g_settings["show_client_disconnect"].asBool());
 			
-			this->clients.erase(it);
+			this->_clients.erase(it);
 		}
 	}
 	else

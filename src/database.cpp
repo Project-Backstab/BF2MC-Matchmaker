@@ -24,7 +24,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "	`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` ";
 	query += "FROM ";
 	query += "	`Players` ";
 	query += "WHERE ";
@@ -40,6 +40,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	MYSQL_TIME output_last_login;
 	char       output_last_login_ip[16];
 	MYSQL_TIME output_created_at;
+	uint8_t    output_verified;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -48,7 +49,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	input_bind[0].is_unsigned = false;
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_userid;
 	output_bind[0].is_unsigned = false;
@@ -71,6 +72,9 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 	output_bind[6].buffer_length = 16;
 	output_bind[7].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[7].buffer = &output_created_at;
+	output_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[8].buffer = &output_verified;
+	output_bind[8].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -100,6 +104,7 @@ bool Database::queryPlayerByProfileid(Battlefield::Player& player)
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
+		player.SetVerified(output_verified == 1);
 	}
 
 	// Cleanup
@@ -117,7 +122,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "	`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` ";
 	query += "FROM ";
 	query += "	`Players` ";
 	query += "WHERE ";
@@ -133,7 +138,8 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	MYSQL_TIME output_last_login;
 	char       output_last_login_ip[16];
 	MYSQL_TIME output_created_at;
-
+	uint8_t    output_verified;
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
@@ -141,7 +147,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	input_bind[0].buffer_length = input_uniquenick.size();
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -164,6 +170,9 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 	output_bind[6].buffer_length = 16;
 	output_bind[7].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[7].buffer = &output_created_at;
+	output_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[8].buffer = &output_verified;
+	output_bind[8].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -193,6 +202,7 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
+		player.SetVerified(output_verified == 1);
 	}
 
 	// Cleanup
@@ -210,7 +220,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "	`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` ";
 	query += "FROM ";
 	query += "	`Players` ";
 	query += "WHERE ";
@@ -225,7 +235,8 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	MYSQL_TIME output_last_login;
 	char       output_last_login_ip[16];
 	MYSQL_TIME output_created_at;
-
+	uint8_t    output_verified;
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
@@ -233,7 +244,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	input_bind[0].buffer_length = email.size();
 
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(10, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -259,6 +270,9 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	output_bind[7].buffer_length = 16;
 	output_bind[8].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[8].buffer = &output_created_at;
+	output_bind[9].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[9].buffer = &output_verified;
+	output_bind[9].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -295,6 +309,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
+		player.SetVerified(output_verified == 1);
 		
 		players.push_back(player);
 	}
@@ -314,7 +329,7 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` ";
+	query += "	`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` ";
 	query += "FROM ";
 	query += "	`Players` ";
 	query += "WHERE ";
@@ -331,7 +346,8 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	MYSQL_TIME output_last_login;
 	char       output_last_login_ip[16];
 	MYSQL_TIME output_created_at;
-
+	uint8_t    output_verified;
+	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
@@ -342,7 +358,7 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	input_bind[1].buffer_length = uniquenick.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(10, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_profileid;
 	output_bind[0].is_unsigned = false;	
@@ -368,6 +384,9 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 	output_bind[7].buffer_length = 16;
 	output_bind[8].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[8].buffer = &output_created_at;
+	output_bind[9].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[9].buffer = &output_verified;
+	output_bind[9].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -404,6 +423,7 @@ bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, c
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
+		player.SetVerified(output_verified == 1);
 		
 		players.push_back(player);
 	}

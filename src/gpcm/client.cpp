@@ -167,7 +167,10 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	// Get player information
 	g_database->queryPlayerByUniquenick(player);
 	
-	if(client_response != GameSpy::LoginResponse(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge))
+	if(
+		!player.isVerified() ||
+		client_response != GameSpy::LoginResponse(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge)
+	)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
@@ -630,7 +633,7 @@ GPCM::Session GPCM::Client::findSessionByProfileId(int profileid)
 {
 	GPCM::Session session;
 	
-	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->clients)
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
 		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
 		
@@ -651,7 +654,7 @@ GPCM::Session GPCM::Client::findSessionByAuthtoken(const std::string& authtoken)
 {
 	GPCM::Session session;
 	
-	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->clients)
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
 		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
 		

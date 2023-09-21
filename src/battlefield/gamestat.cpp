@@ -873,6 +873,22 @@ void Battlefield::GameStatPlayer::UpdatePlayer()
 	player.SetPPH(this->GetPPH());       // pph
 	player.SetRank(this->GetRank());     // rank
 	
+	player.SetDeaths(
+		player.GetDeathsAssualtKit() +
+		player.GetDeathsCombatEngineerKit() +
+		player.GetDeathsSniperKit() +
+		player.GetDeathsSpecialOpKit() +
+		player.GetDeathsSupportKit()
+	);
+	
+	player.SetVehiclesDestroyed(
+		player.GetLAVsDestroyed() +
+		player.GetMAVsDestroyed() +
+		player.GetHAVsDestroyed() +
+		player.GetHelicoptersDestroyed() +
+		player.GetBoatsDestroyed()
+	);
+	
 	// Update player stats on database
 	g_database->updatePlayerStats(player);
 }
