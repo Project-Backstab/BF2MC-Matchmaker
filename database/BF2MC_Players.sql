@@ -32,6 +32,7 @@ CREATE TABLE `Players` (
   `last_login` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `last_login_ip` varchar(15) NOT NULL DEFAULT '',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `verified` tinyint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`profileid`),
   UNIQUE KEY `id_UNIQUE` (`profileid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10037113 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -46,4 +47,4 @@ CREATE TABLE `Players` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15  6:11:24
+-- Dump completed on 2023-09-21 18:40:01
