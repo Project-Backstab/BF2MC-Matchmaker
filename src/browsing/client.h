@@ -9,7 +9,10 @@
 namespace Browsing
 {
 	class Client : public Net::Socket
-	{	
+	{
+		private:
+			std::vector<unsigned char> _client_challenge;
+		
 		public:
 			Client(int socket, struct sockaddr_in address);
 			~Client();
@@ -26,6 +29,7 @@ namespace Browsing
 				Requests
 			*/
 			void requestServerList(const std::vector<unsigned char>& request);
+			void requestServerInfo(const std::vector<unsigned char>& request);
 			
 		private:
 			void _Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response);

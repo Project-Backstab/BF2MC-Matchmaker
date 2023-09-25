@@ -566,7 +566,45 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 */
 void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 {
+	std::string target_profileid = parameter[5];
 	
+	Battlefield::Player player;
+	Battlefield::Player target_player;
+	
+	// Set profileid
+	player.SetProfileId(this->_session.profileid);
+	target_player.SetProfileId(target_profileid);
+	
+	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
+	
+	if(session.profileid != -1)
+	{
+		//\bm\100\f\10036819\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[CQ]BF2MC-SERVER1@78.47.184.23:3658|ip|1448578027|p|35784\final\
+		
+		// Send update status
+		std::string response = GameSpy::Parameter2Response({
+			"bm", "100",
+			"f", std::to_string(player.GetProfileId()),
+			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[CQ]BF2MC-SERVER1@78.47.184.23:3658|ip|1448578027|p|35784",
+			"final"
+		});
+		
+		session.client->Send(response);
+		
+		session.client->_LogTransaction("<--", response);
+		
+		// Send invite message
+		response = GameSpy::Parameter2Response({
+			"bm", "101",
+			"f", std::to_string(player.GetProfileId()),
+			"msg", "|p|10307|l|bfield1942ps2:/[CQ]BF2MC-SERVER1@78.47.184.23:3658",
+			"final"
+		});
+		
+		session.client->Send(response);
+		
+		session.client->_LogTransaction("<--", response);
+	}
 }
 
 /*
