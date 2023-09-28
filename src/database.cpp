@@ -727,7 +727,7 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 	query += "WHERE ";
 	query += "	(`profileid` = ? AND `target_profileid` = ?) ";
 	query += "OR ";
-	query += "	(`profileid` = ? AND `target_profileid` = ?)";
+	query += "	(`target_profileid` = ? AND `profileid` = ?)";
 	
 	int input_profileid        = player.GetProfileId();
 	int input_target_profileid = target_player.GetProfileId();
@@ -741,10 +741,10 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&input_target_profileid);
+	input_bind[2].buffer = const_cast<int*>(&input_profileid);
 	input_bind[2].is_unsigned = false;
 	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[3].buffer = const_cast<int*>(&input_profileid);
+	input_bind[3].buffer = const_cast<int*>(&input_target_profileid);
 	input_bind[3].is_unsigned = false;
 
 	// Prepare and execute with binds

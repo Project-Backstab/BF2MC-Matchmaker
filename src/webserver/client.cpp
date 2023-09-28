@@ -1293,6 +1293,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
+					"1",
 					"Your rank in the clan has been changed. Login again to get the update!"
 				);
 				
@@ -1363,6 +1364,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
+					"1",
 					"You joined a new clan. Login again to get the update!"
 				);
 				
@@ -1447,6 +1449,7 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 					GPCM::Client::SendBuddyMessage(
 						player.GetProfileId(),
 						target_player.GetProfileId(),
+						"1",
 						"You have been removed from the clan. Login again to get the update!"
 					);
 				}
@@ -1508,7 +1511,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_req
 			{
 				if(player_profileid != rank.first)
 				{
-					GPCM::Client::SendBuddyMessage(player_profileid, rank.first, "Clan message: " + message);
+					GPCM::Client::SendBuddyMessage(player_profileid, rank.first, "1", "Clan message: " + message);
 				}
 			}
 		

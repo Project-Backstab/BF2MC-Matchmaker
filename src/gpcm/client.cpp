@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 #include <settings.h>
 #include <logger.h>
@@ -15,16 +16,16 @@ typedef void (GPCM::Client::*RequestActionFunc)(const GameSpy::Parameter&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 
 {
-	{ "login",      &GPCM::Client::requestLogin },        // Working, but need to do extra investigation for client variable response
+	{ "login",      &GPCM::Client::requestLogin },        // Done
 	{ "inviteto",   &GPCM::Client::requestInviteTo },     // Done
 	{ "getprofile", &GPCM::Client::requestGetProfile },   // Done
-	{ "status",     &GPCM::Client::requestStatus },       // Working, but need to do investigation in msg value
+	{ "status",     &GPCM::Client::requestStatus },       // Done
 	{ "bm",         &GPCM::Client::requestBm },           // Done
 	{ "addbuddy",   &GPCM::Client::requestAddBuddy },     // Done
 	{ "authadd",    &GPCM::Client::requestAuthAdd },      // Done
 	{ "revoke",     &GPCM::Client::requestRevoke },       // Done
 	{ "delbuddy",   &GPCM::Client::requestDeleteBuddy },  // Done
-	{ "pinvite",    &GPCM::Client::requestPlayerInvite }, // 
+	{ "pinvite",    &GPCM::Client::requestPlayerInvite }, // Done
 	{ "logout",     &GPCM::Client::requestLogout },       // Done
 };
 
@@ -59,11 +60,6 @@ void GPCM::Client::Listen()
 		// Resize buffer
 		buffer.resize(recv_size);
 		
-		// Debug
-		//Logger::debug("--- START ----------------------------------------" << std::endl;
-		//Logger::debug("recv_size = " + std::to_string(recv_size));
-		//Logger::debug("request = " + Util::Buffer::ToString(buffer));
-		
 		std::vector<std::string> requests = GameSpy::RequestToRequests(Util::Buffer::ToString(buffer));
 		
 		for(std::string request : requests)
@@ -71,11 +67,7 @@ void GPCM::Client::Listen()
 			this->_LogTransaction("-->", request);
 		
 			this->onRequest(request);
-			
-			//std::this_thread::sleep_for(std::chrono::milliseconds(100));
 		}
-		
-		//Logger::debug("--- END ----------------------------------------");
 	}
 	
 	this->Disconnect();
@@ -194,6 +186,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	// Save session profileid
 	this->_session.profileid = player.GetProfileId();
 	this->_session.authtoken = Util::generateRandomAuthtoken();
+	this->_session.status    = "|s|1|ss|Online";
 	
 	std::string response = GameSpy::Parameter2Response({
 		"lc",         "2",
@@ -209,14 +202,11 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	this->Send(response);
 	this->_LogTransaction("<--", response);
 	
-	this->_session.status = "|s|1|ss|Online";
 	g_database->updatePlayerLastLogin(player, this->GetIP());
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
 	
-	
 	// Get player friends
 	g_database->queryPlayerFriends(player);
-	
 	std::vector<int> player_friends = player.GetFriends();
 	
 	response = GameSpy::Parameter2Response({
@@ -227,6 +217,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	this->Send(response);
 	this->_LogTransaction("<--", response);
 	
+	// Sync friends status
 	this->_sync_friends = player_friends;
 	this->_SyncFriends();
 }
@@ -234,8 +225,6 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 /*
 	Request:
 		\inviteto\\sesskey\1\products\10307\final\
-	Response:
-		\bdy\7\list\10036271,10036113,10036585,10036492,10036029,10036444,10037053\final\
 */
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 {
@@ -396,22 +385,13 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 	Battlefield::Player target_player;
 	target_player.SetProfileId(profileid);
 	
-	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
-	
 	//	To-do: Needs extra check that accually friends with the target
-	if(session.profileid != -1)
-	{
-		std::string response = GameSpy::Parameter2Response({
-			"bm",  "1",
-			"f",   std::to_string(this->_session.profileid),
-			"msg", msg,
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
-	}
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"1",
+		msg
+	);
 }
 
 /*
@@ -426,38 +406,33 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 */
 void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter)
 {
-	if(parameter.size() != 9 || parameter[7].find("BFMCB-AUTO") != std::string::npos)
+	if(parameter.size() != 9)
 	{
 		return;
 	}
 	
 	std::string target_profileid = parameter[5];
+	std::string reason = parameter[7];
 	
 	Battlefield::Player target_player;
 	target_player.SetProfileId(target_profileid);
-		
-	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
 	
-	if(session.profileid != -1)
-	{
-		std::string response = GameSpy::Parameter2Response({
-			"bm",  "2",
-			"f",   std::to_string(this->_session.profileid),
-			"msg", "|signed|d41d8cd98f00b204e9800998ecf8427e",
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
-	}
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"2",
+		reason + "|signed|d41d8cd98f00b204e9800998ecf8427e"
+	);
 }
 
 /*
 	Request:
+		\authadd\\sesskey\1\fromprofileid\10036819\sig\d41d8cd98f00b204e9800998ecf8427e\final\
 		\authadd\\sesskey\1\fromprofileid\10037049\sig\d41d8cd98f00b204e9800998ecf8427e\final\
+	
 	Response:
-		\bm\4\f\10037318\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+		\bm\4\f\10037049\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\
+		\error\\err\1539\errmsg\The profile requested is already a buddy.\final\
 
 */
 void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
@@ -477,30 +452,39 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	player.SetProfileId(this->_session.profileid);
 	target_player.SetProfileId(target_profileid);
 	
-	// Save friendship
-	g_database->insertPlayerFriend(player, target_player);
+	// Send authorization to target player 
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"4",
+		"I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e"
+	);
+
+	// Send player status to target player 
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"100",
+		this->_session.status
+	);
 	
-	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
+	// Get friends
+	g_database->queryPlayerFriends(player);
+	std::vector<int> player_friends = player.GetFriends();
 	
-	if(session.profileid != -1)
+	auto it = std::find(player_friends.begin(), player_friends.end(), target_player.GetProfileId());
+	
+	if(it == player_friends.end())
 	{
-		// Send friendlist update to friendship sender
+		// Save friendship
+		g_database->insertPlayerFriend(player, target_player);
+	}
+	else
+	{
 		std::string response = GameSpy::Parameter2Response({
-			"bm",   "100",
-			"f",    std::to_string(player.GetProfileId()),
-			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3658",
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
-		
-		// Send friendlist update to friendship reciever
-		response = GameSpy::Parameter2Response({
-			"bm", "100",
-			"f", target_profileid,
-			"msg", "|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3658",
+			"error",  "",
+			"err",    "1539",
+			"errmsg", "The profile requested is already a buddy.",
 			"final"
 		});
 		
@@ -513,6 +497,8 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 /*
 	Request:
 		\revoke\\sesskey\1\profileid\10036819\final\
+		\revoke\\sesskey\1\profileid\10037049\final\
+	
 	Response:
 		\bm\6\f\10036819\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
 		\bm\6\f\10037049\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
@@ -533,44 +519,22 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 	player.SetProfileId(this->_session.profileid);
 	target_player.SetProfileId(target_profileid);
 	
-	// Remove friendship
-	g_database->removePlayerFriend(player, target_player);
-	
-	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
-	
-	if(session.profileid != -1)
-	{
-		// Send friendlist update to friendship sender
-		std::string response = GameSpy::Parameter2Response({
-			"bm", "100",
-			"f", std::to_string(this->_session.profileid),
-			"msg", this->_session.status,
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
-	}
+	GPCM::Client::SendBuddyMessage(
+		target_player.GetProfileId(),
+		player.GetProfileId(),
+		"6",
+		"I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e"
+	);
 }
 
 /*
 	Request:
 		\delbuddy\\sesskey\1\delprofileid\10036819\final\
+		
+	Response:
+		\error\\err\2817\errmsg\The buddy to be deleted is not a buddy. \final\
 */
 void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
-{
-	//if(parameter.size() != 7)
-	//{
-	//	return;
-	//}
-}
-
-/*
-	Request:
-		\pinvite\\sesskey\1\profileid\10037095\productid\10307\final\
-*/
-void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 {
 	std::string target_profileid = parameter[5];
 	
@@ -581,34 +545,59 @@ void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 	player.SetProfileId(this->_session.profileid);
 	target_player.SetProfileId(target_profileid);
 	
-	GPCM::Session session = GPCM::Client::findSessionByProfileId(target_player.GetProfileId());
+	// Get friends
+	g_database->queryPlayerFriends(player);
+	std::vector<int> player_friends = player.GetFriends();
 	
-	if(session.profileid != -1)
+	auto it = std::find(player_friends.begin(), player_friends.end(), target_player.GetProfileId());
+	
+	if(it != player_friends.end())
 	{
-		// Send invite message
-		std::string response = GameSpy::Parameter2Response({
-			"bm", "100",
-			"f", std::to_string(player.GetProfileId()),
-			"msg", this->_session.status,
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
-		
-		// Send invite message
-		response = GameSpy::Parameter2Response({
-			"bm", "101",
-			"f", std::to_string(player.GetProfileId()),
-			"msg", "|p|1337|l|bfield1942ps2:/YOLO@1.1.1.1:1337",
-			"final"
-		});
-		
-		session.client->Send(response);
-		
-		session.client->_LogTransaction("<--", response);
+		g_database->removePlayerFriend(player, target_player);
 	}
+	else
+	{
+		std::string response = GameSpy::Parameter2Response({
+			"error",  "",
+			"err",    "2817",
+			"errmsg", "The buddy to be deleted is not a buddy. ",
+			"final"
+		});
+		
+		this->Send(response);
+		
+		this->_LogTransaction("<--", response);
+	}
+}
+
+/*
+	Request:
+		\pinvite\\sesskey\1\profileid\10037095\productid\10307\final\
+*/
+void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
+{
+	std::string target_profileid = parameter[5];
+	
+	Battlefield::Player target_player;
+	
+	// Set profileid
+	target_player.SetProfileId(target_profileid);
+	
+	// Send player status to target player
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"100",
+		this->_session.status
+	);
+	
+	// Send game invite
+	GPCM::Client::SendBuddyMessage(
+		this->_session.profileid,
+		target_player.GetProfileId(),
+		"101",
+		"|p|1337|l|bfield1942ps2:/YOLO@1.1.1.1:1337"
+	);
 }
 
 /*
@@ -660,21 +649,13 @@ void GPCM::Client::_SendNewStatus() const
 	// Send update to online players
 	for(int friend_profileid : player.GetFriends())
 	{
-		GPCM::Session session = GPCM::Client::findSessionByProfileId(friend_profileid);
-		
-		if(session.profileid != -1)
-		{
-			std::string response = GameSpy::Parameter2Response({
-				"bm",  "100",
-				"f",   std::to_string(this->_session.profileid),
-				"msg", this->_session.status,
-				"final"
-			});
-			
-			session.client->Send(response);
-			
-			session.client->_LogTransaction("<--", response);
-		}
+		// Send player status to friend
+		GPCM::Client::SendBuddyMessage(
+			this->_session.profileid,
+			friend_profileid,
+			"100",
+			this->_session.status
+		);
 	}
 }
 
@@ -761,14 +742,14 @@ GPCM::Session GPCM::Client::findSessionByAuthtoken(const std::string& authtoken)
 	return {};
 }
 
-void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const std::string& msg)
+void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const std::string& bm, const std::string& msg)
 {
 	GPCM::Session session = findSessionByProfileId(target_profileid);
 	
 	if(session.profileid != -1)
 	{
 		std::string response = GameSpy::Parameter2Response({
-			"bm", "1",
+			"bm", bm,
 			"f", std::to_string(profileid),
 			"msg", msg,
 			"final"
