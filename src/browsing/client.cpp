@@ -221,16 +221,10 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	//Logger::debug("filter = " + filter);
 	//Logger::debug("key_list = " + key_list);
 	
-	if(filter == "" || key_list == "")
+	if(filter == "" or key_list == "")
 	{
 		return;
 	}
-	
-	Battlefield::GameServers game_servers;
-	g_database->queryGameServers(game_servers);
-	
-	// Filter Game servers
-	this->_FilterServers(filter, game_servers);
 	
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	
@@ -239,6 +233,12 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	
 	// Copy over the header items
 	response.insert(response.end(), serverListHeaderItems.begin(), serverListHeaderItems.end());
+	
+	Battlefield::GameServers game_servers;
+	g_database->queryGameServers(game_servers);
+	
+	// Filter Game servers
+	this->_FilterServers(filter, game_servers);
 	
 	for(Battlefield::GameServer game_server : game_servers)
 	{
@@ -250,7 +250,7 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 		
 		this->_insertGameServerFlagIpPort(response, game_server);
 	}
-	
+
 	// End data
 	response.push_back(0x00); // Empty flag means end of servers
 	
@@ -498,13 +498,13 @@ void Browsing::Client::requestServerInfo(const std::vector<unsigned char>& reque
 	
 	this->_insertGameServerFlagIpPort(response, game_server);
 	
-	response.push_back(0x00);
+	//response.push_back(0x00);
 	
 	// Copy over test response
 	response.insert(response.end(), ServerInfo_test_response.begin(), ServerInfo_test_response.end());
 	
 	// Patch bytes to read
-	uint16_t response_size = ServerInfo_test_response.size();
+	uint16_t response_size = ServerInfo_test_response.size() + 20;
 	response[CHALLENGE_HEADER_LEN + 6] = response_size / 256;
 	response[CHALLENGE_HEADER_LEN + 7] = response_size % 256;
 	
