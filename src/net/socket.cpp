@@ -23,6 +23,11 @@ std::string Net::Socket::GetIP() const
 	return std::string(ip);
 }
 
+void Net::Socket::GetIpArray(uint8_t* ip)
+{
+	*ip = this->_address.sin_addr.s_addr;
+}
+
 uint16_t Net::Socket::GetPort() const
 {
 	return ntohs(this->_address.sin_port);

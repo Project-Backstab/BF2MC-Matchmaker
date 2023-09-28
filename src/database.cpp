@@ -491,6 +491,8 @@ bool Database::queryPlayerNewUserID(Battlefield::Player& player)
 
 bool Database::updatePlayerLastLogin(Battlefield::Player& player, const std::string& ip)
 {
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+	
 	std::string query = "";
 	query += "UPDATE ";
 	query += "	`Players` ";

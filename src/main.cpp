@@ -11,6 +11,7 @@
 #include <server.h>
 #include <database.h>
 #include <gamestats/client.h>
+#include <browsing/client.h>
 
 // Globals
 Database*         g_database;

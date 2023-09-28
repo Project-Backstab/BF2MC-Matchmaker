@@ -1,4 +1,4 @@
-![http://bf2mc.com](images/b2mconlinelogo.png)
+![http://bf2mc.com](images/BF2MC0_LOGO_no_colon.png)
 
 # Battlefield 2: Modern Combat Matchmaker server
 

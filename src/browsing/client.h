@@ -32,7 +32,12 @@ namespace Browsing
 			void requestServerInfo(const std::vector<unsigned char>& request);
 			
 		private:
-			void _Encrypt(const std::vector<unsigned char>& request, std::vector<unsigned char>& response);
+			void _BufferToRequests(const std::vector<unsigned char>& buffer,
+					std::vector<std::vector<unsigned char>>& requests);
+			void _insertClientInfo(std::vector<unsigned char>& response);
+			void _insertGameServerFlagIpPort(std::vector<unsigned char>& response,
+					const Battlefield::GameServer& game_server);
+			void _Encrypt(std::vector<unsigned char>& response);
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 			
 			void _FilterServers(const std::string& filter, Battlefield::GameServers& game_servers);

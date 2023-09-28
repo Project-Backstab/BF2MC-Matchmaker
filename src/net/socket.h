@@ -20,6 +20,8 @@ namespace Net
 			void Close();
 			
 			std::string GetIP() const;
+			void GetIpArray(uint8_t* ip);
+			
 			uint16_t GetPort() const;
 			std::string GetAddress() const;
 			std::string GetSocketType() const;

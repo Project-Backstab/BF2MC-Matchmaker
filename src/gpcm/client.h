@@ -15,6 +15,7 @@ namespace GPCM
 		int                     profileid = -1;
 		std::string             authtoken;
 		std::shared_ptr<Client> client;
+		std::string             status;
 	};
 
 	class Client : public Net::Socket
@@ -55,6 +56,7 @@ namespace GPCM
 			
 		private:
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
+			void _SendNewStatus() const;
 			void _SyncFriends();
 		
 		/*
