@@ -206,22 +206,29 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 		"id",         id,
 		"final"
 	});
-	
-	g_database->updatePlayerLastLogin(player, this->GetIP());
-	
-	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
+	this->Send(response);
+	this->_LogTransaction("<--", response);
 	
 	this->_session.status = "|s|1|ss|Online";
+	g_database->updatePlayerLastLogin(player, this->GetIP());
+	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
+	
 	
 	// Get player friends
 	g_database->queryPlayerFriends(player);
 	
-	this->_sync_friends = player.GetFriends();
-	this->_SyncFriends();
+	std::vector<int> player_friends = player.GetFriends();
 	
+	response = GameSpy::Parameter2Response({
+		"bdy",  std::to_string(player_friends.size()),
+		"list", Util::ToString(player_friends),
+		"final"
+	});
 	this->Send(response);
-	
 	this->_LogTransaction("<--", response);
+	
+	this->_sync_friends = player_friends;
+	this->_SyncFriends();
 }
 
 /*
@@ -236,27 +243,6 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 	{
 		return;
 	}
-	
-	Battlefield::Player player;
-	
-	player.SetProfileId(this->_session.profileid);
-	
-	if(!g_database->queryPlayerFriends(player))
-	{
-		return; // Oeps something went wrong?!
-	}
-	
-	std::vector<int> player_friends = player.GetFriends();
-	
-	std::string response = GameSpy::Parameter2Response({
-		"bdy",  std::to_string(player_friends.size()),
-		"list", Util::ToString(player_friends),
-		"final"
-	});
-	
-	this->Send(response);
-	
-	this->_LogTransaction("<--", response);
 }
 
 /*
