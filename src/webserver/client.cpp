@@ -1290,11 +1290,12 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 				// give target player new rank
 				g_database->updateClanRank(clan, target_player, new_rank);
 				
+				// Send to the invited player a Clan update call
 				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
 					"1",
-					"Your rank in the clan has been changed. Login again to get the update!"
+					"BFMCC-UPDATE	"
 				);
 				
 				http_response.SetMessageBody("OK");
@@ -1361,11 +1362,12 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 				// Make player leader of clan
 				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Ranks::Member);
 				
+				// Send to the accepted clan member a clan update call
 				GPCM::Client::SendBuddyMessage(
 					player.GetProfileId(),
 					target_player.GetProfileId(),
 					"1",
-					"You joined a new clan. Login again to get the update!"
+					"BFMCC-UPDATE	"
 				);
 				
 				http_response.SetMessageBody("OK");
@@ -1446,11 +1448,20 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 				
 				if(player.GetProfileId() != target_player.GetProfileId())
 				{
+					// Send to the invited player a Clan update call
 					GPCM::Client::SendBuddyMessage(
 						player.GetProfileId(),
 						target_player.GetProfileId(),
 						"1",
-						"You have been removed from the clan. Login again to get the update!"
+						"BFMCC-UPDATE	"
+					);
+					
+					// Send resignation letter
+					GPCM::Client::SendBuddyMessage(
+						player.GetProfileId(),
+						target_player.GetProfileId(),
+						"1",
+						"You have been removed from the clan."
 					);
 				}
 				

@@ -550,7 +550,6 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	std::vector<int> player_friends = player.GetFriends();
 	
 	auto it = std::find(player_friends.begin(), player_friends.end(), target_player.GetProfileId());
-	
 	if(it != player_friends.end())
 	{
 		g_database->removePlayerFriend(player, target_player);
