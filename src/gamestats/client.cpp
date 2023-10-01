@@ -188,7 +188,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		key = parameter[offset];
 		value = parameter[offset + 1];
 		
-		if(key == "auth_0")
+		if (key.find("auth_") != std::string::npos)
 			break;
 		
 		// Update
@@ -216,8 +216,10 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	//game_stat.Debug();
 	//Logger::debug("=============================");
 	
+	// Get player index out of key "auth_"
+	uint8_t player_index = this->_GetPlayerIndex(key);
+	
 	// Read Game stat player information
-	uint8_t player_index = 0;
 	while(parameter.size() > offset + 1)
 	{
 		Battlefield::GameStatPlayer gsplayer;
@@ -230,8 +232,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 			key = parameter[offset];
 			value = parameter[offset + 1];
 			
-			// If we found the next auth_ key then we create new GameStatPlayer
-			if(key == "auth_" + std::to_string(player_index + 1))
+			// If we found the new auth_ key then we create new GameStatPlayer
+			if (key.find("auth_") != std::string::npos && key != "auth_" + std::to_string(player_index))
 				break;
 			
 			// Update
@@ -271,7 +273,9 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		}
 		
 		game_stat.AddPlayer(gsplayer);
-		player_index++;
+		
+		// Get new player index
+		player_index = this->_GetPlayerIndex(key);
 		
 		// Debug
 		//gsplayer.Debug();
@@ -302,6 +306,22 @@ void GameStats::Client::_LogTransaction(const std::string& direction, const std:
 	
 	Logger::info(this->GetAddress() + " " + direction + " " + response,
 			Server::Type::GameStats, show_console);
+}
+
+uint8_t GameStats::Client::_GetPlayerIndex(std::string key)
+{
+	uint8_t player_index = 0;
+	
+	// Remove first 5 characters
+	key.erase(0, 5);
+	
+	try
+	{
+		player_index = static_cast<uint8_t>(std::stoul(key));
+	}
+	catch(...) {};
+	
+	return player_index;
 }
 
 static std::vector<unsigned char> example_A_response = {
