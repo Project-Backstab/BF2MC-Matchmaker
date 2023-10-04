@@ -12,6 +12,7 @@
 #include <database.h>
 #include <util.h>
 #include <atomizes.hpp>
+#include <service/file_system.h>
 
 #include <webserver/client.h>
 
@@ -1608,6 +1609,17 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	bool finished = false;
 	std::string data;
 	
+	// Load file from memory
+	if(g_file_system->GetFile(file_name, data))
+	{
+		// Debug
+		//Logger::debug("file_name = " + file_name);
+		//Logger::debug("file size = " + std::to_string(data.size()));
+		
+		return data;
+	}
+	
+	// If file is not in memory read it yourself
 	while(!finished)
 	{
 		std::ifstream input;

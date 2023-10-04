@@ -5,12 +5,19 @@
 class Server;
 class Database;
 
-extern Database*         g_database;
-extern Server*           g_qr_server;
-extern Server*           g_gpsp_server;
-extern Server*           g_gpcm_server;
-extern Server*           g_webserver_server;
-extern Server*           g_browsing_server;
-extern Server*           g_gamestats_server;
+namespace Service
+{
+	class File_System;
+}
+
+extern Database*                g_database;
+extern Server*                  g_qr_server;
+extern Server*                  g_gpsp_server;
+extern Server*                  g_gpcm_server;
+extern Server*                  g_webserver_server;
+extern Server*                  g_browsing_server;
+extern Server*                  g_gamestats_server;
+
+extern Service::File_System*    g_file_system;
 
 #endif // GLOBALS_H

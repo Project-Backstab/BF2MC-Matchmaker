@@ -3,6 +3,7 @@
 #include <thread>
 #include <fstream>
 #include <mysql/mysql.h>
+#include <filesystem>
 
 #include <version.h>
 #include <logger.h>
@@ -12,18 +13,21 @@
 #include <database.h>
 #include <gamestats/client.h>
 #include <browsing/client.h>
+#include <service/file_system.h>
 
 // Globals
-Database*         g_database;
-Server*           g_qr_server;
-Server*           g_gpsp_server;
-Server*           g_gpcm_server;
-Server*           g_webserver_server;
-Server*           g_browsing_server;
-Server*           g_gamestats_server;
+Database*               g_database;
+Server*                 g_qr_server;
+Server*                 g_gpsp_server;
+Server*                 g_gpcm_server;
+Server*                 g_webserver_server;
+Server*                 g_browsing_server;
+Server*                 g_gamestats_server;
 
-Json::Value       g_settings;
-std::shared_mutex g_mutex_settings;
+Json::Value             g_settings;
+std::shared_mutex       g_mutex_settings;
+
+Service::File_System*   g_file_system;
 
 void load_settings()
 {
@@ -94,6 +98,43 @@ void start_gamestats_server()
 	g_gamestats_server->Listen();
 }
 
+void start_file_system()
+{
+	g_file_system = new Service::File_System();
+	
+	// Load "data/gamescripts" files in memory
+	for (const auto& entry : std::filesystem::recursive_directory_iterator("../data/gamescripts"))
+	{
+        if (entry.is_regular_file())
+		{
+			std::string file_path = entry.path();
+			
+			// Remove first directory path
+			file_path = file_path.substr(3);
+			
+			// load file in memory
+			g_file_system->Load(file_path);
+        }
+    }
+	
+	// to-do: all file system to logger
+	Logger::info("Load all files in memory.", Service::FileSystem);
+	
+	// Example code how to use
+	/*
+	std::string data;
+	
+	if(!g_file_system->GetFile("data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt", data))
+	{
+		Logger::error("Oepsie doepsie");
+	}
+	
+	Logger::debug("data = " + data);
+	
+	g_file_system->UnLoadAll();
+	*/
+}
+
 void signal_callback(int signum)
 {
 	Logger::info("Caught signal " + std::to_string(signum));
@@ -112,6 +153,8 @@ void signal_callback(int signum)
 	g_webserver_server->Close();
 	g_browsing_server->Close();
 	g_gamestats_server->Close();
+	
+	g_file_system->UnLoadAll();
 	
 	// Exit application
 	exit(signum);
@@ -144,6 +187,7 @@ int main(int argc, char const* argv[])
 	std::thread t_webserver(&start_webserver_server);
 	std::thread t_browsing(&start_browsing_server);
 	std::thread t_gamestats(&start_gamestats_server);
+	std::thread t_file_system(&start_file_system);
 	
 	t_db.detach();
 	t_qr.detach();
@@ -152,6 +196,7 @@ int main(int argc, char const* argv[])
 	t_webserver.detach();
 	t_browsing.detach();
 	t_gamestats.detach();
+	t_file_system.detach();
 	
 	// Sleep ZZZZZZzzzzzZZZZZ
 	while(true)

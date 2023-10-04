@@ -48,68 +48,131 @@ std::string Logger::ToString(enum Server::Type type)
 	return "";
 }
 
-void Logger::info(const std::string& msg, enum Server::Type type, bool show_console)
+std::string Logger::ToString(enum Service::Type type)
+{
+	switch(type)
+	{
+		case Service::Type::FileSystem: return "[FileSystem]"; break;
+		case Service::Type::None: return ""; break;
+	}
+	
+	return "";
+}
+
+void Logger::info(const std::string& msg, const std::string& type, bool show_console)
 {
 	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
-	
-	std::string server_type = Logger::ToString(type);
+
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
 	if(show_console)
 	{
-		std::cout << "[" << time << "]" << server_type << "[INFO] " << msg << std::endl;
+		std::cout << "[" << time << "]" << type << "[INFO] " << msg << std::endl;
 	}
 	
-	g_logger  << "[" << time << "]" << server_type << "[INFO] " << msg << std::endl;
+	g_logger  << "[" << time << "]" << type << "[INFO] " << msg << std::endl;
 	g_logger.flush();
+}
+
+void Logger::warning(const std::string& msg, const std::string& type, bool show_console)
+{
+	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
+	
+	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
+	
+	if(show_console)
+	{
+		std::cout << "[" << time << "]" << type << "[\e[1;33mWARNING\e[0m] " << msg << std::endl;
+	}
+	
+	g_logger  << "[" << time << "]" << type << "[WARNING] " << msg << std::endl;
+	g_logger.flush();
+}
+
+void Logger::error(const std::string& msg, const std::string& type, bool show_console)
+{
+	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
+	
+	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
+	
+	if(show_console)
+	{
+		std::cout << "[" << time << "]" << type << "[\e[1;31mERROR\e[0m] " << msg << std::endl;
+	}
+	
+	g_logger  << "[" << time << "]" << type << "[ERROR] " << msg << std::endl;
+	g_logger.flush();
+}
+
+void Logger::critical(const std::string& msg, const std::string& type, bool show_console)
+{
+	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
+	
+	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
+	
+	if(show_console)
+	{
+		std::cout << "[" << time << "]" << type << "[\e[1;31mCRITICAL\e[0m] " << msg << std::endl;
+	}
+	
+	g_logger  << "[" << time << "]" << type << "[CRITICAL] " << msg << std::endl;
+	g_logger.flush();
+}
+
+void Logger::info(const std::string& msg, enum Server::Type type, bool show_console)
+{
+	std::string server_type = Logger::ToString(type);
+	
+	Logger::info(msg, server_type, show_console);
 }
 
 void Logger::warning(const std::string& msg, enum Server::Type type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
-	
 	std::string server_type = Logger::ToString(type);
-	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
-	if(show_console)
-	{
-		std::cout << "[" << time << "]" << server_type << "[\e[1;33mWARNING\e[0m] " << msg << std::endl;
-	}
-	
-	g_logger  << "[" << time << "]" << server_type << "[WARNING] " << msg << std::endl;
-	g_logger.flush();
+	Logger::warning(msg, server_type, show_console);
 }
 
 void Logger::error(const std::string& msg, enum Server::Type type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
-	
 	std::string server_type = Logger::ToString(type);
-	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
-	if(show_console)
-	{
-		std::cout << "[" << time << "]" << server_type << "[\e[1;31mERROR\e[0m] " << msg << std::endl;
-	}
-	
-	g_logger  << "[" << time << "]" << server_type << "[ERROR] " << msg << std::endl;
-	g_logger.flush();
+	Logger::error(msg, server_type, show_console);
 }
 
 void Logger::critical(const std::string& msg, enum Server::Type type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_mutex_logger); // logger lock (read/write)
-	
 	std::string server_type = Logger::ToString(type);
-	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
-	if(show_console)
-	{
-		std::cout << "[" << time << "]" << server_type << "[\e[1;31mCRITICAL\e[0m] " << msg << std::endl;
-	}
+	Logger::critical(msg, server_type, show_console);
+}
+
+void Logger::info(const std::string& msg, enum Service::Type type, bool show_console)
+{
+	std::string service_type = Logger::ToString(type);
 	
-	g_logger  << "[" << time << "]" << server_type << "[CRITICAL] " << msg << std::endl;
-	g_logger.flush();
+	Logger::info(msg, service_type, show_console);
+}
+
+void Logger::warning(const std::string& msg, enum Service::Type type, bool show_console)
+{
+	std::string service_type = Logger::ToString(type);
+	
+	Logger::warning(msg, service_type, show_console);
+}
+
+void Logger::error(const std::string& msg, enum Service::Type type, bool show_console)
+{
+	std::string service_type = Logger::ToString(type);
+	
+	Logger::error(msg, service_type, show_console);
+}
+
+void Logger::critical(const std::string& msg, enum Service::Type type, bool show_console)
+{
+	std::string service_type = Logger::ToString(type);
+	
+	Logger::critical(msg, service_type, show_console);
 }
 
 void Logger::debug(const std::string& msg)
