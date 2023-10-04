@@ -19,8 +19,9 @@ Copy over the content from [named.conf.local](named.conf.local)
 sudo nano /etc/bind/db.dnas.playstation.org.conf
 sudo nano /etc/bind/db.easports.com.conf
 sudo nano /etc/bind/db.gamespy.com.conf
+sudo nano /etc/bind/db.bfmcspy.net.conf
 ```
-Copy over the content from [db.dnas.playstation.org.conf](db.dnas.playstation.org.conf), [db.easports.com.conf](db.easports.com.conf) and [db.gamespy.com.conf](db.gamespy.com.conf)
+Copy over the content from [db.dnas.playstation.org.conf](db.dnas.playstation.org.conf), [db.easports.com.conf](db.easports.com.conf), [db.gamespy.com.conf](db.gamespy.com.conf) and [db.bfmcspy.net.conf](db.bfmcspy.net.conf)
 
 ## Restart
 

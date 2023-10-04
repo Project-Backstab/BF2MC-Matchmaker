@@ -21,3 +21,7 @@ zone "dnas.playstation.org" {
     file "/etc/bind/db.dnas.playstation.org.conf";
 };
 
+zone "bfmcspy.net" {
+    type master;
+    file "/etc/bind/db.bfmcspy.net.conf";
+};
