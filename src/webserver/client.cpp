@@ -1351,6 +1351,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 		if(rank <= Battlefield::Clan::Ranks::Co_Leader)
 		{
 			Battlefield::Player target_player;
+			Battlefield::Clan target_clan;
 			
 			auto it = url_variables.find("profileid");
 			if (it != url_variables.end())
@@ -1360,7 +1361,17 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 			
 			if(target_player.GetProfileId() != -1)
 			{
-				// Make player leader of clan
+				// Get target clan
+				g_database->queryClanByPlayer(target_clan, target_player);
+				
+				// Check if target player is already in a clan
+				if(target_clan.GetClanId() != -1)
+				{
+					// Remove target player from old clan
+					g_database->removeClanRank(target_clan, target_player);
+				}
+				
+				// Add target player to clan
 				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Ranks::Member);
 				
 				// Send to the accepted clan member a clan update call
