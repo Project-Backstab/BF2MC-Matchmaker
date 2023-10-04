@@ -280,7 +280,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 			"userid",           std::to_string(player.GetUserId()),
 			"nick",             player.GetNick(),
 			"uniquenick",       player.GetUniquenick(),
-			"email",            player.GetEmail(),
+			"email",            "<private>",
 			"sex",              "0",
 			"birthday",         "0",
 			"countrycode",      "",
@@ -381,6 +381,11 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 	
 	std::string profileid = parameter[5];
 	std::string msg = parameter[7];
+	
+	if(msg.find("BFMCC-GAMEVALIDREQ	") != std::string::npos || msg.find("BFMCC-GAMEVALIDRESP	") != std::string::npos)
+	{
+		return;
+	}
 	
 	Battlefield::Player target_player;
 	target_player.SetProfileId(profileid);
