@@ -1,4 +1,5 @@
 #include <mysql/mysql_time.h>
+#include <regex>
 
 #include <util.h>
 
@@ -82,6 +83,27 @@ bool Battlefield::Player::SetUniquenick(const std::string& uniquenick)
 		this->_uniquenick = uniquenick;
 	}
 	
+	return true;
+}
+
+bool Battlefield::Player::SetUniquenickWithNoClanTag(const std::string& uniquenick)
+{
+	std::regex pattern;
+	std::smatch matches;
+	std::string no_clan_tag_uniquenick = uniquenick;
+
+	// Find: gamever='V1.31a'
+	pattern = std::regex(R"(^(\[\w{2,3}\] ))");
+
+	if (std::regex_search(no_clan_tag_uniquenick, matches, pattern) && matches.size() >= 2)
+	{
+		std::string clan_tag = matches[1];
+
+		no_clan_tag_uniquenick.erase(0, clan_tag.size());
+	}
+
+	this->_uniquenick = no_clan_tag_uniquenick;
+
 	return true;
 }
 

@@ -154,11 +154,13 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	std::string client_response = parameter[7];
 	
 	Battlefield::Player player;
-	player.SetUniquenick(uniquenick);
+	player.SetUniquenickWithNoClanTag(uniquenick);
 	
 	// Get player information
 	g_database->queryPlayerByUniquenick(player);
-	
+
+	player.SetUniquenick(uniquenick);
+
 	if(
 		!player.isVerified() ||
 		client_response != GameSpy::LoginResponse(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge)

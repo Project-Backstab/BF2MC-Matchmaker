@@ -160,11 +160,21 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	
 	for(Battlefield::Player player : players)
 	{
+		std::string uniquenick = player.GetUniquenick();
+
+		// Update unique nick if is in clan
+		Battlefield::Clan clan;
+		g_database->queryClanByPlayer(clan, player);
+		if(clan.GetClanId() != -1)
+		{
+			uniquenick = "[" + clan.GetTag() + "] " + uniquenick;
+		}
+
 		response_parameter.push_back("nick");
 		response_parameter.push_back(player.GetNick());
 		
 		response_parameter.push_back("uniquenick");
-		response_parameter.push_back(player.GetUniquenick());
+		response_parameter.push_back(uniquenick);
 	}
 	
 	response_parameter.push_back("ndone");
@@ -273,6 +283,11 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	{
 		email = email.substr(0, 49);
 	}
+
+	// Remove clan name out of uniquenick
+	Battlefield::Player player;
+	player.SetUniquenickWithNoClanTag(uniquenick);
+	uniquenick = player.GetUniquenick();
 	
 	// Check nick and uniquenick
 	if(nick.size() < 3 or uniquenick.size() < 3)
@@ -290,9 +305,8 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		return;
 	}
 	
-	Battlefield::Players players;
-	
 	// Get players by email
+	Battlefield::Players players;
 	g_database->queryPlayersByEmailAndUniquenick(players, email, uniquenick);
 	
 	// Check Player exist with same email and uniquename already

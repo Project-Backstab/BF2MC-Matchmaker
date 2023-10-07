@@ -64,6 +64,7 @@ namespace Battlefield
 			bool SetUserId(const std::string& str_userid);
 			bool SetNick(const std::string& nick);
 			bool SetUniquenick(const std::string& uniquenick);
+			bool SetUniquenickWithNoClanTag(const std::string& uniquenick);
 			bool SetEmail(const std::string& email);
 			bool SetPassword(const std::string& password);
 			bool SetMD5Password(const std::string& password);
