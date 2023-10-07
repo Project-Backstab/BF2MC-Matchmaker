@@ -1083,14 +1083,11 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 	{
 		auto it = url_variables.find("tag");
 		
-		// clan tag is 3 characters
-		if(it->second.size() == 3)
+		Battlefield::Clan new_clan;
+
+		// Copy url variables into clan
+		if(this->_updateClanInformation(new_clan, url_variables))
 		{
-			Battlefield::Clan new_clan;
-			
-			// Copy url variables into clan
-			this->_updateClanInformation(new_clan, url_variables);
-			
 			// get clan by name or tag
 			g_database->queryClanByNameOrTag(new_clan);
 			
@@ -1153,12 +1150,17 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		if(rank == Battlefield::Clan::Ranks::Leader)
 		{
 			// Copy url variables into clan
-			this->_updateClanInformation(clan, url_variables, true);
+			if(this->_updateClanInformation(clan, url_variables))
+			{
+				// Insert clan in database
+				g_database->updateClan(clan);
 			
-			// Insert clan in database
-			g_database->updateClan(clan);
-			
-			http_response.SetMessageBody("OK");
+				http_response.SetMessageBody("OK");
+			}
+			else
+			{
+				http_response.SetMessageBody("ERROR");
+			}
 		}
 		else
 		{
@@ -1689,7 +1691,7 @@ void Webserver::Client::_GetSessionPlayerAndClan(const Util::Url::Variables& url
 	}
 }
 
-void Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
+bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 		const Util::Url::Variables &url_variables, bool is_update)
 {
 	for(const auto &url_variable : url_variables)
@@ -1700,7 +1702,10 @@ void Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 		}
 		else if(url_variable.first == "tag")
 		{
-			clan.SetTag(url_variable.second);
+			if(!clan.SetTag(url_variable.second))
+			{
+				return false;
+			}
 		}
 		else if(url_variable.first == "homepage")
 		{
@@ -1715,5 +1720,7 @@ void Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 			clan.SetRegion(url_variable.second);
 		}
 	}
+
+	return true;
 }
 

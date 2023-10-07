@@ -56,15 +56,12 @@ bool Battlefield::Clan::SetName(const std::string& name)
 
 bool Battlefield::Clan::SetTag(const std::string& tag)
 {
-	if(tag.size() > 3)
+	if(tag.size() < 2 || tag.size() > 3)
 	{
-		this->_tag = tag.substr(0, 2);
+		return false;
 	}
-	else
-	{
-		this->_tag = tag;
-	}
-	
+
+	this->_tag = tag;
 	return true;
 }
 

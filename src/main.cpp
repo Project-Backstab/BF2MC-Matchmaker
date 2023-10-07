@@ -112,7 +112,6 @@ void start_file_system()
         }
     }
 	
-	// to-do: all file system to logger
 	Logger::info("Load all files in memory.", Service::FileSystem);
 	
 	// Example code how to use

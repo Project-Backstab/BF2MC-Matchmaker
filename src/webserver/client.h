@@ -81,7 +81,7 @@ namespace Webserver
 			void _SendFile(const std::string& file_name) const;
 			void _GetSessionPlayerAndClan(const Util::Url::Variables& url_variables,
 					Battlefield::Clan& clan, Battlefield::Player& player) const;
-			void _updateClanInformation(Battlefield::Clan& clan,
+			bool _updateClanInformation(Battlefield::Clan& clan,
 					const Util::Url::Variables &url_variables, bool is_update = false);
 	};
 }

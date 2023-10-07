@@ -265,6 +265,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	std::string id = parameter[7];
 	
 	Battlefield::Player player;
+
 	player.SetProfileId(profileid);
 	
 	// Get player information
@@ -274,12 +275,22 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	
 	if(player.GetUserId() != -1)
 	{
+		std::string uniquenick = player.GetUniquenick();
+
+		// Update unique nick if is in clan
+		Battlefield::Clan clan;
+		g_database->queryClanByPlayer(clan, player);
+		if(clan.GetClanId() != -1)
+		{
+			uniquenick = "[" + clan.GetTag() + "] " + uniquenick;
+		}
+
 		response = GameSpy::Parameter2Response({
 			"pi",               "",
 			"profileid",        std::to_string(player.GetProfileId()),
 			"userid",           std::to_string(player.GetUserId()),
 			"nick",             player.GetNick(),
-			"uniquenick",       player.GetUniquenick(),
+			"uniquenick",       uniquenick,
 			"email",            "<private>",
 			"sex",              "0",
 			"birthday",         "0",
