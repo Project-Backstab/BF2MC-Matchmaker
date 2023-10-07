@@ -93,7 +93,7 @@ bool Battlefield::Player::SetUniquenickWithNoClanTag(const std::string& uniqueni
 	std::string no_clan_tag_uniquenick = uniquenick;
 
 	// Find: gamever='V1.31a'
-	pattern = std::regex(R"(^(\[\w{2,3}\] ))");
+	pattern = std::regex(R"(^(\[.{2,3}\] ))");
 
 	if (std::regex_search(no_clan_tag_uniquenick, matches, pattern) && matches.size() >= 2)
 	{
