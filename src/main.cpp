@@ -107,13 +107,8 @@ void start_file_system()
 	{
         if (entry.is_regular_file())
 		{
-			std::string file_path = entry.path();
-			
-			// Remove first directory path
-			file_path = file_path.substr(3);
-			
 			// load file in memory
-			g_file_system->Load(file_path);
+			g_file_system->Load(entry.path());
         }
     }
 	
@@ -124,7 +119,7 @@ void start_file_system()
 	/*
 	std::string data;
 	
-	if(!g_file_system->GetFile("data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt", data))
+	if(!g_file_system->GetFile("../data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt", data))
 	{
 		Logger::error("Oepsie doepsie");
 	}

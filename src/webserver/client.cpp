@@ -235,7 +235,7 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	this->_SendFile("data" + url_base);
+	this->_SendFile("../data" + url_base);
 }
 
 // bfmc.gamespy.com
@@ -1065,7 +1065,7 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	this->_SendFile("data/examples/leaderboard/startrank=1&endrank=7.txt");
+	this->_SendFile("../data/examples/leaderboard/startrank=1&endrank=7.txt");
 }
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
@@ -1575,19 +1575,7 @@ void Webserver::Client::requestEmpty(const atomizes::HTTPMessage& http_request, 
 void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	HTTPMessage http_response;
-	
-	http_response.SetHeader("Accept-Ranges", "bytes");
-	http_response.SetHeader("Server", "BF2-MC");
-	
-	std::string data = this->_readFile("data/meme/index.html");
-	
-	http_response.SetStatusCode(200);
-	http_response.SetMessageBody(data);
-	
-	this->Send(http_response);
-	
-	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+	this->_SendFile("../data/meme/index.html");
 }
 
 /*
@@ -1608,9 +1596,8 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
 {
 	HTTPMessage http_response;
 	
+	http_response.SetHeader("Server", "BF2MC-Matchmaker");
 	http_response.SetHeader("Accept-Ranges", "bytes");
-	http_response.SetHeader("Content-Type", "text/plain");
-	http_response.SetHeader("Server", "BF2-MC");
 	
 	return http_response;
 }
@@ -1624,8 +1611,8 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	if(g_file_system->GetFile(file_name, data))
 	{
 		// Debug
-		//Logger::debug("file_name = " + file_name);
-		//Logger::debug("file size = " + std::to_string(data.size()));
+		Logger::debug("file_name = " + file_name);
+		Logger::debug("file size = " + std::to_string(data.size()));
 		
 		return data;
 	}
@@ -1637,7 +1624,7 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	
 		try
 		{
-			input.open("../" + file_name, std::ifstream::in | std::ifstream::binary);
+			input.open(file_name, std::ifstream::in | std::ifstream::binary);
 
 			if(input.is_open())
 			{

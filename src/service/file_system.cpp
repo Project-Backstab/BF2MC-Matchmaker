@@ -29,7 +29,7 @@ void Service::File_System::Load(const std::string& file_path)
 	std::ifstream input;
 	std::string data;
 	
-	input.open("../" + file_path, std::ifstream::in | std::ifstream::binary);
+	input.open(file_path, std::ifstream::in | std::ifstream::binary);
 
 	if(input.is_open())
 	{
