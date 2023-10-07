@@ -239,10 +239,12 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 			// Update
 			if(     key == "auth_"     + std::to_string(player_index)) gsplayer.SetAuth(value);
 			else if(key == "pid_"      + std::to_string(player_index)) gsplayer.SetProfileId(value);
+			else if(key == "team_"     + std::to_string(player_index)) gsplayer.SetTeam(value);
 			else if(key == "score_"    + std::to_string(player_index)) gsplayer.SetScore(value);
 			else if(key == "rank_"     + std::to_string(player_index)) gsplayer.SetRank(value);
 			else if(key == "pph_"      + std::to_string(player_index)) gsplayer.SetPPH(value);
 			else if(key == "kills_"    + std::to_string(player_index)) gsplayer.SetKills(value);
+			else if(key == "deaths_"   + std::to_string(player_index)) gsplayer.SetDeaths(value);
 			else if(key == "suicides_" + std::to_string(player_index)) gsplayer.SetSuicides(value);
 			else if(key == "time_"     + std::to_string(player_index)) gsplayer.SetTime(value);
 			else if(key == "lavd_"     + std::to_string(player_index)) gsplayer.SetLAVsDestroyed(value);

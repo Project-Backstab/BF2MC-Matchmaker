@@ -114,12 +114,14 @@ namespace Battlefield
 			// Player reference
 			std::string _auth     = "";
 			int         _pid      = -1;
+			int         _team     = -1;
 			
 			// Player stats
 			int32_t     _score    = 0;
 			uint32_t    _rank     = 1;
 			uint32_t    _pph      = 0;
 			uint32_t    _kills    = 0;
+			uint32_t    _deaths   = 0;
 			uint32_t    _suicides = 0;
 			uint32_t    _time     = 0;
 			uint32_t    _lavd     = 0;
@@ -148,10 +150,12 @@ namespace Battlefield
 			int         GetId() const                      { return this->_id;       }
 			std::string GetAuth() const                    { return this->_auth;     }
 			int         GetProfileId() const               { return this->_pid;      }
+			int         GetTeam() const                    { return this->_team;     }
 			int32_t     GetScore() const                   { return this->_score;    }
 			uint32_t    GetRank() const                    { return this->_rank;     }
 			uint32_t    GetPPH() const                     { return this->_pph;      }
 			uint32_t    GetKills() const                   { return this->_kills;    }
+			uint32_t    GetDeaths() const                  { return this->_deaths;   }
 			uint32_t    GetSuicides() const                { return this->_suicides; }
 			uint32_t    GetTime() const                    { return this->_time;     }
 			uint32_t    GetLAVsDestroyed() const           { return this->_lavd;     }
@@ -180,6 +184,8 @@ namespace Battlefield
 			bool SetAuth(const std::string& auth);
 			bool SetProfileId(int pid);
 			bool SetProfileId(const std::string& str_pid);
+			bool SetTeam(int team);
+			bool SetTeam(const std::string& str_team);
 			bool SetScore(int32_t score);
 			bool SetScore(const std::string& str_score);
 			bool SetRank(uint32_t rank);
@@ -188,6 +194,8 @@ namespace Battlefield
 			bool SetPPH(const std::string& str_pph);
 			bool SetKills(uint32_t kills);
 			bool SetKills(const std::string& str_kills);
+			bool SetDeaths(uint32_t deaths);
+			bool SetDeaths(const std::string& str_deaths);
 			bool SetSuicides(uint32_t suicides);
 			bool SetSuicides(const std::string& str_suicides);
 			bool SetTime(uint32_t time);

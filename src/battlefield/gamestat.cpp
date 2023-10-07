@@ -319,6 +319,25 @@ bool Battlefield::GameStatPlayer::SetProfileId(const std::string& str_pid)
 	return false;
 }
 
+bool Battlefield::GameStatPlayer::SetTeam(int team)
+{
+	this->_team = team;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetTeam(const std::string& str_team)
+{
+	try
+	{
+		int team = std::stoi(str_team);
+		
+		return this->SetTeam(team);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
 bool Battlefield::GameStatPlayer::SetScore(int32_t score)
 {
 	this->_score = score;
@@ -395,6 +414,25 @@ bool Battlefield::GameStatPlayer::SetKills(const std::string& str_kills)
 		uint32_t kills = std::stoul(str_kills);
 		
 		return this->SetKills(kills);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
+bool Battlefield::GameStatPlayer::SetDeaths(uint32_t deaths)
+{
+	this->_deaths = deaths;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetDeaths(const std::string& str_deaths)
+{
+	try
+	{
+		uint32_t deaths = std::stoul(str_deaths);
+		
+		return this->SetDeaths(deaths);
 	}
 	catch(...) {};
 	
@@ -855,6 +893,7 @@ void Battlefield::GameStatPlayer::UpdatePlayer()
 	player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + this->GetKillsCombatEngineerKit()  ); // k4
 	player.SetKillsSupportKit(         player.GetKillsSupportKit()         + this->GetKillsSupportKit()         ); // k5
 	player.SetKills(                   player.GetKills()                   + this->GetKills()                   ); // kills
+	player.SetDeaths(                  player.GetDeaths()                  + this->GetDeaths()                  ); // deaths
 	player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + this->GetLAVsDestroyed()           ); // lavd
 	player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + this->GetMAVsDestroyed()           ); // mavd
 	player.SetTotalVictories(          player.GetTotalVictories()          + this->GetTotalVictories()          ); // mv
@@ -872,14 +911,6 @@ void Battlefield::GameStatPlayer::UpdatePlayer()
 	player.SetMedals(this->GetMedals()); // medals
 	player.SetPPH(this->GetPPH());       // pph
 	player.SetRank(this->GetRank());     // rank
-	
-	player.SetDeaths(
-		player.GetDeathsAssualtKit() +
-		player.GetDeathsCombatEngineerKit() +
-		player.GetDeathsSniperKit() +
-		player.GetDeathsSpecialOpKit() +
-		player.GetDeathsSupportKit()
-	);
 	
 	player.SetVehiclesDestroyed(
 		player.GetLAVsDestroyed() +
