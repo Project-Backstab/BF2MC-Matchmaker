@@ -1611,8 +1611,8 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 	if(g_file_system->GetFile(file_name, data))
 	{
 		// Debug
-		Logger::debug("file_name = " + file_name);
-		Logger::debug("file size = " + std::to_string(data.size()));
+		//Logger::debug("file_name = " + file_name);
+		//Logger::debug("file size = " + std::to_string(data.size()));
 		
 		return data;
 	}

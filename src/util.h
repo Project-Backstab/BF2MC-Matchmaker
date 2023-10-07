@@ -29,6 +29,9 @@ namespace Util
 		typedef std::map<std::string, std::string> Variables;
 		
 		void GetElements(const std::string& url, std::string& url_base, Util::Url::Variables& url_variables);
+		
+		std::string Encode(const std::string& str);
+		std::string Decode(const std::string& str);
 	}
 	
 	namespace Time
