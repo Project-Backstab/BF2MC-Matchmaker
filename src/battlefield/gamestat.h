@@ -165,15 +165,15 @@ namespace Battlefield
 			uint32_t    GetPlanesDestroyed() const         { return this->_pld;      }
 			uint32_t    GetBoatsDestroyed() const          { return this->_bod;      }
 			uint32_t    GetKillsAssualtKit() const         { return this->_k1;       }
-			uint32_t    GetDeathsAssualtKit() const        { return this->_s1;       }
+			uint32_t    GetSpawnsAssualtKit() const        { return this->_s1;       }
 			uint32_t    GetKillsSniperKit() const          { return this->_k2;       }
-			uint32_t    GetDeathsSniperKit() const         { return this->_s2;       }
+			uint32_t    GetSpawnsSniperKit() const         { return this->_s2;       }
 			uint32_t    GetKillsSpecialOpKit() const       { return this->_k3;       }
-			uint32_t    GetDeathsSpecialOpKit() const      { return this->_s3;       }
+			uint32_t    GetSpawnsSpecialOpKit() const      { return this->_s3;       }
 			uint32_t    GetKillsCombatEngineerKit() const  { return this->_k4;       }
-			uint32_t    GetDeathsCombatEngineerKit() const { return this->_s4;       }
+			uint32_t    GetSpawnsCombatEngineerKit() const { return this->_s4;       }
 			uint32_t    GetKillsSupportKit() const         { return this->_k5;       }
-			uint32_t    GetDeathsSupportKit() const        { return this->_s5;       }
+			uint32_t    GetSpawnsSupportKit() const        { return this->_s5;       }
 			uint32_t    GetTeamKills() const               { return this->_tk;       }
 			uint32_t    GetMedals() const                  { return this->_medals;   }
 			uint32_t    GetTotalTopPlayer() const          { return this->_ttb;      }

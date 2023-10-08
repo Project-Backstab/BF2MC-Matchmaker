@@ -898,11 +898,11 @@ void Battlefield::GameStatPlayer::UpdatePlayer()
 	player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + this->GetMAVsDestroyed()           ); // mavd
 	player.SetTotalVictories(          player.GetTotalVictories()          + this->GetTotalVictories()          ); // mv
 	player.SetTotalGameSessions(       player.GetTotalGameSessions()       + this->GetTotalGameSessions()       ); // ngp
-	player.SetDeathsAssualtKit(        player.GetDeathsAssualtKit()        + this->GetDeathsAssualtKit()        ); // s1
-	player.SetDeathsSniperKit(         player.GetDeathsSniperKit()         + this->GetDeathsSniperKit()         ); // s2
-	player.SetDeathsSpecialOpKit(      player.GetDeathsSpecialOpKit()      + this->GetDeathsSpecialOpKit()      ); // s3
-	player.SetDeathsCombatEngineerKit( player.GetDeathsCombatEngineerKit() + this->GetDeathsCombatEngineerKit() ); // s4
-	player.SetDeathsSupportKit(        player.GetDeathsSupportKit()        + this->GetDeathsSupportKit()        ); // s5
+	player.SetDeathsAssualtKit(        player.GetSpawnsAssualtKit()        + this->GetSpawnsAssualtKit()        ); // s1
+	player.SetDeathsSniperKit(         player.GetSpawnsSniperKit()         + this->GetSpawnsSniperKit()         ); // s2
+	player.SetDeathsSpecialOpKit(      player.GetSpawnsSpecialOpKit()      + this->GetSpawnsSpecialOpKit()      ); // s3
+	player.SetDeathsCombatEngineerKit( player.GetSpawnsCombatEngineerKit() + this->GetSpawnsCombatEngineerKit() ); // s4
+	player.SetDeathsSupportKit(        player.GetSpawnsSupportKit()        + this->GetSpawnsSupportKit()        ); // s5
 	player.SetScore(                   player.GetScore()                   + this->GetScore()                   ); // score
 	player.SetSuicides(                player.GetSuicides()                + this->GetSuicides()                ); // suicides
 	player.SetTime(                    player.GetTime()                    + this->GetTime()                    ); // time
@@ -942,15 +942,15 @@ void Battlefield::GameStatPlayer::Debug()
 	Logger::debug("pld = "      + std::to_string(this->GetPlanesDestroyed()));
 	Logger::debug("bod = "      + std::to_string(this->GetBoatsDestroyed()));
 	Logger::debug("k1 = "       + std::to_string(this->GetKillsAssualtKit()));
-	Logger::debug("s1 = "       + std::to_string(this->GetDeathsAssualtKit()));
+	Logger::debug("s1 = "       + std::to_string(this->GetSpawnsAssualtKit()));
 	Logger::debug("k2 = "       + std::to_string(this->GetKillsSniperKit()));
-	Logger::debug("s2 = "       + std::to_string(this->GetDeathsSniperKit()));
+	Logger::debug("s2 = "       + std::to_string(this->GetSpawnsSniperKit()));
 	Logger::debug("k3 = "       + std::to_string(this->GetKillsSpecialOpKit()));
-	Logger::debug("s3 = "       + std::to_string(this->GetDeathsSpecialOpKit()));
+	Logger::debug("s3 = "       + std::to_string(this->GetSpawnsSpecialOpKit()));
 	Logger::debug("k4 = "       + std::to_string(this->GetKillsCombatEngineerKit()));
-	Logger::debug("s4 = "       + std::to_string(this->GetDeathsCombatEngineerKit()));
+	Logger::debug("s4 = "       + std::to_string(this->GetSpawnsCombatEngineerKit()));
 	Logger::debug("k5 = "       + std::to_string(this->GetKillsSupportKit()));
-	Logger::debug("s5 = "       + std::to_string(this->GetDeathsSupportKit()));
+	Logger::debug("s5 = "       + std::to_string(this->GetSpawnsSupportKit()));
 	Logger::debug("tk = "       + std::to_string(this->GetTeamKills()));
 	Logger::debug("medals = "   + std::to_string(this->GetMedals()));
 	Logger::debug("ttb = "      + std::to_string(this->GetTotalTopPlayer()));
