@@ -165,10 +165,12 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 		json_player["id"]       = gsplayer.GetId();
 		json_player["auth"]     = gsplayer.GetAuth();
 		json_player["pid"]      = gsplayer.GetProfileId();
+		json_player["team"]     = gsplayer.GetTeam();
 		json_player["score"]    = gsplayer.GetScore();
 		json_player["rank"]     = gsplayer.GetRank();
 		json_player["pph"]      = gsplayer.GetPPH();
 		json_player["kills"]    = gsplayer.GetKills();
+		json_player["deaths"]   = gsplayer.GetDeaths();
 		json_player["suicides"] = gsplayer.GetSuicides();
 		json_player["time"]     = gsplayer.GetTime();
 		json_player["lavd"]     = gsplayer.GetLAVsDestroyed();
