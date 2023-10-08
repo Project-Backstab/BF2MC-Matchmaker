@@ -1594,12 +1594,15 @@ void Webserver::Client::_LogTransaction(const std::string& direction, const std:
 			Server::Type::Webserver, show_console);
 }
 
-atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader() const
+atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader(bool isPlainText) const
 {
 	HTTPMessage http_response;
 	
 	http_response.SetHeader("Server", "BF2MC-Matchmaker");
 	http_response.SetHeader("Accept-Ranges", "bytes");
+
+	if(isPlainText)
+		http_response.SetHeader("Content-Type", "text/plain");
 	
 	return http_response;
 }
@@ -1649,7 +1652,7 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 
 void Webserver::Client::_SendFile(const std::string& file_name) const
 {
-	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
+	atomizes::HTTPMessage http_response = this->_defaultResponseHeader(false);
 	
 	std::string data = this->_readFile(file_name);
 	

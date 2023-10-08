@@ -75,7 +75,7 @@ namespace Webserver
 			void requestAPILeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			
 		private:
-			atomizes::HTTPMessage _defaultResponseHeader() const;
+			atomizes::HTTPMessage _defaultResponseHeader(bool isPlainText = true) const;
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 			std::string _readFile(const std::string& file_name) const;
 			void _SendFile(const std::string& file_name) const;

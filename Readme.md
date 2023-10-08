@@ -75,6 +75,7 @@ sudo iptables -A PREROUTING -t nat -i <network interface> -p tcp --dport 80 -j R
 
 ## Run
 
+For release:
 ```
 cd BF2MC-Matchmaker-release/bin
 ./bf2mc
@@ -84,6 +85,12 @@ For development:
 ```
 cd BF2MC-Matchmaker/build
 ./bin/bf2mc
+```
+
+For development debugging:
+```
+cd BF2MC-Matchmaker/build
+gdbserver --multi :2345 bin/bf2mc
 ```
 
 ## Services
