@@ -39,12 +39,12 @@ namespace Battlefield
 			enum Medals
 			{
 				Service_Cross               = 1 << 0,
-				The_Bronse_Star             = 1 << 1,
-				Air_Forse_Cross             = 1 << 2,
-				The_Silver_star             = 1 << 3,
-				The_Service_Cross_1st_Class = 1 << 4,
-				The_Bronse_Star_1st_Class   = 1 << 5,
-				Air_Force_Cross_1st_Class   = 1 << 6,
+				The_Bronze_Star             = 1 << 1,
+				Air_Force_Cross             = 1 << 2,
+        		        Silver_Star                 = 1 << 3,
+				Service_Cross_First_Class   = 1 << 4,
+				Bronze_Star_First_Class     = 1 << 5,
+				Air_Force_Cross_First_Class = 1 << 6,
 				Expert_Killing              = 1 << 7,
 				Expert_Shooting             = 1 << 8,
 				Expert_Demolition           = 1 << 9,
@@ -52,40 +52,40 @@ namespace Battlefield
 				Expert_Healer               = 1 << 11,
 				Navy_Cross                  = 1 << 12,
 				Legion_of_Merit             = 1 << 13,
-				Legion_of_Merit_1st_Class   = 1 << 14,
+				Legion_of_Merit_First_Class = 1 << 14,
 				All_Medals                  = (1 << 15) - 1,
 			};
 		
 		private:
 			int32_t   _score     = 0; // Total score
 			uint32_t  _ran       = 1; // Rank
-			uint32_t  _pph       = 0; // Point per Hour
-			uint32_t  _kills     = 0; // Total kills
-			uint32_t  _deaths    = 0; // Total Deaths
-			uint32_t  _suicides  = 0; // Total suicides
+			uint32_t  _pph       = 0; // Points per Hour
+			uint32_t  _kills     = 0; // Total Kills
+			uint32_t  _deaths    = 0; // Total Deaths (actually sum of _s1..._s5)
+			uint32_t  _suicides  = 0; // Total Suicides
 			uint32_t  _time      = 0; // Total time played in seconds
-			uint32_t  _vehicles  = 0; // Total Vehicle's destroyed
+			uint32_t  _vehicles  = 0; // Total Vehicles destroyed
 			uint32_t  _lavd      = 0; // Total LAV's destroyed, Light Armored Vehicle  (such as a Humvee or similar)
 			uint32_t  _mavd      = 0; // Total MAV's destroyed, Medium Armored Vehicle (such as a Tank or similar)
 			uint32_t  _havd      = 0; // Total HAV's destroyed, Heavy Armored Vehicle  (such as an APC or similar)
 			uint32_t  _hed       = 0; // Total Helicopters destroyed
 			uint32_t  _pld       = 0; // Total Planes destroyed                        (unimplemented vehicle)
 			uint32_t  _bod       = 0; // Total Boats destoyed
-			uint32_t  _k1        = 0; // Total kills assualt kit
-			uint32_t  _s1        = 0; // Total Deaths assualt kit
-			uint32_t  _k2        = 0; // Total kills sniper kit 
-			uint32_t  _s2        = 0; // Total Deaths sniper kit 
-			uint32_t  _k3        = 0; // Total kills special Op. kit
-			uint32_t  _s3        = 0; // Total Deaths special Op. kit
-			uint32_t  _k4        = 0; // Total kills Combat engineer kit 
-			uint32_t  _s4        = 0; // Total Deaths Combat engineer kit
+			uint32_t  _k1        = 0; // Total kills Assualt kit
+			uint32_t  _s1        = 0; // Total spawns Assualt kit
+			uint32_t  _k2        = 0; // Total kills Sniper kit 
+			uint32_t  _s2        = 0; // Total spawns Sniper kit 
+			uint32_t  _k3        = 0; // Total kills Special Op. kit
+			uint32_t  _s3        = 0; // Total spawns Special Op. kit
+			uint32_t  _k4        = 0; // Total kills Combat Engineer kit 
+			uint32_t  _s4        = 0; // Total spawns Combat Engineer kit
 			uint32_t  _k5        = 0; // Total kills Support kit  
-			uint32_t  _s5        = 0; // Total Deaths Support kit
-			uint32_t  _tk        = 0; // Team kills                                   (Not used in game)
-			uint32_t  _medals    = 0; // Earned medals (See: enum PlayerStatsMedals)
-			uint32_t  _ttb       = 0; // Total times been the top player in the game
-			uint32_t  _mv        = 0; // Total mayor victories
-			uint32_t  _ngp       = 0; // Total Parcipated game sessions
+			uint32_t  _s5        = 0; // Total spawns Support kit
+			uint32_t  _tk        = 0; // Team kills                                    (Not used in game)
+			uint32_t  _medals    = 0; // Earned medals (See: enum Battlefield::PlayerStats::Medals)
+			uint32_t  _ttb       = 0; // Total times top player
+			uint32_t  _mv        = 0; // Total major victories
+			uint32_t  _ngp       = 0; // Total participated game sessions
 		
 		public:
 			void useExample();

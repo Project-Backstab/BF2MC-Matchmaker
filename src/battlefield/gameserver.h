@@ -29,6 +29,9 @@ namespace Battlefield
 	class GameServer
 	{
 		public:
+			// See reference:
+			//   https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
+			//
 			enum Regions
 			{
 				America        = 1,
@@ -38,7 +41,7 @@ namespace Battlefield
 			};
 	
 		private:
-			int			_id            = -1;
+			int         _id            = -1;
 			std::string _ip            = "";
 			uint16_t    _port          = 3658;
 			uint8_t     _flag          = 59;
@@ -69,7 +72,7 @@ namespace Battlefield
 			std::string _gametype      = "";   // String which specifies the type of game, or the mod being played.
 			                                   // (conquest, capturetheflag)
 			
-			std::string _gamevariant   = "";    // Game code name
+			std::string _gamevariant   = "";   // Game code name
 			uint8_t     _numplayers    = 0;    // Number of players
 			uint8_t     _maxplayers    = 0;    // Max players
 			uint8_t     _numteams      = 0;    // Number of teams
@@ -101,8 +104,8 @@ namespace Battlefield
 			uint64_t    _region        = 1;    // Server region (America: 1, Asia: 2048, Europe: 65536)
 			
 			// Clan
-			int8_t      _c0            = -1;   // Clanid team 1
-			int8_t      _c1            = -1;   // Clanid team 2
+			int8_t      _c0            = -1;   // Clan ID team 1
+			int8_t      _c1            = -1;   // Clan ID team 2
 			std::string _n0            = "";   // Clan name team 1
 			std::string _n1            = "";   // Clan name team 2
 			uint8_t     _c0c           = 0;    // Team 1 is claimed (1: true, 0: false)
