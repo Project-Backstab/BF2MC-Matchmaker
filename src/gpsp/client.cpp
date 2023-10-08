@@ -167,7 +167,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 		g_database->queryClanByPlayer(clan, player);
 		if(clan.GetClanId() != -1)
 		{
-			uniquenick = "[" + clan.GetTag() + "] " + uniquenick;
+			uniquenick = clan.GetTag() + " " + uniquenick;
 		}
 
 		response_parameter.push_back("nick");
@@ -286,7 +286,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 
 	// Remove clan name out of uniquenick
 	Battlefield::Player player;
-	player.SetUniquenickWithNoClanTag(uniquenick);
+	player.SetUniquenickWithoutClanTag(uniquenick);
 	uniquenick = player.GetUniquenick();
 	
 	// Check nick and uniquenick
