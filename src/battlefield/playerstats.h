@@ -38,30 +38,30 @@ namespace Battlefield
 			
 			enum Medals
 			{
-				Service_Cross               = 1 << 0,
-				The_Bronze_Star             = 1 << 1,
-				Air_Force_Cross             = 1 << 2,
-        		        Silver_Star                 = 1 << 3,
-				Service_Cross_First_Class   = 1 << 4,
-				Bronze_Star_First_Class     = 1 << 5,
-				Air_Force_Cross_First_Class = 1 << 6,
-				Expert_Killing              = 1 << 7,
-				Expert_Shooting             = 1 << 8,
-				Expert_Demolition           = 1 << 9,
-				Expert_Repair               = 1 << 10,
-				Expert_Healer               = 1 << 11,
-				Navy_Cross                  = 1 << 12,
-				Legion_of_Merit             = 1 << 13,
-				Legion_of_Merit_First_Class = 1 << 14,
-				All_Medals                  = (1 << 15) - 1,
+				The_Service_Cross             = 1 << 0,
+				The_Bronze_Star               = 1 << 1,
+				Air_Force_Cross               = 1 << 2,
+				The_Silver_Star               = 1 << 3,
+				The_Service_Cross_First_Class = 1 << 4,
+				The_Bronze_Star_First_Class   = 1 << 5,
+				Air_Force_Cross_First_Class   = 1 << 6,
+				Expert_Killing                = 1 << 7,
+				Expert_Shooting               = 1 << 8,
+				Expert_Demolition             = 1 << 9,
+				Expert_Repair                 = 1 << 10,
+				Expert_Healer                 = 1 << 11,
+				Navy_Cross                    = 1 << 12,
+				Legion_of_Merit               = 1 << 13,
+				Legion_of_Merit_First_Class   = 1 << 14,
+				All_Medals                    = (1 << 15) - 1,
 			};
 		
 		private:
 			int32_t   _score     = 0; // Total score
-			uint32_t  _ran       = 1; // Rank
+			uint32_t  _ran       = 1; // Rank                                          (See: enum Battlefield::PlayerStats::Ranks)
 			uint32_t  _pph       = 0; // Points per Hour
 			uint32_t  _kills     = 0; // Total Kills
-			uint32_t  _deaths    = 0; // Total Deaths (actually sum of _s1..._s5)
+			uint32_t  _deaths    = 0; // Total Deaths
 			uint32_t  _suicides  = 0; // Total Suicides
 			uint32_t  _time      = 0; // Total time played in seconds
 			uint32_t  _vehicles  = 0; // Total Vehicles destroyed
@@ -82,7 +82,7 @@ namespace Battlefield
 			uint32_t  _k5        = 0; // Total kills Support kit  
 			uint32_t  _s5        = 0; // Total spawns Support kit
 			uint32_t  _tk        = 0; // Team kills                                    (Not used in game)
-			uint32_t  _medals    = 0; // Earned medals (See: enum Battlefield::PlayerStats::Medals)
+			uint32_t  _medals    = 0; // Earned medals                                 (See: enum Battlefield::PlayerStats::Medals)
 			uint32_t  _ttb       = 0; // Total times top player
 			uint32_t  _mv        = 0; // Total major victories
 			uint32_t  _ngp       = 0; // Total participated game sessions
