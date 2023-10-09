@@ -345,7 +345,7 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	json_clan["tag"]        = clan.GetTag();
 	json_clan["homepage"]   = clan.GetHomepage();
 	json_clan["info"]       = clan.GetInfo();
-	json_clan["region"]     = clan.GetRegion();
+	json_clan["region"]     = static_cast<uint8_t>(clan.GetRegion());
 	json_clan["created_at"] = clan.GetCreatedAt();
 	
 	// Secret
@@ -361,7 +361,7 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 		Json::Value json_member;
 		
 		json_member["profileid"] = pair.first;
-		json_member["rank"] = pair.second;
+		json_member["rank"] = static_cast<uint8_t>(pair.second);
 		
 		json_members.append(json_member);
 	}

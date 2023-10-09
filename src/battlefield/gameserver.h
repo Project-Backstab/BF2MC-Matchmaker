@@ -32,12 +32,12 @@ namespace Battlefield
 			// See reference:
 			//   https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
 			//
-			enum Regions
+			enum class Regions
 			{
-				America        = 1,
-				Asia           = 2048,
-				Europe         = 65536,
-				Unknown_Region = -1,
+				America  = 1,
+				Asia     = 2048,
+				Europe   = 65536,
+				Unknown  = -1,
 			};
 	
 		private:

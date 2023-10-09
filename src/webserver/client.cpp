@@ -1006,7 +1006,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		response += "tag," + clan.GetTag() + "\r\n";
 		response += "homepage," + clan.GetHomepage() + "\r\n";
 		response += "info," + clan.GetInfo() + "\r\n";
-		response += "region," + std::to_string(clan.GetRegion()) + "\r\n";
+		response += "region," + std::to_string(static_cast<uint8_t>(clan.GetRegion())) + "\r\n";
 		response += "lastreportdate,69_1337_69\r\n";
 		
 		response += "rating," + std::to_string(clan.GetRating()) + "\r\n";
@@ -1048,7 +1048,7 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 		
 		for (const auto& pair : clan.GetRanks())
 		{
-			response += "\r\n" + std::to_string(pair.first) + "," + std::to_string(pair.second);
+			response += "\r\n" + std::to_string(pair.first) + "," + std::to_string(static_cast<uint8_t>(pair.second));
 		}
 	}
 	
@@ -1257,7 +1257,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 		g_database->queryClanByPlayer(target_clan, target_player);
 		
 		// Get new rank
-		Battlefield::Clan::Ranks new_rank = Battlefield::Clan::Ranks::Unknown_Rank;
+		Battlefield::Clan::Ranks new_rank = Battlefield::Clan::Ranks::Unknown;
 		
 		// Convert url variable rank
 		auto it2 = url_variables.find("rank");
@@ -1271,7 +1271,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 			target_player.GetProfileId() != -1 &&          // Valid target player profileid must be supplied
 			target_clan.GetClanId() != -1 &&               // target player must be in a clan
 			clan.GetClanId() == target_clan.GetClanId() && // player and target player must be in the same clan
-			new_rank != Battlefield::Clan::Ranks::Unknown_Rank
+			new_rank != Battlefield::Clan::Ranks::Unknown
 		)
 		{
 			// Get all ranks in clan

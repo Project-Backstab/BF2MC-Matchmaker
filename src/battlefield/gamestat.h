@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 /*
 	Forward declarations
@@ -22,29 +23,39 @@ namespace Battlefield
 	*/
 	typedef std::vector<GameStat> GameStats;
 	typedef std::vector<GameStatPlayer> GameStatPlayers;
-	
+
 	/*
 		Game stat information
 	*/
 	class GameStat
 	{
-		private:
-			int         _id         = -1;
-			uint8_t     _gametype   = 0;
-			std::string _gamver     = "";
-			std::string _hostname   = "";
-			uint8_t     _mapid      = 0;
-			uint8_t     _numplayers = 0;
-			uint8_t     _pplayers   = 0;
-			uint16_t    _tplayed    = 0;
-			uint8_t     _clanid_t0  = 0;
-			uint8_t     _clanid_t1  = 0;
-			uint8_t     _country_t0 = 0;
-			uint8_t     _country_t1 = 0;
-			uint8_t     _victory_t0 = 0;
-			uint8_t     _victory_t1 = 0;
-			std::string _created_at = "";
+		public:
+			enum class VictoryState
+			{
+				Unknown   = -1,
+				Lost      = 0,
+				Minor     = 1,
+				Major     = 2,
+				Draw      = 3
+			};
 			
+		private:
+			int             _id         = -1;
+			uint8_t         _gametype   = 0;  // Game type (see: enum Battlefield::GameType)
+			std::string     _gamver     = "";
+			std::string     _hostname   = "";
+			uint8_t         _mapid      = 0;
+			uint8_t         _numplayers = 0;
+			uint8_t         _pplayers   = 0;
+			uint16_t        _tplayed    = 0;
+			uint8_t         _clanid_t0  = 0;
+			uint8_t         _clanid_t1  = 0;
+			uint8_t         _country_t0 = 0;
+			uint8_t         _country_t1 = 0;
+			// Victory state for each team (see: enum Battlefield::GameStat::VictoryState)
+			uint8_t         _victory_t0 = 0;
+			uint8_t         _victory_t1 = 0;
+			std::string     _created_at = "";
 			GameStatPlayers _players;
 			
 		public:

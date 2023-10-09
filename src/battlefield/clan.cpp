@@ -101,7 +101,7 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 
 bool Battlefield::Clan::SetRegion(uint8_t int_region)
 {
-	if(int_region >= America && int_region <= Asia)
+	if(int_region >= static_cast<uint8_t>(Regions::America) && int_region <= static_cast<uint8_t>(Regions::Asia))
 	{
 		Battlefield::Clan::Regions region = static_cast<Regions>(int_region);
 		
@@ -158,7 +158,7 @@ Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
 		return it->second;
 	}
 	
-	return Unknown_Rank;
+	return Ranks::Unknown;
 }
 
 /*
@@ -174,17 +174,17 @@ Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_r
 	}
 	catch(...) {};
 	
-	return Unknown_Rank;
+	return Ranks::Unknown;
 }
 
 Battlefield::Clan::Ranks Battlefield::Clan::convertRank(uint8_t int_rank)
 {
-	if(int_rank >= Leader && int_rank <= Member)
+	if(int_rank >= static_cast<uint8_t>(Ranks::Leader) && int_rank <= static_cast<uint8_t>(Ranks::Member))
 	{
 		return static_cast<Ranks>(int_rank);
 	}
 	
-	return Unknown_Rank;
+	return Ranks::Unknown;
 }
 
 Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& str_region)
@@ -197,16 +197,16 @@ Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& s
 	}
 	catch(...) {};
 	
-	return Unknown_Region;
+	return Regions::Unknown;
 }
 
 Battlefield::Clan::Regions Battlefield::Clan::convertRegion(uint8_t int_region)
 {
-	if(int_region >= America && int_region <= Asia)
+	if(int_region >= static_cast<uint8_t>(Regions::America) && int_region <= static_cast<uint8_t>(Regions::Asia))
 	{
 		return static_cast<Regions>(int_region);
 	}
 	
-	return Unknown_Region;
+	return Regions::Unknown;
 }
 

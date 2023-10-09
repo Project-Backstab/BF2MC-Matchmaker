@@ -3,7 +3,7 @@
 void Battlefield::PlayerStats::useExample()
 {
 	this->SetScore(41476);
-	this->SetRank(Five_Star_General);
+	this->SetRank(Ranks::Five_Star_General);
 	this->SetPPH(5236);
 	this->SetKills(31848);
 	this->SetDeaths(26394);
@@ -25,7 +25,7 @@ void Battlefield::PlayerStats::useExample()
 	this->SetDeathsCombatEngineerKit(1411);
 	this->SetKillsSupportKit(414);
 	this->SetDeathsSupportKit(351);
-	this->SetMedals(All_Medals);
+	this->SetMedals(Medals::All);
 	this->SetTotalTopPlayer(56);
 	this->SetTotalVictories(1202);
 	this->SetTotalGameSessions(3613);
@@ -99,7 +99,7 @@ bool Battlefield::PlayerStats::SetScore(int32_t score)
 
 bool Battlefield::PlayerStats::SetRank(uint32_t ran)
 {
-	if(ran >= 1 && ran <= 20)
+	if(ran >= static_cast<uint8_t>(Ranks::Private) && ran <= static_cast<uint8_t>(Ranks::Five_Star_General))
 	{
 		this->_ran = ran;
 		
@@ -107,6 +107,12 @@ bool Battlefield::PlayerStats::SetRank(uint32_t ran)
 	}
 	
 	return false;
+}
+
+bool Battlefield::PlayerStats::SetRank(Ranks ran)
+{
+	this->_ran = static_cast<uint8_t>(ran);
+	return true;
 }
 
 bool Battlefield::PlayerStats::SetPPH(uint32_t pph)
@@ -237,7 +243,7 @@ bool Battlefield::PlayerStats::SetDeathsSupportKit(uint32_t deaths)
 
 bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 {
-	if(medals <= All_Medals)
+	if(medals <= static_cast<uint32_t>(Medals::All))
 	{
 		this->_medals = medals;
 		
@@ -245,6 +251,12 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 	}
 	
 	return false;
+}
+
+bool Battlefield::PlayerStats::SetMedals(Medals medals)
+{
+	this->_medals = static_cast<uint32_t>(medals);
+	return true;
 }
 
 bool Battlefield::PlayerStats::SetTotalTopPlayer(uint32_t total)

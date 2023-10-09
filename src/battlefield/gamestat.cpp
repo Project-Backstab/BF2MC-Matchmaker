@@ -802,7 +802,7 @@ bool Battlefield::GameStatPlayer::SetTeamKills(const std::string& str_tk)
 
 bool Battlefield::GameStatPlayer::SetMedals(uint32_t medals)
 {
-	this->_medals = medals & Battlefield::PlayerStats::Medals::All_Medals;
+	this->_medals = medals & static_cast<u_int32_t>(Battlefield::Medals::All);
 	return true;
 }
 

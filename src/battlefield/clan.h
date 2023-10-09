@@ -18,20 +18,20 @@ namespace Battlefield
 	class Clan
 	{
 		public:
-			enum Regions
+			enum class Regions
 			{
-				America        =  0x1,
-				Europe         =  0x2,
-				Asia           =  0x3,
-				Unknown_Region =  0xf,
+				America   =  0x1,
+				Europe    =  0x2,
+				Asia      =  0x3,
+				Unknown   =  0xf,
 			};
 			
-			enum Ranks
+			enum class Ranks
 			{
-				Leader         = 0x0,
-				Co_Leader      = 0x1,
-				Member         = 0x2,
-				Unknown_Rank   = 0xf,
+				Leader     = 0x0,
+				Co_Leader  = 0x1,
+				Member     = 0x2,
+				Unknown    = 0xf,
 			};
 		
 		private:
@@ -40,7 +40,7 @@ namespace Battlefield
 			std::string  _tag        = "";
 			std::string  _homepage   = "";
 			std::string  _info       = "";
-			Regions      _region     = America;
+			Regions      _region     = Regions::America;
 			uint32_t     _rating     = 0;
 			uint32_t     _wins       = 0;
 			uint32_t     _losses     = 0;
