@@ -63,7 +63,8 @@ namespace Battlefield
 			std::map<int, Ranks> _ranks;
 		
 		public:
-			static const int ELO_WEIGHT = 25; // default draw
+			static const int ELO_WEIGHT = 25;      // Elo score for a draw. x2 for Minor victory. x4 for Major victory.
+			static const int ELO_MAX_RANGE = 1000; // Max distance between clan to fight eachother
 
 			int                         GetClanId() const    { return this->_clanid;     }
 			std::string                 GetName() const      { return this->_name;       }

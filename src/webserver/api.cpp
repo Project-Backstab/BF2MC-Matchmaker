@@ -643,7 +643,7 @@ void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& ht
 			case Battlefield::GameStat::VictoryState::Minor:
 				K *= 2;
 				R2 = 1.0;
-				clan1->SetWins(clan1->GetWins() + 1);
+				clan2->SetWins(clan2->GetWins() + 1);
 			break;
 			case Battlefield::GameStat::VictoryState::Major:
 				K *= 4;
@@ -665,8 +665,8 @@ void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& ht
 		double diff2 = static_cast<int64_t>(clan1->GetScore()) - static_cast<int64_t>(clan2->GetScore());
 
 		// Calculate the procentage between difference of clan score.
-		double P1 = (1.0 / (1.0 + std::pow(10, diff1 / 400)));
-		double P2 = (1.0 / (1.0 + std::pow(10, diff2 / 400)));
+		double P1 = (1.0 / (1.0 + std::pow(10, diff1 / Battlefield::Clan::ELO_MAX_RANGE)));
+		double P2 = (1.0 / (1.0 + std::pow(10, diff2 / Battlefield::Clan::ELO_MAX_RANGE)));
 
 		// Calculate how much score will be added and substracted
 		double score1 = K * (R1 - P1);
