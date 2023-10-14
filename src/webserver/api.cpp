@@ -483,3 +483,177 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
+
+#include <random>
+#include <chrono>
+
+#include <battlefield/gamestat.h>
+
+#define SIMULATION_TOTAL_CLANS 2
+#define SIMULATION_TOTAL_FIGHTS 1
+
+void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Battlefield::Clans clans;
+	Json::Value json_results;
+	
+	// Random generator
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine generator(seed);
+
+	// Create random integer functions with ranges
+    std::uniform_int_distribution<int> gen_random_clan_id(1, SIMULATION_TOTAL_CLANS);
+	std::uniform_int_distribution<int> gen_random_team_win(0, 1);
+	std::uniform_int_distribution<int> gen_random_victory(1, 3);
+
+	// Generate random clans
+	for(int i = 1; i <= SIMULATION_TOTAL_CLANS; i++)
+	{
+		Battlefield::Clan clan;
+
+		clan.SetClanId(i);
+		
+		std::string clan_name(1, static_cast<char>(0x40 + i));
+		clan_name = "Clan " + clan_name;
+		clan.SetName(clan_name);
+
+		clan.SetScore(0);
+
+		clans.push_back(clan);
+	}
+	
+	clans[0].SetScore(1000);
+
+	// Battle random clans
+	Json::Value json_fights(Json::arrayValue);
+	Battlefield::GameStats game_stats;
+
+	for(int i = 0; i < SIMULATION_TOTAL_FIGHTS; i++)
+	{
+		Json::Value json_fight;
+
+		// Generate random game_stat
+		Battlefield::GameStat game_stat;
+
+		// Pick first random clan
+		int clanid_t0 = gen_random_clan_id(generator);
+		
+		// Pick second random clan 
+		int clanid_t1;
+		do
+		{
+			clanid_t1 = gen_random_clan_id(generator);		
+		}
+		while(clanid_t1 == clanid_t0); // Clan cant fight themselfs
+
+		// set clan id's
+		game_stat.SetTeam1ClanId(clanid_t0);
+		game_stat.SetTeam2ClanId(clanid_t1);
+
+		int team_win = gen_random_team_win(generator);
+		int victory = gen_random_victory(generator);
+		
+		if(team_win == 0)
+		{
+			game_stat.SetTeam1Victory(victory);
+
+			if(victory == 3) // If its draw
+				game_stat.SetTeam2Victory(3);
+		}
+		else
+		{
+			game_stat.SetTeam2Victory(victory);
+
+			if(victory == 3) // If its draw
+				game_stat.SetTeam1Victory(3);
+		}
+		game_stats.push_back(game_stat);
+
+		// Create json game stat 
+		json_fight["clanid_t0"] = game_stat.GetTeam1ClanId();
+		json_fight["clanid_t1"] = game_stat.GetTeam2ClanId();
+		json_fight["victory_t0"] = game_stat.GetTeam1Victory();
+		json_fight["victory_t1"] = game_stat.GetTeam2Victory();
+
+		json_fights.append(json_fight);
+	}
+	json_results["fights"] = json_fights;
+
+	// After all clan fight have been fought we can update the clan scores
+	for(const Battlefield::GameStat& game_stat : game_stats)
+	{
+		Battlefield::Clan* clan1 = &(clans[game_stat.GetTeam1ClanId() - 1]);
+		Battlefield::Clan* clan2 = &(clans[game_stat.GetTeam2ClanId() - 1]);
+		
+		double K = Battlefield::Clan::ELO_WEIGHT;
+		double R1 = 1.0;
+		double R2 = 1.0;
+		
+		if(game_stat.GetTeam1Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Minor) || 
+			game_stat.GetTeam2Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Minor))
+		{
+			K *= 2;
+		}
+
+		if(game_stat.GetTeam1Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Major) || 
+			game_stat.GetTeam2Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Major))
+		{
+			K *= 4;
+		}
+
+		if(game_stat.GetTeam1Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Lost))
+		{
+			R1 = 0.0;
+		}
+
+		if(game_stat.GetTeam2Victory() == static_cast<u_int8_t>(Battlefield::GameStat::VictoryState::Lost))
+		{
+			R2 = 0.0;
+		}
+
+		// Calculate the difference between two clan score
+		double diff1 = static_cast<int64_t>(clan2->GetScore()) - static_cast<int64_t>(clan1->GetScore());
+		double diff2 = static_cast<int64_t>(clan1->GetScore()) - static_cast<int64_t>(clan2->GetScore());
+
+		// Calculate the procentage between difference of clan score.
+		double P1 = (1.0 / (1.0 + std::pow(10, diff1 / 400)));
+		double P2 = (1.0 / (1.0 + std::pow(10, diff2 / 400)));
+
+		// Calculate how much score will be added and substracted
+		double score1 = K * (R1 - P1);
+		double score2 = K * (R2 - P2);
+
+		// Debug
+		//Logger::debug("clan1 = " + std::to_string(clan1->GetScore()));
+		//Logger::debug("clan2 = " + std::to_string(clan2->GetScore()));
+		//Logger::debug("R1 = " + std::to_string(R1));
+		//Logger::debug("R2 = " + std::to_string(R2));
+		//Logger::debug("P1 = " + std::to_string(P1));
+		//Logger::debug("P2 = " + std::to_string(P2));
+		//Logger::debug("score1 = " + std::to_string(score1));
+		//Logger::debug("score2 = " + std::to_string(score2));
+
+		clan1->SetScore(std::max(0, static_cast<int>(std::floor(score1) + clan1->GetScore())));
+		clan2->SetScore(std::max(0, static_cast<int>(std::floor(score2) + clan2->GetScore())));
+	}
+
+	// Show clans results
+	Json::Value json_clans(Json::arrayValue);
+	for(const Battlefield::Clan& clan : clans)
+	{
+		Json::Value json_clan;
+
+		json_clan["id"] = clan.GetClanId();
+		json_clan["name"] = clan.GetName();
+		json_clan["score"] = clan.GetScore();
+
+		json_clans.append(json_clan);
+	}
+
+	json_results["clans"] = json_clans;
+
+	this->Send(json_results);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}

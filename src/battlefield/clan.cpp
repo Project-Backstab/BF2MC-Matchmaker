@@ -12,7 +12,6 @@ void Battlefield::Clan::useExample()
 	this->SetHomepage("UMBRELLA");
 	this->SetInfo("G%2dVIRUS");
 	this->SetRegion(Regions::Europe);
-	this->SetStats(1851, 1671, 10, 40);
 }
 
 bool Battlefield::Clan::SetClanId(int clanid)
@@ -124,19 +123,16 @@ bool Battlefield::Clan::SetRegion(const std::string& str_region)
 	return false;
 }
 
-bool Battlefield::Clan::SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws)
-{
-	this->_rating = rating;
-	this->_wins = wins;
-	this->_losses = losses;
-	this->_draws = draws;
-	return true;
-}
-
 bool Battlefield::Clan::SetCreatedAt(MYSQL_TIME created_at)
 {
 	this->_created_at = Util::Time::GetDateTime(created_at);
 
+	return true;
+}
+
+bool Battlefield::Clan::SetScore(uint32_t score)
+{
+	this->_score = score;
 	return true;
 }
 

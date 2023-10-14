@@ -45,16 +45,18 @@ namespace Battlefield
 			std::string     _gamver     = "";
 			std::string     _hostname   = "";
 			uint8_t         _mapid      = 0;
-			uint8_t         _numplayers = 0;
-			uint8_t         _pplayers   = 0;
-			uint16_t        _tplayed    = 0;
+			uint8_t         _numplayers = 0;  // Total players in the whole game
+			uint8_t         _pplayers   = 0;  // present players at the end of the game 
+			uint16_t        _tplayed    = 0;  // Time played in seconds
 			uint8_t         _clanid_t0  = 0;
 			uint8_t         _clanid_t1  = 0;
 			uint8_t         _country_t0 = 0;
 			uint8_t         _country_t1 = 0;
+			
 			// Victory state for each team (see: enum Battlefield::GameStat::VictoryState)
 			uint8_t         _victory_t0 = 0;
 			uint8_t         _victory_t1 = 0;
+
 			std::string     _created_at = "";
 			GameStatPlayers _players;
 			

@@ -13,6 +13,17 @@ struct MYSQL_TIME;
 namespace Battlefield
 {
 	/*
+		Forward declarations
+	*/
+	class Clan;
+	
+	/*
+		Type definitions
+	*/
+	typedef std::vector<Battlefield::Clan> Clans;
+	typedef std::map<int, Battlefield::Clan> RankClans;
+
+	/*
 		Clan
 	*/
 	class Clan
@@ -47,11 +58,13 @@ namespace Battlefield
 			uint32_t     _draws      = 0;
 			std::string  _created_at = "";
 			
+			uint32_t     _score      = 0;
+
 			std::map<int, Ranks> _ranks;
 		
 		public:
-			void useExample();
-			
+			static const int ELO_WEIGHT = 25; // default draw
+
 			int                         GetClanId() const    { return this->_clanid;     }
 			std::string                 GetName() const      { return this->_name;       }
 			std::string                 GetTag() const       { return this->_tag;        }
@@ -63,7 +76,9 @@ namespace Battlefield
 			uint32_t                    GetLosses() const    { return this->_losses;     }
 			uint32_t                    GetDraws() const     { return this->_draws;      }
 			std::string                 GetCreatedAt() const { return this->_created_at; }
-			
+
+			uint32_t                    GetScore() const     { return this->_score;      }
+
 			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;      }
 			
 			bool SetClanId(int clanid);
@@ -75,12 +90,14 @@ namespace Battlefield
 			bool SetRegion(Battlefield::Clan::Regions region);
 			bool SetRegion(uint8_t int_region);
 			bool SetRegion(const std::string& region);
-			bool SetStats(uint32_t rating, uint32_t wins, uint32_t losses, uint32_t draws);
 			bool SetCreatedAt(MYSQL_TIME created_at);
+			
+			bool SetScore(uint32_t score);
 			
 			void AddRank(int profileid, Ranks rank);
 			void AddRank(int profileid, uint8_t int_rank);
 			Ranks GetRank(int profileid) const;
+			void useExample();
 			
 			/*
 				Static

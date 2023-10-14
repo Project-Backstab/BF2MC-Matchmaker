@@ -49,10 +49,7 @@ namespace Battlefield
 		Legion_of_Merit_First_Class   = 1 << 14,
 		All                           = (1 << 15) - 1,
 	};
-
-    /*
-		Enums
-	*/
+	
 	enum class GameType
 	{
 		Unknown         = -1,
