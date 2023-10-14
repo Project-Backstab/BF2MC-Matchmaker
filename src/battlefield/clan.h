@@ -52,14 +52,14 @@ namespace Battlefield
 			std::string  _homepage   = "";
 			std::string  _info       = "";
 			Regions      _region     = Regions::America;
-			uint32_t     _rating     = 0;
+			
+			uint32_t     _score      = 0;
 			uint32_t     _wins       = 0;
 			uint32_t     _losses     = 0;
 			uint32_t     _draws      = 0;
+			
 			std::string  _created_at = "";
 			
-			uint32_t     _score      = 0;
-
 			std::map<int, Ranks> _ranks;
 		
 		public:
@@ -71,13 +71,13 @@ namespace Battlefield
 			std::string                 GetHomepage() const  { return this->_homepage;   }
 			std::string                 GetInfo() const      { return this->_info;       }
 			Regions                     GetRegion() const    { return this->_region;     }
-			uint32_t                    GetRating() const    { return this->_rating;     }
+			
+			uint32_t                    GetScore() const     { return this->_score;      }
 			uint32_t                    GetWins() const      { return this->_wins;       }
 			uint32_t                    GetLosses() const    { return this->_losses;     }
 			uint32_t                    GetDraws() const     { return this->_draws;      }
-			std::string                 GetCreatedAt() const { return this->_created_at; }
 
-			uint32_t                    GetScore() const     { return this->_score;      }
+			std::string                 GetCreatedAt() const { return this->_created_at; }
 
 			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;      }
 			
@@ -90,9 +90,13 @@ namespace Battlefield
 			bool SetRegion(Battlefield::Clan::Regions region);
 			bool SetRegion(uint8_t int_region);
 			bool SetRegion(const std::string& region);
-			bool SetCreatedAt(MYSQL_TIME created_at);
-			
+
 			bool SetScore(uint32_t score);
+			bool SetWins(uint32_t wins);
+			bool SetLosses(uint32_t losses);
+			bool SetDraws(uint32_t draws);
+
+			bool SetCreatedAt(MYSQL_TIME created_at);
 			
 			void AddRank(int profileid, Ranks rank);
 			void AddRank(int profileid, uint8_t int_rank);

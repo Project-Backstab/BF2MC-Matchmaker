@@ -1010,7 +1010,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		response += "region," + std::to_string(static_cast<uint8_t>(clan.GetRegion())) + "\r\n";
 		response += "lastreportdate,69_1337_69\r\n";
 		
-		response += "rating," + std::to_string(clan.GetRating()) + "\r\n";
+		response += "rating," + std::to_string(clan.GetScore()) + "\r\n";
 		response += "wins," + std::to_string(clan.GetWins()) + "\r\n";
 		response += "losses," + std::to_string(clan.GetLosses()) + "\r\n";
 		response += "draws," + std::to_string(clan.GetDraws()) + "\r\n";

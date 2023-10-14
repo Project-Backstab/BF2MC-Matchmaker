@@ -123,16 +123,34 @@ bool Battlefield::Clan::SetRegion(const std::string& str_region)
 	return false;
 }
 
+bool Battlefield::Clan::SetScore(uint32_t score)
+{
+	this->_score = score;
+	return true;
+}
+
+bool Battlefield::Clan::SetWins(uint32_t wins)
+{
+	this->_wins = wins;
+	return true;
+}
+
+bool Battlefield::Clan::SetLosses(uint32_t losses)
+{
+	this->_losses = losses;
+	return true;
+}
+
+bool Battlefield::Clan::SetDraws(uint32_t draws)
+{
+	this->_draws = draws;
+	return true;
+}
+
 bool Battlefield::Clan::SetCreatedAt(MYSQL_TIME created_at)
 {
 	this->_created_at = Util::Time::GetDateTime(created_at);
 
-	return true;
-}
-
-bool Battlefield::Clan::SetScore(uint32_t score)
-{
-	this->_score = score;
 	return true;
 }
 
