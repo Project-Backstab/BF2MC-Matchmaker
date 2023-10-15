@@ -18,7 +18,7 @@
 --
 -- Dumping routines for database 'BF2MC'
 --
-/*!50003 DROP PROCEDURE IF EXISTS `CreateLeaderboard` */;
+/*!50003 DROP PROCEDURE IF EXISTS `CreateLeaderboardClan` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -28,29 +28,34 @@
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateLeaderboard`()
+CREATE PROCEDURE `CreateLeaderboardClan`()
 BEGIN
-	CALL CreateLeaderboardRank();
-	CALL CreateLeaderboardType('pph');
-	CALL CreateLeaderboardType('score');
-	CALL CreateLeaderboardType('k1');
-	CALL CreateLeaderboardType('k2');
-	CALL CreateLeaderboardType('k3');
-	CALL CreateLeaderboardType('k4');
-	CALL CreateLeaderboardType('k5');
-	CALL CreateLeaderboardType('kills');
-	CALL CreateLeaderboardType('lavd');
-	CALL CreateLeaderboardType('mavd');
-	CALL CreateLeaderboardType('havd');
-	CALL CreateLeaderboardType('hed');
-	CALL CreateLeaderboardType('bod');
-	CALL CreateLeaderboardType('vehicles');
-    CALL CreateLeaderboardRatio('k1', 's1');
-    CALL CreateLeaderboardRatio('k2', 's2');
-    CALL CreateLeaderboardRatio('k3', 's3');
-    CALL CreateLeaderboardRatio('k4', 's4');
-    CALL CreateLeaderboardRatio('k5', 's5');
-    CALL CreateLeaderboardRatio('kills', 'deaths');
+	CALL DropTableIfExists('Leaderboard_clan');
+    
+	CREATE TABLE Leaderboard_clan AS
+	SELECT 
+		ROW_NUMBER() OVER (
+			ORDER BY 
+				`score` DESC, 
+				`wins` DESC, 
+				`losses` DESC, 
+				`draws` DESC
+		) AS `rank`, 
+		`Clans`.`clanid`  AS `clanid`, 
+		`Clans`.`name` AS `name`, 
+		`Clans`.`tag` AS `tag`, 
+		`Clans`.`score` AS `score`, 
+		`Clans`.`wins` AS `wins`, 
+		`Clans`.`losses` AS `losses`, 
+		`Clans`.`draws` AS `draws`
+	FROM 
+		`Clans`
+	ORDER BY 
+		`rank` ASC,
+		`score` DESC, 
+		`wins` DESC, 
+		`losses` DESC, 
+		`draws` DESC;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -67,7 +72,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateLeaderboardRank`()
+CREATE PROCEDURE `CreateLeaderboardRank`()
 BEGIN
 	CALL DropTableIfExists('Leaderboard_rank');
     
@@ -110,7 +115,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateLeaderboardRatio`(
+CREATE PROCEDURE `CreateLeaderboardRatio`(
 		IN input_k VARCHAR(255),
         IN input_s VARCHAR(255)
 )
@@ -161,7 +166,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateLeaderboards`()
+CREATE PROCEDURE `CreateLeaderboards`()
 BEGIN
 	CALL CreateLeaderboardRank();
 	CALL CreateLeaderboardType('pph');
@@ -184,6 +189,7 @@ BEGIN
     CALL CreateLeaderboardRatio('k4', 's4');
     CALL CreateLeaderboardRatio('k5', 's5');
     CALL CreateLeaderboardRatio('kills', 'deaths');
+    CALL CreateLeaderboardClan();
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -200,7 +206,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateLeaderboardType`(
+CREATE PROCEDURE `CreateLeaderboardType`(
 		IN input_name VARCHAR(255)
 )
 BEGIN
@@ -246,7 +252,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `DropTableIfExists`(tableName VARCHAR(255))
+CREATE PROCEDURE `DropTableIfExists`(tableName VARCHAR(255))
 BEGIN
     DECLARE tableCount INT;
     
@@ -279,7 +285,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `insertClan`(
+CREATE PROCEDURE `insertClan`(
 		IN input_name VARCHAR(32),
         IN input_tag VARCHAR(3),
         IN input_homepage VARCHAR(256),
@@ -307,7 +313,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `insertPlayer`(
+CREATE PROCEDURE `insertPlayer`(
 		IN input_userid INT,
         IN input_nick VARCHAR(41),
         IN input_uniquenick VARCHAR(32),
@@ -335,7 +341,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `insertPlayerFriend`(
+CREATE PROCEDURE `insertPlayerFriend`(
 		IN input_profileid INT,
         IN input_target_profileid INT
 )
@@ -360,7 +366,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryClanByClanId`(
+CREATE PROCEDURE `queryClanByClanId`(
 		IN input_clanid INT
 )
 BEGIN
@@ -386,7 +392,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryClanByNameOrTag`(
+CREATE PROCEDURE `queryClanByNameOrTag`(
 		IN input_name VARCHAR(32),
         IN input_tag VARCHAR(3)
 )
@@ -405,7 +411,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `queryClanByPlayer` */;
+/*!50003 DROP PROCEDURE IF EXISTS `queryClanByProfileId` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -415,7 +421,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryClanByPlayer`(
+CREATE PROCEDURE `queryClanByProfileId`(
 		IN input_profileid INT
 )
 BEGIN
@@ -443,7 +449,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryClanRanksByClanId`(
+CREATE PROCEDURE `queryClanRanksByClanId`(
 		IN input_clanid INT
 )
 BEGIN
@@ -453,6 +459,38 @@ BEGIN
 		`ClanRanks` 
 	WHERE 
 		`clanid` = input_clanid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryGameCount` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryGameCount`(
+		IN clan_games_filter TINYINT
+)
+BEGIN
+    IF clan_games_filter = 1 THEN
+        -- Count only clan games
+        SELECT COUNT(*) AS game_count FROM `GameStats`
+        WHERE `clanid_t0` <> 0 AND `clanid_t1` <> 0;
+    ELSEIF clan_games_filter = 2 THEN
+        -- Count all games (public and clan)
+        SELECT COUNT(*) AS game_count FROM `GameStats`;
+    ELSE
+        -- Count only public games
+        SELECT COUNT(*) AS game_count FROM `GameStats`
+        WHERE `clanid_t0` = 0 AND `clanid_t1` = 0;
+    END IF;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -469,7 +507,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameServerByIpAndPort`(
+CREATE PROCEDURE `queryGameServerByIpAndPort`(
 		IN input_ip VARCHAR(15),
         IN input_port SMALLINT
 )
@@ -494,7 +532,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `queryGameServerPlayers` */;
+/*!50003 DROP PROCEDURE IF EXISTS `queryGameServerPlayersByGameServerId` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -504,7 +542,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameServerPlayers`(
+CREATE PROCEDURE `queryGameServerPlayersByGameServerId`(
 		IN input_gameserverid INT
 )
 BEGIN
@@ -530,7 +568,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameServers`()
+CREATE PROCEDURE `queryGameServers`()
 BEGIN
 	SELECT 
 		`id`, `ip`, `port`, `flag`, `localip0`, `localport`, `natneg`, `gamename`, 
@@ -558,7 +596,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameStatById`(
+CREATE PROCEDURE `queryGameStatById`(
 		IN input_id INT
 )
 BEGIN
@@ -576,7 +614,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `queryGameStatPlayers` */;
+/*!50003 DROP PROCEDURE IF EXISTS `queryGameStatPlayersByGameStatId` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -586,7 +624,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameStatPlayers`(
+CREATE PROCEDURE `queryGameStatPlayersByGameStatId`(
 		IN input_gamestatid INT
 )
 BEGIN
@@ -615,7 +653,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameStatsByDate`(
+CREATE PROCEDURE `queryGameStatsByDate`(
 		IN input_date VARCHAR(10)
 )
 BEGIN
@@ -643,7 +681,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameStatsResults`(
+CREATE PROCEDURE `queryGameStatsResults`(
 	IN input_profileid INT
 )
 BEGIN
@@ -654,8 +692,8 @@ BEGIN
         `GameStatPlayers`.`team` AS `team`,
         CASE
             WHEN (`GameStats`.`victory_t1` = 3 OR `GameStats`.`victory_t0` = 3) THEN 'draw'
-            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t0` > 0) THEN 'win'
-            WHEN (`GameStatPlayers`.`team` = 2 AND `GameStats`.`victory_t1` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 0 AND `GameStats`.`victory_t0` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t1` > 0) THEN 'win'
             ELSE 'lose'
         END AS `state`
 	FROM
@@ -684,7 +722,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryGameStatsResultsWithStreaks`(
+CREATE PROCEDURE `queryGameStatsResultsWithStreaks`(
     IN input_profileid INT
 )
 BEGIN
@@ -718,8 +756,8 @@ BEGIN
         `GameStatPlayers`.`team`,
         CASE
             WHEN (`GameStats`.`victory_t1` = 3 OR `GameStats`.`victory_t0` = 3) THEN 'draw'
-            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t0` > 0) THEN 'win'
-            WHEN (`GameStatPlayers`.`team` = 2 AND `GameStats`.`victory_t1` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 0 AND `GameStats`.`victory_t0` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t1` > 0) THEN 'win'
             ELSE 'lose'
         END AS `state`
     FROM
@@ -763,6 +801,38 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryLeaderboardClan` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryLeaderboardClan`(
+		IN input_limit INT,
+        IN input_offset INT
+)
+BEGIN
+	SELECT 
+		`rank`, `clanid`, `name`, `tag`, `score`, `wins`, `losses`, `draws` 
+	FROM 
+		`Leaderboard_clan` 
+	ORDER BY 
+		`rank` ASC, 
+		`score` DESC, 
+		`wins` DESC, 
+		`losses` DESC, 
+		`draws` DESC  
+	LIMIT input_limit OFFSET input_offset;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `queryLeaderboardRank` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -773,7 +843,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardRank`(
+CREATE PROCEDURE `queryLeaderboardRank`(
 		IN input_limit INT,
         IN input_offset INT
 )
@@ -804,7 +874,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardRankByProfileid`(
+CREATE PROCEDURE `queryLeaderboardRankByProfileid`(
 		IN input_profileid INT
 )
 BEGIN
@@ -850,7 +920,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardRatio`(
+CREATE PROCEDURE `queryLeaderboardRatio`(
 	IN input_k VARCHAR(16),
     IN input_s VARCHAR(16),
     IN input_limit INT,
@@ -892,7 +962,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardRatioByProfileid`(
+CREATE PROCEDURE `queryLeaderboardRatioByProfileid`(
 	IN input_k VARCHAR(16),
     IN input_s VARCHAR(16),
     IN input_profileid INT
@@ -946,7 +1016,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardTopByRank`(
+CREATE PROCEDURE `queryLeaderboardTopByRank`(
 		IN input_limit INT,
         IN input_offset INT
 )
@@ -977,7 +1047,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardTopByType`(
+CREATE PROCEDURE `queryLeaderboardTopByType`(
 		IN input_name VARCHAR(16),
         IN input_limit INT,
         IN input_offset INT
@@ -1013,7 +1083,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardType`(
+CREATE PROCEDURE `queryLeaderboardType`(
 		IN input_type VARCHAR(16),
         IN input_limit INT,
         IN input_offset INT
@@ -1053,7 +1123,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryLeaderboardTypeByProfileid`(
+CREATE PROCEDURE `queryLeaderboardTypeByProfileid`(
 		IN input_type VARCHAR(16),
         IN input_profileid INT
 )
@@ -1106,12 +1176,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayerByProfileid`(
+CREATE PROCEDURE `queryPlayerByProfileid`(
 		IN input_profile_id INT
 )
 BEGIN
 		SELECT 
-		`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` 
+		`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` 
 	FROM 
 		`Players` 
 	WHERE 
@@ -1132,12 +1202,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayerByUniquenick`(
+CREATE PROCEDURE `queryPlayerByUniquenick`(
 		IN input_uniquenick VARCHAR(32)
 )
 BEGIN
 	SELECT 
-		`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` 
+		`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` 
 	FROM 
 		`Players` 
 	WHERE 
@@ -1148,7 +1218,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerFriends` */;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerCount` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1158,7 +1228,34 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayerFriends`(
+CREATE PROCEDURE `queryPlayerCount`(
+		IN unique_user BOOLEAN
+)
+BEGIN
+    IF unique_user = FALSE THEN
+        -- Count all rows in the Players table
+        SELECT COUNT(*) AS player_count FROM `Players`;
+    ELSE
+        -- Count rows with unique 'userid'
+        SELECT COUNT(DISTINCT `last_login_ip`) AS unique_user_count FROM `Players`;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerFriendsByProfileId` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryPlayerFriendsByProfileId`(
 		IN input_profileid INT
 )
 BEGIN
@@ -1176,6 +1273,35 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerGametypesPlayed` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryPlayerGametypesPlayed`(
+		IN input_profileid INT
+)
+BEGIN
+	SELECT
+		`GameStats`.`gametype` AS `gametype_id`
+	FROM
+		`GameStats`,
+        `GameStatPlayers`
+	WHERE
+		`GameStatPlayers`.`gamestatid` = `GameStats`.`id`
+	AND
+		`GameStatPlayers`.`pid` = input_profileid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `queryPlayersByEmail` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1186,12 +1312,12 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayersByEmail`(
+CREATE PROCEDURE `queryPlayersByEmail`(
 		IN input_email VARCHAR(50)
 )
 BEGIN
 	SELECT 
-		`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` 
+		`profileid`, `userid`, `nick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` 
 	FROM 
 		`Players` 
 	WHERE 
@@ -1212,13 +1338,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayersByEmailAndUniquenick`(
+CREATE PROCEDURE `queryPlayersByEmailAndUniquenick`(
 		IN input_email VARCHAR(50),
         IN input_uniquenick VARCHAR(32)
 )
 BEGIN
 	SELECT 
-		`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at` 
+		`profileid`, `userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified` 
 	FROM 
 		`Players` 
 	WHERE 
@@ -1231,7 +1357,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerStats` */;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerStatsByProfileId` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1241,7 +1367,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayerStats`(
+CREATE PROCEDURE `queryPlayerStatsByProfileId`(
 		IN input_profileid INT
 )
 BEGIN
@@ -1260,6 +1386,52 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerTeamCountriesPlayed` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryPlayerTeamCountriesPlayed`(
+    IN input_profileid INT
+)
+BEGIN
+	SELECT
+		CASE
+			WHEN (`GameStatPlayers`.`team` = 1) THEN `GameStats`.`country_t1`
+			ELSE `GameStats`.`country_t0`
+		END AS `country_id`
+        /* Country ID Values:
+			1 = US
+            2 = CH
+            3 = AC
+            4 = EU
+		*/
+	FROM
+		`GameStats`,
+		`GameStatPlayers`
+	WHERE
+		`GameStatPlayers`.`gamestatid` = `GameStats`.`id`
+	AND
+		`GameStatPlayers`.`pid` = input_profileid
+	AND
+		`GameStats`.`country_t0` != 0
+	AND
+		`GameStats`.`country_t1` != 0
+	AND
+		`GameStatPlayers`.`team` != -1
+	ORDER BY
+		`GameStats`.`created_at` DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `queryPlayerWinLoseDraw` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1270,7 +1442,9 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `queryPlayerWinLoseDraw`()
+CREATE PROCEDURE `queryPlayerWinLoseDraw`(
+		IN input_profileid INT
+)
 BEGIN
 	SELECT
 		`GameStats`.`id` AS `gamestatid`,
@@ -1280,8 +1454,8 @@ BEGIN
         `GameStatPlayers`.`team` AS `team`,
         CASE
             WHEN (`GameStats`.`victory_t1` = 3 OR `GameStats`.`victory_t0` = 3) THEN 'draw'
-            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t0` > 0) THEN 'win'
-            WHEN (`GameStatPlayers`.`team` = 2 AND `GameStats`.`victory_t1` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 0 AND `GameStats`.`victory_t0` > 0) THEN 'win'
+            WHEN (`GameStatPlayers`.`team` = 1 AND `GameStats`.`victory_t1` > 0) THEN 'win'
             ELSE 'lose'
         END AS `state`
 	FROM
@@ -1290,7 +1464,53 @@ BEGIN
 	WHERE
 		`GameStatPlayers`.`gamestatid` = `GameStats`.`id`
 	AND
-		`GameStatPlayers`.`pid` = 10037093;
+		`GameStatPlayers`.`pid` = input_profileid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `queryPlayerWinLoseDraw_test` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE PROCEDURE `queryPlayerWinLoseDraw_test`(
+        IN input_profileid INT
+)
+BEGIN
+    SELECT
+        `GameStats`.`id` AS `gamestatid`,
+        `GameStatPlayers`.`pid` AS `profileid`,
+        `GameStatPlayers`.`team` AS `team`,
+        CASE
+            WHEN (`GameStatPlayers`.`team` = 0) THEN
+              `GameStats`.`victory_t0`
+            ELSE 
+              `GameStats`.`victory_t1`
+        END AS `victory_state`,
+        CASE
+            WHEN (`GameStatPlayers`.`team` = 0) THEN
+              `GameStats`.`victory_t1`
+            ELSE 
+              `GameStats`.`victory_t0`
+        END AS `other_team_victory_state`,
+        `GameStats`.`created_at` AS `created_at`
+    FROM
+        `GameStats`,
+        `GameStatPlayers`
+    WHERE
+        `GameStatPlayers`.`gamestatid` = `GameStats`.`id`
+    AND
+        `GameStatPlayers`.`pid` = input_profileid
+	ORDER BY
+		`GameStats`.`created_at` DESC;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1307,7 +1527,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `removeClan`(
+CREATE PROCEDURE `removeClan`(
 		IN input_clanid INT
 )
 BEGIN
@@ -1331,7 +1551,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `removeClanRank`(
+CREATE PROCEDURE `removeClanRank`(
 		IN input_clanid INT,
         IN input_profileid INT
 )
@@ -1358,7 +1578,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `removeClanRanksByClanId`(
+CREATE PROCEDURE `removeClanRanksByClanId`(
 		IN input_clanid INT
 )
 BEGIN
@@ -1382,7 +1602,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `removeGameServerPlayers`(
+CREATE PROCEDURE `removeGameServerPlayers`(
 		IN input_gameserverid INT
 )
 BEGIN
@@ -1406,7 +1626,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `removePlayerFriend`(
+CREATE PROCEDURE `removePlayerFriend`(
 		IN input_profileid INT,
         IN input_target_profileid INT
 )
@@ -1433,7 +1653,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `updateClanRank`(
+CREATE PROCEDURE `updateClanRank`(
 		IN input_clanid INT,
         IN input_profileid INT,
         IN new_rank TINYINT
@@ -1463,4 +1683,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15  6:11:32
+-- Dump completed on 2023-10-15 15:31:03

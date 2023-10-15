@@ -16,17 +16,21 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `Leaderboard_k3`
+-- Table structure for table `Leaderboard_clan`
 --
 
-DROP TABLE IF EXISTS `Leaderboard_k3`;
+DROP TABLE IF EXISTS `Leaderboard_clan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Leaderboard_k3` (
+CREATE TABLE `Leaderboard_clan` (
   `rank` bigint unsigned NOT NULL DEFAULT '0',
-  `profileid` int NOT NULL DEFAULT '0',
-  `uniquenick` varchar(32) NOT NULL DEFAULT '',
-  `k3` int unsigned NOT NULL DEFAULT '0'
+  `clanid` int NOT NULL DEFAULT '0',
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `tag` varchar(3) NOT NULL DEFAULT '',
+  `score` int unsigned NOT NULL DEFAULT '0',
+  `wins` int unsigned NOT NULL DEFAULT '0',
+  `losses` int unsigned NOT NULL DEFAULT '0',
+  `draws` int unsigned NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -39,4 +43,4 @@ CREATE TABLE `Leaderboard_k3` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-15 15:30:52
+-- Dump completed on 2023-10-15 15:30:55

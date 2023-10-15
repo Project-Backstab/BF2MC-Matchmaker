@@ -27,10 +27,12 @@ CREATE TABLE `GameStatPlayers` (
   `gamestatid` int NOT NULL DEFAULT '-1',
   `auth` varchar(32) NOT NULL DEFAULT '',
   `pid` int NOT NULL DEFAULT '-1',
+  `team` int DEFAULT '-1',
   `score` int NOT NULL DEFAULT '0',
   `rank` int unsigned NOT NULL DEFAULT '1',
   `pph` int unsigned NOT NULL DEFAULT '0',
   `kills` int unsigned NOT NULL DEFAULT '0',
+  `deaths` int unsigned NOT NULL DEFAULT '0',
   `suicides` int unsigned NOT NULL DEFAULT '0',
   `time` int unsigned NOT NULL DEFAULT '0',
   `lavd` int unsigned NOT NULL DEFAULT '0',
@@ -54,12 +56,11 @@ CREATE TABLE `GameStatPlayers` (
   `ttb` int unsigned NOT NULL DEFAULT '0',
   `mv` int unsigned NOT NULL DEFAULT '0',
   `ngp` int unsigned NOT NULL DEFAULT '0',
-  `team` int NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idGameStatPlayers_UNIQUE` (`id`),
   KEY `gamestatid_idx` (`gamestatid`) /*!80000 INVISIBLE */,
   CONSTRAINT `FK_GameStatPlayer_gamestatid` FOREIGN KEY (`gamestatid`) REFERENCES `GameStats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=370 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=883 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -71,4 +72,4 @@ CREATE TABLE `GameStatPlayers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15  6:11:18
+-- Dump completed on 2023-10-15 15:30:55

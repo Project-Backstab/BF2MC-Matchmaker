@@ -32,7 +32,7 @@ CREATE TABLE `PlayerFriends` (
   KEY `ForeignKey_profileid_idx` (`profileid`),
   CONSTRAINT `FK_PlayerFriends_profileid` FOREIGN KEY (`profileid`) REFERENCES `Players` (`profileid`) ON DELETE CASCADE,
   CONSTRAINT `FK_PlayerFriends_target_profileid` FOREIGN KEY (`target_profileid`) REFERENCES `Players` (`profileid`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -44,4 +44,4 @@ CREATE TABLE `PlayerFriends` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-15  6:11:24
+-- Dump completed on 2023-10-15 15:31:00
