@@ -146,6 +146,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
 	{ "/API/clan",                                            &Webserver::Client::requestAPIClan            },
 	{ "/API/leaderboard",                                     &Webserver::Client::requestAPILeaderboard     },
+	{ "/API/leaderboard/clan",                                &Webserver::Client::requestAPILeaderboardClan },
 	{ "/API/clan/simulation",                                 &Webserver::Client::requestAPIClanSimulation  },
 };
 
@@ -291,7 +292,7 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 	//g_database->updatePlayerStats(player);
 	
 	// Get player stats
-	g_database->queryPlayerStats(player);
+	g_database->queryPlayerStatsByProfileId(player);
 	
 	response += std::to_string(player.GetScore()) + ",";
 	response += std::to_string(player.GetRank()) + ",";
@@ -362,7 +363,7 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 			}
 			else if(profileids.size() == 1)
 			{
-				g_database->queryLeaderboardRankByProfileid(rank_players, self_profileid);
+				g_database->queryLeaderboardRankByProfileId(rank_players, self_profileid);
 			}
 			else
 			{
@@ -976,7 +977,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		player.SetProfileId(it->second);
 		
 		// Get Clan id
-		g_database->queryClanByPlayer(clan, player);
+		g_database->queryClanByProfileId(clan, player);
 	}
 	
 	it = url_variables.find("name");
@@ -1066,7 +1067,43 @@ void Webserver::Client::requestClanMembers(const atomizes::HTTPMessage& http_req
 void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	this->_SendFile("../data/examples/leaderboard/startrank=1&endrank=7.txt");
+	HTTPMessage http_response = this->_defaultResponseHeader();
+	std::string response = "\r\n";
+
+	Battlefield::RankClans rank_clans;
+
+	auto it = url_variables.find("clanid");
+	if (it != url_variables.end())
+	{
+		// to-do
+	}
+	else
+	{
+		g_database->queryLeaderboardClan(rank_clans, 10, 0);
+	}
+
+	if(rank_clans.size() > 0)
+	{
+		response = "OK\r\n";
+		for (const auto& pair : rank_clans)
+		{
+			response += std::to_string(pair.second.GetClanId()) + ",";
+			response += std::to_string(pair.first) + ",";
+			response += pair.second.GetTag() + ",";
+			response += pair.second.GetName() + ",";
+			response += std::to_string(pair.second.GetScore()) + ",";
+			response += std::to_string(pair.second.GetWins()) + ",";
+			response += std::to_string(pair.second.GetLosses()) + ",";
+			response += std::to_string(pair.second.GetDraws()) + "\n";
+		}
+	}
+
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody(response);
+	
+	this->Send(http_response);
+	
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, 
@@ -1255,7 +1292,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 		}
 		
 		// Get target player information
-		g_database->queryClanByPlayer(target_clan, target_player);
+		g_database->queryClanByProfileId(target_clan, target_player);
 		
 		// Get new rank
 		Battlefield::Clan::Ranks new_rank = Battlefield::Clan::Ranks::Unknown;
@@ -1365,7 +1402,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 			if(target_player.GetProfileId() != -1)
 			{
 				// Get target clan
-				g_database->queryClanByPlayer(target_clan, target_player);
+				g_database->queryClanByProfileId(target_clan, target_player);
 				
 				// Check if target player is already in a clan
 				if(target_clan.GetClanId() != -1)
@@ -1433,7 +1470,7 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 		}
 		
 		// Get target player information
-		g_database->queryClanByPlayer(target_clan, target_player);
+		g_database->queryClanByProfileId(target_clan, target_player);
 		
 		// Check target player
 		if(
@@ -1691,7 +1728,7 @@ void Webserver::Client::_GetSessionPlayerAndClan(const Util::Url::Variables& url
 		player.SetProfileId(session.profileid);
 		
 		// Get clan information based of player profileid
-		g_database->queryClanByPlayer(clan, player);
+		g_database->queryClanByProfileId(clan, player);
 	}
 }
 

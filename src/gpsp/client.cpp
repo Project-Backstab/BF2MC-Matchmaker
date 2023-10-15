@@ -164,7 +164,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 
 		// Update unique nick if is in clan
 		Battlefield::Clan clan;
-		g_database->queryClanByPlayer(clan, player);
+		g_database->queryClanByProfileId(clan, player);
 		if(clan.GetClanId() != -1)
 		{
 			uniquenick = clan.GetTag() + " " + uniquenick;

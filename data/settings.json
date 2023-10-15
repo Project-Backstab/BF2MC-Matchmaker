@@ -32,11 +32,7 @@
 		"port": 8080,
 		"connection_time_out": 2,
 		"show_requests": false,
-		"show_responses": false,
-		"banned_requests":
-		[
-			"^/root/"
-		]
+		"show_responses": false
 	},
 	"browsing":
 	{

@@ -26,7 +26,7 @@ class Database
 			Queries
 		*/
 		// Player
-		bool queryPlayerByProfileid(Battlefield::Player& player);
+		bool queryPlayerByProfileId(Battlefield::Player& player);
 		bool queryPlayerByUniquenick(Battlefield::Player& player);
 		bool queryPlayersByEmail(Battlefield::Players& players, const std::string& email);
 		bool queryPlayersByEmailAndUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick);
@@ -35,18 +35,18 @@ class Database
 		bool insertPlayer(Battlefield::Player& player);
 		
 		// Player friends
-		bool queryPlayerFriends(Battlefield::Player& player);
+		bool queryPlayerFriendsByProfileId(Battlefield::Player& player);
 		bool insertPlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player);
 		bool removePlayerFriend(const Battlefield::Player& player, const Battlefield::Player& target_player);
 		
 		// Player Stats
-		bool queryPlayerStats(Battlefield::Player& player);
+		bool queryPlayerStatsByProfileId(Battlefield::Player& player);
 		bool updatePlayerStats(const Battlefield::Player& player);
 		bool insertPlayerStats(const Battlefield::Player& player);
 		
 		// Clan
 		bool queryClanByClanId(Battlefield::Clan& clan);
-		bool queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player);
+		bool queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::Player& player);
 		bool queryClanByNameOrTag(Battlefield::Clan& clan);
 		bool insertClan(Battlefield::Clan& clan);
 		bool updateClan(const Battlefield::Clan& clan);
@@ -88,7 +88,7 @@ class Database
 		// Leaderboard Rank
 		bool queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 				uint32_t limit = 10, uint32_t offset = 0);
-		bool queryLeaderboardRankByProfileid(Battlefield::RankPlayers& rank_players, int profileid);
+		bool queryLeaderboardRankByProfileId(Battlefield::RankPlayers& rank_players, int profileid);
 		bool queryLeaderboardRankByFriends(Battlefield::RankPlayers& rank_players, const std::vector<int>& friends);
 		
 		
@@ -109,6 +109,9 @@ class Database
 		
 		bool createLeaderboards();
 		
+		// Leaderboard Clan
+		bool queryLeaderboardClan(Battlefield::RankClans& rank_clans, uint32_t limit, uint32_t offset);
+
 		/*
 			Events
 		*/

@@ -208,7 +208,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
 	
 	// Get player friends
-	g_database->queryPlayerFriends(player);
+	g_database->queryPlayerFriendsByProfileId(player);
 	std::vector<int> player_friends = player.GetFriends();
 	
 	response = GameSpy::Parameter2Response({
@@ -271,7 +271,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	player.SetProfileId(profileid);
 	
 	// Get player information
-	g_database->queryPlayerByProfileid(player);
+	g_database->queryPlayerByProfileId(player);
 	
 	std::string response;
 	
@@ -281,7 +281,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 
 		// Update unique nick if is in clan
 		Battlefield::Clan clan;
-		g_database->queryClanByPlayer(clan, player);
+		g_database->queryClanByProfileId(clan, player);
 		if(clan.GetClanId() != -1)
 		{
 			uniquenick = clan.GetTag() + " " + uniquenick;
@@ -487,7 +487,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	);
 	
 	// Get friends
-	g_database->queryPlayerFriends(player);
+	g_database->queryPlayerFriendsByProfileId(player);
 	std::vector<int> player_friends = player.GetFriends();
 	
 	auto it = std::find(player_friends.begin(), player_friends.end(), target_player.GetProfileId());
@@ -564,7 +564,7 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	target_player.SetProfileId(target_profileid);
 	
 	// Get friends
-	g_database->queryPlayerFriends(player);
+	g_database->queryPlayerFriendsByProfileId(player);
 	std::vector<int> player_friends = player.GetFriends();
 	
 	auto it = std::find(player_friends.begin(), player_friends.end(), target_player.GetProfileId());
@@ -632,7 +632,7 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 	
 	player.SetProfileId(this->_session.profileid);
 	
-	g_database->queryPlayerByProfileid(player);
+	g_database->queryPlayerByProfileId(player);
 	
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged out", Server::Type::GPCM);
 	
@@ -661,7 +661,7 @@ void GPCM::Client::_SendNewStatus() const
 	Battlefield::Player player;
 	player.SetProfileId(this->_session.profileid);
 	
-	g_database->queryPlayerFriends(player);
+	g_database->queryPlayerFriendsByProfileId(player);
 	
 	// Send update to online players
 	for(int friend_profileid : player.GetFriends())

@@ -18,7 +18,7 @@ Database::Database()
 }
 
 // Player
-bool Database::queryPlayerByProfileid(Battlefield::Player& player)
+bool Database::queryPlayerByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -598,7 +598,7 @@ bool Database::insertPlayer(Battlefield::Player& player)
 }
 
 // Player Friends
-bool Database::queryPlayerFriends(Battlefield::Player& player)
+bool Database::queryPlayerFriendsByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -771,7 +771,7 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 }
 
 // Player Stats
-bool Database::queryPlayerStats(Battlefield::Player& player)
+bool Database::queryPlayerStatsByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -1192,7 +1192,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`name`, `tag`, `homepage`, `info`, `region`, `created_at`";
+	query += "	`name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at`";
 	query += "FROM ";
 	query += "	`Clans` ";
 	query += "WHERE ";
@@ -1205,6 +1205,10 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	char       output_homepage[257];
 	char       output_info[1025];
 	uint8_t    output_region;
+	uint32_t   output_score;
+	uint32_t   output_wins;
+	uint32_t   output_losses;
+	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
 	
 	// Allocate input binds
@@ -1214,7 +1218,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	input_bind[0].is_unsigned = false;	
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(10, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[0].buffer = &output_name;
 	output_bind[0].buffer_length = 33;
@@ -1229,9 +1233,21 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	output_bind[3].buffer_length = 1025;
 	output_bind[4].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[4].buffer = &output_region;
-	output_bind[4].is_unsigned = true;	
-	output_bind[5].buffer_type = MYSQL_TYPE_DATETIME;
-	output_bind[5].buffer = &output_created_at;
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = &output_score;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = &output_wins;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_losses;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = &output_draws;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[9].buffer = &output_created_at;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1258,6 +1274,10 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 		clan.SetHomepage(output_homepage);
 		clan.SetInfo(output_info);
 		clan.SetRegion(output_region);
+		clan.SetScore(output_score);
+		clan.SetWins(output_wins);
+		clan.SetLosses(output_losses);
+		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
 	}
 
@@ -1270,13 +1290,13 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Player& player)
+bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	Clans.clanid as `clanid`, `name`, `tag`, `homepage`, `info`, `region`, `created_at` ";
+	query += "	Clans.clanid as `clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at` ";
 	query += "FROM ";
 	query += "	`Clans`, `ClanRanks` ";
 	query += "WHERE ";
@@ -1292,6 +1312,10 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	char       output_homepage[257];
 	char       output_info[1025];
 	uint8_t    output_region;
+	uint32_t   output_score;
+	uint32_t   output_wins;
+	uint32_t   output_losses;
+	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
 	
 	// Allocate input binds
@@ -1301,7 +1325,7 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(7, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(11, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_clanid;
 	output_bind[0].is_unsigned = false;
@@ -1319,9 +1343,21 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 	output_bind[4].buffer_length = 1025;
 	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[5].buffer = &output_region;
-	output_bind[5].is_unsigned = true;	
-	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
-	output_bind[6].buffer = &output_created_at;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = &output_score;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_wins;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = &output_losses;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[9].buffer = &output_draws;
+	output_bind[9].is_unsigned = true;
+	output_bind[10].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[10].buffer = &output_created_at;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1349,6 +1385,10 @@ bool Database::queryClanByPlayer(Battlefield::Clan& clan, const Battlefield::Pla
 		clan.SetHomepage(output_homepage);
 		clan.SetInfo(output_info);
 		clan.SetRegion(output_region);
+		clan.SetScore(output_score);
+		clan.SetWins(output_wins);
+		clan.SetLosses(output_losses);
+		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
 	}
 
@@ -1367,7 +1407,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`clanid`, `name`, `tag`, `homepage`, `info`, `region`, `created_at` ";
+	query += "	`clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at` ";
 	query += "FROM ";
 	query += "	`Clans` ";
 	query += "WHERE ";
@@ -1384,6 +1424,10 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	char       output_homepage[257];
 	char       output_info[1025];
 	uint8_t    output_region;
+	uint32_t   output_score;
+	uint32_t   output_wins;
+	uint32_t   output_losses;
+	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
 	
 	// Allocate input binds
@@ -1396,7 +1440,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	input_bind[1].buffer_length = input_tag.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(7, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(11, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_clanid;
 	output_bind[0].is_unsigned = false;
@@ -1414,9 +1458,21 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	output_bind[4].buffer_length = 1025;
 	output_bind[5].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[5].buffer = &output_region;
-	output_bind[5].is_unsigned = true;	
-	output_bind[6].buffer_type = MYSQL_TYPE_DATETIME;
-	output_bind[6].buffer = &output_created_at;	
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = &output_score;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_wins;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = &output_losses;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[9].buffer = &output_draws;
+	output_bind[9].is_unsigned = true;
+	output_bind[10].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[10].buffer = &output_created_at;	
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1444,6 +1500,10 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 		clan.SetHomepage(output_homepage);
 		clan.SetInfo(output_info);
 		clan.SetRegion(output_region);
+		clan.SetScore(output_score);
+		clan.SetWins(output_wins);
+		clan.SetLosses(output_losses);
+		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
 	}
 
@@ -1528,18 +1588,26 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	query += "	`tag` = ?, ";
 	query += "	`homepage` = ?, ";
 	query += "	`info` = ?, ";
-	query += "	`region` = ? ";
+	query += "	`region` = ?, ";
+	query += "	`score` = ?, ";
+	query += "	`wins` = ?, ";
+	query += "	`losses` = ?, ";
+	query += "	`draws` = ? ";
 	query += "WHERE ";
 	query += "	`clanid` = ?";
 	
+	int          input_clanid   = clan.GetClanId();
 	std::string  input_tag      = clan.GetTag();
 	std::string  input_homepage = clan.GetHomepage();
 	std::string  input_info     = clan.GetInfo();
 	uint8_t      input_region   = static_cast<uint8_t>(clan.GetRegion());
-	int          input_clanid   = clan.GetClanId();
+	uint32_t     input_score    = clan.GetScore();
+	uint32_t     input_wins     = clan.GetWins();
+	uint32_t     input_losses   = clan.GetLosses();
+	uint32_t     input_draws    = clan.GetDraws();
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(5, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[0].buffer = const_cast<char*>(&(input_tag[0]));
 	input_bind[0].buffer_length = input_tag.size();
@@ -1553,8 +1621,20 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	input_bind[3].buffer = const_cast<uint8_t*>(&input_region);
 	input_bind[3].is_unsigned = false;
 	input_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[4].buffer = const_cast<int*>(&input_clanid);
-	input_bind[4].is_unsigned = false;
+	input_bind[4].buffer = const_cast<uint32_t*>(&input_score);
+	input_bind[4].is_unsigned = true;
+	input_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[5].buffer = const_cast<uint32_t*>(&input_wins);
+	input_bind[5].is_unsigned = true;
+	input_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[6].buffer = const_cast<uint32_t*>(&input_losses);
+	input_bind[6].is_unsigned = true;
+	input_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[7].buffer = const_cast<uint32_t*>(&input_draws);
+	input_bind[7].is_unsigned = true;
+	input_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[8].buffer = const_cast<int*>(&input_clanid);
+	input_bind[8].is_unsigned = false;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -4337,7 +4417,7 @@ bool Database::queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 	int  output_pph = -1;
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
@@ -4410,7 +4490,7 @@ bool Database::queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 	return true;
 }
 
-bool Database::queryLeaderboardRankByProfileid(Battlefield::RankPlayers& rank_players, int profileid)
+bool Database::queryLeaderboardRankByProfileId(Battlefield::RankPlayers& rank_players, int profileid)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
@@ -4647,7 +4727,7 @@ bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, cons
 	int  output_value;
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
@@ -4966,7 +5046,7 @@ bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, con
 	int  output_s;
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(30, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[0].buffer = &limit;
 	input_bind[0].is_unsigned = true;
@@ -5281,6 +5361,114 @@ bool Database::queryLeaderboardRatioByFriends(Battlefield::RankPlayers& rank_pla
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(output_bind);
+		
+	return true;
+}
+
+bool Database::queryLeaderboardClan(Battlefield::RankClans& rank_clans, uint32_t limit, uint32_t offset)
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`rank`, `clanid`, `name`, `tag`, `score`, `wins`, `losses`, `draws` ";
+	query += "FROM ";
+	query += "	`Leaderboard_clan` ";
+	query += "ORDER BY ";
+	query += "	`rank` ASC, ";
+	query += "	`score` DESC, ";
+	query += "	`wins` DESC, ";
+	query += "	`losses` DESC, ";
+	query += "	`draws` DESC  ";
+	query += "LIMIT ? OFFSET ?;";
+	
+	int      output_rank;
+	int      output_clanid;
+	char     output_name[33];
+	char     output_tag[4];
+	uint32_t output_score;
+	uint32_t output_wins;
+	uint32_t output_losses;
+	uint32_t output_draws;
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &limit;
+	input_bind[0].is_unsigned = true;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &offset;
+	input_bind[1].is_unsigned = true;
+
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(8, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[1].buffer = const_cast<int*>(&output_clanid);
+	output_bind[1].is_unsigned = false;
+	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[2].buffer = &output_name;
+	output_bind[2].buffer_length = 33;
+	output_bind[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+	output_bind[3].buffer = &output_tag;
+	output_bind[3].buffer_length = 4;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = const_cast<uint32_t*>(&output_score);
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = const_cast<uint32_t*>(&output_wins);
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = const_cast<uint32_t*>(&output_losses);
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = const_cast<uint32_t*>(&output_draws);
+	output_bind[7].is_unsigned = true;
+	
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+	
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+	
+	// Fetch and process rows
+	while (true)
+	{
+		int status = mysql_stmt_fetch(statement);
+		
+		if (status == 1 || status == MYSQL_NO_DATA)
+			break;
+		
+		Battlefield::Clan clan;
+		
+		clan.SetClanId(output_clanid);
+		clan.SetName(output_name);
+		clan.SetTag(output_tag);
+		clan.SetScore(output_score);
+		clan.SetWins(output_wins);
+		clan.SetLosses(output_losses);
+		clan.SetDraws(output_draws);
+
+		rank_clans.insert(std::make_pair(output_rank, clan));
+	}
+	
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 		
 	return true;

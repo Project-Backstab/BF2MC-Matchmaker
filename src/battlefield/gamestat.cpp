@@ -882,7 +882,7 @@ void Battlefield::GameStatPlayer::UpdatePlayer()
 		
 	// Get player stats from database
 	player.SetProfileId(this->GetProfileId());
-	g_database->queryPlayerStats(player);
+	g_database->queryPlayerStatsByProfileId(player);
 
 	player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + this->GetBoatsDestroyed()          ); // bod
 	player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + this->GetHAVsDestroyed()           ); // havd

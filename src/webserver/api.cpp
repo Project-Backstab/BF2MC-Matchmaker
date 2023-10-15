@@ -248,7 +248,7 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 		player.SetProfileId(it->second);
 		
 		// Get player information from database
-		g_database->queryPlayerByProfileid(player);
+		g_database->queryPlayerByProfileId(player);
 	}
 	
 	it = url_variables.find("uniquenick");
@@ -261,10 +261,10 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	}
 	
 	// Get player Stats information from database
-	g_database->queryPlayerStats(player);
+	g_database->queryPlayerStatsByProfileId(player);
 	
 	// Get player Stats information from database
-	g_database->queryClanByPlayer(clan, player);
+	g_database->queryClanByProfileId(clan, player);
 	
 	// Player information
 	json_player["profileid"]  = player.GetProfileId();
@@ -438,7 +438,7 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 		Json::Value json_player;
 		
 		json_player["position"]   = pair.first;
-		json_player["profileid"] = pair.second.GetProfileId();
+		json_player["profileid"]  = pair.second.GetProfileId();
 		json_player["uniquenick"] = pair.second.GetUniquenick();
 		
 		if(sort == "rank")
@@ -452,7 +452,7 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 			
 			player.SetProfileId(pair.second.GetProfileId());
 			
-			g_database->queryPlayerByProfileid(player);
+			g_database->queryPlayerByProfileId(player);
 			
 			json_player["rank"] = player.GetRank();
 		}
@@ -486,6 +486,56 @@ void Webserver::Client::requestAPILeaderboard(const atomizes::HTTPMessage& http_
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
+
+void Webserver::Client::requestAPILeaderboardClan(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value json_leaderboard(Json::arrayValue);
+	uint32_t limit = 10;
+	uint32_t offset = 0;
+	
+	auto it = url_variables.find("limit");
+	if (it != url_variables.end())
+	{
+		if(it->second == "25")       limit = 25;
+		else if(it->second == "50")  limit = 50;
+		else if(it->second == "75")  limit = 75;
+		else if(it->second == "100") limit = 100;
+	}
+	
+	it = url_variables.find("offset");
+	if (it != url_variables.end())
+	{
+		try
+		{
+			offset = std::stoul(it->second);
+		}
+		catch(...) {}
+	}
+
+	Battlefield::RankClans rank_clans;
+	g_database->queryLeaderboardClan(rank_clans, limit, offset);
+
+	for (const auto& pair : rank_clans)
+	{
+		Json::Value json_clan;
+		
+		json_clan["position"] = pair.first;
+		json_clan["clanid"] = pair.second.GetClanId();
+		json_clan["name"] = pair.second.GetName();
+		json_clan["tag"] = pair.second.GetTag();
+		json_clan["score"] = pair.second.GetScore();
+		json_clan["wins"] = pair.second.GetWins();
+		json_clan["losses"] = pair.second.GetLosses();
+		json_clan["draws"] = pair.second.GetDraws();
+
+		json_leaderboard.append(json_clan);
+	}
+	
+	this->Send(json_leaderboard);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+};
 
 void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
