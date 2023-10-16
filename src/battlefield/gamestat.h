@@ -113,6 +113,7 @@ namespace Battlefield
 			bool SetCreatedAt(MYSQL_TIME created_at);
 			void AddPlayer(const GameStatPlayer& gsplayer);
 			
+			void UpdateClanStats();
 			void Debug();
 	};
 	
@@ -256,7 +257,7 @@ namespace Battlefield
 			bool SetTotalGameSessions(uint32_t ngp);
 			bool SetTotalGameSessions(const std::string& str_ngp);
 			
-			void UpdatePlayer();
+			void UpdatePlayerStats();
 			void Debug();
 	};
 }

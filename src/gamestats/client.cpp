@@ -288,9 +288,16 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	g_database->insertGameStat(game_stat);
 	//game_stat.Debug();
 	
+	// Update players stats
 	for(Battlefield::GameStatPlayer gsplayer : game_stat.GetPlayers())
 	{
-		gsplayer.UpdatePlayer();
+		gsplayer.UpdatePlayerStats();
+	}
+
+	// Update Clan stats
+	if(game_stat.GetTeam1ClanId() != 0 && game_stat.GetTeam2ClanId() != 0)
+	{
+		game_stat.UpdateClanStats();
 	}
 	
 	g_database->createLeaderboards();

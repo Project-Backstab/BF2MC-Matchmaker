@@ -1,5 +1,6 @@
 #include <string>
 #include <mysql/mysql_time.h>
+#include <cmath>
 
 #include <util.h>
 #include <logger.h>
@@ -258,10 +259,103 @@ bool Battlefield::GameStat::SetCreatedAt(MYSQL_TIME created_at)
     return true;
 }
 
-
 void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);
+}
+
+void Battlefield::GameStat::UpdateClanStats()
+{
+	Battlefield::Clan clan1;
+	Battlefield::Clan clan2;
+
+	// Get clan information out of database
+	clan1.SetClanId(this->GetTeam1ClanId());
+	g_database->queryClanByClanId(clan1);
+	clan2.SetClanId(this->GetTeam2ClanId());
+	g_database->queryClanByClanId(clan2);
+
+	// Convert victory to enums
+	Battlefield::GameStat::VictoryState clan1victory = static_cast<Battlefield::GameStat::VictoryState>(this->GetTeam1Victory());
+	Battlefield::GameStat::VictoryState clan2victory = static_cast<Battlefield::GameStat::VictoryState>(this->GetTeam2Victory());
+
+	double K = Battlefield::Clan::ELO_WEIGHT;
+	double R1 = 1.0;
+	double R2 = 1.0;
+	
+	// Extract victory state and patch values
+	switch(clan1victory)
+	{
+		case Battlefield::GameStat::VictoryState::Minor:
+			K *= 2;
+			R1 = 1.0;
+			clan1.SetWins(clan1.GetWins() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Major:
+			K *= 4;
+			R1 = 1.0;
+			clan1.SetWins(clan1.GetWins() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Lost:
+			R1 = 0.0;
+			clan1.SetLosses(clan1.GetLosses() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Draw:
+			R1 = 1.0;
+			clan1.SetDraws(clan1.GetDraws() + 1);
+		break;
+	}
+
+	switch(clan2victory)
+	{
+		case Battlefield::GameStat::VictoryState::Minor:
+			K *= 2;
+			R2 = 1.0;
+			clan2.SetWins(clan2.GetWins() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Major:
+			K *= 4;
+			R2 = 1.0;
+			clan2.SetWins(clan2.GetWins() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Lost:
+			R2 = 0.0;
+			clan2.SetLosses(clan2.GetLosses() + 1);
+		break;
+		case Battlefield::GameStat::VictoryState::Draw:
+			R2 = 1.0;
+			clan2.SetDraws(clan2.GetDraws() + 1);
+		break;
+	}
+
+	// Calculate the difference between two clan score
+	double diff1 = static_cast<int64_t>(clan2.GetScore()) - static_cast<int64_t>(clan1.GetScore());
+	double diff2 = static_cast<int64_t>(clan1.GetScore()) - static_cast<int64_t>(clan2.GetScore());
+
+	// Calculate the procentage between difference of clan score.
+	double P1 = (1.0 / (1.0 + std::pow(10, diff1 / Battlefield::Clan::ELO_MAX_RANGE)));
+	double P2 = (1.0 / (1.0 + std::pow(10, diff2 / Battlefield::Clan::ELO_MAX_RANGE)));
+
+	// Calculate how much score will be added and substracted
+	double score1 = K * (R1 - P1);
+	double score2 = K * (R2 - P2);
+
+	// Debug
+	//Logger::debug("clan1 = " + std::to_string(clan1->GetScore()));
+	//Logger::debug("clan2 = " + std::to_string(clan2->GetScore()));
+	//Logger::debug("R1 = " + std::to_string(R1));
+	//Logger::debug("R2 = " + std::to_string(R2));
+	//Logger::debug("P1 = " + std::to_string(P1));
+	//Logger::debug("P2 = " + std::to_string(P2));
+	//Logger::debug("score1 = " + std::to_string(score1));
+	//Logger::debug("score2 = " + std::to_string(score2));
+
+	clan1.SetScore(std::max(0, static_cast<int>(std::floor(score1) + clan1.GetScore())));
+	clan2.SetScore(std::max(0, static_cast<int>(std::floor(score2) + clan2.GetScore())));
+
+	//Send updated clan to database
+	g_database->updateClan(clan1);
+	g_database->updateClan(clan2);
 }
 
 void Battlefield::GameStat::Debug()
@@ -876,7 +970,7 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 	return false;
 }
 
-void Battlefield::GameStatPlayer::UpdatePlayer()
+void Battlefield::GameStatPlayer::UpdatePlayerStats()
 {
 	Battlefield::Player player;
 		
