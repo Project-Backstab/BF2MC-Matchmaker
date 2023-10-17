@@ -34,8 +34,8 @@ namespace Battlefield
 			{
 				Unknown   = -1,
 				Lost      = 0,
-				Minor     = 1,
-				Major     = 2,
+				Major     = 1,
+				Minor     = 2,
 				Draw      = 3
 			};
 			
