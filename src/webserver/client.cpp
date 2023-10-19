@@ -1190,10 +1190,25 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 			// Copy url variables into clan
 			if(this->_updateClanInformation(clan, url_variables))
 			{
-				// Insert clan in database
-				g_database->updateClan(clan);
+				Battlefield::Clan check_clan;
+
+				check_clan.SetTag(clan.GetTag());
+
+				g_database->queryClanByNameOrTag(check_clan);
+
+				if(check_clan.GetClanId() == -1 || // New clan tag is not been used yet
+					check_clan.GetClanId() == clan.GetClanId() // Or clan tag is owned by its own
+				)
+				{
+					// Insert clan in database
+					g_database->updateClan(clan);
 			
-				http_response.SetMessageBody("OK");
+					http_response.SetMessageBody("OK");
+				}
+				else
+				{
+					http_response.SetMessageBody("ERROR");
+				}
 			}
 			else
 			{
