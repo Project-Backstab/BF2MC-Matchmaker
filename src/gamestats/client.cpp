@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <iostream>
+#include <iomanip>
 
 #include <settings.h>
 #include <logger.h>
@@ -44,7 +45,7 @@ void GameStats::Client::Listen()
 		std::vector<unsigned char> buffer(16384, 0);
 		
 		int v = read(this->_socket, &(buffer[0]), 16384);
-		
+	
 		// If error or no data is recieved we end the connection
 		if(v <= 0)
 		{
@@ -53,7 +54,15 @@ void GameStats::Client::Listen()
 		
 		// Resize buffer
 		buffer.resize(v);
-		
+
+		// Debug
+		std::stringstream ss;
+		for(int i = 0; i < buffer.size(); i++)
+		{
+			ss << std::hex << std::setfill('0') << std::setw(2) << (int)(buffer[i]);
+		}
+		Logger::info("buffer = " + ss.str());
+
 		request = Decrypt(buffer);
 		
 		this->_LogTransaction("-->", request);
