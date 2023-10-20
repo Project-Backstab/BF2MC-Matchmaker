@@ -41,9 +41,9 @@ void GameStats::Client::Listen()
 	while(true)
 	{
 		std::string request;
-		std::vector<unsigned char> buffer(4096, 0);
+		std::vector<unsigned char> buffer(16384, 0);
 		
-		int v = read(this->_socket, &(buffer[0]), 4096);
+		int v = read(this->_socket, &(buffer[0]), 16384);
 		
 		// If error or no data is recieved we end the connection
 		if(v <= 0)
