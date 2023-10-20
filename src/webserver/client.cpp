@@ -1765,11 +1765,11 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 		}
 		else if(url_variable.first == "homepage")
 		{
-			clan.SetHomepage(url_variable.second);
+			clan.SetHomepage(Util::Url::Decode(url_variable.second));
 		}
 		else if(url_variable.first == "info")
 		{
-			clan.SetInfo(url_variable.second);
+			clan.SetInfo(Util::Url::Decode(url_variable.second));
 		}
 		else if(url_variable.first == "region")
 		{
