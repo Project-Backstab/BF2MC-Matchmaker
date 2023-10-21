@@ -76,8 +76,6 @@ void GameStats::Client::Listen()
 			}
 		} while (last_seven_chars != "\\final\\" && combined_buffer.size() < 32768);
 
-		
-
 		request = Decrypt(combined_buffer);
 		
 		this->_LogTransaction("-->", request);
