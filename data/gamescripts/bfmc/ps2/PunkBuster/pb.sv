@@ -1,26 +1,31 @@
-   Välkommen till BF2:MC Online Service!
+   Välkommen till BF2:MC Online-tjänsten!
 
-Genom att acceptera detta avtal godkänner du följande spelserverregler och förstår att konsekvenserna av att bryta mot dessa regler kan resultera i att din åtkomst till servrarna återkallas.
+Genom att acceptera detta avtal samtycker du till följande spelserverregler och förstår att konsekvenserna av att bryta mot dessa regler kan resultera i att din åtkomst till servrarna återkallas eller att dina in-game-statistik justeras.
 
-SPELSERVER REGLER:
+SPELSERVERREGLER:
 
-1. Användning av verktyg från tredje part för att få en fördel i spelet är strängt förbjudet.
+Användning av alla tredjepartsverktyg för att få fördelar eller påverka spelupplevelsen är strängt förbjuden.
 
-2. All användning av fusk för att få en fördel i spelet är strängt förbjudet.
+Användning av fusk för att få fördelar eller påverka spelupplevelsen är strängt förbjuden.
 
-3. Alla former av glitching för att få en fördel är strängt förbjudna.
+Alla former av glitchning för att få fördelar eller påverka spelupplevelsen är strängt förbjudna.
 
-4. Missbruka eller trakassera inte andra spelare i spelet, såsom Målmedvetet Teamkilling och Verbal Abuse med din mikrofon.
+Misshandla eller trakassera inte andra spelare i spelet, såsom att medvetet teamdöda eller använda verbalt våld via din mikrofon.
 
-5. Missbruka inte Votekick-funktionen i spelet.
+Försök inte att utge dig för att vara andra medlemmar eller klaner inom gemenskapen eller tidigare spelare i spelet.
 
-6. Var en lagspelare och spela målet!
+Missbruka inte funktionen för omröstningskick (votekick) i spelet.
 
-Använd [#report-a-player]-kanalen i discorden för att rapportera regelbrytare.
+Missbruka inte funktionen för in-game-meddelanden eller spelinbjudningar.
 
+Missbruka inte spelets mekanik eller servrar för att manipulera de in-game-ledartavlorna (till exempel boosting eller padding).
 
-Var god njut!
+Var inte inaktiv under långa perioder som skulle påverka spelupplevelsen.
 
-Omega
+Använd Mod Mail-boten på Discord för att rapportera regelbrytare.
+
+Ha det så trevligt!
+
+BFMCspy Team
 
 discord.gg/bf2mc

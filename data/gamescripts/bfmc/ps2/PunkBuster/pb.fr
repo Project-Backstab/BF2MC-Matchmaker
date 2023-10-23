@@ -1,26 +1,31 @@
-   Bienvenue sur le service en ligne BF2:MC!
+   Bienvenue sur le Service en Ligne de BF2:MC !
 
-En acceptant cet accord, vous acceptez les règles suivantes du serveur de jeu et comprenez que les conséquences d'une violation de ces règles peuvent entraîner la révocation de votre accès aux serveurs.
+En acceptant cet accord, vous acceptez les règles suivantes du serveur de jeu et comprenez que les conséquences de la violation de ces règles peuvent entraîner la révocation de votre accès aux serveurs ou l'ajustement de vos statistiques en jeu.
 
-RÈGLES DU SERVEUR DE JEU:
+RÈGLES DU SERVEUR DE JEU :
 
-1. L'utilisation d'outils tiers pour obtenir un avantage dans le jeu est strictement interdite.
+L'utilisation d'outils tiers pour obtenir un avantage ou influencer l'expérience de jeu est strictement interdite.
 
-2. Toute utilisation de triche pour obtenir un avantage dans le jeu est strictement interdite.
+Toute utilisation de triches pour obtenir un avantage ou influencer l'expérience de jeu est strictement interdite.
 
-3. Toutes les formes de Glitch pour obtenir un avantage sont strictement interdites.
+Toutes les formes de triche pour obtenir un avantage ou influencer l'expérience de jeu sont strictement interdites.
 
-4. N'abusez pas ou ne harcelez pas d'autres joueurs dans le jeu, tels que le meurtre d'équipe intentionnel et l'abus verbal avec votre micro.
+N'abusez pas ni n'harcelez d'autres joueurs en jeu, tels que le teamkill délibéré ou les abus verbaux avec votre micro.
 
-5. N'abusez pas de la fonction Votekick dans le jeu.
+Ne vous faites pas passer pour d'autres membres ou clans au sein de la communauté ou d'anciens joueurs du jeu.
 
-6. Soyez un joueur d'équipe et jouez l'objectif!
+N'abusez pas de la fonction de vote d'expulsion en jeu.
 
-Utilisez le canal [#report-a-player] dans le discord pour signaler les briseurs de règles.
+N'abusez pas des fonctions de messagerie en jeu ou d'invitation à la partie.
 
+N'abusez pas des mécanismes de jeu ou des serveurs pour manipuler les classements en jeu (par exemple, le boosting, le padding, etc.).
 
-Amusez-vous!
+Ne soyez pas absent pendant de longues périodes susceptibles d'affecter l'expérience de jeu.
 
-Oméga
+Utilisez le bot de Mod Mail dans Discord pour signaler les violations des règles.
+
+Amusez-vous bien !
+
+L'équipe de BFMCspy
 
 discord.gg/bf2mc
