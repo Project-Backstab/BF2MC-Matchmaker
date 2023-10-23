@@ -1,26 +1,31 @@
-   ¡Bienvenido al servicio en línea de BF2:MC!
+   ¡Bienvenido al Servicio en Línea de BF2:MC!
 
-Al aceptar este acuerdo, usted acepta las siguientes reglas del servidor de juegos y comprende que las consecuencias de romper estas reglas pueden resultar en la revocación de su acceso a los servidores.
+Al aceptar este acuerdo, usted acepta las siguientes reglas del servidor de juegos y comprende que las consecuencias de quebrantar estas reglas pueden resultar en la revocación de su acceso a los servidores o en el ajuste de sus estadísticas en el juego.
 
-REGLAS DEL SERVIDOR DE JUEGO:
+REGLAS DEL SERVIDOR DE JUEGOS:
 
-1. Está estrictamente prohibido el uso de herramientas de terceros para obtener una ventaja en el juego.
+Queda estrictamente prohibido el uso de herramientas de terceros para obtener una ventaja o afectar la experiencia de juego.
 
-2. Cualquier uso de trucos para obtener una ventaja en el juego está estrictamente prohibido.
+Queda estrictamente prohibido el uso de trucos para obtener una ventaja o afectar la experiencia de juego.
 
-3. Todas las Formas de Glitching para obtener una ventaja están estrictamente prohibidas.
+Queda estrictamente prohibido realizar glitches de cualquier tipo para obtener una ventaja o afectar la experiencia de juego.
 
-4. No abuses ni acoses a otros jugadores en el juego, como el asesinato en equipo a propósito y el abuso verbal con tu micrófono.
+No acose ni moleste a otros jugadores en el juego, como el asesinato intencional de compañeros de equipo o el abuso verbal a través de su micrófono.
 
-5. No abuses de la función Votekick del juego.
+No suplante a otros miembros o clanes dentro de la comunidad ni a jugadores anteriores del juego.
 
-6. ¡Sé un jugador de equipo y juega el objetivo!
+No abuse de la función de voto de expulsión en el juego.
 
-Use el canal [#report-a-player] en el discordia para informar a los infractores.
+No abuse de las funciones de mensajería dentro del juego o de invitación a partidas.
 
+No abuse de las mecánicas del juego o de los servidores para manipular las clasificaciones en el juego (por ejemplo, boosting, padding, etc.).
 
-¡Por favor, disfruta!
+No esté ausente por períodos prolongados que puedan afectar la experiencia de juego.
 
-Omega
+Utilice el bot de Mod Mail en Discord para denunciar infracciones a las reglas.
+
+¡Por favor, disfrute!
+
+Equipo de BFMCspy
 
 discord.gg/bf2mc

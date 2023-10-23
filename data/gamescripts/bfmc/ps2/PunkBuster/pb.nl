@@ -1,26 +1,31 @@
-   Welkom bij de BF2:MC Online-service!
+   Welkom bij de BF2:MC Online Service!
 
-Door deze overeenkomst te accepteren, gaat u akkoord met de volgende Game Server-regels en begrijpt u dat de gevolgen van het overtreden van deze regels ertoe kunnen leiden dat uw toegang tot de servers wordt ingetrokken.
+Door dit akkoord te accepteren, stemt u in met de volgende regels van de gameserver en begrijpt u dat de gevolgen van het overtreden van deze regels kunnen leiden tot intrekking van uw toegang tot de servers of aanpassing van uw in-game statistieken.
 
-SPELSERVER REGELS:
+REGELS VAN DE GAMESERVER:
 
-1. Het gebruik van tools van derden om voordeel te behalen in het spel is ten strengste verboden.
+Het gebruik van externe tools om een voordeel te behalen of de gameplay-ervaring te beïnvloeden is ten strengste verboden.
 
-2. Elk gebruik van cheats om voordeel te behalen in het spel is ten strengste verboden.
+Het gebruik van cheats om een voordeel te behalen of de gameplay-ervaring te beïnvloeden is ten strengste verboden.
 
-3. Alle vormen van Glitching om een ​​voordeel te behalen zijn ten strengste verboden.
+Alle vormen van glitching om een voordeel te behalen of de gameplay-ervaring te beïnvloeden zijn ten strengste verboden.
 
-4. Val andere spelers in het spel niet lastig, zoals doelbewust teammoorden en verbaal geweld met je microfoon.
+Val andere spelers in het spel niet lastig of misbruik ze niet, bijvoorbeeld door opzettelijk teamgenoten te doden of verbaal te mishandelen via uw microfoon.
 
-5. Maak geen misbruik van de in-game Votekick-functie.
+Doe zich niet voor als andere leden of clans binnen de community of voormalige spelers van het spel.
 
-6. Wees een teamspeler en speel het doel!
+Maak geen misbruik van de in-game Votekick-functie.
 
-Gebruik het [#report-a-player]-kanaal in de discord om regelovertreders te rapporteren.
+Maak geen misbruik van de in-game berichtenfunctie of de game-uitnodigingsfuncties.
 
+Maak geen misbruik van de gamemechanica of servers om de in-game leaderboards te manipuleren (bijv. boosting, padding, enz.).
 
-Geniet ervan!
+Ga niet voor langere perioden AFK waardoor de gameplay-ervaring wordt beïnvloed.
 
-Omega
+Gebruik de Mod Mail-bot in Discord om overtreders te melden.
+
+Veel plezier!
+
+BFMCspy Team
 
 discord.gg/bf2mc
