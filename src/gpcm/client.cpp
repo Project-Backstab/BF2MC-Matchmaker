@@ -42,25 +42,49 @@ GPCM::Client::~Client()
 
 void GPCM::Client::Listen()
 {	
+	bool isDisconnected = false;
+
 	// Initialize connection send challenge
 	this->requestChallenge();
 	
-	while(true)
+	while(!isDisconnected)
 	{
-		std::vector<char> buffer(4096, 0);
-		
-		int recv_size = read(this->_socket, &(buffer[0]), 4096);
-		
-		// If error or no data is recieved we end the connection
-		if(recv_size <= 0)
+		std::vector<unsigned char> combined_buffer;
+		std::string last_seven_chars = "";
+
+		do
 		{
-			break;
-		}
+			std::vector<unsigned char> buffer(16384, 0);
+
+			int v = read(this->_socket, &(buffer[0]), 16384);
 		
-		// Resize buffer
-		buffer.resize(recv_size);
+			// If error or no data is recieved we end the connection
+			if(v <= 0)
+			{
+				isDisconnected = true;
+				break;
+			}
+			
+			// Resize buffer
+			buffer.resize(v);
+
+			// Debug
+			//std::stringstream ss;
+			//for(int i = 0; i < buffer.size(); i++)
+			//{
+			//	ss << std::hex << std::setfill('0') << std::setw(2) << (int)(buffer[i]);
+			//}
+			//Logger::info("buffer = " + ss.str());
+
+			combined_buffer.insert(combined_buffer.end(), buffer.begin(), buffer.end());
+
+			if(combined_buffer.size() > 7)
+			{
+				last_seven_chars.assign(combined_buffer.end() - 7, combined_buffer.end());
+			}
+		} while (last_seven_chars != "\\final\\" && combined_buffer.size() < 32768);
 		
-		std::vector<std::string> requests = GameSpy::RequestToRequests(Util::Buffer::ToString(buffer));
+		std::vector<std::string> requests = GameSpy::RequestToRequests(Util::Buffer::ToString(combined_buffer));
 		
 		for(std::string request : requests)
 		{

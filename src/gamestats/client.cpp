@@ -36,12 +36,13 @@ GameStats::Client::~Client()
 
 void GameStats::Client::Listen()
 {
+	bool isDisconnected = false;
+
 	// Initialize connection send challenge
 	this->requestChallenge();
 	
-	while(true)
+	while(!isDisconnected)
 	{
-		std::string request;
 		std::vector<unsigned char> combined_buffer;
 		std::string last_seven_chars = "";
 
@@ -54,6 +55,7 @@ void GameStats::Client::Listen()
 			// If error or no data is recieved we end the connection
 			if(v <= 0)
 			{
+				isDisconnected = true;
 				break;
 			}
 			
@@ -76,7 +78,7 @@ void GameStats::Client::Listen()
 			}
 		} while (last_seven_chars != "\\final\\" && combined_buffer.size() < 32768);
 
-		request = Decrypt(combined_buffer);
+		std::string request = Decrypt(combined_buffer);
 		
 		this->_LogTransaction("-->", request);
 		
