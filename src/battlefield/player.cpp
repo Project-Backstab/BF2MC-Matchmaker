@@ -178,6 +178,12 @@ bool Battlefield::Player::SetVerified(bool verified)
 	return true;
 }
 
+bool Battlefield::Player::SetRestricted(bool restricted)
+{
+	this->_restricted = restricted;
+	return true;
+}
+
 bool Battlefield::Player::AddFriend(int profileid)
 {
 	this->_friends.push_back(profileid);

@@ -243,7 +243,7 @@ bool Battlefield::PlayerStats::SetDeathsSupportKit(uint32_t deaths)
 
 bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 {
-	if(medals <= static_cast<uint32_t>(Medals::All) && medals != 0)
+	if(medals <= static_cast<uint32_t>(Medals::All) && medals > this->_medals)
 	{
 		this->_medals = medals;
 		

@@ -976,7 +976,16 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 		
 	// Get player stats from database
 	player.SetProfileId(this->GetProfileId());
+	g_database->queryPlayerByProfileId(player);
 	g_database->queryPlayerStatsByProfileId(player);
+	// to-do: Optimalisation?!
+	//g_database->queryPlayerAndPlayerStatsByProfileId(player);
+
+	if(player.isRestricted())
+	{
+		Logger::info("Player '" + player.GetUniquenick() + "' is restricted for stats progress.");
+		return;
+	}
 
 	player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + this->GetBoatsDestroyed()          ); // bod
 	player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + this->GetHAVsDestroyed()           ); // havd
