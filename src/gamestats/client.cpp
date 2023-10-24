@@ -273,6 +273,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 			else if(key == "time_"     + std::to_string(player_index)) gsplayer.SetTime(value);
 			else if(key == "lavd_"     + std::to_string(player_index)) gsplayer.SetLAVsDestroyed(value);
 			else if(key == "mavd_"     + std::to_string(player_index)) gsplayer.SetMAVsDestroyed(value);
+			else if(key == "havd_"     + std::to_string(player_index)) gsplayer.SetHAVsDestroyed(value);
 			else if(key == "hed_"      + std::to_string(player_index)) gsplayer.SetHelicoptersDestroyed(value);
 			else if(key == "pld_"      + std::to_string(player_index)) gsplayer.SetPlanesDestroyed(value);
 			else if(key == "bod_"      + std::to_string(player_index)) gsplayer.SetBoatsDestroyed(value);
