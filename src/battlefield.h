@@ -1,6 +1,9 @@
 #ifndef BATTLEFIELD_H
 #define BATTLEFIELD_H
 
+#include <vector>
+#include <cstdint>
+
 namespace Battlefield
 {
 	/*
@@ -29,6 +32,10 @@ namespace Battlefield
 		Lieutenant_General          = 19,
 		Five_Star_General           = 20,
 	};
+
+	extern std::vector<uint16_t> RankScores;
+	extern std::vector<uint16_t> RankPph;
+	extern std::vector<uint16_t> RankMedals;
 	
 	enum class Medals
 	{

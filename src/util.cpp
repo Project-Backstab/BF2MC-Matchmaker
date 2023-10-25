@@ -306,3 +306,17 @@ std::vector<int> Util::convertProfileIdToVector(const std::string& input)
 
 	return result;
 }
+
+int Util::countSetBits(uint32_t num)
+{
+	int count = 0;
+
+	while(num)
+	{
+		num &= (num - 1);
+		count++;
+	}
+
+	return count;
+}
+

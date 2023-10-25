@@ -1,3 +1,6 @@
+#include <battlefield.h>
+#include <util.h>
+
 #include <battlefield/playerstats.h>
 
 void Battlefield::PlayerStats::useExample()
@@ -277,3 +280,16 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 	return true;
 }
 
+void Battlefield::PlayerStats::_calcRank()
+{
+	auto it = std::lower_bound(RankScores.begin(), RankScores.end(), this->_score + 1);
+    int score_rank = std::distance(RankScores.begin(), it);
+    
+    it = std::lower_bound(RankPph.begin(), RankPph.end(), this->_pph + 1);
+    int pph_rank = std::distance(RankPph.begin(), it);
+    
+    it = std::lower_bound(RankMedals.begin(), RankMedals.end(), Util::countSetBits(this->_medals) + 1);
+    int medals_rank = std::distance(RankMedals.begin(), it);
+
+	this->_ran = std::min(std::min(score_rank, pph_rank), medals_rank);
+}

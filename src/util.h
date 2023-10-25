@@ -49,6 +49,8 @@ namespace Util
 	std::string generateRandomAuthtoken();
 	
 	std::vector<int> convertProfileIdToVector(const std::string& input);
+
+	int countSetBits(uint32_t num);
 }
 
 #endif // UTIL_H
