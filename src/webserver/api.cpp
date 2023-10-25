@@ -5,7 +5,9 @@
 
 #include <logger.h>
 #include <globals.h>
+#include <settings.h>
 #include <database.h>
+#include <gpcm/client.h>
 #include <battlefield/gamestat.h>
 
 #include <webserver/client.h>
@@ -757,3 +759,146 @@ void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& ht
 
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
+
+void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	// Check password
+	auto it = url_variables.find("password");
+	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
+	{
+		return;
+	}
+
+	Json::Value json_results;
+
+	// GPCM
+	Json::Value json_gpcm(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
+	{
+		Json::Value json_client;
+		Json::Value json_session;
+
+		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
+		
+		// Find session
+		GPCM::Session session = gpcm_client->GetSession();
+
+		Battlefield::Player player;
+		player.SetProfileId(session.profileid);
+		g_database->queryPlayerByProfileId(player);
+
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		json_session["authtoken"] = session.authtoken;
+		json_session["challenge"] = session.challenge;
+		json_session["profileid"] = std::to_string(session.profileid) + " (" + player.GetUniquenick() + ")";
+		json_session["status"] = session.status;
+
+		json_client["session"] = json_session;
+
+		json_gpcm.append(json_client);
+	}
+	json_results["gpcm"] = json_gpcm;
+
+	// GPSP
+	Json::Value json_gpsp(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_gpsp_server->GetClients())
+	{
+		Json::Value json_client;
+
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		json_gpsp.append(json_client);
+	}
+	json_results["gpsp"] = json_gpsp;
+
+	// Webserver
+	Json::Value json_webserver(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_webserver_server->GetClients())
+	{
+		Json::Value json_client;
+
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		json_webserver.append(json_client);
+	}
+	json_results["webserver"] = json_webserver;
+
+	// Browsing
+	Json::Value json_browsing(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_browsing_server->GetClients())
+	{
+		Json::Value json_client;
+
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		json_browsing.append(json_client);
+	}
+	json_results["browsing"] = json_browsing;
+
+	// Gamestats
+	Json::Value json_gamestats(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_gamestats_server->GetClients())
+	{
+		Json::Value json_client;
+		
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		json_gamestats.append(json_client);
+	}
+	json_results["gamestats"] = json_gamestats;
+
+	this->Send(json_results);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
+void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	Json::Value json_results;
+	
+	json_results["result"] = "FAIL";
+
+	// Check password
+	auto it = url_variables.find("password");
+	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
+	{
+		return;
+	}
+
+	// Get profile id
+	it = url_variables.find("profileid");
+	if (it == url_variables.end())
+	{
+		return;
+	}
+
+	Battlefield::Player player;
+	player.SetProfileId(it->second);
+
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
+	{
+		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
+		
+		// Find session
+		GPCM::Session session = gpcm_client->GetSession();
+
+		if(session.profileid == player.GetProfileId())
+		{
+			gpcm_client.get()->Disconnect();
+			json_results["result"] = "OK";
+		}
+	}
+
+	this->Send(json_results);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}
+
