@@ -49,7 +49,7 @@ std::string GameSpy::Parameter2Response(const GameSpy::Parameter& parameter)
 	
 	response += "\\";
 	
-	for(std::string value : parameter)
+	for(const std::string& value : parameter)
 	{
 		response += value + "\\";
 	}

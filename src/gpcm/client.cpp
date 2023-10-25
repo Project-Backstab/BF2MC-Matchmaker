@@ -86,7 +86,7 @@ void GPCM::Client::Listen()
 		
 		std::vector<std::string> requests = GameSpy::RequestToRequests(Util::Buffer::ToString(combined_buffer));
 		
-		for(std::string request : requests)
+		for(const std::string& request : requests)
 		{
 			this->_LogTransaction("-->", request);
 		
