@@ -97,6 +97,9 @@ double Battlefield::PlayerStats::GetRatioSupportKit() const
 bool Battlefield::PlayerStats::SetScore(int32_t score)
 {
 	this->_score = score;
+
+	this->_calcRank();
+	
 	return true;
 }
 
@@ -121,6 +124,9 @@ bool Battlefield::PlayerStats::SetRank(Ranks ran)
 bool Battlefield::PlayerStats::SetPPH(uint32_t pph)
 {
 	this->_pph = pph;
+
+	this->_calcRank();
+
 	return true;
 }
 
@@ -250,6 +256,8 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 	{
 		this->_medals = medals;
 		
+		this->_calcRank();
+
 		return true;
 	}
 	
@@ -259,6 +267,9 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 bool Battlefield::PlayerStats::SetMedals(Medals medals)
 {
 	this->_medals = static_cast<uint32_t>(medals);
+
+	this->_calcRank();
+
 	return true;
 }
 

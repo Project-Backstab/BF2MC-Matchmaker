@@ -111,6 +111,7 @@ class Database
 		
 		// Leaderboard Clan
 		bool queryLeaderboardClan(Battlefield::RankClans& rank_clans, uint32_t limit, uint32_t offset);
+		bool queryLeaderboardClanByClanId(Battlefield::RankClans& rank_clans, const Battlefield::Clan& clan);
 
 		/*
 			Events

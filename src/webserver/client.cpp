@@ -126,7 +126,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	// Clan
 	{ "/BFMC/Clans/claninfo.aspx",                            &Webserver::Client::requestClanInfo           }, // Done
 	{ "/BFMC/Clans/clanmembers.aspx",                         &Webserver::Client::requestClanMembers        }, // Done
-	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard        }, // 
+	{ "/BFMC/Clans/leaderboard.aspx",                         &Webserver::Client::requestLeaderboard        }, // Done
 	{ "/BFMC/Clans/createclan.aspx",                          &Webserver::Client::requestCreateClan         }, // Done
 	{ "/BFMC/Clans/updateclan.aspx",                          &Webserver::Client::requestUpdateClan         }, // Done
 	{ "/BFMC/Clans/disband.aspx",                             &Webserver::Client::requestDisband            }, // Done
@@ -1075,10 +1075,15 @@ void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_req
 	auto it = url_variables.find("clanid");
 	if (it != url_variables.end())
 	{
-		// to-do
+		Battlefield::Clan clan;
+
+		clan.SetClanId(it->second);
+
+		g_database->queryLeaderboardClanByClanId(rank_clans, clan);
 	}
 	else
 	{
+		// Top 10 clan leaderboard
 		g_database->queryLeaderboardClan(rank_clans, 10, 0);
 	}
 

@@ -1013,7 +1013,9 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 	
 	player.SetMedals(this->GetMedals()); // medals
 	player.SetPPH(this->GetPPH());       // pph
-	player.SetRank(this->GetRank());     // rank
+	
+	// Automaticly calculated when score, pph or medals been set.
+	//player.SetRank(this->GetRank());     // rank
 	
 	player.SetVehiclesDestroyed(
 		player.GetLAVsDestroyed() +
