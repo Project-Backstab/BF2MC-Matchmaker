@@ -11,7 +11,14 @@ Net::Socket::Socket()
 
 void Net::Socket::Close()
 {
-	close(this->_socket);
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+
+	if(this->_socket != -1)
+	{
+		close(this->_socket);
+		
+		this->_socket = -1; // Removes reference
+	}
 }
 
 std::string Net::Socket::GetIP() const
@@ -23,7 +30,7 @@ std::string Net::Socket::GetIP() const
 	return std::string(ip);
 }
 
-void Net::Socket::GetIpArray(uint8_t* ip)
+void Net::Socket::GetIpArray(uint8_t* ip) const
 {
 	*ip = this->_address.sin_addr.s_addr;
 }

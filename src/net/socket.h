@@ -20,7 +20,7 @@ namespace Net
 			void Close();
 			
 			std::string GetIP() const;
-			void GetIpArray(uint8_t* ip);
+			void GetIpArray(uint8_t* ip) const;
 			
 			uint16_t GetPort() const;
 			std::string GetAddress() const;
