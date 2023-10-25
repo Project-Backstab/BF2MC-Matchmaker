@@ -165,32 +165,31 @@ Webserver::Client::~Client()
 
 void Webserver::Client::Listen()
 {
-	while(true)
+	std::vector<char> buffer(4096, 0);
+	HTTPMessageParser http_parser;
+	HTTPMessage http_request;
+	
+	// Read socket
+	int recv_size = read(this->_socket, &(buffer[0]), 4096);
+	
+	// If error or no data is recieved we end the connection
+	if(recv_size <= 0)
 	{
-		std::vector<char> buffer(4096, 0);
-		HTTPMessageParser http_parser;
-		HTTPMessage http_request;
-		
-		// Read socket
-		int recv_size = read(this->_socket, &(buffer[0]), 4096);
-		
-		// If error or no data is recieved we end the connection
-		if(recv_size <= 0)
-		{
-			break;
-		}
-		
-		// Resize buffer
-		buffer.resize(recv_size);
-		
-		// Parse buffer to http header
-		http_parser.Parse(&http_request, &(buffer[0]));
-		
-		// Trigger onRequest event
-		this->onRequest(http_request);
-		
 		this->Disconnect();
+
+		return;
 	}
+	
+	// Resize buffer
+	buffer.resize(recv_size);
+	
+	// Parse buffer to http header
+	http_parser.Parse(&http_request, &(buffer[0]));
+	
+	// Trigger onRequest event
+	this->onRequest(http_request);
+	
+	this->Disconnect();
 }
 
 void Webserver::Client::Disconnect()
