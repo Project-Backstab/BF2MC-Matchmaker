@@ -31,10 +31,6 @@ Server::Server(Server::Type type)
 	// socket options
 	int opt_reuse = 1;     // Enable reuse option
 	
-	struct timeval opt_tv; // Config timeout option
-	opt_tv.tv_sec = 5;     // Default 5 seconds timeout
-	opt_tv.tv_usec = 0;
-	
 	this->_type = type;
 	
 	// setting
@@ -42,28 +38,22 @@ Server::Server(Server::Type type)
 	{
 		case Server::Type::QR:
 			port = g_settings["qr"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["qr"]["connection_time_out"].asInt();
 			socket_type = SOCK_DGRAM;
 		break;
 		case Server::Type::GPSP:
 			port = g_settings["gpsp"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["gpsp"]["connection_time_out"].asInt();
 		break;
 		case Server::Type::GPCM:
 			port = g_settings["gpcm"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["gpcm"]["connection_time_out"].asInt();
 		break;
 		case Server::Type::Webserver:
 			port = g_settings["webserver"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["webserver"]["connection_time_out"].asInt();
 		break;
 		case Server::Type::Browsing:
 			port = g_settings["browsing"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["browsing"]["connection_time_out"].asInt();
 		break;
 		case Server::Type::GameStats:
 			port = g_settings["gamestats"]["port"].asInt();
-			opt_tv.tv_sec = g_settings["gamestats"]["connection_time_out"].asInt();
 		break;
 	}
 	
@@ -76,12 +66,6 @@ Server::Server(Server::Type type)
 	if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt_reuse, sizeof(opt_reuse)))
 	{
 		Logger::error("Server::Server() at setsockopt with opt_reuse", this->_type);
-		exit(EXIT_FAILURE);
-	}
-
-	if (setsockopt(this->_socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&opt_tv, sizeof opt_tv))
-	{
-		Logger::error("Server::Server() at setsockopt with opt_tv", this->_type);
 		exit(EXIT_FAILURE);
 	}
 
