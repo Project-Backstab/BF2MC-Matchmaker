@@ -33,6 +33,7 @@ GPCM::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
+	this->UpdateLastRecievedTime();
 }
 
 GPCM::Client::~Client()
@@ -67,6 +68,8 @@ void GPCM::Client::Listen()
 			
 			// Resize buffer
 			buffer.resize(v);
+
+			this->UpdateLastRecievedTime();
 
 			// Debug
 			//std::stringstream ss;
@@ -209,6 +212,9 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	// Generate proof
 	std::string proof = GameSpy::LoginProof(player.GetPassword(), player.GetUniquenick(), client_challenge, server_challenge);
 	
+	// Disconnect old session
+	this->Disconnect(player.GetProfileId());
+
 	// Save session profileid
 	this->_session.profileid = player.GetProfileId();
 	this->_session.authtoken = Util::generateRandomAuthtoken();
@@ -799,6 +805,24 @@ void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const s
 		session.client->Send(response);
 		
 		session.client->_LogTransaction("<--", response);
+	}
+}
+
+void GPCM::Client::Disconnect(int profileid)
+{
+	GPCM::Session session;
+	
+	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
+	{
+		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
+
+		// Find session
+		session = gpcm_client->GetSession();
+		
+		if(session.profileid == profileid)
+		{
+			gpcm_client.get()->Disconnect();
+		}
 	}
 }
 

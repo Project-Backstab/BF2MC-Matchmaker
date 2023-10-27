@@ -4,15 +4,18 @@
 #include <string>
 #include <mutex>
 #include <netinet/in.h>
+#include <chrono>
 
 namespace Net
 {
 	class Socket
 	{
 		protected:
-			int                  _socket;
-			struct sockaddr_in   _address;
-			mutable std::mutex   _mutex;
+			int                                   _socket;
+			struct sockaddr_in                    _address;
+			std::chrono::system_clock::time_point _recieved_time;
+			mutable std::mutex                    _mutex;
+
 		
 		public:
 			Socket();
@@ -25,13 +28,16 @@ namespace Net
 			uint16_t GetPort() const;
 			std::string GetAddress() const;
 			std::string GetSocketType() const;
-			
+			std::chrono::system_clock::time_point GetLastRecievedTime() const;
+
 			void Send(const std::string& msg) const;
 			void Send(const std::vector<unsigned char>& msg) const;
 			
 			void UDPSend(const std::string& msg) const;
 			void UDPSend(const std::vector<unsigned char>& msg) const;
 			
+			void UpdateLastRecievedTime();
+
 			// ChatGPT:
 			// In C++, you cannot directly cast a base class pointer (std::shared_ptr<Net::Socket>) to a derived class pointer
 			// (std::shared_ptr<GPCM::Client>) using static_cast when the base class is not polymorphic (i.e., it doesn't have at

@@ -30,6 +30,7 @@ Browsing::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
+	this->UpdateLastRecievedTime();
 }
 
 Browsing::Client::~Client()
@@ -54,6 +55,8 @@ void Browsing::Client::Listen()
 		// Resize buffer
 		buffer.resize(recv_size);
 		
+		this->UpdateLastRecievedTime();
+
 		this->_LogTransaction("-->", Util::Buffer::ToString(buffer));
 		
 		// Extract requests

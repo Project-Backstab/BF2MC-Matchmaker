@@ -156,6 +156,7 @@ Webserver::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
+	this->UpdateLastRecievedTime();
 }
 
 Webserver::Client::~Client()
@@ -183,6 +184,8 @@ void Webserver::Client::Listen()
 	// Resize buffer
 	buffer.resize(recv_size);
 	
+	this->UpdateLastRecievedTime();
+
 	// Parse buffer to http header
 	http_parser.Parse(&http_request, &(buffer[0]));
 	

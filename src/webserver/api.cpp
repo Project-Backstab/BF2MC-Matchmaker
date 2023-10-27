@@ -778,7 +778,7 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 	{
 		Json::Value json_client;
 		Json::Value json_session;
-
+		
 		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
 		
 		// Find session
@@ -790,6 +790,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 
 		json_client["ip"] = client.get()->GetIP();
 		json_client["port"] = client.get()->GetPort();
+
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
 
 		json_session["authtoken"] = session.authtoken;
 		json_session["challenge"] = session.challenge;
@@ -811,6 +814,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 		json_client["ip"] = client.get()->GetIP();
 		json_client["port"] = client.get()->GetPort();
 
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
+
 		json_gpsp.append(json_client);
 	}
 	json_results["gpsp"] = json_gpsp;
@@ -823,6 +829,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 
 		json_client["ip"] = client.get()->GetIP();
 		json_client["port"] = client.get()->GetPort();
+
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
 
 		json_webserver.append(json_client);
 	}
@@ -837,6 +846,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 		json_client["ip"] = client.get()->GetIP();
 		json_client["port"] = client.get()->GetPort();
 
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
+
 		json_browsing.append(json_client);
 	}
 	json_results["browsing"] = json_browsing;
@@ -849,6 +861,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 		
 		json_client["ip"] = client.get()->GetIP();
 		json_client["port"] = client.get()->GetPort();
+
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
 
 		json_gamestats.append(json_client);
 	}

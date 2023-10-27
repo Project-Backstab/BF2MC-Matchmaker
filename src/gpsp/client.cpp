@@ -26,6 +26,7 @@ GPSP::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
+	this->UpdateLastRecievedTime();
 }
 
 GPSP::Client::~Client()
@@ -51,6 +52,8 @@ void GPSP::Client::Listen()
 		// Resize buffer
 		buffer.resize(recv_size);
 		
+		this->UpdateLastRecievedTime();
+
 		request = Util::Buffer::ToString(buffer);
 		
 		this->_LogTransaction("-->", request);

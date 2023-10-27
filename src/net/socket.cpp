@@ -69,6 +69,13 @@ std::string Net::Socket::GetSocketType() const
 	}
 }
 
+std::chrono::system_clock::time_point Net::Socket::GetLastRecievedTime() const
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+
+	return this->_recieved_time;
+}
+
 void Net::Socket::Send(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
@@ -99,5 +106,12 @@ void Net::Socket::UDPSend(const std::vector<unsigned char>& msg) const
 	socklen_t address_len = sizeof(this->_address);
 	
 	sendto(this->_socket, &(msg[0]), msg.size(), 0, (struct sockaddr*)&this->_address, address_len);
+}
+
+void Net::Socket::UpdateLastRecievedTime()
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+
+	this->_recieved_time = std::chrono::system_clock::now();
 }
 

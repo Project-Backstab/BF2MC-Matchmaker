@@ -27,6 +27,7 @@ GameStats::Client::Client(int socket, struct sockaddr_in address)
 {
 	this->_socket = socket;
 	this->_address = address;
+	this->UpdateLastRecievedTime();
 }
 
 GameStats::Client::~Client()
@@ -61,6 +62,8 @@ void GameStats::Client::Listen()
 			
 			// Resize buffer
 			buffer.resize(v);
+
+			this->UpdateLastRecievedTime();
 
 			// Debug
 			//std::stringstream ss;

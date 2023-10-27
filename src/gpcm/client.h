@@ -58,6 +58,7 @@ namespace GPCM
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 			void _SendNewStatus() const;
 			void _SyncFriends();
+			
 		
 		/*
 			Static
@@ -66,6 +67,7 @@ namespace GPCM
 			static GPCM::Session findSessionByProfileId(int profileid);
 			static GPCM::Session findSessionByAuthtoken(const std::string& authtoken);
 			static void          SendBuddyMessage(int profileid, int target_profileid, const std::string& bm, const std::string& msg);
+			static void Disconnect(int profileid);
 	};
 }
 
