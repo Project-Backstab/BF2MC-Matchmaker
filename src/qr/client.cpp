@@ -146,6 +146,14 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	// Check game server information in database
 	g_database->queryGameServerByIpAndPort(game_server);
 	
+	// Make some records empty to avoid old values
+	game_server.SetClan1Id(-1);
+	game_server.SetClan1Name("");
+	game_server.SetClan1Claimed(0);
+	game_server.SetClan2Id(-1);
+	game_server.SetClan2Name("");
+	game_server.SetClan2Claimed(0);
+
 	// Read game server information
 	while(Util::Buffer::ReadString(request, offset, key) && key.size() > 0)
 	{
