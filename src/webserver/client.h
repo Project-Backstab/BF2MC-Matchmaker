@@ -75,9 +75,12 @@ namespace Webserver
 			void requestAPILeaderboard(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			void requestAPILeaderboardClan(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			void requestAPIClanSimulation(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+			
+			// API admin
 			void requestAPIAdminClients(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 			void requestAPIAdminKick(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
-			
+			void requestAPIAdminMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+		
 		private:
 			atomizes::HTTPMessage _defaultResponseHeader(bool isPlainText = true) const;
 			void _LogTransaction(const std::string& direction, const std::string& response) const;

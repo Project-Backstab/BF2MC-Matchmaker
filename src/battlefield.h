@@ -33,10 +33,6 @@ namespace Battlefield
 		Five_Star_General           = 20,
 	};
 
-	extern std::vector<uint16_t> RankScores;
-	extern std::vector<uint16_t> RankPph;
-	extern std::vector<uint16_t> RankMedals;
-	
 	enum class Medals
 	{
 		The_Service_Cross             = 1 << 0,
@@ -57,12 +53,35 @@ namespace Battlefield
 		All                           = (1 << 15) - 1,
 	};
 	
+	/*
+		to-do: Start a server. Setup a account with stats that are close to gain a ribbon.
+		Then progress one game to get the ribbon. Then watch "medals" value what bit is changed.
+	*/
+	enum class Ribbons
+	{
+		Ribbon_A                      = 1 << 22,
+		Ribbon_B                      = 1 << 23,
+		Ribbon_C                      = 1 << 24,
+		Ribbon_D                      = 1 << 25,
+		Ribbon_E                      = 1 << 26,
+		Ribbon_F                      = 1 << 27,
+		Ribbon_G                      = 1 << 28,
+		Ribbon_H                      = 1 << 29
+	};
+	
 	enum class GameType
 	{
 		Unknown         = -1,
 		Conquest        = 1,
 		CaptureTheFlag  = 2
 	};
+
+	/*
+		Extern
+	*/
+	extern std::vector<uint16_t> RankScores;
+	extern std::vector<uint16_t> RankPph;
+	extern std::vector<uint16_t> RankMedals;
 }
 
 #endif // BATTLEFIELD_H

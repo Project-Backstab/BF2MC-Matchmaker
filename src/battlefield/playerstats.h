@@ -38,7 +38,7 @@ namespace Battlefield
 			uint32_t  _k5        = 0; // Total kills Support kit  
 			uint32_t  _s5        = 0; // Total spawns Support kit
 			uint32_t  _tk        = 0; // Team kills                                    (Not used in game)
-			uint32_t  _medals    = 0; // Earned medals                                 (See: enum Battlefield::Medals)
+			uint32_t  _medals    = 0; // Earned medals and ribbons                     (See: enum Battlefield::Medals && enum Battlefield::Ribbons)
 			uint32_t  _ttb       = 0; // Total times top player
 			uint32_t  _mv        = 0; // Total major victories
 			uint32_t  _ngp       = 0; // Total participated game sessions

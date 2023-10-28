@@ -150,6 +150,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/API/clan/simulation",                                 &Webserver::Client::requestAPIClanSimulation  },
 	{ "/API/admin/clients",                                   &Webserver::Client::requestAPIAdminClients    },
 	{ "/API/admin/kick",                                      &Webserver::Client::requestAPIAdminKick       },
+	{ "/API/admin/message",                                   &Webserver::Client::requestAPIAdminMessage    },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
