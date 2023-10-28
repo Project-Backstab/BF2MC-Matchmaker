@@ -924,8 +924,15 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	
 	json_results["result"] = "FAIL";
 
+	// Check password
+	auto it = url_variables.find("password");
+	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
+	{
+		return;
+	}
+
 	// Get message
-	auto it = url_variables.find("message");
+	it = url_variables.find("message");
 	if (it == url_variables.end())
 	{
 		return;
