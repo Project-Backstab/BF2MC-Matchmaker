@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <thread>
 #include <algorithm>
  
 #include <logger.h>
@@ -100,12 +99,6 @@ void Server::Listen()
 	}
 	
 	this->onServerListen();
-	
-	if(this->_type == Server::Type::GPCM)
-	{
-		std::thread t(&GPCM::Client::Heartbeat);
-		t.detach();
-	}
 
 	while(true)
 	{

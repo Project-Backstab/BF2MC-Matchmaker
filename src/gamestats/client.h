@@ -33,6 +33,7 @@ namespace GameStats
 			uint8_t _GetPlayerIndex(std::string key);
 			
 		public:
+			static void Heartbeat();
 			static void Test();
 			static std::vector<unsigned char> Encrypt(const std::string& response);
 			static std::string Decrypt(const std::vector<unsigned char>& request);

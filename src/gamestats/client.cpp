@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <iomanip>
+#include <thread>
 
 #include <settings.h>
 #include <logger.h>
@@ -359,6 +360,32 @@ uint8_t GameStats::Client::_GetPlayerIndex(std::string key)
 	catch(...) {};
 	
 	return player_index;
+}
+
+/* Static functions */
+
+void GameStats::Client::Heartbeat()
+{
+	Logger::info("Heartbeat started", Server::GameStats);
+
+	while(true)
+	{
+		std::this_thread::sleep_for (std::chrono::seconds(60));
+
+		for(std::shared_ptr<Net::Socket> client : g_gamestats_server->GetClients())
+		{
+			std::shared_ptr<GameStats::Client> gamestats_client = std::dynamic_pointer_cast<GameStats::Client>(client);
+
+			std::string response = GameSpy::Parameter2Response({
+				"ka",  "",
+				"final"
+			});
+			
+			gamestats_client.get()->Send(Encrypt(response));
+		
+			gamestats_client.get()->_LogTransaction("<--", response);
+		}
+	}
 }
 
 static std::vector<unsigned char> example_A_response = {

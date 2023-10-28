@@ -11,6 +11,7 @@
 #include <globals.h>
 #include <server.h>
 #include <database.h>
+#include <gpcm/client.h>
 #include <gamestats/client.h>
 #include <browsing/client.h>
 #include <service/file_system.h>
@@ -178,18 +179,22 @@ int main(int argc, char const* argv[])
 	std::thread t_qr(&start_qr_server);
 	std::thread t_gpsp(&start_gpsp_server);
 	std::thread t_gpcm(&start_gpcm_server);
+	std::thread t_gpcm_heartbeat(&GPCM::Client::Heartbeat);
 	std::thread t_webserver(&start_webserver_server);
 	std::thread t_browsing(&start_browsing_server);
 	std::thread t_gamestats(&start_gamestats_server);
+	std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
 	std::thread t_file_system(&start_file_system);
 	
 	t_db.detach();
 	t_qr.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
+	t_gpcm_heartbeat.detach();
 	t_webserver.detach();
 	t_browsing.detach();
 	t_gamestats.detach();
+	t_gamestats_heartbeat.detach();
 	t_file_system.detach();
 	
 	// Sleep ZZZZZZzzzzzZZZZZ
