@@ -1998,6 +1998,8 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	query += "	`GameServers`";
 	query += "WHERE ";
 	query += "	`ip` = ? ";
+	query += "ORDER BY ";
+	query += "	`verified` DESC";
 	
 	std::string input_ip   = game_server.GetIp();
 	uint16_t    input_port = game_server.GetPort();
@@ -2274,6 +2276,8 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 		game_server.SetTeam2Score(output_score1);
 		game_server.SetUpdatedAt(output_updated_at);
 		game_server.SetVerified(output_verified == 1);
+
+		break;
 	}
 
 	// Cleanup

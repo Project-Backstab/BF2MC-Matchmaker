@@ -16,8 +16,8 @@ void Net::Socket::Close()
 
 	if(this->_socket != -1)
 	{
+		shutdown(this->_socket, SHUT_WR);
 		close(this->_socket);
-		
 		this->_socket = -1; // Removes reference
 	}
 }
