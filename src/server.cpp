@@ -101,6 +101,12 @@ void Server::Listen()
 	
 	this->onServerListen();
 	
+	if(this->_type == Server::Type::GPCM)
+	{
+		std::thread t(&GPCM::Client::Heartbeat);
+		t.detach();
+	}
+
 	while(true)
 	{
 		if ((client_socket = accept(this->_socket, (struct sockaddr*)&client_address, &client_address_len)) < 0)

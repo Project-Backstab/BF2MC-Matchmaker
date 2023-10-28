@@ -68,6 +68,7 @@ namespace GPCM
 			static GPCM::Session findSessionByAuthtoken(const std::string& authtoken);
 			static void          SendBuddyMessage(int profileid, int target_profileid, const std::string& bm, const std::string& msg);
 			static void Disconnect(int profileid);
+			static void Heartbeat();
 	};
 }
 

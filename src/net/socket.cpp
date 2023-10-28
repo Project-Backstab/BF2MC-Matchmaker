@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <net/socket.h>
+#include <logger.h>
 
 Net::Socket::Socket()
 {
@@ -80,14 +81,18 @@ void Net::Socket::Send(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	
-	send(this->_socket, msg.c_str(), msg.size(), 0);
+	ssize_t size = send(this->_socket, msg.c_str(), msg.size(), 0);
+
+	Logger::info("send size = " + std::to_string(size), "", false);
 }
 
 void Net::Socket::Send(const std::vector<unsigned char>& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	
-	send(this->_socket, &(msg[0]), msg.size(), 0);
+	ssize_t size = send(this->_socket, &(msg[0]), msg.size(), 0);
+
+	Logger::info("send size = " + std::to_string(size), "", false);
 }
 
 void Net::Socket::UDPSend(const std::string& msg) const

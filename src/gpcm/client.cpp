@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <thread>
 
 #include <settings.h>
 #include <logger.h>
@@ -822,6 +823,30 @@ void GPCM::Client::Disconnect(int profileid)
 		if(session.profileid == profileid)
 		{
 			gpcm_client.get()->Disconnect();
+		}
+	}
+}
+
+void GPCM::Client::Heartbeat()
+{
+	Logger::info("Heartbeat started", Server::GPCM);
+
+	while(true)
+	{
+		std::this_thread::sleep_for (std::chrono::seconds(60));
+
+		for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
+		{
+			std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
+
+			std::string response = GameSpy::Parameter2Response({
+				"ka",  "",
+				"final"
+			});
+			
+			gpcm_client.get()->Send(response);
+		
+			gpcm_client.get()->_LogTransaction("<--", response);
 		}
 	}
 }
