@@ -957,7 +957,7 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 		if(session.profileid == player.GetProfileId() || player.GetProfileId() == -1)
 		{
 			GPCM::Client::SendBuddyMessage(
-				-1,
+				1,
 				session.profileid,
 				"1",
 				message
