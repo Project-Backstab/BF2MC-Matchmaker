@@ -82,8 +82,6 @@ void Net::Socket::Send(const std::string& msg) const
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	
 	ssize_t size = send(this->_socket, msg.c_str(), msg.size(), 0);
-
-	Logger::info("send size = " + std::to_string(size), "", false);
 }
 
 void Net::Socket::Send(const std::vector<unsigned char>& msg) const
@@ -91,8 +89,6 @@ void Net::Socket::Send(const std::vector<unsigned char>& msg) const
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
 	
 	ssize_t size = send(this->_socket, &(msg[0]), msg.size(), 0);
-
-	Logger::info("send size = " + std::to_string(size), "", false);
 }
 
 void Net::Socket::UDPSend(const std::string& msg) const
