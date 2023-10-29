@@ -82,11 +82,14 @@ void GameStats::Client::Listen()
 			}
 		} while (last_seven_chars != "\\final\\" && combined_buffer.size() < 32768);
 
-		std::string request = Decrypt(combined_buffer);
+		if(combined_buffer.size() > 7)
+		{
+			std::string request = Decrypt(combined_buffer);
+
+			this->_LogTransaction("-->", request);
 		
-		this->_LogTransaction("-->", request);
-		
-		this->onRequest(request);
+			this->onRequest(request);
+		}
 	}
 	
 	this->Disconnect();
@@ -955,7 +958,7 @@ std::string GameStats::Client::Decrypt(const std::vector<unsigned char>& request
 	std::string msg;
 	const char key[10] = "GameSpy3D";
 	
-	for(int i = 0; i < request.size() - 7; i++)
+	for(int i = 0; i < static_cast<int>(request.size()) - 7; i++)
 	{
 		char v = key[(i % 9)] ^ request[i];
 		
