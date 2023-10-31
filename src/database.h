@@ -113,6 +113,9 @@ class Database
 		bool queryLeaderboardClan(Battlefield::RankClans& rank_clans, uint32_t limit, uint32_t offset);
 		bool queryLeaderboardClanByClanId(Battlefield::RankClans& rank_clans, const Battlefield::Clan& clan);
 
+		// Chat
+		bool insertChat(int profileid, const std::string& ip, int target_profileid, const std::string& msg);
+
 		/*
 			Events
 		*/

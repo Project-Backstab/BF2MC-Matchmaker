@@ -790,22 +790,37 @@ GPCM::Session GPCM::Client::findSessionByAuthtoken(const std::string& authtoken)
 	return {};
 }
 
-void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const std::string& bm, const std::string& msg)
+void GPCM::Client::SendBuddyMessage(int profileid, int target_profileid, const std::string& bm, const std::string& message)
 {
-	GPCM::Session session = findSessionByProfileId(target_profileid);
+	GPCM::Session target_session = findSessionByProfileId(target_profileid);
 	
-	if(session.profileid != -1)
+	if(target_session.profileid != -1) // Check target is online
 	{
+		// Save messages in database
+		if(bm == "1")
+		{
+			// Get ip of sender
+			std::string ip = "";
+			GPCM::Session session = findSessionByProfileId(profileid);
+
+			if(session.profileid != -1) // Check sender is online
+			{
+				ip = session.client->GetIP();
+			}
+
+			g_database->insertChat(profileid, ip, target_profileid, message);
+		}
+
 		std::string response = GameSpy::Parameter2Response({
 			"bm", bm,
 			"f", std::to_string(profileid),
-			"msg", msg,
+			"msg", message,
 			"final"
 		});
 		
-		session.client->Send(response);
+		target_session.client->Send(response);
 		
-		session.client->_LogTransaction("<--", response);
+		target_session.client->_LogTransaction("<--", response);
 	}
 }
 
