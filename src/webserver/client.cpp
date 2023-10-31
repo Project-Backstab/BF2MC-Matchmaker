@@ -1670,11 +1670,10 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader(bool isPlainText
 	return http_response;
 }
 
-std::string Webserver::Client::_readFile(const std::string &file_name) const
+bool Webserver::Client::_readFile(const std::string &file_name, std::string& data) const
 {
 	bool finished = false;
-	std::string data;
-	
+
 	// Load file from memory
 	if(g_file_system->GetFile(file_name, data))
 	{
@@ -1682,51 +1681,47 @@ std::string Webserver::Client::_readFile(const std::string &file_name) const
 		//Logger::debug("file_name = " + file_name);
 		//Logger::debug("file size = " + std::to_string(data.size()));
 		
-		return data;
+		return true;
 	}
 	
-	// If file is not in memory read it yourself
-	while(!finished)
-	{
-		std::ifstream input;
-	
-		try
-		{
-			input.open(file_name, std::ifstream::in | std::ifstream::binary);
+	std::ifstream input;
 
-			if(input.is_open())
-			{
-				data.append((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
-				
-				input.close();
-				
-				finished = true;
-			}
+	try
+	{
+		input.open(file_name, std::ifstream::in | std::ifstream::binary);
+
+		if(input.is_open())
+		{
+			data.append((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
+			
+			input.close();
+			
+			return true;
 		}
-		catch(...) {
-			Logger::error(file_name);
-		}
+	}
+	catch(...)
+	{
+		Logger::error(file_name);
 	}
 	
 	//Logger::debug(std::to_string(data.size()));
 	
-	return data;
+	return false;
 }
 
 void Webserver::Client::_SendFile(const std::string& file_name) const
 {
+	std::string data;
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader(false);
 	
-	std::string data = this->_readFile(file_name);
-	
-	http_response.SetStatusCode(200);
-	
-	if(data.size() != 0)
+	if(this->_readFile(file_name, data) && data.size() != 0)
 	{
+		http_response.SetStatusCode(200);
 		http_response.SetMessageBody(data);
 	}
 	else
 	{ // fix: Prevent to hang the http connection
+		http_response.SetStatusCode(404);
 		http_response.SetMessageBody("\r\n");
 	}
 	

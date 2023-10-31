@@ -84,7 +84,7 @@ namespace Webserver
 		private:
 			atomizes::HTTPMessage _defaultResponseHeader(bool isPlainText = true) const;
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
-			std::string _readFile(const std::string& file_name) const;
+			bool _readFile(const std::string& file_name, std::string& data) const;
 			void _SendFile(const std::string& file_name) const;
 			void _GetSessionPlayerAndClan(const Util::Url::Variables& url_variables,
 					Battlefield::Clan& clan, Battlefield::Player& player) const;
