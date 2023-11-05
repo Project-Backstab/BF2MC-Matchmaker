@@ -17,6 +17,7 @@ class Server : public Net::Socket
 			Webserver, // tcp:80    domain: www.easports.com and bfmc.gamespy.com
 			Browsing,  // tcp:28910 domain: bfield1942ps2.available.gamespy.com and bfield1942ps2.ms7.gamespy.com
 			GameStats, // tcp:29920 domain: bfield1942ps2.gamestats.bfmcspy.net
+			Websocket, // tcp:55001
 			None,
 		};
 	

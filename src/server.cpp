@@ -17,6 +17,7 @@
 #include <browsing/client.h>
 #include <gamestats/client.h>
 #include <qr/client.h>
+#include <websocket/client.h>
 
 #include <server.h>
 
@@ -53,6 +54,9 @@ Server::Server(Server::Type type)
 		break;
 		case Server::Type::GameStats:
 			port = g_settings["gamestats"]["port"].asInt();
+		break;
+		case Server::Type::Websocket:
+			port = g_settings["websocket"]["port"].asInt();
 		break;
 	}
 	
@@ -196,6 +200,24 @@ void Server::Listen()
 					std::shared_ptr<Net::Socket> client = _client;
 					
 					static_cast<GameStats::Client*>(client.get())->Listen();
+				});
+				t.detach();
+			}
+			break;
+			case Server::Type::Websocket:
+			{
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				
+				this->_clients.push_back(std::make_shared<Websocket::Client>(client_socket, client_address));
+				
+				std::shared_ptr<Net::Socket> client = this->_clients.back();
+				
+				this->onClientConnect(client);
+				
+				std::thread t([_client = client]() {
+					std::shared_ptr<Net::Socket> client = _client;
+					
+					static_cast<Websocket::Client*>(client.get())->Listen();
 				});
 				t.detach();
 			}

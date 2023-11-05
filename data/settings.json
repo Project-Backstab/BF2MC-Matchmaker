@@ -49,6 +49,13 @@
 		"show_requests": false,
 		"show_responses": false,
 	},
+	"websocket": 
+	{
+		"port": 55001,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false,
+	},
 	"show_client_connect": false,
 	"show_client_disconnect": false
 }

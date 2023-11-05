@@ -14,6 +14,7 @@
 #include <gpcm/client.h>
 #include <gamestats/client.h>
 #include <browsing/client.h>
+#include <websocket/client.h>
 #include <service/file_system.h>
 
 // Globals
@@ -24,6 +25,7 @@ Server*                 g_gpcm_server;
 Server*                 g_webserver_server;
 Server*                 g_browsing_server;
 Server*                 g_gamestats_server;
+Server*                 g_websocket_server;
 
 Json::Value             g_settings;
 std::shared_mutex       g_mutex_settings;
@@ -97,6 +99,12 @@ void start_gamestats_server()
 	
 	g_gamestats_server = new Server(Server::Type::GameStats);	
 	g_gamestats_server->Listen();
+}
+
+void start_websocket_server()
+{
+	g_websocket_server = new Server(Server::Type::Websocket);	
+	g_websocket_server->Listen();
 }
 
 void start_file_system()
@@ -184,8 +192,9 @@ int main(int argc, char const* argv[])
 	std::thread t_browsing(&start_browsing_server);
 	std::thread t_gamestats(&start_gamestats_server);
 	std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
+	std::thread t_websocket(&start_websocket_server);
 	std::thread t_file_system(&start_file_system);
-	
+
 	t_db.detach();
 	t_qr.detach();
 	t_gpsp.detach();
@@ -196,7 +205,8 @@ int main(int argc, char const* argv[])
 	t_gamestats.detach();
 	t_gamestats_heartbeat.detach();
 	t_file_system.detach();
-	
+	t_websocket.detach();
+
 	// Sleep ZZZZZZzzzzzZZZZZ
 	while(true)
 	{
