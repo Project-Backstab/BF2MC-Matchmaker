@@ -128,10 +128,17 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 		0250   5f 74 00 00 43 48 00 34 35 30 00 55 53 00 34 35   _t..CH.450.US.45
 		0260   30 00                                             0.
 
+		First bytes is the action code.
+		next 4 bytes are the session code.
+		The rest are response data to the action. In this the status from the server.
+
 	Response:
 		0030   fe fd 01 e0 dd 81 84 30 30 30 30 30 30 30 30 30   .......000000000
 		0040   30 30 30 30 30 30 30 30 30 30 30 00               00000000000.
-
+	
+		First 2 bytes are the magic QR code (0xfefd)
+		Next byte is the action request to the server. In this case (0x01) is requesting a challenge.
+		All the bytes after are the input for the challenge, this can be random data
 */
 void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) const
 {
