@@ -48,8 +48,8 @@ namespace Battlefield
 			uint8_t         _numplayers = 0;  // Total players in the whole game
 			uint8_t         _pplayers   = 0;  // present players at the end of the game 
 			uint16_t        _tplayed    = 0;  // Time played in seconds
-			uint8_t         _clanid_t0  = 0;
-			uint8_t         _clanid_t1  = 0;
+			int             _clanid_t0  = 0;
+			int             _clanid_t1  = 0;
 			uint8_t         _country_t0 = 0;
 			uint8_t         _country_t1 = 0;
 			
@@ -71,8 +71,8 @@ namespace Battlefield
 			uint16_t    GetTimePlayed() const    { return this->_tplayed;    }
 			
 			// Team
-			uint8_t     GetTeam1ClanId() const   { return this->_clanid_t0;  }
-			uint8_t     GetTeam2ClanId() const   { return this->_clanid_t1;  }
+			int         GetTeam1ClanId() const   { return this->_clanid_t0;  }
+			int         GetTeam2ClanId() const   { return this->_clanid_t1;  }
 			uint8_t     GetTeam1Country() const  { return this->_country_t0; }
 			uint8_t     GetTeam2Country() const  { return this->_country_t1; }
 			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
@@ -97,9 +97,9 @@ namespace Battlefield
 			bool SetTimePlayed(const std::string str_tplayed);
 			
 			// Team
-			bool SetTeam1ClanId(uint8_t clanid_t0);
+			bool SetTeam1ClanId(int clanid_t0);
 			bool SetTeam1ClanId(const std::string str_clanid_t0);
-			bool SetTeam2ClanId(uint8_t clanid_t1);
+			bool SetTeam2ClanId(int clanid_t1);
 			bool SetTeam2ClanId(const std::string str_clanid_t1);
 			bool SetTeam1Country(uint8_t country_t0);
 			bool SetTeam1Country(const std::string str_country_t0);

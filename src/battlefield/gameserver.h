@@ -105,8 +105,8 @@ namespace Battlefield
 			uint64_t    _region        = 1;    // Server region (America: 1, Asia: 2048, Europe: 65536)
 			
 			// Clan
-			int8_t      _c0            = -1;   // Clan ID team 1
-			int8_t      _c1            = -1;   // Clan ID team 2
+			int         _c0            = -1;   // Clan ID team 1
+			int         _c1            = -1;   // Clan ID team 2
 			std::string _n0            = "";   // Clan name team 1
 			std::string _n1            = "";   // Clan name team 2
 			uint8_t     _c0c           = 0;    // Team 1 is claimed (1: true, 0: false)
@@ -166,8 +166,8 @@ namespace Battlefield
 			uint8_t        GetQM() const             { return this->_qm;            }
 			uint64_t       GetRegion() const         { return this->_region;        }
 			// Clan
-			int32_t        GetClan1Id() const        { return this->_c0;            }
-			int32_t        GetClan2Id() const        { return this->_c1;            }
+			int            GetClan1Id() const        { return this->_c0;            }
+			int            GetClan2Id() const        { return this->_c1;            }
 			std::string    GetClan1Name() const      { return this->_n0;            }
 			std::string    GetClan2Name() const      { return this->_n1;            }
 			uint8_t        GetClan1Claimed() const   { return this->_c0c;           }

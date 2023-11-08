@@ -138,7 +138,7 @@ bool Battlefield::GameStat::SetTimePlayed(const std::string str_tplayed)
 }
 
 // Team
-bool Battlefield::GameStat::SetTeam1ClanId(uint8_t clanid_t0)
+bool Battlefield::GameStat::SetTeam1ClanId(int clanid_t0)
 {
 	this->_clanid_t0 = clanid_t0;
 	return true;
@@ -148,7 +148,7 @@ bool Battlefield::GameStat::SetTeam1ClanId(const std::string str_clanid_t0)
 {
 	try
 	{
-		uint8_t clanid_t0 = static_cast<uint8_t>(std::stoul(str_clanid_t0));
+		int clanid_t0 = std::stoi(str_clanid_t0);
 		
 		return this->SetTeam1ClanId(clanid_t0);
 	}
@@ -157,7 +157,7 @@ bool Battlefield::GameStat::SetTeam1ClanId(const std::string str_clanid_t0)
 	return false;
 }
 
-bool Battlefield::GameStat::SetTeam2ClanId(uint8_t clanid_t1)
+bool Battlefield::GameStat::SetTeam2ClanId(int clanid_t1)
 {
 	this->_clanid_t1 = clanid_t1;
 	return true;
@@ -167,7 +167,7 @@ bool Battlefield::GameStat::SetTeam2ClanId(const std::string str_clanid_t1)
 {
 	try
 	{
-		uint8_t clanid_t1 = static_cast<uint8_t>(std::stoul(str_clanid_t1));
+		int clanid_t1 = std::stoi(str_clanid_t1);
 		
 		return this->SetTeam2ClanId(clanid_t1);
 	}

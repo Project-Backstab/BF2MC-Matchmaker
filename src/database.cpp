@@ -2040,8 +2040,8 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	int64_t    output_xi;
 	uint8_t    output_qm;
 	uint64_t   output_region;
-	int8_t     output_c0;
-	int8_t     output_c1;
+	int        output_c0;
+	int        output_c1;
 	char       output_n0[33];
 	char       output_n1[33];
 	uint8_t    output_c0c;
@@ -2169,10 +2169,10 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	output_bind[35].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[35].buffer = &output_region;
 	output_bind[35].is_unsigned = true;
-	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[36].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[36].buffer = &output_c0;
 	output_bind[36].is_unsigned = false;
-	output_bind[37].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[37].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[37].buffer = &output_c1;
 	output_bind[37].is_unsigned = false;
 	output_bind[38].buffer_type = MYSQL_TYPE_VAR_STRING;
@@ -2347,8 +2347,8 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	int64_t    output_xi;
 	uint8_t    output_qm;
 	uint64_t   output_region;
-	int8_t     output_c0;
-	int8_t     output_c1;
+	int        output_c0;
+	int        output_c1;
 	char       output_n0[33];
 	char       output_n1[33];
 	uint8_t    output_c0c;
@@ -2479,10 +2479,10 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	output_bind[35].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[35].buffer = &output_region;
 	output_bind[35].is_unsigned = true;
-	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[36].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[36].buffer = &output_c0;
 	output_bind[36].is_unsigned = false;
-	output_bind[37].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[37].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[37].buffer = &output_c1;
 	output_bind[37].is_unsigned = false;
 	output_bind[38].buffer_type = MYSQL_TYPE_VAR_STRING;
@@ -2650,8 +2650,8 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	int64_t    output_xi;
 	uint8_t    output_qm;
 	uint64_t   output_region;
-	int8_t     output_c0;
-	int8_t     output_c1;
+	int        output_c0;
+	int        output_c1;
 	char       output_n0[33];
 	char       output_n1[33];
 	uint8_t    output_c0c;
@@ -2779,10 +2779,10 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 	output_bind[37].buffer_type = MYSQL_TYPE_LONGLONG;
 	output_bind[37].buffer = &output_region;
 	output_bind[37].is_unsigned = true;
-	output_bind[38].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[38].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[38].buffer = &output_c0;
 	output_bind[38].is_unsigned = false;
-	output_bind[39].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[39].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[39].buffer = &output_c1;
 	output_bind[39].is_unsigned = false;
 	output_bind[40].buffer_type = MYSQL_TYPE_VAR_STRING;
@@ -2958,8 +2958,8 @@ bool Database::insertGameServer(Battlefield::GameServer& game_server)
 	uint8_t     input_qm            = game_server.GetQM();
 	uint64_t    input_region        = game_server.GetRegion();
 	// Clan
-	int32_t     input_c0            = game_server.GetClan1Id();
-	int32_t     input_c1            = game_server.GetClan2Id();
+	int         input_c0            = game_server.GetClan1Id();
+	int         input_c1            = game_server.GetClan2Id();
 	std::string input_n0            = game_server.GetClan1Name();
 	std::string input_n1            = game_server.GetClan2Name();
 	uint8_t     input_c0c           = game_server.GetClan1Claimed();
@@ -3242,8 +3242,8 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 	uint8_t     input_qm            = game_server.GetQM();
 	uint64_t    input_region        = game_server.GetRegion();
 	// Clan
-	int32_t     input_c0            = game_server.GetClan1Id();
-	int32_t     input_c1            = game_server.GetClan2Id();
+	int         input_c0            = game_server.GetClan1Id();
+	int         input_c1            = game_server.GetClan2Id();
 	std::string input_n0            = game_server.GetClan1Name();
 	std::string input_n1            = game_server.GetClan2Name();
 	uint8_t     input_c0c           = game_server.GetClan1Claimed();
@@ -3667,8 +3667,8 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	uint8_t    output_numplayers;
 	uint8_t    output_pplayers;
 	uint16_t   output_tplayed;
-	uint8_t    output_clanid_t0;
-	uint8_t    output_clanid_t1;
+	int        output_clanid_t0;
+	int        output_clanid_t1;
 	uint8_t    output_country_t0;
 	uint8_t    output_country_t1;
 	uint8_t    output_victory_t0;
@@ -3707,10 +3707,10 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	output_bind[7].buffer_type = MYSQL_TYPE_SHORT;
 	output_bind[7].buffer = &output_tplayed;
 	output_bind[7].is_unsigned = true;
-	output_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[8].buffer = &output_clanid_t0;
 	output_bind[8].is_unsigned = true;
-	output_bind[9].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[9].buffer = &output_clanid_t1;
 	output_bind[9].is_unsigned = true;
 	output_bind[10].buffer_type = MYSQL_TYPE_TINY;
@@ -3806,8 +3806,8 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	uint8_t    output_numplayers;
 	uint8_t    output_pplayers;
 	uint16_t   output_tplayed;
-	uint8_t    output_clanid_t0;
-	uint8_t    output_clanid_t1;
+	int        output_clanid_t0;
+	int        output_clanid_t1;
 	uint8_t    output_country_t0;
 	uint8_t    output_country_t1;
 	uint8_t    output_victory_t0;
@@ -3843,10 +3843,10 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	output_bind[6].buffer_type = MYSQL_TYPE_SHORT;
 	output_bind[6].buffer = &output_tplayed;
 	output_bind[6].is_unsigned = true;
-	output_bind[7].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[7].buffer = &output_clanid_t0;
 	output_bind[7].is_unsigned = true;
-	output_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[8].buffer = &output_clanid_t1;
 	output_bind[8].is_unsigned = true;
 	output_bind[9].buffer_type = MYSQL_TYPE_TINY;
@@ -3933,8 +3933,8 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	uint8_t     input_numplayers = game_stat.GetNumPlayers();
 	uint8_t     input_pplayers   = game_stat.GetPPlayers();
 	uint16_t    input_tplayed    = game_stat.GetTimePlayed();
-	uint8_t     input_clanid_t0  = game_stat.GetTeam1ClanId();
-	uint8_t     input_clanid_t1  = game_stat.GetTeam2ClanId();
+	int         input_clanid_t0  = game_stat.GetTeam1ClanId();
+	int         input_clanid_t1  = game_stat.GetTeam2ClanId();
 	uint8_t     input_country_t0 = game_stat.GetTeam1Country();
 	uint8_t     input_country_t1 = game_stat.GetTeam2Country();
 	uint8_t     input_victory_t0 = game_stat.GetTeam1Victory();
@@ -3963,10 +3963,10 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	input_bind[6].buffer_type = MYSQL_TYPE_SHORT;
 	input_bind[6].buffer = &input_tplayed;
 	input_bind[6].is_unsigned = true;
-	input_bind[7].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[7].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[7].buffer = &input_clanid_t0;
 	input_bind[7].is_unsigned = true;
-	input_bind[8].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[8].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[8].buffer = &input_clanid_t1;
 	input_bind[8].is_unsigned = true;
 	input_bind[9].buffer_type = MYSQL_TYPE_TINY;
