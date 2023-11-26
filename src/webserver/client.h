@@ -90,6 +90,9 @@ namespace Webserver
 					Battlefield::Clan& clan, Battlefield::Player& player) const;
 			bool _updateClanInformation(Battlefield::Clan& clan,
 					const Util::Url::Variables &url_variables, bool is_update = false);
+		
+		public:
+			static void Heartbeat();
 	};
 }
 

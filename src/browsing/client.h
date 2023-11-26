@@ -54,6 +54,7 @@ namespace Browsing
 		public:
 			static void Test();
 			static void Crack();
+			static void Heartbeat();
 	};
 }
 

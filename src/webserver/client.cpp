@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <fstream>
 #include <regex>
+#include <thread>
 
 #include <settings.h>
 #include <logger.h>
@@ -1785,3 +1786,23 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 	return true;
 }
 
+
+void Webserver::Client::Heartbeat()
+{
+	auto target_time = std::chrono::system_clock::now() + std::chrono::minutes(1);
+	
+	while(true)
+	{
+		std::this_thread::sleep_for (std::chrono::seconds(60));
+
+		for(std::shared_ptr<Net::Socket> client : g_webserver_server->GetClients())
+		{
+			std::chrono::system_clock::time_point last_recieved = client.get()->GetLastRecievedTime();
+
+			if (last_recieved < target_time)
+			{
+				client.get()->Close();
+			}
+		}
+	}
+}
