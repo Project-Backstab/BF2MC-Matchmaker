@@ -4499,8 +4499,8 @@ bool Database::queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		player.SetScore(output_score);
-		player.SetRank(output_ran);
 		player.SetPPH(output_pph);
+		player.SetRank(output_ran);
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -4614,8 +4614,8 @@ bool Database::queryLeaderboardRankByProfileId(Battlefield::RankPlayers& rank_pl
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		player.SetScore(output_score);
-		player.SetRank(output_ran);
 		player.SetPPH(output_pph);
+		player.SetRank(output_ran);
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -4715,8 +4715,8 @@ bool Database::queryLeaderboardRankByFriends(Battlefield::RankPlayers& rank_play
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		player.SetScore(output_score);
-		player.SetRank(output_ran);
 		player.SetPPH(output_pph);
+		player.SetRank(output_ran);
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}

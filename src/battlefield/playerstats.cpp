@@ -98,7 +98,7 @@ bool Battlefield::PlayerStats::SetScore(int32_t score)
 {
 	this->_score = score;
 
-	this->_calcRank();
+	//this->_calcRank();
 	
 	return true;
 }
@@ -125,7 +125,7 @@ bool Battlefield::PlayerStats::SetPPH(uint32_t pph)
 {
 	this->_pph = pph;
 
-	this->_calcRank();
+	//this->_calcRank();
 
 	return true;
 }
@@ -268,7 +268,7 @@ bool Battlefield::PlayerStats::SetMedals(Medals medals)
 {
 	this->_medals = static_cast<uint32_t>(medals);
 
-	this->_calcRank();
+	//this->_calcRank();
 
 	return true;
 }
@@ -296,11 +296,15 @@ void Battlefield::PlayerStats::_calcRank()
 	auto it = std::lower_bound(RankScores.begin(), RankScores.end(), this->_score + 1);
     int score_rank = std::distance(RankScores.begin(), it);
     
-    it = std::lower_bound(RankPph.begin(), RankPph.end(), this->_pph + 1);
+    it = std::lower_bound(RankPph.begin(), RankPph.end(), (this->_pph / 100) + 1);
     int pph_rank = std::distance(RankPph.begin(), it);
     
     it = std::lower_bound(RankMedals.begin(), RankMedals.end(), Util::countSetBits(this->_medals) + 1);
     int medals_rank = std::distance(RankMedals.begin(), it);
+
+	Logger::debug("score_rank = " + std::to_string(this->_score) + ", " + std::to_string(score_rank));
+	Logger::debug("pph_rank = " + std::to_string(this->_pph / 100) + ", " + std::to_string(pph_rank));
+	Logger::debug("medals_rank = " + std::to_string(this->_medals) + ", " + std::to_string(Util::countSetBits(this->_medals)) + ", " + std::to_string(medals_rank));
 
 	this->_ran = std::min(std::min(score_rank, pph_rank), medals_rank);
 }
