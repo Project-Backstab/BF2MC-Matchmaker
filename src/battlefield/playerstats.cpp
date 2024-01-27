@@ -1,5 +1,6 @@
 #include <battlefield.h>
 #include <util.h>
+#include <logger.h>
 
 #include <battlefield/playerstats.h>
 
