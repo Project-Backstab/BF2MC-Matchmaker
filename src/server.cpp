@@ -23,7 +23,7 @@
 
 Server::Server(Server::Type type)
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
 	
 	int port = -1;
 	int socket_type = SOCK_STREAM;
@@ -323,7 +323,7 @@ void Server::onServerShutdown() const
 
 void Server::onClientConnect(const Net::Socket& client) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
 	Logger::info("Client " + client.GetAddress() + " connected",
 		this->_type, g_settings["show_client_connect"].asBool());
@@ -331,7 +331,7 @@ void Server::onClientConnect(const Net::Socket& client) const
 
 void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
 	Logger::info("Client " + client->GetAddress() + " connected",
 		this->_type, g_settings["show_client_connect"].asBool());
@@ -339,7 +339,7 @@ void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 
 void Server::onClientDisconnect(const Net::Socket& client)
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
 	if(this->GetSocketType() == "tcp")
 	{

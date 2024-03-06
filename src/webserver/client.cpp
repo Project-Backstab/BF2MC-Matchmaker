@@ -1649,7 +1649,7 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, c
 */
 void Webserver::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // settings lock (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
 	
 	bool show_console = (g_settings["webserver"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["webserver"]["show_responses"].asBool() && direction == "<--");

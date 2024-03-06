@@ -338,7 +338,7 @@ void QR::Client::requestKeepAlive(const std::vector<unsigned char>& request) con
 */
 void QR::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)
 	
 	bool show_console = (g_settings["qr"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["qr"]["show_responses"].asBool() && direction == "<--");

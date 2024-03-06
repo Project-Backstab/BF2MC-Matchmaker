@@ -7,11 +7,14 @@
 #include <server.h>
 #include <service.h>
 
-extern std::ofstream g_logger;
-extern std::mutex    g_mutex_logger;
-
 namespace Logger
 {
+	enum class Type
+	{
+		Development  = 0,
+		Deployment = 1,
+	};
+	
 	void Initialize();
 	
 	std::string ToString(enum Server::Type type);
@@ -34,5 +37,9 @@ namespace Logger
 	
 	void debug(const std::string& msg);
 }
+
+extern std::ofstream g_logger;
+extern std::mutex    g_logger_mutex;
+extern Logger::Type  g_logger_type;
 
 #endif // LOGGER_H

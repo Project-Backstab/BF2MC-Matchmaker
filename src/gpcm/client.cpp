@@ -677,7 +677,7 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 */
 void GPCM::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
 	bool show_console = (g_settings["gpcm"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["gpcm"]["show_responses"].asBool() && direction == "<--");

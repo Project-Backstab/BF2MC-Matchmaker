@@ -29,7 +29,7 @@ Server*                 g_gamestats_server;
 Server*                 g_websocket_server;
 
 Json::Value             g_settings;
-std::shared_mutex       g_mutex_settings;
+std::shared_mutex       g_settings_mutex;
 
 Service::File_System*   g_file_system;
 

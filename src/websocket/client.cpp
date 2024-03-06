@@ -144,7 +144,7 @@ void Websocket::Client::onRequest(const std::vector<char>& buffer)
 */
 void Websocket::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // settings lock (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
 	
 	bool show_console = (g_settings["websocket"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["websocket"]["show_responses"].asBool() && direction == "<--");

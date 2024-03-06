@@ -7,6 +7,6 @@
 
 extern Json::Value       g_settings;
 
-extern std::shared_mutex g_mutex_settings;
+extern std::shared_mutex g_settings_mutex;
 
 #endif // SETTINGS_H

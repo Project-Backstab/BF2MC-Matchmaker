@@ -642,7 +642,7 @@ void Browsing::Client::_Encrypt(std::vector<unsigned char>& response)
 
 void Browsing::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_mutex_settings); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
 	bool show_console = (g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["browsing"]["show_responses"].asBool() && direction == "<--");

@@ -5699,7 +5699,7 @@ bool Database::insertChat(int profileid, const std::string& ip, int target_profi
 // Private functions
 bool Database::_connect()
 {	
-	std::shared_lock<std::shared_mutex> guard(g_mutex_settings); // Read only
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // Read only
 
 	this->_connection = mysql_init(nullptr);
 
