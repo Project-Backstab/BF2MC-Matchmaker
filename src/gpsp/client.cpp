@@ -429,6 +429,11 @@ void GPSP::Client::_LogTransaction(const std::string& direction, const std::stri
 {
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)
 	
+	if ((g_logger_mode & Logger::Mode::Development) == 0)
+	{
+		return;
+	}
+	
 	bool show_console = (g_settings["gpsp"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["gpsp"]["show_responses"].asBool() && direction == "<--");
 	

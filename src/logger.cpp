@@ -8,7 +8,7 @@
 // Global
 std::ofstream g_logger;
 std::mutex    g_logger_mutex;
-Logger::Type  g_logger_type = Logger::Type::Development;
+Logger::Mode  g_logger_mode = Logger::Mode::Development;
 
 void Logger::Initialize()
 {

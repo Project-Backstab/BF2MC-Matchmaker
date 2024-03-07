@@ -644,6 +644,11 @@ void Browsing::Client::_LogTransaction(const std::string& direction, const std::
 {
 	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
+	if ((g_logger_mode & Logger::Mode::Development) == 0)
+	{
+		return;
+	}
+
 	bool show_console = (g_settings["browsing"]["show_requests"].asBool() && direction == "-->") ||
 						(g_settings["browsing"]["show_responses"].asBool() && direction == "<--");
 	

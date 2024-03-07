@@ -325,16 +325,22 @@ void Server::onClientConnect(const Net::Socket& client) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
-	Logger::info("Client " + client.GetAddress() + " connected",
-		this->_type, g_settings["show_client_connect"].asBool());
+	if ((g_logger_mode & Logger::Mode::Development) != 0)
+	{
+		Logger::info("Client " + client.GetAddress() + " connected",
+			this->_type, g_settings["show_client_connect"].asBool());
+	}
 }
 
 void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
 	
-	Logger::info("Client " + client->GetAddress() + " connected",
-		this->_type, g_settings["show_client_connect"].asBool());
+	if ((g_logger_mode & Logger::Mode::Development) != 0)
+	{
+		Logger::info("Client " + client->GetAddress() + " connected",
+			this->_type, g_settings["show_client_connect"].asBool());
+	}
 }
 
 void Server::onClientDisconnect(const Net::Socket& client)
@@ -356,16 +362,22 @@ void Server::onClientDisconnect(const Net::Socket& client)
 		// When found remove client
 		if (it != this->_clients.end())
 		{
-			Logger::info("Client " + client.GetAddress() + " disconnected",
-				this->_type, g_settings["show_client_disconnect"].asBool());
-			
+			if ((g_logger_mode & Logger::Mode::Development) != 0)
+			{
+				Logger::info("Client " + client.GetAddress() + " disconnected",
+					this->_type, g_settings["show_client_disconnect"].asBool());
+			}
+
 			this->_clients.erase(it);
 		}
 	}
 	else
 	{
-		Logger::info("Client " + client.GetAddress() + " disconnected",
-			this->_type, g_settings["show_client_disconnect"].asBool());
+		if ((g_logger_mode & Logger::Mode::Development) != 0)
+		{
+			Logger::info("Client " + client.GetAddress() + " disconnected",
+				this->_type, g_settings["show_client_disconnect"].asBool());
+		}
 	}
 }
 

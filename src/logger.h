@@ -9,10 +9,11 @@
 
 namespace Logger
 {
-	enum class Type
+	enum Mode
 	{
-		Development  = 0,
-		Deployment = 1,
+		Development  = 0x1, // Verbose
+		Production   = 0x2, // Standard
+		Deployment   = 0x4, // Minimal
 	};
 	
 	void Initialize();
@@ -40,6 +41,6 @@ namespace Logger
 
 extern std::ofstream g_logger;
 extern std::mutex    g_logger_mutex;
-extern Logger::Type  g_logger_type;
+extern Logger::Mode  g_logger_mode;
 
 #endif // LOGGER_H
