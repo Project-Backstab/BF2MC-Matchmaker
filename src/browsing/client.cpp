@@ -229,6 +229,8 @@ void Browsing::Client::requestServerList(const std::vector<unsigned char>& reque
 	{
 		return;
 	}
+
+	Logger::info(this->GetAddress() + " <-- ServerList: " + filter, Server::Type::Browsing);
 	
 	std::vector<unsigned char> response(CHALLENGE_HEADER_LEN, 0x0);
 	
@@ -475,6 +477,8 @@ void Browsing::Client::requestServerInfo(const std::vector<unsigned char>& reque
 	//Logger::debug("ip = " + str_ip);
 	//Logger::debug("port = " + std::to_string(port));
 	
+	Logger::info(this->GetAddress() + " <-- ServerInfo: " + str_ip + ":" + std::to_string(port), Server::Type::Browsing);
+
 	Battlefield::GameServer game_server;
 	game_server.SetIp(str_ip);
 	game_server.SetPort(port);
