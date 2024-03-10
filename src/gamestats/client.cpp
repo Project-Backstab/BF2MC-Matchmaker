@@ -136,6 +136,8 @@ void GameStats::Client::requestChallenge()
 {
 	std::string challenge = Util::generateRandomChallenge();
 	
+	Logger::info(this->GetAddress() + " --> Challenge", Server::Type::GameStats);
+
 	std::string response = GameSpy::Parameter2Response({
 		"lc",        "1",
 		"challenge", challenge,
@@ -155,7 +157,9 @@ void GameStats::Client::requestChallenge()
 		\lc\2\sesskey\1687554231\proof\0\id\1\final\
 */
 void GameStats::Client::requestAuth(const GameSpy::Parameter& parameter)
-{	
+{
+	Logger::info(this->GetAddress() + " --> Auth", Server::Type::GameStats);
+
 	std::string response = GameSpy::Parameter2Response({
 		"lc",      "2",
 		"sesskey", "1687554231",
@@ -175,7 +179,7 @@ void GameStats::Client::requestAuth(const GameSpy::Parameter& parameter)
 */
 void GameStats::Client::requestNewGame(const GameSpy::Parameter& parameter)
 {
-	
+	Logger::info(this->GetAddress() + " --> NewGame", Server::Type::GameStats);
 }
 
 /*
@@ -200,7 +204,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	std::string key, value;
 	Battlefield::GameStat game_stat;
 	Battlefield::GameServer game_server;
-	
+
 	// Set game server ip
 	game_server.SetIp(this->GetIP());
 	
@@ -213,6 +217,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		return;
 	}
 	
+	Logger::info(this->GetAddress() + " --> UpdateGame", Server::Type::GameStats);
+
 	// Read Game stat information
 	while(parameter.size() > offset + 1)
 	{

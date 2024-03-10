@@ -149,6 +149,8 @@ void GPCM::Client::requestChallenge()
 {
 	this->_session.challenge = Util::generateRandomChallenge();
 	
+	Logger::info(this->GetAddress() + " --> Challenge", Server::Type::GPCM);
+	
 	std::string response = GameSpy::Parameter2Response({
 		"lc",        "1",
 		"challenge", this->_session.challenge,
@@ -184,6 +186,8 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	std::string id = parameter[19];
 	std::string server_challenge = this->_session.challenge;
 	std::string client_response = parameter[7];
+	
+	Logger::info(this->GetAddress() + " --> Login", Server::Type::GPCM);
 	
 	Battlefield::Player player;
 	player.SetUniquenickWithoutClanTag(uniquenick);
@@ -301,8 +305,9 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 	std::string profileid = parameter[5];
 	std::string id = parameter[7];
 	
-	Battlefield::Player player;
+	Logger::info(this->GetAddress() + " --> GetProfile: " + profileid, Server::Type::GPCM);
 
+	Battlefield::Player player;
 	player.SetProfileId(profileid);
 	
 	// Get player information

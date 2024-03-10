@@ -62,6 +62,8 @@ void QR::Client::onRequest(const std::vector<unsigned char>& request)
 */
 void QR::Client::requestChallenge(const std::vector<unsigned char>& request) const
 {
+	Logger::info(this->GetAddress() + " --> Challenge", Server::Type::QR);
+
 	std::vector<unsigned char> response = {
 		RESPONSE_MAGIC_1, RESPONSE_MAGIC_2,				// Magic
 		RESPONSE_CHALLENGE,								// Challenge response action
