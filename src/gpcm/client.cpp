@@ -103,6 +103,10 @@ void GPCM::Client::Listen()
 
 void GPCM::Client::Disconnect()
 {
+	this->_session.status = "|s|0|ss|Offline";
+	
+	this->_SendNewStatus();
+
 	this->Close();
 	g_gpcm_server->onClientDisconnect(*this);
 }
@@ -666,10 +670,6 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 	g_database->queryPlayerByProfileId(player);
 	
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged out", Server::Type::GPCM);
-	
-	this->_session.status = "|s|0|ss|Offline";
-	
-	this->_SendNewStatus();
 }
 
 /*

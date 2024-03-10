@@ -133,7 +133,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	// Get players from database by email
 	g_database->queryPlayersByEmail(players, email);
 	
-	Logger::info(this->GetAddress() + " <-- Nicks: " + email, Server::Type::GPSP);
+	Logger::info(this->GetAddress() + " --> Nicks: " + email, Server::Type::GPSP);
 
 	// Check password
 	bool correct_password = false;
@@ -224,7 +224,7 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 	// Convert email to lowercase
 	std::transform(email.begin(), email.end(), email.begin(), [](unsigned char c){ return std::tolower(c); });
 	
-	Logger::info(this->GetAddress() + " <-- Valid: " + email, Server::Type::GPSP);
+	Logger::info(this->GetAddress() + " --> Valid: " + email, Server::Type::GPSP);
 
 	Battlefield::Players players;
 	std::string response;
@@ -294,7 +294,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		email = email.substr(0, 49);
 	}
 
-	Logger::info(this->GetAddress() + " <-- NewUser: " + nick + ", " + uniquenick + ", " + email, Server::Type::GPSP);
+	Logger::info(this->GetAddress() + " --> NewUser: " + nick + ", " + uniquenick + ", " + email, Server::Type::GPSP);
 
 	// Remove clan name out of uniquenick
 	Battlefield::Player player;
@@ -395,7 +395,7 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 	
 	std::string uniquenick = parameter[9];
 	
-	Logger::info(this->GetAddress() + " <-- Search: " + uniquenick, Server::Type::GPSP);
+	Logger::info(this->GetAddress() + " --> Search: " + uniquenick, Server::Type::GPSP);
 
 	Battlefield::Player player;
 	player.SetUniquenick(uniquenick);

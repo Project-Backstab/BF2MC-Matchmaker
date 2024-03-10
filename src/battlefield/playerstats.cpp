@@ -257,7 +257,7 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 	{
 		this->_medals = medals;
 		
-		this->_calcRank();
+		//this->_calcRank();
 
 		return true;
 	}
