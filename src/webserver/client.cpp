@@ -1089,8 +1089,22 @@ void Webserver::Client::requestLeaderboard(const atomizes::HTTPMessage& http_req
 	}
 	else
 	{
-		// Top 10 clan leaderboard
-		g_database->queryLeaderboardClan(rank_clans, 10, 0);
+		uint32_t offset = 0;
+		uint32_t limit = 7;
+
+		it = url_variables.find("startrank");
+		auto it2 = url_variables.find("endrank");
+
+		if (it != url_variables.end() && it2 != url_variables.end())
+		{
+			try
+			{
+				offset = std::stoul(it->second) - 1;				
+			}
+			catch(...) {};
+		}
+		
+		g_database->queryLeaderboardClan(rank_clans, limit, offset);
 	}
 
 	if(rank_clans.size() > 0)

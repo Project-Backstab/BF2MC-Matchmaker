@@ -244,7 +244,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	this->_LogTransaction("<--", response);
 	
 	g_database->updatePlayerLastLogin(player, this->GetIP());
-	Logger::info("User \"" + player.GetUniquenick() + "\" logged in from " + this->GetAddress(), Server::Type::GPCM);
+	Logger::info(this->GetAddress() + " <-- User \"" + player.GetUniquenick() + "\" logged in.", Server::Type::GPCM);
 	
 	// Get player friends
 	g_database->queryPlayerFriendsByProfileId(player);

@@ -133,7 +133,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 	// Get players from database by email
 	g_database->queryPlayersByEmail(players, email);
 	
-	Logger::info(this->GetAddress() + " --> Nicks: " + email, Server::Type::GPSP);
+	Logger::info(this->GetAddress() + " --> Nicks ", Server::Type::GPSP);
 
 	// Check password
 	bool correct_password = false;
@@ -182,7 +182,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 		response_parameter.push_back("uniquenick");
 		response_parameter.push_back(uniquenick);
 
-		Logger::info(nick + " " + uniquenick, Server::Type::GPSP);
+		Logger::info(this->GetAddress() + " <-- " + uniquenick, Server::Type::GPSP);
 	}
 	
 	response_parameter.push_back("ndone");
