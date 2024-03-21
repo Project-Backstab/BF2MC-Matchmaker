@@ -468,6 +468,11 @@ std::vector<unsigned char> ServerInfo_test_response = {
 
 void Browsing::Client::requestServerInfo(const std::vector<unsigned char>& request)
 {
+	if(request.size() < 9)
+	{
+		return;
+	}
+
 	uint8_t ip[4] = { request[3], request[4], request[5], request[6] };
 	std::string str_ip = std::to_string(ip[0]) + "." + std::to_string(ip[1]) + "." +
 	                     std::to_string(ip[2]) + "." + std::to_string(ip[3]);

@@ -32,3 +32,14 @@ sudo systemctl stop bf2mc
 sudo systemctl restart bf2mc
 sudo systemctl status bf2mc
 ```
+
+# Cron job
+```
+sudo crontab -e
+```
+
+Edit:
+```
+55 8 * * * curl http://127.0.0.1:8080/API/admin/message?password=12345\&message=Restarting\%20Server\%20in\%205\%20min
+0 9 * * * sudo systemctl restart bf2mc
+```
