@@ -267,11 +267,7 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 
 bool Battlefield::PlayerStats::SetMedals(Medals medals)
 {
-	this->_medals = static_cast<uint32_t>(medals);
-
-	//this->_calcRank();
-
-	return true;
+	return this->SetMedals(static_cast<uint32_t>(medals));
 }
 
 bool Battlefield::PlayerStats::SetTotalTopPlayer(uint32_t total)
