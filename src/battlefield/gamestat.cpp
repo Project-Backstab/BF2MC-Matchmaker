@@ -970,8 +970,6 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 	return false;
 }
 
-#include <logger.h>
-
 void Battlefield::GameStatPlayer::UpdatePlayerStats()
 {
 	Battlefield::Player player;
@@ -1022,7 +1020,7 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 
 	Logger::info("new Player.medals = " + std::to_string(player.GetMedals()));
 	Logger::info("------------------------------------------");
-	
+
 	player.SetPPH(this->GetPPH());       // pph
 	player.SetRank(this->GetRank());     // rank
 	

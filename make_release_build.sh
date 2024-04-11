@@ -1,7 +1,8 @@
 #/bin/env bash
 
-rm ../BF2MC-Matchmaker-release/ -r
-rm build/ -r
+rm -r ../BF2MC-Matchmaker-release/ --exclude='../BF2MC-Matchmaker-release/data/log'
+rm -r build/
+rm data/log/*
 
 mkdir build
 cd build
@@ -12,6 +13,6 @@ cmake --install . --prefix ../../BF2MC-Matchmaker-release
 
 cd ../../BF2MC-Matchmaker-release
 
-rm include/ -r
-rm lib/ -r
+rm -r include/
+rm -r lib/
 
