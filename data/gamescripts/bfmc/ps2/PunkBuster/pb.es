@@ -28,4 +28,4 @@ Utilice el bot de Mod Mail en Discord para denunciar infracciones a las reglas.
 
 Equipo de BFMCspy
 
-discord.gg/bf2mc
+discord.gg/bf2mc   

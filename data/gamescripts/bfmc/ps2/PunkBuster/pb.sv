@@ -28,4 +28,4 @@ Ha det så trevligt!
 
 BFMCspy Team
 
-discord.gg/bf2mc
+discord.gg/bf2mc   
