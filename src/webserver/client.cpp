@@ -333,7 +333,8 @@ void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_r
 	
 	this->Send(http_response);
 	
-	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+	//this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK -> " + response);
 }
 
 void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, const std::string& url_base,

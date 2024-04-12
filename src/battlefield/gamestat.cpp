@@ -1013,12 +1013,16 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 	
 	Logger::info("------------------------------------------");
 	Logger::info("WTF WHY IS THIS HAPPENING?!!!!");
+	Logger::info("GameStatPlayer.pid = " + std::to_string(this->GetProfileId()));
+	Logger::info("GameStatPlayer.auth = " + this->GetAuth());
+	Logger::info("GameStatPlayer.time = " + std::to_string(this->GetTime()));
+	Logger::info("GameStatPlayer.team = " + std::to_string(this->GetTeam()));
 	Logger::info("GameStatPlayer.medals = " + std::to_string(this->GetMedals()));
+
 	Logger::info("Player.medals = " + std::to_string(player.GetMedals()));
-
 	player.SetMedals(this->GetMedals()); // medals
-
 	Logger::info("new Player.medals = " + std::to_string(player.GetMedals()));
+
 	Logger::info("------------------------------------------");
 
 	player.SetPPH(this->GetPPH());       // pph
