@@ -18,37 +18,37 @@ struct MYSQL_TIME;
 namespace Battlefield
 {
 	/**
-     * @brief Forward declaration of the Clan class.
-     * 
-     * This forward declaration allows the use of the Clan class in contexts where only the class name needs to be known,
-     * such as declaring pointers or references to Clan objects, without the need to include the full definition of the class.
-     * 
-     * Forward declarations are commonly used to reduce compile-time dependencies and improve compilation speed.
-     */
+	 * @brief Forward declaration of the Clan class.
+	 * 
+	 * This forward declaration allows the use of the Clan class in contexts where only the class name needs to be known,
+	 * such as declaring pointers or references to Clan objects, without the need to include the full definition of the class.
+	 * 
+	 * Forward declarations are commonly used to reduce compile-time dependencies and improve compilation speed.
+	 */
 	class Clan;
 	
 	/**
-     * @brief Type definition for a vector of Clan objects.
-     * 
-     * This typedef defines a shorthand alias `Clans` for a vector containing instances of the Clan class.
-     * It can be used to conveniently refer to collections of Clan objects.
-     */
-    typedef std::vector<Battlefield::Clan> Clans;
-
-    /**
-     * @brief Type definition for a map of rank IDs to Clan objects.
-     * 
-     * This typedef defines a shorthand alias `RankClans` for a map where integer keys represent rank IDs
-     * and corresponding values are instances of the Clan class.
-     * It can be used to store and manipulate associations between rank IDs and Clan objects.
-     */
-    typedef std::map<int, Battlefield::Clan> RankClans;
+	 * @brief Type definition for a vector of Clan objects.
+	 * 
+	 * This typedef defines a shorthand alias `Clans` for a vector containing instances of the Clan class.
+	 * It can be used to conveniently refer to collections of Clan objects.
+	 */
+	typedef std::vector<Battlefield::Clan> Clans;
 
 	/**
-     * @brief Represents a clan in the Battlefield game.
-     * 
-     * This class encapsulates data and behavior related to a clan in the Battlefield game.
-     */
+	 * @brief Type definition for a map of rank IDs to Clan objects.
+	 * 
+	 * This typedef defines a shorthand alias `RankClans` for a map where integer keys represent rank IDs
+	 * and corresponding values are instances of the Clan class.
+	 * It can be used to store and manipulate associations between rank IDs and Clan objects.
+	 */
+	typedef std::map<int, Battlefield::Clan> RankClans;
+
+	/**
+	 * @brief Represents a clan in the Battlefield game.
+	 * 
+	 * This class encapsulates data and behavior related to a clan in the Battlefield game.
+	 */
 	class Clan
 	{
 		public:
