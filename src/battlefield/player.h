@@ -7,44 +7,58 @@
 
 #include <battlefield/playerstats.h>
 
-/*
-	Forward declarations
-*/
+/**
+ * @brief Forward declaration of the MYSQL_TIME structure.
+ * 
+ * This forward declaration allows the use of the MYSQL_TIME structure in contexts where only the structure name needs to be known,
+ * such as declaring pointers or references to MYSQL_TIME objects, without the need to include the full definition of the structure.
+ * 
+ * MYSQL_TIME is typically used to represent date and time values in MySQL-related operations.
+ */
 struct MYSQL_TIME;
 
 namespace Battlefield
 {
-	/*
-		Forward declarations
-	*/
-	class Player;
+	/**
+	 * @brief Forward declarations
+	 */
+	class Player; // Forward declaration of the Player class within the Battlefield namespace
+
+	/**
+	 * @brief Type definitions
+	 */
+	typedef std::vector<Player> Players; // Alias for a vector of Player objects, named Players
+	typedef std::map<int, Player> RankPlayers; // Alias for a map with integer keys and Player values, named RankPlayers
+
 	
-	/*
-		Type definitions
-	*/
-	typedef std::vector<Battlefield::Player> Players;
-	typedef std::map<int, Battlefield::Player> RankPlayers;
-	
-	/*
-		Player
-	*/
+	/**
+	 * @brief Represents a player with extended statistics.
+	 */
 	class Player : public PlayerStats
 	{
 		private:
-			int                 _profileid     = -1;
-			int                 _userid        = -1;
-			std::string         _nick          = "";
-			std::string         _uniquenick    = "";
-			std::string         _email         = "";
-			std::string         _password      = "";
-			std::string         _last_login    = "";
-			std::string         _last_login_ip = "";
-			std::string         _created_at    = "";
-			bool                _verified      = false; // Verified players can login
-			bool                _restricted    = false; // Restricted players can not progress stats 
-			std::vector<int>    _friends;
+			int                 _profileid     = -1;       /**< Profile ID of the player. */
+			int                 _userid        = -1;       /**< User ID of the player. */
+			std::string         _nick          = "";       /**< Nickname of the player. */
+			std::string         _uniquenick    = "";       /**< Unique nickname of the player. */
+			std::string         _email         = "";       /**< Email address of the player. */
+			std::string         _password      = "";       /**< Password of the player. */
+			std::string         _last_login    = "";       /**< Last login timestamp of the player. */
+			std::string         _last_login_ip = "";       /**< IP address of the last login. */
+			std::string         _created_at    = "";       /**< Creation timestamp of the player. */
+			bool                _verified      = false;    /**< Indicates if the player is verified and can login. */
+			bool                _restricted    = false;    /**< Indicates if the player is restricted from progressing stats. */
+			std::vector<int>    _friends;                  /**< List of profile IDs of the player's friends. */
 		
 		public:
+			/**
+			 * @brief Performs an example operation using the Player class.
+			 * 
+			 * This member function demonstrates an example operation using the Player class.
+			 * It serves as a placeholder for illustrating the usage of the Player class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
 			void useExample();
 			
 			int              GetProfileId() const   { return this->_profileid;     }

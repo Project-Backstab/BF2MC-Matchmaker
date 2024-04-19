@@ -7,43 +7,51 @@
 
 namespace Battlefield
 {
-	/*
-		Player status information
-	*/
+	/**
+	 * @brief Contains player status information.
+	 */
 	class PlayerStats
 	{
 		private:
-			int32_t   _score     = 0; // Total score
-			uint32_t  _ran       = 1; // Rank                                          (See: enum Battlefield::Ranks)
-			uint32_t  _pph       = 0; // Points per Hour
-			uint32_t  _kills     = 0; // Total Kills
-			uint32_t  _deaths    = 0; // Total Deaths
-			uint32_t  _suicides  = 0; // Total Suicides
-			uint32_t  _time      = 0; // Total time played in seconds
-			uint32_t  _vehicles  = 0; // Total Vehicles destroyed
-			uint32_t  _lavd      = 0; // Total LAV's destroyed, Light Armored Vehicle  (such as a Humvee or similar)
-			uint32_t  _mavd      = 0; // Total MAV's destroyed, Medium Armored Vehicle (such as a Tank or similar)
-			uint32_t  _havd      = 0; // Total HAV's destroyed, Heavy Armored Vehicle  (such as an APC or similar)
-			uint32_t  _hed       = 0; // Total Helicopters destroyed
-			uint32_t  _pld       = 0; // Total Planes destroyed                        (unimplemented vehicle)
-			uint32_t  _bod       = 0; // Total Boats destoyed
-			uint32_t  _k1        = 0; // Total kills Assualt kit
-			uint32_t  _s1        = 0; // Total spawns Assualt kit
-			uint32_t  _k2        = 0; // Total kills Sniper kit 
-			uint32_t  _s2        = 0; // Total spawns Sniper kit 
-			uint32_t  _k3        = 0; // Total kills Special Op. kit
-			uint32_t  _s3        = 0; // Total spawns Special Op. kit
-			uint32_t  _k4        = 0; // Total kills Combat Engineer kit 
-			uint32_t  _s4        = 0; // Total spawns Combat Engineer kit
-			uint32_t  _k5        = 0; // Total kills Support kit  
-			uint32_t  _s5        = 0; // Total spawns Support kit
-			uint32_t  _tk        = 0; // Team kills                                    (Not used in game)
-			uint32_t  _medals    = 0; // Earned medals and ribbons                     (See: enum Battlefield::Medals && enum Battlefield::Ribbons)
-			uint32_t  _ttb       = 0; // Total times top player
-			uint32_t  _mv        = 0; // Total major victories
-			uint32_t  _ngp       = 0; // Total participated game sessions
+			int32_t   _score     = 0;   /**< Total score of the player. */
+			uint32_t  _ran       = 1;   /**< Rank of the player (see enum Battlefield::Ranks). */
+			uint32_t  _pph       = 0;   /**< Points per hour earned by the player. */
+			uint32_t  _kills     = 0;   /**< Total number of kills by the player. */
+			uint32_t  _deaths    = 0;   /**< Total number of deaths by the player. */
+			uint32_t  _suicides  = 0;   /**< Total number of suicides by the player. */
+			uint32_t  _time      = 0;   /**< Total time played by the player in seconds. */
+			uint32_t  _vehicles  = 0;   /**< Total number of vehicles destroyed by the player. */
+			uint32_t  _lavd      = 0;   /**< Total number of LAVs (Light Armored Vehicles) destroyed by the player. */
+			uint32_t  _mavd      = 0;   /**< Total number of MAVs (Medium Armored Vehicles) destroyed by the player. */
+			uint32_t  _havd      = 0;   /**< Total number of HAVs (Heavy Armored Vehicles) destroyed by the player. */
+			uint32_t  _hed       = 0;   /**< Total number of helicopters destroyed by the player. */
+			uint32_t  _pld       = 0;   /**< Total number of planes destroyed by the player (unimplemented). */
+			uint32_t  _bod       = 0;   /**< Total number of boats destroyed by the player. */
+			uint32_t  _k1        = 0;   /**< Total kills with Assault kit by the player. */
+			uint32_t  _s1        = 0;   /**< Total spawns with Assault kit by the player. */
+			uint32_t  _k2        = 0;   /**< Total kills with Sniper kit by the player. */
+			uint32_t  _s2        = 0;   /**< Total spawns with Sniper kit by the player. */
+			uint32_t  _k3        = 0;   /**< Total kills with Special Op. kit by the player. */
+			uint32_t  _s3        = 0;   /**< Total spawns with Special Op. kit by the player. */
+			uint32_t  _k4        = 0;   /**< Total kills with Combat Engineer kit by the player. */
+			uint32_t  _s4        = 0;   /**< Total spawns with Combat Engineer kit by the player. */
+			uint32_t  _k5        = 0;   /**< Total kills with Support kit by the player. */
+			uint32_t  _s5        = 0;   /**< Total spawns with Support kit by the player. */
+			uint32_t  _tk        = 0;   /**< Total team kills by the player (not used in game). */
+			uint32_t  _medals    = 0;   /**< Total earned medals and ribbons by the player (see enums Battlefield::Medals and Battlefield::Ribbons). */
+			uint32_t  _ttb       = 0;   /**< Total times top player by the player. */
+			uint32_t  _mv        = 0;   /**< Total major victories achieved by the player. */
+			uint32_t  _ngp       = 0;   /**< Total participated game sessions by the player. */
 		
 		public:
+			/**
+			 * @brief Performs an example operation using the PlayerStats class.
+			 * 
+			 * This member function demonstrates an example operation using the PlayerStats class.
+			 * It serves as a placeholder for illustrating the usage of the PlayerStats class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
 			void useExample();
 			
 			int32_t  GetScore() const                   { return this->_score;    }
