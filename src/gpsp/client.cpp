@@ -319,9 +319,9 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	
 	// Get players by email
 	Battlefield::Players players;
-	g_database->queryPlayersByEmailAndUniquenick(players, email, uniquenick);
+	g_database->queryPlayersByEmailOrUniquenick(players, email, uniquenick);
 	
-	// Check Player exist with same email and uniquename already
+	// Check Player exist with same email or uniquenick already
 	for(Battlefield::Player player : players)
 	{
 		// Check uniquenick

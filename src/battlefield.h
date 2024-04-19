@@ -9,6 +9,9 @@ namespace Battlefield
 	/*
 		Enums
 	*/
+	/**
+	 * @brief Represents various military ranks.
+	 */
 	enum class Ranks
 	{
 		Private                     = 1,
@@ -33,6 +36,9 @@ namespace Battlefield
 		Five_Star_General           = 20,
 	};
 
+	/**
+	 * @brief Represents various military medals.
+	 */
 	enum class Medals
 	{
 		The_Service_Cross             = 1 << 0,
@@ -53,10 +59,11 @@ namespace Battlefield
 		All                           = (1 << 15) - 1,
 	};
 	
-	/*
-		to-do: Start a server. Setup a account with stats that are close to gain a ribbon.
-		Then progress one game to get the ribbon. Then watch "medals" value what bit is changed.
-	*/
+	/**
+	 * @brief Represents various military ribbons.
+	 * @note to-do: Start a server. Setup a account with stats that are close to gain a ribbon.
+	 * Then progress one game to get the ribbon. Then watch "medals" value what bit is changed.
+	 */
 	enum class Ribbons
 	{
 		Ribbon_A                      = 1 << 22,
@@ -69,6 +76,9 @@ namespace Battlefield
 		Ribbon_H                      = 1 << 29
 	};
 	
+	/**
+	 * @brief Represents various game modes you can play in a game
+	*/
 	enum class GameType
 	{
 		Unknown         = -1,
@@ -76,11 +86,22 @@ namespace Battlefield
 		CaptureTheFlag  = 2
 	};
 
-	/*
-		Extern
-	*/
+	/**
+	 * @brief External vector storing rank scores.
+	 * @note This vector contains the scores corresponding to each rank.
+	 */
 	extern std::vector<uint16_t> RankScores;
+
+	/**
+	 * @brief External vector storing rank performance per hour (PPH).
+	 * @note This vector contains the performance per hour metrics corresponding to each rank.
+	 */
 	extern std::vector<uint16_t> RankPph;
+
+	/**
+	 * @brief External vector storing rank medals.
+	 * @note This vector contains the number of medals corresponding to each rank.
+	 */
 	extern std::vector<uint16_t> RankMedals;
 }
 

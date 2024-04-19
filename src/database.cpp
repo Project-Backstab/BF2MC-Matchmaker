@@ -338,7 +338,7 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 	return true;
 }
 
-bool Database::queryPlayersByEmailAndUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick)
+bool Database::queryPlayersByEmailOrUniquenick(Battlefield::Players& players, const std::string& email, const std::string& uniquenick)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
 
