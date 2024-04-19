@@ -5,125 +5,183 @@
 #include <vector>
 #include <string>
 
-/*
-	Forward declarations
-*/
+/**
+ * @brief Forward declaration of the MYSQL_TIME structure.
+ * 
+ * This forward declaration allows the use of the MYSQL_TIME structure in contexts where only the structure name needs to be known,
+ * such as declaring pointers or references to MYSQL_TIME objects, without the need to include the full definition of the structure.
+ * 
+ * MYSQL_TIME is typically used to represent date and time values in MySQL-related operations.
+ */
 struct MYSQL_TIME;
 
 namespace Battlefield
 {
-	/*
-		Forward declarations
-	*/
-	class GameServer;
-	class GameServerPlayer;
+	/**
+     * @brief Forward declaration of the GameServer class.
+     * 
+     * This forward declaration allows the use of the GameServer class in contexts where only the class name needs to be known,
+     * such as declaring pointers or references to GameServer objects, without the need to include the full definition of the class.
+     * 
+     * The GameServer class represents a game server in the Battlefield game.
+     */
+    class GameServer;
+
+    /**
+     * @brief Forward declaration of the GameServerPlayer class.
+     * 
+     * This forward declaration allows the use of the GameServerPlayer class in contexts where only the class name needs to be known,
+     * such as declaring pointers or references to GameServerPlayer objects, without the need to include the full definition of the class.
+     * 
+     * The GameServerPlayer class represents a player connected to a game server in the Battlefield game.
+     */
+    class GameServerPlayer;
 	
-	/*
-		Type definitions
-	*/
-	typedef std::vector<GameServer> GameServers;
-	typedef std::vector<GameServerPlayer> GameServerPlayers;
+	/**
+     * @brief Type definition for a collection of GameServer objects.
+     * 
+     * This type definition creates an alias GameServers for std::vector<GameServer>,
+     * allowing convenient usage of collections of GameServer objects.
+     */
+    typedef std::vector<GameServer> GameServers;
+
+    /**
+     * @brief Type definition for a collection of GameServerPlayer objects.
+     * 
+     * This type definition creates an alias GameServerPlayers for std::vector<GameServerPlayer>,
+     * allowing convenient usage of collections of GameServerPlayer objects.
+     */
+    typedef std::vector<GameServerPlayer> GameServerPlayers;
 	
-	/*
-		Game server information
-	*/
+	/**
+	 * @brief Class representing game server information.
+	 * 
+	 * This class encapsulates information about a game server, including its region.
+	 */
 	class GameServer
 	{
 		public:
-			// See reference:
-			//   https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
-			//
+			/**
+			 * @brief Enumeration defining regions where a game server can be located.
+			 * 
+			 * This enumeration specifies the regions where a game server can be located,
+			 * including America, Asia, Europe, and Unknown.
+			 * 
+			 * For more information, see: 
+			 * https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
+			 */
 			enum class Regions
 			{
-				America  = 1,
-				Asia     = 2048,
-				Europe   = 65536,
-				Unknown  = -1,
+				America  = 1,    /**< America region code */
+				Asia     = 2048, /**< Asia region code */
+				Europe   = 65536,/**< Europe region code */
+				Unknown  = -1    /**< Unknown region code */
+			};
+
+			/**
+			 * @brief Enumeration defining the map cycling options.
+			 */
+			enum class MapCyclingOptions : uint8_t
+			{
+				LevelMapWithMapName = 1,   /**< Level map with map name. */
+				AllMaps = 2,               /**< All maps. */
+				AssaultMaps = 3,           /**< Assault maps. */
+				IncursionMaps = 4,         /**< Incursion maps. */
+				DominationMaps = 5,        /**< Domination maps. */
+				Unknown = 0                /**< Unknown map cycling option. */
 			};
 	
 		private:
-			int         _id            = -1;
-			std::string _ip            = "";
-			uint16_t    _port          = 3658;
-			uint8_t     _flag          = 59;
+			int         _id            = -1;   /**< Unique identifier for the game server. */
+			std::string _ip            = "";   /**< IP address of the game server. */
+			uint16_t    _port          = 3658; /**< Port number of the game server. */
+			uint8_t     _flag          = 59;   /**< Flag indicating server information. */
 			
-			// See reference:
-			//   https://documentation.help/GameSpy-SDK/Gamespy%20Query%20and%20Reporting%202%20SDK.html
-			//
-			std::string _localip0      = "";   // Local ip
-			uint16_t    _localport     = 3658; // Local port
-			uint8_t     _natneg        = 0;    // Enable client-to-client connections (1: true, 0: false)                                       ??? Unsure ???
-			std::string _gamename      = "";   // Game name
-			std::string _hostname      = "";   // Host name
-			uint16_t    _hostport      = 3658; // Host port
+			// See reference: https://documentation.help/GameSpy-SDK/Gamespy%20Query%20and%20Reporting%202%20SDK.html
+			std::string _localip0      = "";   /**< Local IP address of the game server. */
+			uint16_t    _localport     = 3658; /**< Local port number of the game server. */
+			uint8_t     _natneg        = 0;    /**< Enable client-to-client connections (1: true, 0: false). */
+			std::string _gamename      = "";   /**< Name of the game. */
+			std::string _hostname      = "";   /**< Host name of the game server. */
+			uint16_t    _hostport      = 3658; /**< Host port number of the game server. */
 			
-			std::string _gamever       = "V1.31a"; // Game version
-			std::string _cl            = "";   // Client version
-			std::string _rv            = "";   // ??? (retail)                              ??? Unsure ???
+			std::string _gamever       = "V1.31a"; /**< Version of the game. */
+			std::string _cl            = "";       /**< Client version. */
+			std::string _rv            = "";       /**< Retail version. */
 			
-			std::string _map           = "";   // Map name
-			uint8_t     _mc            = 0;    // Map cycling (1: levelmap with mapname)
-			                                   //             (2: All Maps)
-			                                   //             (3: Assualt Maps)
-			                                   //             (4: Incursion Maps)
-			                                   //             (5: Domination Maps)
-			uint8_t     _mapname       = 0;    // Map id
+			std::string _map           = "";   /**< Name of the current map. */
+			uint8_t     _mc            = 0;    /**< Map cycling option. See MapCyclingOptions enum for available options. */
+			uint8_t     _mapname       = 0;    /**< Map ID. */
 			
-			uint8_t     _gc            = 0;    // Game type                                 ??? Unsure ???
-			std::string _gametype      = "";   // String which specifies the type of game, or the mod being played.
-			                                   // (conquest, capturetheflag)
+			uint8_t     _gc            = 0;    /**< Game type. */
+			std::string _gametype      = "";   /**< String which specifies the type of game or the mod being played.
+												- "conquest": Conquest game mode.
+												- "capturetheflag": Capture the Flag game mode. */
 			
-			std::string _gamevariant   = "";   // Game code name
-			uint8_t     _numplayers    = 0;    // Number of players
-			uint8_t     _maxplayers    = 0;    // Max players
-			uint8_t     _numteams      = 0;    // Number of teams
-			std::string _gamemode      = "";   // Game status (openwaiting,
-			                                   //              closedwaiting,
-			                                   //              closedplaying,
-			                                   //              openplaying,
-			                                   //              openstaging,
-			                                   //              closedstaging,
-			                                   //              exiting)
-			uint8_t     _teamplay      = 0;    // number which defines the type of teamplay in use, or 0 for no teamplay.
-			                                   // Values > 0 are up to the developer
-											   // 3 = Clan game
-			uint8_t     _fraglimit     = 0;    // Number of total kills or points before a level change or game restart
-			uint8_t     _teamfraglimit = 0;    // Number of total kills or points for a team before a level change or
-			                                   // game restart.
-			uint16_t    _timelimit     = 0;    // Amount of total time before a level change or game restart occurs in seconds
-			uint16_t    _timeelapsed   = 0;    // Amount of time (in seconds) since the current level or game started
-			uint8_t     _password      = 0;    // Has password requirement to join (1: true, 0: false)
-			uint8_t     _nr            = 0;    // Minimum Rank number filter
-			uint8_t     _xr            = 0;    // Maximum Rank number filter
-			uint8_t     _ff            = 0;    // Friendly fire (1: true, 0: false)
-			uint8_t     _sr            = 0;    // Stats tracking (1: true, 0: false)
-			uint8_t     _rc            = 0;    // Server is reconfigurable (1: true, 0: false)
-			int64_t     _ni            = 0;    // Minimum IP range
-			int64_t     _xi            = 0;    // Maximum IP range
-			uint8_t     _qm            = 0;    // 0 = Resurved/User for clan matches
-			                                   // 5 = Unclaimed server free of use. Should be visable for everyone.
-			uint64_t    _region        = 1;    // Server region (America: 1, Asia: 2048, Europe: 65536)
+			std::string _gamevariant   = "";   /**< Game variant or code name. */
+			uint8_t     _numplayers    = 0;    /**< Number of players. */
+			uint8_t     _maxplayers    = 0;    /**< Maximum number of players. */
+			uint8_t     _numteams      = 0;    /**< Number of teams. */
+			std::string _gamemode      = "";   /**< Game status:
+												- "openwaiting": Open and waiting for players to join.
+												- "closedwaiting": Closed and waiting for players to join.
+												- "closedplaying": Closed and currently in progress.
+												- "openplaying": Open and currently in progress.
+												- "openstaging": Open and in staging phase.
+												- "closedstaging": Closed and in staging phase.
+												- "exiting": Exiting or shutting down. */
+			uint8_t     _teamplay      = 0;    /**< Type of teamplay in use, or 0 for no teamplay.
+												- 0: No teamplay.
+												- 3: Clan game.
+												- Other values: Custom teamplay defined by the developer. */
+			
+			uint8_t     _fraglimit     = 0;    /**< Number of kills or points for level change or game restart. */
+			uint8_t     _teamfraglimit = 0;    /**< Number of team kills or points for level change or game restart. */
+			uint16_t    _timelimit     = 0;    /**< Total time before level change or game restart (in seconds). */
+			uint16_t    _timeelapsed   = 0;    /**< Time elapsed since current level or game started (in seconds). */
+			uint8_t     _password      = 0;    /**< Password requirement to join (1: true, 0: false). */
+			uint8_t     _nr            = 0;    /**< Minimum rank number filter. */
+			uint8_t     _xr            = 0;    /**< Maximum rank number filter. */
+			uint8_t     _ff            = 0;    /**< Friendly fire (1: true, 0: false). */
+			uint8_t     _sr            = 0;    /**< Stats tracking (1: true, 0: false). */
+			uint8_t     _rc            = 0;    /**< Server is reconfigurable (1: true, 0: false). */
+			int64_t     _ni            = 0;    /**< Minimum IP range. */
+			int64_t     _xi            = 0;    /**< Maximum IP range. */
+			uint8_t     _qm            = 0;    /**< Server status:
+												- 0: Reserved/User for clan matches.
+												- 5: Unclaimed server free for use, visible to everyone.
+												- Other values: Custom server status. */
+			uint64_t    _region        = 1;    /**< Server region. See Battlefield::GameServer::Regions enum for possible values. */
 			
 			// Clan
-			int         _c0            = -1;   // Clan ID team 1
-			int         _c1            = -1;   // Clan ID team 2
-			std::string _n0            = "";   // Clan name team 1
-			std::string _n1            = "";   // Clan name team 2
-			uint8_t     _c0c           = 0;    // Team 1 is claimed (1: true, 0: false)
-			uint8_t     _c1c           = 0;    // Team 2 is claimed (1: true, 0: false)
+			int         _c0            = -1;   /**< Clan ID for team 1. */
+			int         _c1            = -1;   /**< Clan ID for team 2. */
+			std::string _n0            = "";   /**< Clan name for team 1. */
+			std::string _n1            = "";   /**< Clan name for team 2. */
+			uint8_t     _c0c           = 0;    /**< Indicates if team 1 is claimed (1: true, 0: false). */
+			uint8_t     _c1c           = 0;    /**< Indicates if team 2 is claimed (1: true, 0: false). */
+
 			
 			// Team
-			std::string _team0         = "";   // Team 1 name
-			std::string _team1         = "";   // Team 2 name
-			int16_t     _score0        = 0;    // Team 1 score
-			int16_t     _score1        = 0;    // Team 2 score
+			std::string _team0         = "";   /**< Name of team 1. */
+			std::string _team1         = "";   /**< Name of team 2. */
+			int16_t     _score0        = 0;    /**< Score of team 1. */
+			int16_t     _score1        = 0;    /**< Score of team 2. */
 			
-			std::string _updated_at    = "";    // Update information datetime
-			bool        _verified      = false; // Database check that a server is verified
-			
-			std::vector<GameServerPlayer> _players;
+			std::string _updated_at    = "";   /**< Datetime when server information was last updated. */
+			bool        _verified      = false; /**< Indicates whether the server is verified in the database. */
+
+			std::vector<GameServerPlayer> _players; /**< Vector containing information about players currently in the server. */
 		
 		public:
+			/**
+			 * @brief Performs an example operation using the Clan class.
+			 * 
+			 * This member function demonstrates an example operation using the Clan class.
+			 * It serves as a placeholder for illustrating the usage of the Clan class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
 			void useExample();
 			
 			int            GetId() const             { return this->_id;            }
@@ -276,18 +334,21 @@ namespace Battlefield
 			void Debug();
 	};
 	
+	/**
+	 * @brief Represents a player in a game server.
+	 */
 	class GameServerPlayer
 	{
 		private:
-			int         _id        = -1;
-			std::string _name      = "";
-			int16_t     _score     = 0;
-			std::string _skill     = "";
-			uint8_t     _ping      = 0;
-			uint8_t     _team      = 0;
-			uint16_t    _deaths    = 0;
-			int         _profileid = -1;
-		
+			int         _id        = -1;   /**< Player ID. */
+			std::string _name      = "";   /**< Player name. */
+			int16_t     _score     = 0;    /**< Player's score. */
+			std::string _skill     = "";   /**< Player's skill level. */
+			uint8_t     _ping      = 0;    /**< Player's ping. */
+			uint8_t     _team      = 0;    /**< Player's team number. */
+			uint16_t    _deaths    = 0;    /**< Number of deaths for the player. */
+			int         _profileid = -1;   /**< Player's profile ID. */
+
 		public:
 			int         GetId() const        { return this->_id;        }
 			std::string GetName() const      { return this->_name;      }
