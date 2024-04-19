@@ -175,10 +175,10 @@ namespace Battlefield
 		
 		public:
 			/**
-			 * @brief Performs an example operation using the Clan class.
+			 * @brief Performs an example operation using the GameServer class.
 			 * 
-			 * This member function demonstrates an example operation using the Clan class.
-			 * It serves as a placeholder for illustrating the usage of the Clan class.
+			 * This member function demonstrates an example operation using the GameServer class.
+			 * It serves as a placeholder for illustrating the usage of the GameServer class.
 			 * 
 			 * @note This is just an example function and does not perform any meaningful operation.
 			 */
