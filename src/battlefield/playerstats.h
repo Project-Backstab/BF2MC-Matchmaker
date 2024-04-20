@@ -122,6 +122,9 @@ namespace Battlefield
 			bool SetTotalGameSessions(uint32_t total);
 		
 		private:
+			/**
+			 * @brief Calculates the rank based on score, points per hour (pph), and medals.
+			 */
 			void _calcRank();
 	};
 }

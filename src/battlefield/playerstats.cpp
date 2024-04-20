@@ -290,18 +290,18 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 
 void Battlefield::PlayerStats::_calcRank()
 {
-	auto it = std::lower_bound(RankScores.begin(), RankScores.end(), this->_score + 1);
-    int score_rank = std::distance(RankScores.begin(), it);
-    
-    it = std::lower_bound(RankPph.begin(), RankPph.end(), (this->_pph / 100) + 1);
-    int pph_rank = std::distance(RankPph.begin(), it);
-    
-    it = std::lower_bound(RankMedals.begin(), RankMedals.end(), Util::countSetBits(this->_medals) + 1);
-    int medals_rank = std::distance(RankMedals.begin(), it);
+	int pph = this->_pph / 100;
+	int total_medals = Util::countSetBits(this->_medals);
+	int new_rank = 1;
 
-	Logger::debug("score_rank = " + std::to_string(this->_score) + ", " + std::to_string(score_rank));
-	Logger::debug("pph_rank = " + std::to_string(this->_pph / 100) + ", " + std::to_string(pph_rank));
-	Logger::debug("medals_rank = " + std::to_string(this->_medals) + ", " + std::to_string(Util::countSetBits(this->_medals)) + ", " + std::to_string(medals_rank));
+	for(int i = 1; i < RankScores.size(); i++)
+	{
+		if(this->_score >= RankScores[i] && pph >= RankPph[i] && total_medals >= RankMedals[i])
+			new_rank = i + 1;
+		else
+			break;
+	}
 
-	this->_ran = std::min(std::min(score_rank, pph_rank), medals_rank);
+	this->_ran = new_rank;
 }
+
