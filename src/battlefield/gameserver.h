@@ -114,26 +114,35 @@ namespace Battlefield
 			uint8_t     _mapname       = 0;    /**< Map ID. */
 			
 			uint8_t     _gc            = 0;    /**< Game type. */
-			std::string _gametype      = "";   /**< String which specifies the type of game or the mod being played.
-												- "conquest": Conquest game mode.
-												- "capturetheflag": Capture the Flag game mode. */
+			
+			/** String which specifies the type of game or the mod being played.
+			 * - "conquest": Conquest game mode.
+			 * - "capturetheflag": Capture the Flag game mode.
+			 */
+			std::string _gametype      = "";
 			
 			std::string _gamevariant   = "";   /**< Game variant or code name. */
 			uint8_t     _numplayers    = 0;    /**< Number of players. */
 			uint8_t     _maxplayers    = 0;    /**< Maximum number of players. */
 			uint8_t     _numteams      = 0;    /**< Number of teams. */
-			std::string _gamemode      = "";   /**< Game status:
-												- "openwaiting": Open and waiting for players to join.
-												- "closedwaiting": Closed and waiting for players to join.
-												- "closedplaying": Closed and currently in progress.
-												- "openplaying": Open and currently in progress.
-												- "openstaging": Open and in staging phase.
-												- "closedstaging": Closed and in staging phase.
-												- "exiting": Exiting or shutting down. */
-			uint8_t     _teamplay      = 0;    /**< Type of teamplay in use, or 0 for no teamplay.
-												- 0: No teamplay.
-												- 3: Clan game.
-												- Other values: Custom teamplay defined by the developer. */
+			
+			/** Game status:
+			 * - "openwaiting": Open and waiting for players to join.
+			 * - "closedwaiting": Closed and waiting for players to join.
+			 * - "closedplaying": Closed and currently in progress.
+			 * - "openplaying": Open and currently in progress.
+			 * - "openstaging": Open and in staging phase.
+			 * - "closedstaging": Closed and in staging phase.
+			 * - "exiting": Exiting or shutting down.
+			 */
+			std::string _gamemode      = "";
+			
+			/** Type of teamplay in use, or 0 for no teamplay.
+			 * - 0: No teamplay.
+			 * - 3: Clan game.
+			 * - Other values: Custom teamplay defined by the developer.
+			 */
+			uint8_t     _teamplay      = 0;
 			
 			uint8_t     _fraglimit     = 0;    /**< Number of kills or points for level change or game restart. */
 			uint8_t     _teamfraglimit = 0;    /**< Number of team kills or points for level change or game restart. */
@@ -147,10 +156,14 @@ namespace Battlefield
 			uint8_t     _rc            = 0;    /**< Server is reconfigurable (1: true, 0: false). */
 			int64_t     _ni            = 0;    /**< Minimum IP range. */
 			int64_t     _xi            = 0;    /**< Maximum IP range. */
-			uint8_t     _qm            = 0;    /**< Server status:
-												- 0: Reserved/User for clan matches.
-												- 5: Unclaimed server free for use, visible to everyone.
-												- Other values: Custom server status. */
+
+			/** Server status:
+			 * - 0: Reserved/User for clan matches.
+			 * - 5: Unclaimed server free for use, visible to everyone.
+			 * - Other values: Custom server status.
+			 */
+			uint8_t     _qm            = 0;
+
 			uint64_t    _region        = 1;    /**< Server region. See Battlefield::GameServer::Regions enum for possible values. */
 			
 			// Clan
@@ -161,7 +174,6 @@ namespace Battlefield
 			uint8_t     _c0c           = 0;    /**< Indicates if team 1 is claimed (1: true, 0: false). */
 			uint8_t     _c1c           = 0;    /**< Indicates if team 2 is claimed (1: true, 0: false). */
 
-			
 			// Team
 			std::string _team0         = "";   /**< Name of team 1. */
 			std::string _team1         = "";   /**< Name of team 2. */
@@ -174,19 +186,9 @@ namespace Battlefield
 			std::vector<GameServerPlayer> _players; /**< Vector containing information about players currently in the server. */
 		
 		public:
-			/**
-			 * @brief Performs an example operation using the GameServer class.
-			 * 
-			 * This member function demonstrates an example operation using the GameServer class.
-			 * It serves as a placeholder for illustrating the usage of the GameServer class.
-			 * 
-			 * @note This is just an example function and does not perform any meaningful operation.
-			 */
-			void useExample();
-			
 			int            GetId() const             { return this->_id;            }
 			std::string    GetIp() const             { return this->_ip;            }
-			void GetIpArray(uint8_t* ip) const;
+			void           GetIpArray(uint8_t* ip) const;
 			uint16_t       GetPort() const           { return this->_port;          }
 			uint8_t        GetFlag() const           { return this->_flag;          }
 			std::string    GetLocalIp() const        { return this->_localip0;      }
@@ -231,13 +233,13 @@ namespace Battlefield
 			uint8_t        GetClan1Claimed() const   { return this->_c0c;           }
 			uint8_t        GetClan2Claimed() const   { return this->_c1c;           }
 			// Team
-			std::string       GetTeam1Name() const   { return this->_team0;         }
-			std::string       GetTeam2Name() const   { return this->_team1;         }
-			int16_t           GetTeam1Score() const  { return this->_score0;        }
-			int16_t           GetTeam2Score() const  { return this->_score1;        }
+			std::string    GetTeam1Name() const      { return this->_team0;         }
+			std::string    GetTeam2Name() const      { return this->_team1;         }
+			int16_t        GetTeam1Score() const     { return this->_score0;        }
+			int16_t        GetTeam2Score() const     { return this->_score1;        }
 			
-			std::string       GetUpdatedAt() const   { return this->_updated_at;    }
-			bool              isVerified() const     { return this->_verified;      }
+			std::string    GetUpdatedAt() const      { return this->_updated_at;    }
+			bool           isVerified() const        { return this->_verified;      }
 			
 			GameServerPlayers GetPlayers() const     { return this->_players;       }
 			
@@ -327,10 +329,45 @@ namespace Battlefield
 			bool SetUpdatedAt(MYSQL_TIME updated_at);
 			bool SetVerified(bool verified);
 			
+			/**
+			 * @brief Adds a player to the game server.
+			 * 
+			 * @param gsplayer The GameServerPlayer object representing the player to add.
+			 */
 			void AddPlayer(const GameServerPlayer& gsplayer);
 			
+			/**
+			 * @brief Checks if the game server is alive.
+			 * 
+			 * This function determines the liveness of the game server based on its last update time.
+			 * A game server is considered alive if its last update time is within the last two minutes.
+			 * 
+			 * @return True if the game server is considered alive (updated within last 2 minutes), false otherwise.
+			 * 
+			 * @details
+			 * The function calculates the difference between the server's last update time and the current time.
+			 * If the difference is less than or equal to 0 (i.e., the server's last update time is in the past),
+			 * and if the difference between the last update time and two minutes ago is greater than or equal to 0,
+			 * then the server is considered alive.
+			 * 
+			 * @note
+			 * The last update time is obtained from the GetUpdatedAt() function, which should return a string
+			 * in the format "%Y-%m-%d %H:%M:%S %Z" (e.g., "2024-04-19 15:30:00 UTC").
+			 * 
+			 * @see GetUpdatedAt
+			 */
 			bool IsAlive();
 			
+			/**
+			 * @brief Performs an example operation using the GameServer class.
+			 * 
+			 * This member function demonstrates an example operation using the GameServer class.
+			 * It serves as a placeholder for illustrating the usage of the GameServer class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
+			void useExample();
+
 			void Debug();
 	};
 	
