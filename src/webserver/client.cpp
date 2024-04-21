@@ -248,37 +248,6 @@ void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, c
 
 // bfmc.gamespy.com
 // Stats
-/*
-	pid:		Player profileid
-	getarg:		this argument defines the parameters it needs to return
-		score:		Total score
-		ran:		Rank
-		pph:		Point per Hour
-		kills:		Total kills
-		suicides:	Total suicides
-		time:		Total time played in seconds
-		lavd:		Total LAV's destroyed
-		mavd:		Total MAV's destroyed
-		havd:		Total HAV's destroyed
-		hed:		Total Helicopters destroyed
-		pld:		?? Some other vehicle ??
-		bod:		Total Boats destoyed
-		k1:			Total kills assualt kit
-		s1:			?? 
-		k2:			Total kills sniper kit 
-		s2:			??
-		k3:			Total kills special Op. kit
-		s3:			??
-		k4:			Total kills Combat engineer kit 
-		s4:			??
-		k5:			Total kills Support kit  
-		s5:			??
-		tk:			
-		medals:		Earned medals.
-		ttb			Total times been the top player in the game
-		mv			Total mayor victories
-		ngp			Total Parcipated game sessions
-*/
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request,  const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
@@ -1214,7 +1183,7 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		if(rank == Battlefield::Clan::Ranks::Leader)
 		{
 			// Copy url variables into clan
-			if(this->_updateClanInformation(clan, url_variables))
+			if(this->_updateClanInformation(clan, url_variables, true))
 			{
 				Battlefield::Clan check_clan;
 

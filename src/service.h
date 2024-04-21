@@ -3,10 +3,14 @@
 
 namespace Service
 {
+	/**
+	 * @brief Enum representing different types of services.
+	 * 
+	 */
 	enum Type
 	{
-		FileSystem,
-		None,
+		FileSystem, /**< File system service. */
+		None,       /**< No specific service type. */
 	};
 }
 
