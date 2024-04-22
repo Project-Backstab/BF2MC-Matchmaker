@@ -2215,6 +2215,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	)
 	{
 		// Cleanup
+		free(input_bind);
 		free(output_bind);
 		
 		return false;
@@ -2283,6 +2284,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 	
 	return true;
@@ -2525,6 +2527,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	)
 	{
 		// Cleanup
+		free(input_bind);
 		free(output_bind);
 		
 		return false;
@@ -2591,6 +2594,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 	// Cleanup
 	mysql_stmt_free_result(statement);
 	mysql_stmt_close(statement);
+	free(input_bind);
 	free(output_bind);
 	
 	return true;
