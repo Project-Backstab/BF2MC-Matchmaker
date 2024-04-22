@@ -112,6 +112,7 @@ void GPSP::Client::onRequest(const std::string& request)
 		nick: (string)
 		uniquenick: (string)
 */
+
 void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 11)
@@ -213,6 +214,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 			0 = bad
 	
 */
+
 void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 7)
@@ -270,6 +272,7 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 			516 = bad username
 		pid: (integer)
 */
+
 void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 17)
@@ -386,6 +389,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 
 		\bsrdone\\final\
 */
+
 void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 13)
@@ -436,6 +440,7 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 /*
 	Private functions
 */
+
 void GPSP::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)

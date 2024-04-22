@@ -795,6 +795,7 @@ void Battlefield::GameServer::Debug()
 }
 
 // GameServerPlayer
+
 bool Battlefield::GameServerPlayer::SetId(int id)
 {
 	this->_id = id;
