@@ -701,10 +701,10 @@ bool Browsing::Client::_FilterServerGameVersion(const std::string& filter, const
 		std::string gamever = matches[1];
 		
 		if(!(game_server.GetGameVersion() == gamever))
-			return true; // remove server
+			return true; // Remove server
 	}
 
-	return false; // Dont remove server
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -719,7 +719,7 @@ bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Batt
 		uint64_t v = std::stoull(matches[1]);
 		
 		if(!((game_server.GetRegion() & v) != 0))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
 	// Find: (region & 1)=0
@@ -729,10 +729,10 @@ bool Browsing::Client::_FilterServerRegion(const std::string& filter, const Batt
 		uint64_t v = std::stoull(matches[1]);
 		
 		if(!((game_server.GetRegion() & v) == 0))
-			return true; // remove server
+			return true; // Remove server
 	}
 
-	return false; // Dont remove server
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerNumPlayers(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -747,7 +747,7 @@ bool Browsing::Client::_FilterServerNumPlayers(const std::string& filter, const 
 		uint8_t numplayers = std::stoul(matches[1]);
 		
 		if(!(game_server.GetNumPlayers() >= numplayers))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
 	// Find: numplayers<=23
@@ -757,10 +757,10 @@ bool Browsing::Client::_FilterServerNumPlayers(const std::string& filter, const 
 		uint8_t numplayers = std::stoul(matches[1]);
 		
 		if(!(game_server.GetNumPlayers() <= numplayers))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
-	return false; // Dont remove server
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerGameType(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -775,10 +775,10 @@ bool Browsing::Client::_FilterServerGameType(const std::string& filter, const Ba
 		std::string gametype = matches[1];
 		
 		if(!(game_server.GetGameType() == gametype))
-			return true; // remove server
+			return true; // Remove server
 	}
 
-	return false; // Dont remove server
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerMapName(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -793,10 +793,10 @@ bool Browsing::Client::_FilterServerMapName(const std::string& filter, const Bat
 		uint8_t mapname = std::stoul(matches[1]);
 		
 		if(!(game_server.GetMapName() == mapname))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
-	return false;
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerStatsTracking(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -837,11 +837,11 @@ bool Browsing::Client::_FilterServerReconfigurable(const std::string& filter, co
 			uint8_t rc = std::stoul(matches[1]);
 			
 			if(!(game_server.GetReconfigurable() == rc))
-				return true; // remove server
+				return true; // Remove server
 		}
 	}
 	
-	return false;
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerTeamplay(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -857,7 +857,7 @@ bool Browsing::Client::_FilterServerTeamplay(const std::string& filter, const Ba
 		uint8_t teamplay = std::stoul(matches[2]);
 		
 		if(!(game_server.GetReconfigurable() == rc || game_server.GetTeamplay() != teamplay))
-			return true; // remove server
+			return true; // Remove server
 	}
 	else
 	{
@@ -868,7 +868,7 @@ bool Browsing::Client::_FilterServerTeamplay(const std::string& filter, const Ba
 			uint8_t teamplay = std::stoul(matches[1]);
 			
 			if(!(game_server.GetTeamplay() == teamplay))
-				return true; // remove server
+				return true; // Remove server
 		}
 		
 		// Find: teamplay!=0
@@ -878,11 +878,11 @@ bool Browsing::Client::_FilterServerTeamplay(const std::string& filter, const Ba
 			uint8_t teamplay = std::stoul(matches[1]);
 			
 			if(!(game_server.GetTeamplay() != teamplay))
-				return true; // remove server
+				return true; // Remove server
 		}
 	}
 
-	return false; // Dont remove server
+	return false; // Don't remove server
 }
 
 bool Browsing::Client::_FilterServerClan(const std::string& filter, const Battlefield::GameServer& game_server)
@@ -898,7 +898,7 @@ bool Browsing::Client::_FilterServerClan(const std::string& filter, const Battle
 		int32_t c1 = std::stoi(matches[2]);
 		
 		if(!(game_server.GetClan1Id() == c0 || game_server.GetClan2Id() == c1))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
 	//Find: (c0=-1 or c1=-1 or c0=33 or c1=33)
@@ -910,10 +910,10 @@ bool Browsing::Client::_FilterServerClan(const std::string& filter, const Battle
 		
 		if(!(game_server.GetClan1Id() == -1 || game_server.GetClan2Id() == -1 ||
 			game_server.GetClan1Id() == c0 || game_server.GetClan2Id() == c1))
-			return true; // remove server
+			return true; // Remove server
 	}
 	
-	return false;
+	return false; // Don't remove server
 }
 
 // Static functions

@@ -26,31 +26,31 @@ project(bf2mc VERSION 1.0.0)
 
 ## Executable
 add_executable(bf2mc
-	src/server.cpp
-	src/gpsp/client.cpp
-	src/gpcm/client.cpp
-	src/webserver/client.cpp
-	src/webserver/api.cpp
-	src/browsing/client.cpp
-	src/browsing/sb_crypt.cpp
+    src/server.cpp
+    src/gpsp/client.cpp
+    src/gpcm/client.cpp
+    src/webserver/client.cpp
+    src/webserver/api.cpp
+    src/browsing/client.cpp
+    src/browsing/sb_crypt.cpp
     src/browsing/test.cpp
-	src/gamestats/client.cpp
+    src/gamestats/client.cpp
     src/gamestats/test.cpp
-	src/websocket/client.cpp
-	src/service/file_system.cpp
-	src/qr/client.cpp
-	src/net/socket.cpp
-	src/database.cpp
-	src/util.cpp
-	src/logger.cpp
-	src/gamespy.cpp
-	src/battlefield.cpp
-	src/battlefield/player.cpp
-	src/battlefield/playerstats.cpp
-	src/battlefield/clan.cpp
-	src/battlefield/gameserver.cpp
-	src/battlefield/gamestat.cpp
-	src/main.cpp
+    src/websocket/client.cpp
+    src/service/file_system.cpp
+    src/qr/client.cpp
+    src/net/socket.cpp
+    src/database.cpp
+    src/util.cpp
+    src/logger.cpp
+    src/gamespy.cpp
+    src/battlefield.cpp
+    src/battlefield/player.cpp
+    src/battlefield/playerstats.cpp
+    src/battlefield/clan.cpp
+    src/battlefield/gameserver.cpp
+    src/battlefield/gamestat.cpp
+    src/main.cpp
 )
 
 include_directories(bf2mc src)
