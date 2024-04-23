@@ -232,6 +232,7 @@ void Server::Listen()
 // if a client is still connected in the same way as TCP. In UDP, you won't receive disconnection notifications,
 // and you can't rely on the absence of incoming packets to detect disconnections, as you would in TCP.
 //
+
 void Server::UDPListen()
 {
 	struct sockaddr_in client_address;
@@ -311,6 +312,7 @@ void Server::Close()
 /*
 	Events
 */
+
 void Server::onServerListen() const
 {
 	Logger::info("Server is now listening on " + this->GetAddress() + " " + this->GetSocketType(), this->_type);

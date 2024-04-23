@@ -33,7 +33,9 @@ add_executable(bf2mc
 	src/webserver/api.cpp
 	src/browsing/client.cpp
 	src/browsing/sb_crypt.cpp
+    src/browsing/test.cpp
 	src/gamestats/client.cpp
+    src/gamestats/test.cpp
 	src/websocket/client.cpp
 	src/service/file_system.cpp
 	src/qr/client.cpp

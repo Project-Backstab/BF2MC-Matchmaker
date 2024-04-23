@@ -208,9 +208,8 @@ void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 	this->Net::Socket::Send(http_response.ToString());
 }
 
-/*
-	Events
-*/
+// Events
+
 void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 {
 	if(http_request.GetMethod() == MessageMethod::GET)
@@ -239,15 +238,12 @@ void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 	}
 }
 
-// www.easports.com
 void Webserver::Client::requestFile(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
 	this->_SendFile("../data" + url_base);
 }
 
-// bfmc.gamespy.com
-// Stats
 void Webserver::Client::requestGetPlayerInfo(const atomizes::HTTPMessage& http_request,  const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
@@ -938,6 +934,7 @@ void Webserver::Client::requestStats(const atomizes::HTTPMessage& http_request, 
 }
 
 // Clan
+
 void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
@@ -1628,9 +1625,8 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, c
 	this->_SendFile("../data/meme/index.html");
 }
 
-/*
-	Private functions
-*/
+// Private functions
+
 void Webserver::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
@@ -1775,6 +1771,7 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 	return true;
 }
 
+// Static functions
 
 void Webserver::Client::Heartbeat()
 {
@@ -1797,3 +1794,4 @@ void Webserver::Client::Heartbeat()
 		}
 	}
 }
+

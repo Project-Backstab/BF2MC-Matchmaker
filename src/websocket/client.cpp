@@ -81,9 +81,8 @@ void Websocket::Client::Send(const atomizes::HTTPMessage &http_response) const
 	this->Net::Socket::Send(http_response.ToString());
 }
 
-/*
-	Events
-*/
+// Events
+
 void Websocket::Client::onRequest(const std::vector<char>& buffer)
 {
 	if(Util::Buffer::ToString(buffer).substr(0, 3) == "GET")
@@ -139,9 +138,8 @@ void Websocket::Client::onRequest(const std::vector<char>& buffer)
 	}
 }
 
-/*
-	Private functions
-*/
+// Private functions
+
 void Websocket::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)

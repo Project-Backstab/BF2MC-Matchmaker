@@ -70,9 +70,8 @@ void GPSP::Client::Disconnect()
 	g_gpsp_server->onClientDisconnect(*this);
 }
 
-/*
-	Events
-*/
+//	Events
+
 void GPSP::Client::onRequest(const std::string& request)
 {
 	GameSpy::Parameter parameter = GameSpy::Request2Parameter(request);
@@ -437,9 +436,7 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 	this->_LogTransaction("<--", response);
 }
 
-/*
-	Private functions
-*/
+// Private functions
 
 void GPSP::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {

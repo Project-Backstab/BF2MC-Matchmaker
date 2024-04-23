@@ -11,6 +11,7 @@
 #include <util.h>
 
 // Util::Buffer
+
 bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, std::string &str)
 {	
 	str.clear();
@@ -63,6 +64,7 @@ std::string Util::Buffer::ToString(const std::vector<unsigned char>& buffer)
 }
 
 //Util::Time
+
 std::string Util::Time::GetNowDateTime(const std::string& format)
 {
 	auto now = std::chrono::system_clock::now();
@@ -112,6 +114,7 @@ std::string Util::Time::GetTimeZone()
 }
 
 // Util::Url
+
 void Util::Url::GetElements(const std::string& url, std::string& url_base, Util::Url::Variables& url_variables)
 {
 	std::stringstream input, input2;
@@ -219,6 +222,7 @@ std::string Util::Url::Decode(const std::string& str)
 }
 
 // Util
+
 std::string Util::MD5hash(const std::string& input)
 {
 	unsigned char digest[MD5_DIGEST_LENGTH];

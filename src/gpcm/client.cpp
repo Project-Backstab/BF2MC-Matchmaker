@@ -118,9 +118,8 @@ GPCM::Session GPCM::Client::GetSession() const
 	return copy_session;
 }
 
-/*
-	Events
-*/
+//	Events
+
 void GPCM::Client::onRequest(const std::string& request)
 {
 	GameSpy::Parameter parameter = GameSpy::Request2Parameter(request);
@@ -174,6 +173,7 @@ void GPCM::Client::requestChallenge()
 	To do:
 		- The client sends in the login request parameter "response". We have to figure out how this response is been generated.
 */
+
 void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 21)
@@ -267,6 +267,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	Request:
 		\inviteto\\sesskey\1\products\10307\final\
 */
+
 void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 7)
@@ -295,6 +296,7 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 		\pi\\profileid\10036585\userid\64473\nick\NPC@A15FEDF3\uniquenick\NPC\aim\\videocard1string\\videocard2string\\osstring\\id\9\sig\d41d8cd98f00b204e9800998ecf8427e\final\
 		\pi\\profileid\10037053\userid\64872\nick\-Gh0sTeD-@7DE1959D\uniquenick\-Gh0sTeD-\aim\\videocard1string\\videocard2string\\osstring\\id\10\sig\d41d8cd98f00b204e9800998ecf8427e\final\
 */
+
 void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9)
@@ -386,6 +388,7 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 		\bm\100\f\10036029\msg\|s|0|ss|Offline\final\
 		\bm\100\f\10037810\msg\|s|2|ss|Playing|ls|bfield1942ps2:/[EU]CTF-SERVER1@78.47.184.23:3659|ip|2970240317|p|44223\final\
 */
+
 void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9)
@@ -425,6 +428,7 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 	Response to target:
 		\bm\1\f\10037318\msg\awesome\final\
 */
+
 void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9)
@@ -462,6 +466,7 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 	Extra:
 		\error\\err\1539\errmsg\The profile requested is already a buddy.\final\
 */
+
 void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9)
@@ -491,8 +496,8 @@ void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter)
 	Response:
 		\bm\4\f\10037049\msg\I have authorized your request to add me to your list|signed|d41d8cd98f00b204e9800998ecf8427e\final\
 		\error\\err\1539\errmsg\The profile requested is already a buddy.\final\
-
 */
+
 void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9)
@@ -561,6 +566,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 		\bm\6\f\10036819\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
 		\bm\6\f\10037049\msg\I have revoked you from my list.|signed|d41d8cd98f00b204e9800998ecf8427e\final\
 */
+
 void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 7)
@@ -592,6 +598,7 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 	Response:
 		\error\\err\2817\errmsg\The buddy to be deleted is not a buddy. \final\
 */
+
 void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 {
 	std::string target_profileid = parameter[5];
@@ -631,6 +638,7 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	Request:
 		\pinvite\\sesskey\1\profileid\10037095\productid\10307\final\
 */
+
 void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 {
 	std::string target_profileid = parameter[5];
@@ -661,6 +669,7 @@ void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 	Request:
 		\logout\\sesskey\1\final\
 */
+
 void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 {
 	//if(parameter.size() != 5)
@@ -677,9 +686,8 @@ void GPCM::Client::requestLogout(const GameSpy::Parameter& parameter)
 	Logger::info("User \"" + player.GetUniquenick() + "\" logged out", Server::Type::GPCM);
 }
 
-/*
-	Private functions
-*/
+// Private functions
+
 void GPCM::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
@@ -755,9 +763,8 @@ void GPCM::Client::_SyncFriends()
 	}
 }
 
-/*
-	Static
-*/
+// Static functions
+
 GPCM::Session GPCM::Client::findSessionByProfileId(int profileid)
 {
 	GPCM::Session session;

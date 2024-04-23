@@ -32,9 +32,8 @@ QR::Client::~Client()
 	
 }
 
-/*
-	Events
-*/
+// Events
+
 void QR::Client::onRequest(const std::vector<unsigned char>& request)
 {
 	this->_LogTransaction("-->", Util::Buffer::ToString(request));
@@ -57,9 +56,6 @@ void QR::Client::onRequest(const std::vector<unsigned char>& request)
 	}
 }
 
-/*
-	
-*/
 void QR::Client::requestChallenge(const std::vector<unsigned char>& request) const
 {
 	std::vector<unsigned char> response = {
@@ -73,9 +69,6 @@ void QR::Client::requestChallenge(const std::vector<unsigned char>& request) con
 	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
-/*
-	
-*/
 void QR::Client::requestAvailable(const std::vector<unsigned char>& request) const
 {
 	std::vector<unsigned char> response = {
@@ -140,6 +133,7 @@ void QR::Client::requestAvailable(const std::vector<unsigned char>& request) con
 		Next byte is the action request to the server. In this case (0x01) is requesting a challenge.
 		All the bytes after are the input for the challenge, this can be random data
 */
+
 void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) const
 {
 	size_t offset = 5;
@@ -316,9 +310,6 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
-/*
-
-*/
 void QR::Client::requestKeepAlive(const std::vector<unsigned char>& request) const
 {
 	std::vector<unsigned char> response = {
@@ -333,9 +324,8 @@ void QR::Client::requestKeepAlive(const std::vector<unsigned char>& request) con
 	this->_LogTransaction("<--", Util::Buffer::ToString(response));
 }
 
-/*
-	Private functions
-*/
+//	Private functions
+
 void QR::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)

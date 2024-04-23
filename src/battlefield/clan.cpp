@@ -175,9 +175,8 @@ Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
 	return Ranks::Unknown;
 }
 
-/*
-	Static
-*/
+// Static
+
 Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_rank)
 {
 	try

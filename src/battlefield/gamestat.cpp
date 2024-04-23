@@ -11,6 +11,8 @@
 
 #include <battlefield/gamestat.h>
 
+// GameStat
+
 bool Battlefield::GameStat::SetId(int id)
 {
 	this->_id = id;
@@ -138,6 +140,7 @@ bool Battlefield::GameStat::SetTimePlayed(const std::string str_tplayed)
 }
 
 // Team
+
 bool Battlefield::GameStat::SetTeam1ClanId(int clanid_t0)
 {
 	this->_clanid_t0 = clanid_t0;
@@ -376,7 +379,8 @@ void Battlefield::GameStat::Debug()
 	Logger::debug("victory_t1 = " + std::to_string(this->GetTeam2Victory()));
 }
 
-// Class GameStatPlayer
+// GameStatPlayer
+
 bool Battlefield::GameStatPlayer::SetId(int id)
 {
 	this->_id = id;

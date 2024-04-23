@@ -18,6 +18,7 @@ Database::Database()
 }
 
 // Player
+
 bool Database::queryPlayerByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -618,6 +619,7 @@ bool Database::insertPlayer(Battlefield::Player& player)
 }
 
 // Player Friends
+
 bool Database::queryPlayerFriendsByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -791,6 +793,7 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 }
 
 // Player Stats
+
 bool Database::queryPlayerStatsByProfileId(Battlefield::Player& player)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -1206,6 +1209,7 @@ bool Database::insertPlayerStats(const Battlefield::Player& player)
 }
 
 // Clan
+
 bool Database::queryClanByClanId(Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -1721,6 +1725,7 @@ bool Database::removeClan(const Battlefield::Clan& clan)
 }
 
 // Clan Rank
+
 bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -1981,6 +1986,7 @@ bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 }
 
 // Game Server
+
 bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -3430,6 +3436,7 @@ bool Database::updateGameServer(const Battlefield::GameServer& game_server)
 }
 
 // Game Server Player
+
 bool Database::queryGameServerPlayers(Battlefield::GameServer& game_server)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -3649,6 +3656,7 @@ bool Database::_removeGameServerPlayers(const Battlefield::GameServer& game_serv
 }
 
 // Game Stat
+
 bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string date)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -4019,6 +4027,7 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 }
 
 // Game Stat Player
+
 bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -4420,6 +4429,7 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 }
 
 // Leaderboard Rank
+
 bool Database::queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 		uint32_t limit, uint32_t offset)
 {
@@ -4734,6 +4744,7 @@ bool Database::queryLeaderboardRankByFriends(Battlefield::RankPlayers& rank_play
 }
 
 // Leaderboard Type
+
 bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, const std::string& type,
 		uint32_t limit, uint32_t offset)
 {
@@ -5051,6 +5062,7 @@ bool Database::queryLeaderboardTypeByFriends(Battlefield::RankPlayers& rank_play
 }
 
 // Leaderboard Ratio
+
 bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, const std::string& k, const std::string& s,
 		uint32_t limit, uint32_t offset)
 {
@@ -5651,6 +5663,7 @@ bool Database::createLeaderboards()
 }
 
 // Chat
+
 bool Database::insertChat(int profileid, const std::string& ip, int target_profileid, const std::string& message)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
@@ -5701,6 +5714,7 @@ bool Database::insertChat(int profileid, const std::string& ip, int target_profi
 
 
 // Private functions
+
 bool Database::_connect()
 {	
 	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // Read only
@@ -5812,6 +5826,7 @@ bool Database::_execute(MYSQL_STMT* statement, MYSQL_BIND* output_bind)
 }
 
 // Events
+
 void Database::OnDatabaseStart()
 {
 	Logger::info("MySQL Database connected");

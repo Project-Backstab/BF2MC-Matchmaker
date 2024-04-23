@@ -204,7 +204,14 @@ namespace Browsing
 			bool _FilterServerTeamplay(const std::string& filter, const Battlefield::GameServer& game_server);
 			
 		public:
+			/**
+			 * @brief Testing function to encrypt/decrypt a package.
+			 */
 			static void Test();
+			
+			/**
+			 * @brief Cracking function to find the secret key from a package.
+			 */
 			static void Crack();
 
 			/**
