@@ -9,6 +9,8 @@ cd build
 cmake ..
 make -j 4
 
+cmake --build . --target doc
+
 cmake --install . --prefix ../../BF2MC-Matchmaker-release
 
 cd ../../BF2MC-Matchmaker-release
