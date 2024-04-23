@@ -16,7 +16,7 @@ Service::File_System::~File_System()
 
 void Service::File_System::Load(const std::string& file_path)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 	
 	// Check file is already loaded
 	auto it = this->_files.find(file_path);
@@ -58,7 +58,7 @@ void Service::File_System::Load(const std::string& file_path)
 
 bool Service::File_System::GetFile(const std::string& file_path, std::string& data)
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 	
 	auto it = this->_files.find(file_path);
 	
@@ -73,7 +73,7 @@ bool Service::File_System::GetFile(const std::string& file_path, std::string& da
 
 void Service::File_System::UnLoadAll()
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // database lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 	
 	this->_files.clear();
 }

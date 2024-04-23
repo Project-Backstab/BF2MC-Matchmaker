@@ -328,7 +328,7 @@ void QR::Client::requestKeepAlive(const std::vector<unsigned char>& request) con
 
 void QR::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
 	
 	if ((g_logger_mode & Logger::Mode::Development) == 0)
 	{

@@ -440,7 +440,7 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 
 void GPSP::Client::_LogTransaction(const std::string& direction, const std::string& response) const
 {
-	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
 	
 	if ((g_logger_mode & Logger::Mode::Development) == 0)
 	{

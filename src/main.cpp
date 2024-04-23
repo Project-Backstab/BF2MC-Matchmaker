@@ -35,6 +35,7 @@ Service::File_System*   g_file_system;
 
 void load_settings()
 {
+	std::unique_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read/write)
 	Json::CharReaderBuilder builder;
 	
 	std::ifstream ifs;

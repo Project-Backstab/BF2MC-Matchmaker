@@ -12,7 +12,7 @@ Logger::Mode  g_logger_mode = Logger::Mode::Development;
 
 void Logger::Initialize()
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 
 	std::string path = "../data/log";
 
@@ -63,7 +63,7 @@ std::string Logger::ToString(enum Service::Type type)
 
 void Logger::info(const std::string& msg, const std::string& type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
@@ -78,7 +78,7 @@ void Logger::info(const std::string& msg, const std::string& type, bool show_con
 
 void Logger::warning(const std::string& msg, const std::string& type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 	
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
@@ -93,7 +93,7 @@ void Logger::warning(const std::string& msg, const std::string& type, bool show_
 
 void Logger::error(const std::string& msg, const std::string& type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 	
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
@@ -108,7 +108,7 @@ void Logger::error(const std::string& msg, const std::string& type, bool show_co
 
 void Logger::critical(const std::string& msg, const std::string& type, bool show_console)
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 	
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	
@@ -179,7 +179,7 @@ void Logger::critical(const std::string& msg, enum Service::Type type, bool show
 
 void Logger::debug(const std::string& msg)
 {
-	std::unique_lock<std::mutex> guard(g_logger_mutex); // logger lock (read/write)
+	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock
 	
 	std::string time = Util::Time::GetNowDateTime("%H:%M:%S");
 	

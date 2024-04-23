@@ -23,7 +23,7 @@
 
 Server::Server(Server::Type type)
 {
-	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
+	std::shared_lock<std::shared_mutex> guard(g_settings_mutex); // settings lock (read)
 	
 	int port = -1;
 	int socket_type = SOCK_STREAM;
@@ -85,7 +85,7 @@ Server::Server(Server::Type type)
 
 std::vector<std::shared_ptr<Net::Socket>> Server::GetClients()
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 	
 	return this->_clients;
 }
@@ -116,7 +116,7 @@ void Server::Listen()
 		{
 			case Server::Type::GPSP:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<GPSP::Client>(client_socket, client_address));
 				
@@ -134,7 +134,7 @@ void Server::Listen()
 			break;
 			case Server::Type::GPCM:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<GPCM::Client>(client_socket, client_address));
 				
@@ -152,7 +152,7 @@ void Server::Listen()
 			break;
 			case Server::Type::Browsing:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<Browsing::Client>(client_socket, client_address));
 				
@@ -170,7 +170,7 @@ void Server::Listen()
 			break;
 			case Server::Type::Webserver:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<Webserver::Client>(client_socket, client_address));
 				
@@ -188,7 +188,7 @@ void Server::Listen()
 			break;
 			case Server::Type::GameStats:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<GameStats::Client>(client_socket, client_address));
 				
@@ -206,7 +206,7 @@ void Server::Listen()
 			break;
 			case Server::Type::Websocket:
 			{
-				std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+				std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 				
 				this->_clients.push_back(std::make_shared<Websocket::Client>(client_socket, client_address));
 				
@@ -325,7 +325,7 @@ void Server::onServerShutdown() const
 
 void Server::onClientConnect(const Net::Socket& client) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
 	
 	if ((g_logger_mode & Logger::Mode::Development) != 0)
 	{
@@ -336,7 +336,7 @@ void Server::onClientConnect(const Net::Socket& client) const
 
 void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 {
-	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
 	
 	if ((g_logger_mode & Logger::Mode::Development) != 0)
 	{
@@ -347,11 +347,11 @@ void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 
 void Server::onClientDisconnect(const Net::Socket& client)
 {
-	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock  (read)
+	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
 	
 	if(this->GetSocketType() == "tcp")
 	{
-		std::lock_guard<std::mutex> guard(this->_mutex); // server lock (read/write)
+		std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 		
 		// Find shared pointer in clients list
 		auto it = std::find_if(this->_clients.begin(), this->_clients.end(),

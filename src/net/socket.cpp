@@ -12,7 +12,7 @@ Net::Socket::Socket()
 
 void Net::Socket::Close()
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 
 	if(this->_socket != -1)
 	{
@@ -72,29 +72,29 @@ std::string Net::Socket::GetSocketType() const
 
 std::chrono::system_clock::time_point Net::Socket::GetLastRecievedTime() const
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 
 	return this->_recieved_time;
 }
 
 void Net::Socket::Send(const std::string& msg) const
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 	
 	ssize_t size = send(this->_socket, msg.c_str(), msg.size(), 0);
 }
 
 void Net::Socket::Send(const std::vector<unsigned char>& msg) const
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 	
 	ssize_t size = send(this->_socket, &(msg[0]), msg.size(), 0);
 }
 
 void Net::Socket::UDPSend(const std::string& msg) const
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
-	
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
+
 	socklen_t address_len = sizeof(this->_address);
 	
 	sendto(this->_socket, msg.c_str(), msg.size(), 0, (struct sockaddr*)&this->_address, address_len);
@@ -102,7 +102,7 @@ void Net::Socket::UDPSend(const std::string& msg) const
 
 void Net::Socket::UDPSend(const std::vector<unsigned char>& msg) const
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 	
 	socklen_t address_len = sizeof(this->_address);
 	
@@ -111,7 +111,7 @@ void Net::Socket::UDPSend(const std::vector<unsigned char>& msg) const
 
 void Net::Socket::UpdateLastRecievedTime()
 {
-	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock (read/write)
+	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 
 	this->_recieved_time = std::chrono::system_clock::now();
 }
