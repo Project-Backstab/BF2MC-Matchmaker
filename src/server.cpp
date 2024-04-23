@@ -124,9 +124,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<GPSP::Client*>(client.get())->Listen();
 				});
 				t.detach();
@@ -142,9 +140,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<GPCM::Client*>(client.get())->Listen();
 				});
 				t.detach();
@@ -160,9 +156,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<Browsing::Client*>(client.get())->Listen();
 				});
 				t.detach();
@@ -178,9 +172,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<Webserver::Client*>(client.get())->Listen();
 				});
 				t.detach();
@@ -196,9 +188,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<GameStats::Client*>(client.get())->Listen();
 				});
 				t.detach();
@@ -214,9 +204,7 @@ void Server::Listen()
 				
 				this->onClientConnect(client);
 				
-				std::thread t([_client = client]() {
-					std::shared_ptr<Net::Socket> client = _client;
-					
+				std::thread t([client]() {
 					static_cast<Websocket::Client*>(client.get())->Listen();
 				});
 				t.detach();

@@ -772,6 +772,44 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 
 	Json::Value json_results;
 
+	// Browsing
+	Json::Value json_browsing(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_browsing_server->GetClients())
+	{
+		Json::Value json_client;
+
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
+
+		// Debug
+		//json_client["ref_count"] = client.use_count();
+
+		json_browsing.append(json_client);
+	}
+	json_results["browsing"] = json_browsing;
+
+	// Gamestats
+	Json::Value json_gamestats(Json::arrayValue);
+	for(std::shared_ptr<Net::Socket> client : g_gamestats_server->GetClients())
+	{
+		Json::Value json_client;
+		
+		json_client["ip"] = client.get()->GetIP();
+		json_client["port"] = client.get()->GetPort();
+
+		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
+		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
+
+		// Debug
+		//json_client["ref_count"] = client.use_count();
+
+		json_gamestats.append(json_client);
+	}
+	json_results["gamestats"] = json_gamestats;
+
 	// GPCM
 	Json::Value json_gpcm(Json::arrayValue);
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
@@ -800,6 +838,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 		json_session["status"] = session.status;
 
 		json_client["session"] = json_session;
+		
+		// Debug
+		//json_client["ref_count"] = client.use_count();
 
 		json_gpcm.append(json_client);
 	}
@@ -816,6 +857,9 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 
 		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
 		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
+		
+		// Debug
+		//json_client["ref_count"] = client.use_count();
 
 		json_gpsp.append(json_client);
 	}
@@ -833,41 +877,12 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
 		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
 
+		// Debug
+		//json_client["ref_count"] = client.use_count();
+
 		json_webserver.append(json_client);
 	}
 	json_results["webserver"] = json_webserver;
-
-	// Browsing
-	Json::Value json_browsing(Json::arrayValue);
-	for(std::shared_ptr<Net::Socket> client : g_browsing_server->GetClients())
-	{
-		Json::Value json_client;
-
-		json_client["ip"] = client.get()->GetIP();
-		json_client["port"] = client.get()->GetPort();
-
-		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
-		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
-
-		json_browsing.append(json_client);
-	}
-	json_results["browsing"] = json_browsing;
-
-	// Gamestats
-	Json::Value json_gamestats(Json::arrayValue);
-	for(std::shared_ptr<Net::Socket> client : g_gamestats_server->GetClients())
-	{
-		Json::Value json_client;
-		
-		json_client["ip"] = client.get()->GetIP();
-		json_client["port"] = client.get()->GetPort();
-
-		time_t last_recieved_time = std::chrono::system_clock::to_time_t(client.get()->GetLastRecievedTime());
-		json_client["last_recieved_time"] = std::string(std::ctime(&last_recieved_time));
-
-		json_gamestats.append(json_client);
-	}
-	json_results["gamestats"] = json_gamestats;
 
 	this->Send(json_results);
 
