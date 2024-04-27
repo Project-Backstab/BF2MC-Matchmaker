@@ -1,5 +1,8 @@
 build/
+
 data/log/
+data/settings.json
+
 reverse/
 
 src/version.h

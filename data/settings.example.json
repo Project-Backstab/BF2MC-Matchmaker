@@ -1,0 +1,61 @@
+{
+	"database":
+	{
+		"host": "localhost",
+		"username": "",
+		"password": "",
+		"database_name": "BF2MC"
+	},
+	"qr":
+	{
+		"port": 27900,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"gpcm":
+	{
+		"port": 29900,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"gpsp":
+	{
+		"port": 29901,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"webserver":
+	{
+		"port": 8080,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false,
+		"password": ""
+	},
+	"browsing":
+	{
+		"port": 28910,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"gamestats":
+	{
+		"port": 29920,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"websocket": 
+	{
+		"port": 55001,
+		"connection_time_out": 2,
+		"show_requests": false,
+		"show_responses": false
+	},
+	"show_client_connect": false,
+	"show_client_disconnect": false
+}
