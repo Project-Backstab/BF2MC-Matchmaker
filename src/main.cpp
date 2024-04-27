@@ -19,7 +19,9 @@
 #include <service/file_system.h>
 
 // Globals
+
 Database*               g_database;
+
 Server*                 g_qr_server;
 Server*                 g_gpsp_server;
 Server*                 g_gpcm_server;
@@ -28,10 +30,12 @@ Server*                 g_browsing_server;
 Server*                 g_gamestats_server;
 Server*                 g_websocket_server;
 
+class Service::File_System*   g_file_system;
+
+// Settings
+
 Json::Value             g_settings;
 std::shared_mutex       g_settings_mutex;
-
-Service::File_System*   g_file_system;
 
 void load_settings()
 {
@@ -111,7 +115,7 @@ void start_websocket_server()
 
 void start_file_system()
 {
-	g_file_system = new Service::File_System();
+	g_file_system = new class Service::File_System();
 	
 	// Load "data/gamescripts" files in memory
 	for (const auto& entry : std::filesystem::recursive_directory_iterator("../data/gamescripts"))
@@ -123,7 +127,7 @@ void start_file_system()
         }
     }
 	
-	Logger::info("Load all files in memory.", Service::FileSystem);
+	Logger::info("Load all files in memory.", Service::File_System);
 	
 	// Example code how to use
 	/*

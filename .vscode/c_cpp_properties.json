@@ -3,7 +3,9 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/src/",
+                "${workspaceFolder}/third-party/atomizes/include/*",
+                "${workspaceFolder}/third-party/jsoncpp/include/*"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
