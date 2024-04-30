@@ -26,7 +26,7 @@ cd BF2MC-Matchmaker
 git submodule init
 git submodule update
 
-sudo apt-get install libmysqlclient-dev
+sudo apt-get install libmysqlclient-dev doxygen graphviz ccache
 ```
 
 ## Compile project
@@ -43,6 +43,7 @@ mkdir build
 cd build
 
 cmake ..
+cmake --build . --target doc
 make -j 4
 ```
 
@@ -77,8 +78,8 @@ sudo iptables -A PREROUTING -t nat -i <network interface> -p tcp --dport 80 -j R
 
 For release:
 ```
-cd BF2MC-Matchmaker-release/bin
-./bf2mc
+cd BF2MC-Matchmaker-release/
+./bin/bf2mc
 ```
 
 For development:
