@@ -45,6 +45,10 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		// Get game server players from database
 		g_database->queryGameServerPlayers(game_server);
 		
+		// Is server alive
+		if(!game_server.IsAlive())
+			continue;
+
 		// Game Server information
 		json_game_server["id"] = game_server.GetId();
 		json_game_server["flag"] = game_server.GetFlag();
@@ -90,7 +94,6 @@ void Webserver::Client::requestAPIServersLive(const atomizes::HTTPMessage& http_
 		json_game_server["score1"] = game_server.GetTeam2Score();
 		json_game_server["updated_at"] = game_server.GetUpdatedAt();
 		json_game_server["verified"] = game_server.isVerified();
-		json_game_server["is_alive"] = game_server.IsAlive();
 		
 		// Secret
 		//json_game_server["ip"] = game_server.GetIp();
