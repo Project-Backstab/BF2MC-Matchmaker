@@ -48,24 +48,24 @@ namespace Battlefield
 			};
 			
 		private:
-			int             _id         = -1;   /**< The unique identifier for the game statistics. */
-			uint8_t         _gametype   = 0;    /**< The type of game (see: enum Battlefield::GameType). */
-			std::string     _gamver     = "";   /**< The game version. */
-			std::string     _hostname   = "";   /**< The hostname of the game server. */
-			uint8_t         _mapid      = 0;    /**< The ID of the map. */
-			uint8_t         _numplayers = 0;    /**< The total number of players in the game. */
-			uint8_t         _pplayers   = 0;    /**< The number of present players at the end of the game. */
-			uint16_t        _tplayed    = 0;    /**< The total time played in seconds. */
-			int             _clanid_t0  = 0;    /**< The clan ID for team 1. */
-			int             _clanid_t1  = 0;    /**< The clan ID for team 2. */
-			uint8_t         _country_t0 = 0;    /**< The country ID for team 1. */
-			uint8_t         _country_t1 = 0;    /**< The country ID for team 2. */
+			int             _id         = -1; /**< The unique identifier for the game statistics. */
+			uint8_t         _gametype   = 0;  /**< The type of game (see: enum Battlefield::GameType). */
+			std::string     _gamver     = ""; /**< The game version. */
+			std::string     _hostname   = ""; /**< The hostname of the game server. */
+			uint8_t         _mapid      = 0;  /**< The ID of the map. */
+			uint8_t         _numplayers = 0;  /**< The total number of players in the game. */
+			uint8_t         _pplayers   = 0;  /**< The number of present players at the end of the game. */
+			uint16_t        _tplayed    = 0;  /**< The total time played in seconds. */
+			int             _clanid_t0  = 0;  /**< The clan ID for team 1. */
+			int             _clanid_t1  = 0;  /**< The clan ID for team 2. */
+			uint8_t         _country_t0 = 0;  /**< The country ID for team 1. */
+			uint8_t         _country_t1 = 0;  /**< The country ID for team 2. */
 			
-			uint8_t         _victory_t0 = 0;    /**< The victory state for team 1 (see: enum Battlefield::GameStat::VictoryState). */
-			uint8_t         _victory_t1 = 0;    /**< The victory state for team 2 (see: enum Battlefield::GameStat::VictoryState). */
+			uint8_t         _victory_t0 = 0;  /**< The victory state for team 1 (see: enum Battlefield::GameStat::VictoryState). */
+			uint8_t         _victory_t1 = 0;  /**< The victory state for team 2 (see: enum Battlefield::GameStat::VictoryState). */
 
-			std::string     _created_at = "";   /**< The datetime when the game statistics were created. */
-			GameStatPlayers _players;           /**< The list of players involved in the game. */
+			std::string     _created_at = ""; /**< The datetime when the game statistics were created. */
+			GameStatPlayers _players;         /**< The list of players involved in the game. */
 			
 		public:
 			int         GetId() const            { return this->_id;         }
@@ -76,7 +76,7 @@ namespace Battlefield
 			uint8_t     GetNumPlayers() const    { return this->_numplayers; }
 			uint8_t     GetPPlayers() const      { return this->_pplayers;   }
 			uint16_t    GetTimePlayed() const    { return this->_tplayed;    }
-			
+
 			// Team
 			int         GetTeam1ClanId() const   { return this->_clanid_t0;  }
 			int         GetTeam2ClanId() const   { return this->_clanid_t1;  }
@@ -138,36 +138,37 @@ namespace Battlefield
 			int         _team       = -1;        /**< The team the player is on. */
 			
 			// Player stats
-			int32_t   _score     = 0;   /**< Total score of the player. */
-			uint32_t  _rank      = 1;   /**< Rank of the player (see enum Battlefield::Ranks). */
-			uint32_t  _pph       = 0;   /**< Points per hour earned by the player. */
-			uint32_t  _kills     = 0;   /**< Total number of kills by the player. */
-			uint32_t  _deaths    = 0;   /**< Total number of deaths by the player. */
-			uint32_t  _suicides  = 0;   /**< Total number of suicides by the player. */
-			uint32_t  _time      = 0;   /**< Total time played by the player in seconds. */
-			uint32_t  _vehicles  = 0;   /**< Total number of vehicles destroyed by the player. */
-			uint32_t  _lavd      = 0;   /**< Total number of LAVs (Light Armored Vehicles) destroyed by the player. */
-			uint32_t  _mavd      = 0;   /**< Total number of MAVs (Medium Armored Vehicles) destroyed by the player. */
-			uint32_t  _havd      = 0;   /**< Total number of HAVs (Heavy Armored Vehicles) destroyed by the player. */
-			uint32_t  _hed       = 0;   /**< Total number of helicopters destroyed by the player. */
-			uint32_t  _pld       = 0;   /**< Total number of planes destroyed by the player (unimplemented). */
-			uint32_t  _bod       = 0;   /**< Total number of boats destroyed by the player. */
-			uint32_t  _k1        = 0;   /**< Total kills with Assault kit by the player. */
-			uint32_t  _s1        = 0;   /**< Total spawns with Assault kit by the player. */
-			uint32_t  _k2        = 0;   /**< Total kills with Sniper kit by the player. */
-			uint32_t  _s2        = 0;   /**< Total spawns with Sniper kit by the player. */
-			uint32_t  _k3        = 0;   /**< Total kills with Special Op. kit by the player. */
-			uint32_t  _s3        = 0;   /**< Total spawns with Special Op. kit by the player. */
-			uint32_t  _k4        = 0;   /**< Total kills with Combat Engineer kit by the player. */
-			uint32_t  _s4        = 0;   /**< Total spawns with Combat Engineer kit by the player. */
-			uint32_t  _k5        = 0;   /**< Total kills with Support kit by the player. */
-			uint32_t  _s5        = 0;   /**< Total spawns with Support kit by the player. */
-			uint32_t  _tk        = 0;   /**< Total team kills by the player (not used in game). */
-			uint32_t  _medals    = 0;   /**< Total earned medals and ribbons by the player (see enums Battlefield::Medals and Battlefield::Ribbons). */
-			uint32_t  _ttb       = 0;   /**< Total times top player by the player. */
-			uint32_t  _mv        = 0;   /**< Total major victories achieved by the player. */
-			uint32_t  _ngp       = 0;   /**< Total participated game sessions by the player. */
-		
+			int32_t   _score     = 0;     /**< Total score of the player. */
+			uint32_t  _rank      = 1;     /**< Rank of the player (see enum Battlefield::Ranks). */
+			uint32_t  _pph       = 0;     /**< Points per hour earned by the player. */
+			uint32_t  _kills     = 0;     /**< Total number of kills by the player. */
+			uint32_t  _deaths    = 0;     /**< Total number of deaths by the player. */
+			uint32_t  _suicides  = 0;     /**< Total number of suicides by the player. */
+			uint32_t  _time      = 0;     /**< Total time played by the player in seconds. */
+			uint32_t  _vehicles  = 0;     /**< Total number of vehicles destroyed by the player. */
+			uint32_t  _lavd      = 0;     /**< Total number of LAVs (Light Armored Vehicles) destroyed by the player. */
+			uint32_t  _mavd      = 0;     /**< Total number of MAVs (Medium Armored Vehicles) destroyed by the player. */
+			uint32_t  _havd      = 0;     /**< Total number of HAVs (Heavy Armored Vehicles) destroyed by the player. */
+			uint32_t  _hed       = 0;     /**< Total number of helicopters destroyed by the player. */
+			uint32_t  _pld       = 0;     /**< Total number of planes destroyed by the player (unimplemented). */
+			uint32_t  _bod       = 0;     /**< Total number of boats destroyed by the player. */
+			uint32_t  _k1        = 0;     /**< Total kills with Assault kit by the player. */
+			uint32_t  _s1        = 0;     /**< Total spawns with Assault kit by the player. */
+			uint32_t  _k2        = 0;     /**< Total kills with Sniper kit by the player. */
+			uint32_t  _s2        = 0;     /**< Total spawns with Sniper kit by the player. */
+			uint32_t  _k3        = 0;     /**< Total kills with Special Op. kit by the player. */
+			uint32_t  _s3        = 0;     /**< Total spawns with Special Op. kit by the player. */
+			uint32_t  _k4        = 0;     /**< Total kills with Combat Engineer kit by the player. */
+			uint32_t  _s4        = 0;     /**< Total spawns with Combat Engineer kit by the player. */
+			uint32_t  _k5        = 0;     /**< Total kills with Support kit by the player. */
+			uint32_t  _s5        = 0;     /**< Total spawns with Support kit by the player. */
+			uint32_t  _tk        = 0;     /**< Total team kills by the player (not used in game). */
+			uint32_t  _medals    = 0;     /**< Total earned medals and ribbons by the player (see enums Battlefield::Medals and Battlefield::Ribbons). */
+			uint32_t  _ttb       = 0;     /**< Total times top player by the player. */
+			uint32_t  _mv        = 0;     /**< Total major victories achieved by the player. */
+			uint32_t  _ngp       = 0;     /**< Total participated game sessions by the player. */
+			bool      _disable   = false; /**< Disable option to not let player progress stats. */
+
 		public:
 			int         GetId() const                      { return this->_id;       }
 			std::string GetAuth() const                    { return this->_auth;     }
@@ -201,7 +202,8 @@ namespace Battlefield
 			uint32_t    GetTotalTopPlayer() const          { return this->_ttb;      }
 			uint32_t    GetTotalVictories() const          { return this->_mv;       }
 			uint32_t    GetTotalGameSessions() const       { return this->_ngp;      }
-			
+			bool 		IsDisabled() const                 { return this->_disable;  }
+
 			bool SetId(int id);
 			bool SetAuth(const std::string& auth);
 			bool SetProfileId(int pid);
@@ -264,7 +266,9 @@ namespace Battlefield
 			bool SetTotalVictories(const std::string& str_mv);
 			bool SetTotalGameSessions(uint32_t ngp);
 			bool SetTotalGameSessions(const std::string& str_ngp);
-			
+			bool SetDisable(bool disable);
+			bool SetDisable(uint8_t disable);
+
 			/**
 			 * @brief Updates the player's statistics in the player stat class.
 			 */

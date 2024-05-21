@@ -328,7 +328,8 @@ namespace Battlefield
 			
 			bool SetUpdatedAt(MYSQL_TIME updated_at);
 			bool SetVerified(bool verified);
-			
+			bool SetVerified(uint8_t verified);
+
 			/**
 			 * @brief Adds a player to the game server.
 			 * 

@@ -974,6 +974,17 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 	return false;
 }
 
+bool Battlefield::GameStatPlayer::SetDisable(bool disable)
+{
+	this->_disable = disable;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetDisable(uint8_t disable)
+{
+	return this->SetDisable(disable == 1);
+}
+
 void Battlefield::GameStatPlayer::UpdatePlayerStats()
 {
 	Battlefield::Player player;

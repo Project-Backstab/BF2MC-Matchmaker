@@ -712,6 +712,11 @@ bool Battlefield::GameServer::SetVerified(bool verified)
 	return true;
 }
 
+bool Battlefield::GameServer::SetVerified(uint8_t verified)
+{
+	return this->SetVerified(verified == 1);
+}
+
 void Battlefield::GameServer::AddPlayer(const GameServerPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);

@@ -25,7 +25,8 @@ bool Database::queryPlayerByProfileId(Battlefield::Player& player)
 
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, `verified`, `restricted` ";
+	query += "	`userid`, `nick`, `uniquenick`, `email`, `password`, `last_login`, `last_login_ip`, `created_at`, ";
+	query += "	`verified`, `restricted` ";
 	query += "FROM ";
 	query += "	`Players` ";
 	query += "WHERE ";
@@ -109,8 +110,8 @@ bool Database::queryPlayerByProfileId(Battlefield::Player& player)
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
-		player.SetVerified(output_verified == 1);
-		player.SetRestricted(output_restricted == 1);
+		player.SetVerified(output_verified);
+		player.SetRestricted(output_restricted);
 	}
 
 	// Cleanup
@@ -212,8 +213,8 @@ bool Database::queryPlayerByUniquenick(Battlefield::Player& player)
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
-		player.SetVerified(output_verified == 1);
-		player.SetRestricted(output_restricted == 1);
+		player.SetVerified(output_verified);
+		player.SetRestricted(output_restricted);
 	}
 
 	// Cleanup
@@ -324,8 +325,8 @@ bool Database::queryPlayersByEmail(Battlefield::Players& players, const std::str
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
-		player.SetVerified(output_verified == 1);
-		player.SetRestricted(output_restricted == 1);
+		player.SetVerified(output_verified);
+		player.SetRestricted(output_restricted);
 		
 		players.push_back(player);
 	}
@@ -443,8 +444,8 @@ bool Database::queryPlayersByEmailOrUniquenick(Battlefield::Players& players, co
 		player.SetLastLogin(output_last_login);
 		player.SetLastLoginIp(output_last_login_ip);
 		player.SetCreatedAt(output_created_at);
-		player.SetVerified(output_verified == 1);
-		player.SetRestricted(output_restricted == 1);
+		player.SetVerified(output_verified);
+		player.SetRestricted(output_restricted);
 		
 		players.push_back(player);
 	}
@@ -2282,7 +2283,7 @@ bool Database::queryGameServerByIp(Battlefield::GameServer& game_server)
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
 		game_server.SetUpdatedAt(output_updated_at);
-		game_server.SetVerified(output_verified == 1);
+		game_server.SetVerified(output_verified);
 
 		break;
 	}
@@ -2594,7 +2595,7 @@ bool Database::queryGameServerByIpAndPort(Battlefield::GameServer& game_server)
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
 		game_server.SetUpdatedAt(output_updated_at);
-		game_server.SetVerified(output_verified == 1);
+		game_server.SetVerified(output_verified);
 	}
 
 	// Cleanup
@@ -2899,7 +2900,7 @@ bool Database::queryGameServers(Battlefield::GameServers& game_servers)
 		game_server.SetTeam1Score(output_score0);
 		game_server.SetTeam2Score(output_score1);
 		game_server.SetUpdatedAt(output_updated_at);
-		game_server.SetVerified(output_verified == 1);
+		game_server.SetVerified(output_verified);
 		
 		game_servers.push_back(game_server);
 	}
@@ -4244,6 +4245,233 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 		gsplayer.SetTotalGameSessions(output_ngp);
 		
 		game_stat.AddPlayer(gsplayer);
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
+bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers)
+{
+	std::string query = "";
+	query += "SELECT ";
+	query += "	`id`, `auth`, `team`, `score`, `rank`, `pph`, `kills`, `deaths`, ";
+	query += "	`suicides`, `time`, `lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
+	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
+	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `disable` ";
+	query += "FROM ";
+	query += "	`GameStatPlayers` ";
+	query += "WHERE ";
+	query += "	`pid` = ?";
+
+	int input_profileid = player.GetProfileId();
+
+	int      output_id;
+	char     output_auth[33];
+	int      output_pid;
+	int      output_team;
+	int32_t  output_score;
+	uint32_t output_rank;
+	uint32_t output_pph;
+	uint32_t output_kills;
+	uint32_t output_deaths;
+	uint32_t output_suicides;
+	uint32_t output_time;
+	uint32_t output_lavd;
+	uint32_t output_mavd;
+	uint32_t output_havd;
+	uint32_t output_hed;
+	uint32_t output_pld;
+	uint32_t output_bod;
+	uint32_t output_k1;
+	uint32_t output_s1;
+	uint32_t output_k2;
+	uint32_t output_s2;
+	uint32_t output_k3;
+	uint32_t output_s3;
+	uint32_t output_k4;
+	uint32_t output_s4;
+	uint32_t output_k5;
+	uint32_t output_s5;
+	uint32_t output_tk;
+	uint32_t output_medals;
+	uint32_t output_ttb;
+	uint32_t output_mv;
+	uint32_t output_ngp;
+	uint8_t  output_disable;
+
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_profileid;
+	input_bind[0].is_unsigned = false;
+	
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(32, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_id;
+	output_bind[0].is_unsigned = false;
+	output_bind[1].buffer_type = MYSQL_TYPE_STRING;
+	output_bind[1].buffer = output_auth;
+	output_bind[1].buffer_length = 33;
+	output_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[2].buffer = &output_team;
+	output_bind[2].is_unsigned = false;
+	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[3].buffer = &output_score;
+	output_bind[3].is_unsigned = false;
+	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[4].buffer = &output_rank;
+	output_bind[4].is_unsigned = true;
+	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[5].buffer = &output_pph;
+	output_bind[5].is_unsigned = true;
+	output_bind[6].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[6].buffer = &output_kills;
+	output_bind[6].is_unsigned = true;
+	output_bind[7].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[7].buffer = &output_deaths;
+	output_bind[7].is_unsigned = true;
+	output_bind[8].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[8].buffer = &output_suicides;
+	output_bind[8].is_unsigned = true;
+	output_bind[9].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[9].buffer = &output_time;
+	output_bind[9].is_unsigned = true;
+	output_bind[10].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[10].buffer = &output_lavd;
+	output_bind[10].is_unsigned = true;
+	output_bind[11].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[11].buffer = &output_mavd;
+	output_bind[11].is_unsigned = true;
+	output_bind[12].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[12].buffer = &output_havd;
+	output_bind[12].is_unsigned = true;
+	output_bind[13].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[13].buffer = &output_hed;
+	output_bind[13].is_unsigned = true;
+	output_bind[14].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[14].buffer = &output_pld;
+	output_bind[14].is_unsigned = true;
+	output_bind[15].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[15].buffer = &output_bod;
+	output_bind[15].is_unsigned = true;
+	output_bind[16].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[16].buffer = &output_k1;
+	output_bind[16].is_unsigned = true;
+	output_bind[17].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[17].buffer = &output_s1;
+	output_bind[17].is_unsigned = true;
+	output_bind[18].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[18].buffer = &output_k2;
+	output_bind[18].is_unsigned = true;
+	output_bind[19].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[19].buffer = &output_s2;
+	output_bind[19].is_unsigned = true;
+	output_bind[20].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[20].buffer = &output_k3;
+	output_bind[20].is_unsigned = true;
+	output_bind[21].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[21].buffer = &output_s3;
+	output_bind[21].is_unsigned = true;
+	output_bind[22].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[22].buffer = &output_k4;
+	output_bind[22].is_unsigned = true;
+	output_bind[23].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[23].buffer = &output_s4;
+	output_bind[23].is_unsigned = true;
+	output_bind[24].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[24].buffer = &output_k5;
+	output_bind[24].is_unsigned = true;
+	output_bind[25].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[25].buffer = &output_s5;
+	output_bind[25].is_unsigned = true;
+	output_bind[26].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[26].buffer = &output_tk;
+	output_bind[26].is_unsigned = true;
+	output_bind[27].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[27].buffer = &output_medals;
+	output_bind[27].is_unsigned = true;
+	output_bind[28].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[28].buffer = &output_ttb;
+	output_bind[28].is_unsigned = true;
+	output_bind[29].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[29].buffer = &output_mv;
+	output_bind[29].is_unsigned = true;
+	output_bind[30].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[30].buffer = &output_ngp;
+	output_bind[30].is_unsigned = true;
+	output_bind[31].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[31].buffer = &output_disable;
+	output_bind[31].is_unsigned = true;
+
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+		
+		Battlefield::GameStatPlayer gsplayer;
+		
+		gsplayer.SetId(output_id);
+		gsplayer.SetAuth(output_auth);
+		gsplayer.SetProfileId(input_profileid);
+		gsplayer.SetTeam(output_team);
+		gsplayer.SetScore(output_score);
+		gsplayer.SetRank(output_rank);
+		gsplayer.SetPPH(output_pph);
+		gsplayer.SetKills(output_kills);
+		gsplayer.SetDeaths(output_deaths);
+		gsplayer.SetSuicides(output_suicides);
+		gsplayer.SetTime(output_time);
+		gsplayer.SetLAVsDestroyed(output_lavd);
+		gsplayer.SetMAVsDestroyed(output_mavd);
+		gsplayer.SetHAVsDestroyed(output_havd);
+		gsplayer.SetHelicoptersDestroyed(output_hed);
+		gsplayer.SetPlanesDestroyed(output_pld);
+		gsplayer.SetBoatsDestroyed(output_bod);
+		gsplayer.SetKillsAssualtKit(output_k1);
+		gsplayer.SetDeathsAssualtKit(output_s1);
+		gsplayer.SetKillsSniperKit(output_k2);
+		gsplayer.SetDeathsSniperKit(output_s2);
+		gsplayer.SetKillsSpecialOpKit(output_k3);
+		gsplayer.SetDeathsSpecialOpKit(output_s3);
+		gsplayer.SetKillsCombatEngineerKit(output_k4);
+		gsplayer.SetDeathsCombatEngineerKit(output_s4);
+		gsplayer.SetKillsSupportKit(output_k5);
+		gsplayer.SetDeathsSupportKit(output_s5);
+		gsplayer.SetTeamKills(output_tk);
+		gsplayer.SetMedals(output_medals);
+		gsplayer.SetTotalTopPlayer(output_ttb);
+		gsplayer.SetTotalVictories(output_mv);
+		gsplayer.SetTotalGameSessions(output_ngp);
+		gsplayer.SetDisable(output_disable);
+
+		gsplayers.push_back(gsplayer);
 	}
 
 	// Cleanup

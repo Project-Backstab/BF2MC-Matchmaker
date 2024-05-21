@@ -500,7 +500,18 @@ class Database
 		 * @return True if the player information is successfully queried, false otherwise.
 		 */
 		bool queryGameStatPlayers(Battlefield::GameStat& game_stat);
-	
+		
+		/**
+		 * @brief Queries game statistics for a player by their profile ID.
+		 *
+		 * This function retrieves game statistics for a player identified by their profile ID.
+		 *
+		 * @param player The player object containing the profile ID to query.
+		 * @param gsplayers[out] Reference to a Battlefield::GameStatPlayers object where the result will be stored.
+		 * @return bool True if the query is successful and game statistics are found for the player, false otherwise.
+		 */
+		bool queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers);
+
 	private:
 		/**
 		 * @brief Inserts a game stat player record into the database.
