@@ -1026,23 +1026,6 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 	player.SetTime(                    player.GetTime()                    + this->GetTime()                    ); // time
 	player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + this->GetTotalTopPlayer()          ); // ttb
 	
-	Logger::info("------------------------------------------");
-	Logger::info("WTF WHY IS THIS HAPPENING?!!!!");
-	Logger::info("GameStatPlayer.pid = " + std::to_string(this->GetProfileId()));
-	Logger::info("GameStatPlayer.auth = " + this->GetAuth());
-	Logger::info("GameStatPlayer.time = " + std::to_string(this->GetTime()));
-	Logger::info("GameStatPlayer.team = " + std::to_string(this->GetTeam()));
-	Logger::info("GameStatPlayer.medals = " + std::to_string(this->GetMedals()));
-
-	Logger::info("Player.medals = " + std::to_string(player.GetMedals()));
-	player.SetMedals(this->GetMedals()); // medals
-	Logger::info("new Player.medals = " + std::to_string(player.GetMedals()));
-
-	Logger::info("------------------------------------------");
-
-	player.SetPPH(this->GetPPH());       // pph
-	player.SetRank(this->GetRank());     // rank
-	
 	player.SetVehiclesDestroyed(
 		player.GetLAVsDestroyed() +
 		player.GetMAVsDestroyed() +
@@ -1050,6 +1033,10 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 		player.GetHelicoptersDestroyed() +
 		player.GetBoatsDestroyed()
 	);
+
+	player.SetMedals(this->GetMedals()); // medals
+	player.SetPPH(this->GetPPH());       // pph
+	//player.SetRank(this->GetRank());     // rank
 	
 	// Update player stats on database
 	g_database->updatePlayerStats(player);

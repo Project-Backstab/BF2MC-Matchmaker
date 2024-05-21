@@ -935,10 +935,6 @@ void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_re
 void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
-	Json::Value json_results;
-	
-	json_results["result"] = "FAIL";
-
 	// Check password
 	auto it = url_variables.find("password");
 	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
@@ -961,6 +957,8 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	{
 		player.SetProfileId(it->second);
 	}
+	
+	Json::Value json_results;
 
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
@@ -987,3 +985,81 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
+void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	// Check password
+	auto it = url_variables.find("password");
+	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
+	{
+		return;
+	}
+
+	// Get profile id
+	it = url_variables.find("profileid");
+	if (it == url_variables.end())
+	{
+		return;	
+	}
+
+	Battlefield::Player player;
+	Battlefield::GameStatPlayers gsplayers;
+
+	// Set profile id
+	player.SetProfileId(it->second);
+
+	// Get all games results that the player has played
+	g_database->queryGameStatPlayersByProfileId(player, gsplayers);
+
+	Json::Value json_results;
+	
+	for(const Battlefield::GameStatPlayer& gsplayer : gsplayers)
+	{
+		if(gsplayer.IsDisabled())
+			continue;
+		
+		player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + gsplayer.GetBoatsDestroyed()          ); // bod
+		player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + gsplayer.GetHAVsDestroyed()           ); // havd
+		player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + gsplayer.GetHelicoptersDestroyed()    ); // hed
+		player.SetKillsAssualtKit(         player.GetKillsAssualtKit()         + gsplayer.GetKillsAssualtKit()         ); // k1
+		player.SetKillsSniperKit(          player.GetKillsSniperKit()          + gsplayer.GetKillsSniperKit()          ); // k2
+		player.SetKillsSpecialOpKit(       player.GetKillsSpecialOpKit()       + gsplayer.GetKillsSpecialOpKit()       ); // k3
+		player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + gsplayer.GetKillsCombatEngineerKit()  ); // k4
+		player.SetKillsSupportKit(         player.GetKillsSupportKit()         + gsplayer.GetKillsSupportKit()         ); // k5
+		player.SetKills(                   player.GetKills()                   + gsplayer.GetKills()                   ); // kills
+		player.SetDeaths(                  player.GetDeaths()                  + gsplayer.GetDeaths()                  ); // deaths
+		player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + gsplayer.GetLAVsDestroyed()           ); // lavd
+		player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + gsplayer.GetMAVsDestroyed()           ); // mavd
+		player.SetTotalVictories(          player.GetTotalVictories()          + gsplayer.GetTotalVictories()          ); // mv
+		player.SetTotalGameSessions(       player.GetTotalGameSessions()       + gsplayer.GetTotalGameSessions()       ); // ngp
+		player.SetDeathsAssualtKit(        player.GetSpawnsAssualtKit()        + gsplayer.GetSpawnsAssualtKit()        ); // s1
+		player.SetDeathsSniperKit(         player.GetSpawnsSniperKit()         + gsplayer.GetSpawnsSniperKit()         ); // s2
+		player.SetDeathsSpecialOpKit(      player.GetSpawnsSpecialOpKit()      + gsplayer.GetSpawnsSpecialOpKit()      ); // s3
+		player.SetDeathsCombatEngineerKit( player.GetSpawnsCombatEngineerKit() + gsplayer.GetSpawnsCombatEngineerKit() ); // s4
+		player.SetDeathsSupportKit(        player.GetSpawnsSupportKit()        + gsplayer.GetSpawnsSupportKit()        ); // s5
+		player.SetScore(                   player.GetScore()                   + gsplayer.GetScore()                   ); // score
+		player.SetSuicides(                player.GetSuicides()                + gsplayer.GetSuicides()                ); // suicides
+		player.SetTime(                    player.GetTime()                    + gsplayer.GetTime()                    ); // time
+		player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + gsplayer.GetTotalTopPlayer()          ); // ttb
+
+		player.SetVehiclesDestroyed(
+			player.GetLAVsDestroyed() +
+			player.GetMAVsDestroyed() +
+			player.GetHAVsDestroyed() +
+			player.GetHelicoptersDestroyed() +
+			player.GetBoatsDestroyed()
+		);
+		
+		player.SetMedals(gsplayer.GetMedals()); // medals
+		
+		// Calculate pph
+		player.calcNewPPH(gsplayer.GetTime(), gsplayer.GetScore());
+	}
+
+	// Update player stats on database
+	//g_database->updatePlayerStats(player);
+
+	this->Send(json_results);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
+}

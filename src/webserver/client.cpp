@@ -141,17 +141,18 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/favicon.ico",                                         &Webserver::Client::requestEmpty              },
 	
 	// API
-	{ "/API/servers/live",                                    &Webserver::Client::requestAPIServersLive     },
-	{ "/API/game",                                            &Webserver::Client::requestAPIGame            },
-	{ "/API/games",                                           &Webserver::Client::requestAPIGames           },
-	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer          },
-	{ "/API/clan",                                            &Webserver::Client::requestAPIClan            },
-	{ "/API/leaderboard",                                     &Webserver::Client::requestAPILeaderboard     },
-	{ "/API/leaderboard/clan",                                &Webserver::Client::requestAPILeaderboardClan },
-	{ "/API/clan/simulation",                                 &Webserver::Client::requestAPIClanSimulation  },
-	{ "/API/admin/clients",                                   &Webserver::Client::requestAPIAdminClients    },
-	{ "/API/admin/kick",                                      &Webserver::Client::requestAPIAdminKick       },
-	{ "/API/admin/message",                                   &Webserver::Client::requestAPIAdminMessage    },
+	{ "/API/servers/live",                                    &Webserver::Client::requestAPIServersLive            },
+	{ "/API/game",                                            &Webserver::Client::requestAPIGame                   },
+	{ "/API/games",                                           &Webserver::Client::requestAPIGames                  },
+	{ "/API/player",                                          &Webserver::Client::requestAPIPlayer                 },
+	{ "/API/clan",                                            &Webserver::Client::requestAPIClan                   },
+	{ "/API/leaderboard",                                     &Webserver::Client::requestAPILeaderboard            },
+	{ "/API/leaderboard/clan",                                &Webserver::Client::requestAPILeaderboardClan        },
+	{ "/API/clan/simulation",                                 &Webserver::Client::requestAPIClanSimulation         },
+	{ "/API/admin/clients",                                   &Webserver::Client::requestAPIAdminClients           },
+	{ "/API/admin/kick",                                      &Webserver::Client::requestAPIAdminKick              },
+	{ "/API/admin/message",                                   &Webserver::Client::requestAPIAdminMessage           },
+	{ "/API/admin/playerstats/recalc",                        &Webserver::Client::requestAPIAdminPlayerStatsRecalc },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)

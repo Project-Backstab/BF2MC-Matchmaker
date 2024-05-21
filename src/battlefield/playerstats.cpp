@@ -99,7 +99,7 @@ bool Battlefield::PlayerStats::SetScore(int32_t score)
 {
 	this->_score = score;
 
-	//this->_calcRank();
+	this->_calcRank();
 	
 	return true;
 }
@@ -126,7 +126,7 @@ bool Battlefield::PlayerStats::SetPPH(uint32_t pph)
 {
 	this->_pph = pph;
 
-	//this->_calcRank();
+	this->_calcRank();
 
 	return true;
 }
@@ -257,7 +257,7 @@ bool Battlefield::PlayerStats::SetMedals(uint32_t medals)
 	{
 		this->_medals = medals;
 		
-		//this->_calcRank();
+		this->_calcRank();
 
 		return true;
 	}
@@ -286,6 +286,31 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 {
 	this->_ngp = total;
 	return true;
+}
+
+void Battlefield::PlayerStats::calcNewPPH(uint32_t time, int32_t score)
+{
+	// Convert current pph to double
+	double current_pph = static_cast<double>(this->_pph) / 100.0;
+	
+	// rest time = 5 hours - time played
+	uint32_t rest_time = 18000 - time;
+
+	// Convert rest time to hours
+	double rest_time_hours = static_cast<double>(rest_time) / 3600.0;
+	
+	// Calculate the total score for 5 hours
+	double total_score = rest_time_hours * current_pph;
+	total_score += static_cast<double>(score);
+
+	// Calculate the new pph
+	double new_pph_double = total_score / 5.0;
+
+	// Convert to unsigned 32 bit integer
+	uint32_t new_pph = static_cast<uint32_t>(this->_pph * 100.0);
+
+	// Set new pph
+	this->SetPPH(new_pph);
 }
 
 void Battlefield::PlayerStats::_calcRank()

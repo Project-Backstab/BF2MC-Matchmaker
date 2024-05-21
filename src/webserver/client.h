@@ -316,7 +316,19 @@ namespace Webserver
 			 * @param url_variables  Additional URL variables.
 			 */
 			void requestAPIAdminMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
-		
+
+			/**
+			 * @brief Handles the API request to recalculate player statistics.
+			 *
+			 * This function processes an HTTP request to recalculate player statistics. It uses the provided
+			 * URL base and URL variables to construct the necessary request for the recalculation operation.
+			 *
+			 * @param http_request The HTTP request object containing details about the API request.
+			 * @param url_base The base URL for the API endpoint.
+			 * @param url_variables The URL variables to be included in the request.
+			 */
+			void requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+
 		private:
 			/**
 			 * @brief Generate the default HTTP response header.

@@ -120,6 +120,8 @@ namespace Battlefield
 			bool SetTotalTopPlayer(uint32_t total);
 			bool SetTotalVictories(uint32_t total);
 			bool SetTotalGameSessions(uint32_t total);
+
+			void calcNewPPH(uint32_t time, int32_t score);
 		
 		private:
 			/**
