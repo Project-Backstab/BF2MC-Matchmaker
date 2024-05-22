@@ -1005,19 +1005,21 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 	Battlefield::Player player;
 	Battlefield::GameStatPlayers gsplayers;
 
-	// Set profile id
-	player.SetProfileId(it->second);
-
 	// Get all games results that the player has played
+	player.SetProfileId(it->second);
 	g_database->queryGameStatPlayersByProfileId(player, gsplayers);
 
 	Json::Value json_results;
-	
+	Json::Value json_gsplayers(Json::arrayValue);
+
 	for(const Battlefield::GameStatPlayer& gsplayer : gsplayers)
 	{
 		if(gsplayer.IsDisabled())
 			continue;
 		
+		// Calculate new pph
+		player.calcNewPPH(gsplayer.GetTime(), gsplayer.GetScore());
+
 		player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + gsplayer.GetBoatsDestroyed()          ); // bod
 		player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + gsplayer.GetHAVsDestroyed()           ); // havd
 		player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + gsplayer.GetHelicoptersDestroyed()    ); // hed
@@ -1052,9 +1054,18 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 		
 		player.SetMedals(gsplayer.GetMedals()); // medals
 		
-		// Calculate pph
-		player.calcNewPPH(gsplayer.GetTime(), gsplayer.GetScore());
+		// Give json feedback
+		Json::Value json_gsplayer;
+
+		json_gsplayer["id"] = gsplayer.GetId();
+		json_gsplayer["medals"] = player.GetMedals();
+		json_gsplayer["score"] = player.GetScore();
+		json_gsplayer["pph"] = player.GetPPH();
+		json_gsplayer["rank"] = player.GetRank();
+
+		json_gsplayers.append(json_gsplayer);
 	}
+	json_results["gsplayers"] = json_gsplayers;
 
 	// Update player stats on database
 	//g_database->updatePlayerStats(player);

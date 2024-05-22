@@ -290,24 +290,51 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 
 void Battlefield::PlayerStats::calcNewPPH(uint32_t time, int32_t score)
 {
-	// Convert current pph to double
-	double current_pph = static_cast<double>(this->_pph) / 100.0;
+	const int PPH_TIME_SPAN = 5;
+	const int PPH_FACTOR = 100;
+	const int SECONDS_PER_HOUR = 60 * 60;
 	
-	// rest time = 5 hours - time played
-	uint32_t rest_time = 18000 - time;
+	double total_hours = static_cast<double>(this->_time + time) / SECONDS_PER_HOUR;
+	int32_t total_score = this->_score + score;
 
-	// Convert rest time to hours
-	double rest_time_hours = static_cast<double>(rest_time) / 3600.0;
-	
-	// Calculate the total score for 5 hours
-	double total_score = rest_time_hours * current_pph;
-	total_score += static_cast<double>(score);
+	uint32_t new_pph = 0;
 
-	// Calculate the new pph
-	double new_pph_double = total_score / 5.0;
+	// In case we only played less then a one hour
+	if(total_hours < 1.0)
+	{
+		new_pph = total_score;
+	}
+	// In case we played less then 5 hours total
+	else if(total_hours < PPH_TIME_SPAN)
+	{
+		// Calculate the new pph
+		double new_pph_double = static_cast<double>(total_score) / total_hours;
 
-	// Convert to unsigned 32 bit integer
-	uint32_t new_pph = static_cast<uint32_t>(this->_pph * 100.0);
+		// Convert to unsigned 32 bit integer
+		new_pph = static_cast<uint32_t>(new_pph_double * 100.0);
+	}
+	// In case more then 5 hours is played
+	else
+	{
+		// Convert current pph to double
+		double current_pph = static_cast<double>(this->_pph) / 100.0;
+		
+		// Calculate how much hours you played in current match
+		double game_time_hours = static_cast<double>(time) / SECONDS_PER_HOUR;
+
+		// gap_time_span = 5 hours - game_time_hours
+		double gap_time_span = static_cast<double>(PPH_TIME_SPAN) - game_time_hours;
+
+		// Calculate the total score for 5 hours
+		double total_score = gap_time_span * current_pph;
+		total_score += static_cast<double>(score);
+
+		// Calculate the new pph
+		double new_pph_double = total_score / PPH_TIME_SPAN;
+
+		// Convert to unsigned 32 bit integer
+		new_pph = static_cast<uint32_t>(new_pph_double * 100.0);
+	}
 
 	// Set new pph
 	this->SetPPH(new_pph);
