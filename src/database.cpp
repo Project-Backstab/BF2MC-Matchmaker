@@ -1217,7 +1217,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at`";
+	query += "	`name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at`, `disable`";
 	query += "FROM ";
 	query += "	`Clans` ";
 	query += "WHERE ";
@@ -1235,6 +1235,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	uint32_t   output_losses;
 	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
+	uint8_t    output_disable;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -1243,7 +1244,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	input_bind[0].is_unsigned = false;	
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(10, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(11, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[0].buffer = &output_name;
 	output_bind[0].buffer_length = 33;
@@ -1273,7 +1274,10 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 	output_bind[8].is_unsigned = true;
 	output_bind[9].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[9].buffer = &output_created_at;
-	
+	output_bind[10].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[10].buffer = &output_disable;
+	output_bind[10].is_unsigned = true;
+
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -1304,6 +1308,7 @@ bool Database::queryClanByClanId(Battlefield::Clan& clan)
 		clan.SetLosses(output_losses);
 		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
+		clan.SetDisable(output_disable);
 	}
 
 	// Cleanup
@@ -1321,7 +1326,7 @@ bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::
 
 	std::string query = "";
 	query += "SELECT ";
-	query += "	Clans.clanid as `clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at` ";
+	query += "	Clans.clanid as `clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at`, `disable` ";
 	query += "FROM ";
 	query += "	`Clans`, `ClanRanks` ";
 	query += "WHERE ";
@@ -1342,6 +1347,7 @@ bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::
 	uint32_t   output_losses;
 	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
+	uint8_t    output_disable;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
@@ -1350,7 +1356,7 @@ bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::
 	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(11, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(12, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_clanid;
 	output_bind[0].is_unsigned = false;
@@ -1383,7 +1389,10 @@ bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::
 	output_bind[9].is_unsigned = true;
 	output_bind[10].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[10].buffer = &output_created_at;
-	
+	output_bind[11].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[11].buffer = &output_disable;
+	output_bind[11].is_unsigned = true;
+
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -1415,6 +1424,7 @@ bool Database::queryClanByProfileId(Battlefield::Clan& clan, const Battlefield::
 		clan.SetLosses(output_losses);
 		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
+		clan.SetDisable(output_disable);
 	}
 
 	// Cleanup
@@ -1432,13 +1442,15 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	
 	std::string query = "";
 	query += "SELECT ";
-	query += "	`clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at` ";
+	query += "	`clanid`, `name`, `tag`, `homepage`, `info`, `region`, `score`, `wins`, `losses`, `draws`, `created_at`, `disable` ";
 	query += "FROM ";
 	query += "	`Clans` ";
 	query += "WHERE ";
-	query += "	`name` = ? ";
+	query += "(	`name` = ? ";
 	query += "OR ";
-	query += "	`tag` = ?";
+	query += "	`tag` = ? ";
+	query += ") AND ";
+	query += "	`disable` = 0";
 	
 	std::string input_name = clan.GetName();
 	std::string input_tag = clan.GetTag();
@@ -1684,13 +1696,15 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::removeClan(const Battlefield::Clan& clan)
+bool Database::disableClan(const Battlefield::Clan& clan)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 
 	std::string query = "";
-	query += "DELETE FROM ";
+	query += "UPDATE ";
 	query += "	`Clans` ";
+	query += "SET ";
+	query += "	`disable' = 1 ";
 	query += "WHERE ";
 	query += "	`clanid` = ?";
 	

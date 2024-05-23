@@ -159,6 +159,15 @@ namespace Battlefield
 			std::string  _created_at = "";
 			
 			/**
+			 * @brief Disable option for the clan.
+			 * 
+			 * This private member variable is a boolean flag that, when set to true,
+			 * disables the clan. By default, it is set to false, meaning the clan is
+			 * enabled.
+			 */
+			bool         _disable   = false; /**< Disable option to not let player progress stats. */
+
+			/**
 			 * @brief The map of member IDs to ranks within the clan.
 			 * 
 			 * This private member variable stores the map of member IDs to ranks within the clan.
@@ -194,6 +203,7 @@ namespace Battlefield
 			uint32_t                    GetLosses() const    { return this->_losses;     }
 			uint32_t                    GetDraws() const     { return this->_draws;      }
 			std::string                 GetCreatedAt() const { return this->_created_at; }
+			bool                        IsDisabled() const   { return this->_disable;    }
 			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;      }
 			
 			bool SetClanId(int clanid);
@@ -210,6 +220,8 @@ namespace Battlefield
 			bool SetLosses(uint32_t losses);
 			bool SetDraws(uint32_t draws);
 			bool SetCreatedAt(MYSQL_TIME created_at);
+			bool SetDisable(bool disable);
+			bool SetDisable(uint8_t disable);
 			void AddRank(int profileid, Ranks rank);
 			void AddRank(int profileid, uint8_t int_rank);
 			Ranks GetRank(int profileid) const;

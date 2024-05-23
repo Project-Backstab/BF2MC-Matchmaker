@@ -1250,7 +1250,7 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request
 			g_database->removeClanRanksByClanId(clan);
 			
 			// remove clan
-			g_database->removeClan(clan);
+			g_database->disableClan(clan);
 			
 			http_response.SetMessageBody("OK");
 		}

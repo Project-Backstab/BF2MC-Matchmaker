@@ -154,6 +154,17 @@ bool Battlefield::Clan::SetCreatedAt(MYSQL_TIME created_at)
 	return true;
 }
 
+bool Battlefield::Clan::SetDisable(bool disable)
+{
+	this->_disable = disable;
+	return true;
+}
+
+bool Battlefield::Clan::SetDisable(uint8_t disable)
+{
+	return this->SetDisable(disable == 1);
+}
+
 void Battlefield::Clan::AddRank(int profileid, Ranks rank)
 {
 	this->_ranks.insert(std::make_pair(profileid, rank));

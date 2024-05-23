@@ -277,14 +277,14 @@ class Database
 		bool updateClan(const Battlefield::Clan& clan);
 
 		/**
-		 * @brief Removes a clan from the database.
+		 * @brief Disable a clan from the database.
 		 * 
-		 * This function removes the specified clan from the Battlefield database.
+		 * This function disable the specified clan from the Battlefield database.
 		 * 
-		 * @param clan The clan object to remove from the database.
-		 * @return True if the clan is successfully removed from the database, false otherwise.
+		 * @param clan The clan object to disable from the database.
+		 * @return True if the clan is successfully disable from the database, false otherwise.
 		 */
-		bool removeClan(const Battlefield::Clan& clan);
+		bool disableClan(const Battlefield::Clan& clan);
 		
 		// Clan Rank
 		/**
