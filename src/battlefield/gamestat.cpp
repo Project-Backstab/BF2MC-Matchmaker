@@ -417,6 +417,12 @@ bool Battlefield::GameStatPlayer::SetProfileId(const std::string& str_pid)
 	return false;
 }
 
+bool Battlefield::GameStatPlayer::SetMachineId(const std::string& machine_id)
+{
+	this->_machine_id = machine_id;
+	return true;
+}
+
 bool Battlefield::GameStatPlayer::SetTeam(int team)
 {
 	this->_team = team;

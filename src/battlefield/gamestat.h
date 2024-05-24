@@ -135,6 +135,7 @@ namespace Battlefield
 			// Player reference
 			std::string _auth       = "";        /**< The player's authentication token. */
 			int         _pid        = -1;        /**< The player's profile ID. */
+			std::string _machine_id = "";        /**< The player's machine ID */
 			int         _team       = -1;        /**< The team the player is on. */
 			
 			// Player stats
@@ -170,44 +171,46 @@ namespace Battlefield
 			bool      _disable   = false; /**< Disable option to not let player progress stats. */
 
 		public:
-			int         GetId() const                      { return this->_id;       }
-			std::string GetAuth() const                    { return this->_auth;     }
-			int         GetProfileId() const               { return this->_pid;      }
-			int         GetTeam() const                    { return this->_team;     }
-			int32_t     GetScore() const                   { return this->_score;    }
-			uint32_t    GetRank() const                    { return this->_rank;     }
-			uint32_t    GetPPH() const                     { return this->_pph;      }
-			uint32_t    GetKills() const                   { return this->_kills;    }
-			uint32_t    GetDeaths() const                  { return this->_deaths;   }
-			uint32_t    GetSuicides() const                { return this->_suicides; }
-			uint32_t    GetTime() const                    { return this->_time;     }
-			uint32_t    GetLAVsDestroyed() const           { return this->_lavd;     }
-			uint32_t    GetMAVsDestroyed() const           { return this->_mavd;     }
-			uint32_t    GetHAVsDestroyed() const           { return this->_havd;     }
-			uint32_t    GetHelicoptersDestroyed() const    { return this->_hed;      }
-			uint32_t    GetPlanesDestroyed() const         { return this->_pld;      }
-			uint32_t    GetBoatsDestroyed() const          { return this->_bod;      }
-			uint32_t    GetKillsAssualtKit() const         { return this->_k1;       }
-			uint32_t    GetSpawnsAssualtKit() const        { return this->_s1;       }
-			uint32_t    GetKillsSniperKit() const          { return this->_k2;       }
-			uint32_t    GetSpawnsSniperKit() const         { return this->_s2;       }
-			uint32_t    GetKillsSpecialOpKit() const       { return this->_k3;       }
-			uint32_t    GetSpawnsSpecialOpKit() const      { return this->_s3;       }
-			uint32_t    GetKillsCombatEngineerKit() const  { return this->_k4;       }
-			uint32_t    GetSpawnsCombatEngineerKit() const { return this->_s4;       }
-			uint32_t    GetKillsSupportKit() const         { return this->_k5;       }
-			uint32_t    GetSpawnsSupportKit() const        { return this->_s5;       }
-			uint32_t    GetTeamKills() const               { return this->_tk;       }
-			uint32_t    GetMedals() const                  { return this->_medals;   }
-			uint32_t    GetTotalTopPlayer() const          { return this->_ttb;      }
-			uint32_t    GetTotalVictories() const          { return this->_mv;       }
-			uint32_t    GetTotalGameSessions() const       { return this->_ngp;      }
-			bool 		IsDisabled() const                 { return this->_disable;  }
+			int         GetId() const                      { return this->_id;         }
+			std::string GetAuth() const                    { return this->_auth;       }
+			int         GetProfileId() const               { return this->_pid;        }
+			std::string GetMachineId() const               { return this->_machine_id; }
+			int         GetTeam() const                    { return this->_team;       }
+			int32_t     GetScore() const                   { return this->_score;      }
+			uint32_t    GetRank() const                    { return this->_rank;       }
+			uint32_t    GetPPH() const                     { return this->_pph;        }
+			uint32_t    GetKills() const                   { return this->_kills;      }
+			uint32_t    GetDeaths() const                  { return this->_deaths;     }
+			uint32_t    GetSuicides() const                { return this->_suicides;   }
+			uint32_t    GetTime() const                    { return this->_time;       }
+			uint32_t    GetLAVsDestroyed() const           { return this->_lavd;       }
+			uint32_t    GetMAVsDestroyed() const           { return this->_mavd;       }
+			uint32_t    GetHAVsDestroyed() const           { return this->_havd;       }
+			uint32_t    GetHelicoptersDestroyed() const    { return this->_hed;        }
+			uint32_t    GetPlanesDestroyed() const         { return this->_pld;        }
+			uint32_t    GetBoatsDestroyed() const          { return this->_bod;        }
+			uint32_t    GetKillsAssualtKit() const         { return this->_k1;         }
+			uint32_t    GetSpawnsAssualtKit() const        { return this->_s1;         }
+			uint32_t    GetKillsSniperKit() const          { return this->_k2;         }
+			uint32_t    GetSpawnsSniperKit() const         { return this->_s2;         }
+			uint32_t    GetKillsSpecialOpKit() const       { return this->_k3;         }
+			uint32_t    GetSpawnsSpecialOpKit() const      { return this->_s3;         }
+			uint32_t    GetKillsCombatEngineerKit() const  { return this->_k4;         }
+			uint32_t    GetSpawnsCombatEngineerKit() const { return this->_s4;         }
+			uint32_t    GetKillsSupportKit() const         { return this->_k5;         }
+			uint32_t    GetSpawnsSupportKit() const        { return this->_s5;         }
+			uint32_t    GetTeamKills() const               { return this->_tk;         }
+			uint32_t    GetMedals() const                  { return this->_medals;     }
+			uint32_t    GetTotalTopPlayer() const          { return this->_ttb;        }
+			uint32_t    GetTotalVictories() const          { return this->_mv;         }
+			uint32_t    GetTotalGameSessions() const       { return this->_ngp;        }
+			bool 		IsDisabled() const                 { return this->_disable;    }
 
 			bool SetId(int id);
 			bool SetAuth(const std::string& auth);
 			bool SetProfileId(int pid);
 			bool SetProfileId(const std::string& str_pid);
+			bool SetMachineId(const std::string& machine_id);
 			bool SetTeam(int team);
 			bool SetTeam(const std::string& str_team);
 			bool SetScore(int32_t score);
