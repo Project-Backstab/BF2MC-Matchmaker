@@ -458,7 +458,7 @@ class Database
 		 * @brief Queries game statistics by date.
 		 * 
 		 * This function retrieves game statistics from the Battlefield database for a specific date.
-		 * The date format must be in "dd-MM-yyyy".
+		 * The date format must be in "yyyy-MM-dd".
 		 * 
 		 * @param game_stats A vector of game statistics objects to populate with the queried data.
 		 * @param date The date for which to query the game statistics. Must be in "dd-MM-yyyy" format.
