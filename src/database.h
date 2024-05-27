@@ -461,7 +461,7 @@ class Database
 		 * The date format must be in "yyyy-MM-dd".
 		 * 
 		 * @param game_stats A vector of game statistics objects to populate with the queried data.
-		 * @param date The date for which to query the game statistics. Must be in "dd-MM-yyyy" format.
+		 * @param date The date for which to query the game statistics. Must be in "yyyy-MM-dd" format.
 		 * @return True if the game statistics are successfully queried, false otherwise.
 		 */
 		bool queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string date);
