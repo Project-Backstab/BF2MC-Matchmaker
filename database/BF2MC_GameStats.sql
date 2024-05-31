@@ -2,7 +2,7 @@
 --
 -- Host: 128.140.0.23    Database: BF2MC
 -- ------------------------------------------------------
--- Server version	8.0.34-0ubuntu0.22.04.1
+-- Server version	8.0.36-0ubuntu0.22.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,16 +31,18 @@ CREATE TABLE `GameStats` (
   `numplayers` tinyint unsigned NOT NULL DEFAULT '0',
   `pplayers` tinyint unsigned NOT NULL DEFAULT '0',
   `tplayed` smallint unsigned NOT NULL DEFAULT '0',
-  `clanid_t0` tinyint unsigned NOT NULL DEFAULT '0',
-  `clanid_t1` tinyint unsigned NOT NULL DEFAULT '0',
+  `clanid_t0` int unsigned NOT NULL DEFAULT '0',
+  `clanid_t1` int unsigned NOT NULL DEFAULT '0',
   `country_t0` tinyint unsigned NOT NULL DEFAULT '0',
   `country_t1` tinyint unsigned NOT NULL DEFAULT '0',
   `victory_t0` tinyint unsigned NOT NULL DEFAULT '0',
   `victory_t1` tinyint unsigned NOT NULL DEFAULT '0',
+  `score0` smallint NOT NULL DEFAULT '0',
+  `score1` smallint NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=928 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30538 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +54,4 @@ CREATE TABLE `GameStats` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-15 15:30:49
+-- Dump completed on 2024-05-31 21:12:42
