@@ -246,6 +246,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		else if(key == "country_t1") game_stat.SetTeam2Country(value);
 		else if(key == "victory_t0") game_stat.SetTeam1Victory(value);
 		else if(key == "victory_t1") game_stat.SetTeam2Victory(value);
+		else if(key == "score0")     game_stat.SetTeam1Score(value);
+		else if(key == "score1")     game_stat.SetTeam2Score(value);
 		
 		// Debug
 		//Logger::debug(key + " = " + value);

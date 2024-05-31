@@ -255,6 +255,44 @@ bool Battlefield::GameStat::SetTeam2Victory(const std::string str_victory_t1)
 	return false;
 }
 
+bool Battlefield::GameStat::SetTeam1Score(int16_t score0)
+{
+	this->_score0 = score0;
+	return true;
+}
+
+bool Battlefield::GameStat::SetTeam1Score(const std::string& str_score0)
+{
+	try
+	{
+		int16_t score0 = static_cast<int16_t>(std::stoi(str_score0));
+		
+		return this->SetTeam1Score(score0);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
+bool Battlefield::GameStat::SetTeam2Score(int16_t score1)
+{
+	this->_score1 = score1;
+	return true;
+}
+
+bool Battlefield::GameStat::SetTeam2Score(const std::string& str_score1)
+{
+	try
+	{
+		int16_t score1 = static_cast<int16_t>(std::stoi(str_score1));
+		
+		return this->SetTeam2Score(score1);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
 bool Battlefield::GameStat::SetCreatedAt(MYSQL_TIME created_at)
 {
     this->_created_at = Util::Time::GetDateTime(created_at);

@@ -3680,7 +3680,7 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	query += "SELECT ";
 	query += "	`id`, `gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
 	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
-	query += "	`created_at` ";
+	query += "	`score0`, `score1`, `created_at` ";
 	query += "FROM ";
 	query += "	`GameStats` ";
 	query += "WHERE ";
@@ -3700,6 +3700,8 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	uint8_t    output_country_t1;
 	uint8_t    output_victory_t0;
 	uint8_t    output_victory_t1;
+	int16_t    output_score0;
+	int16_t    output_score1;
 	MYSQL_TIME output_created_at;
 	
 	// Allocate input binds
@@ -3709,7 +3711,7 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	input_bind[0].buffer_length = date.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(15, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(17, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -3752,8 +3754,14 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	output_bind[13].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[13].buffer = &output_victory_t1;
 	output_bind[13].is_unsigned = true;
-	output_bind[14].buffer_type = MYSQL_TYPE_DATETIME;
-	output_bind[14].buffer = &output_created_at;
+	output_bind[14].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[14].buffer = &output_score0;
+	output_bind[14].is_unsigned = false;
+	output_bind[15].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[15].buffer = &output_score1;
+	output_bind[15].is_unsigned = false;
+	output_bind[16].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[16].buffer = &output_created_at;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -3796,6 +3804,8 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 		game_stat.SetTeam2Country(output_country_t1);
 		game_stat.SetTeam1Victory(output_victory_t0);
 		game_stat.SetTeam2Victory(output_victory_t1);
+		game_stat.SetTeam1Score(output_score0);
+		game_stat.SetTeam2Score(output_score1);
 		game_stat.SetCreatedAt(output_created_at);
 		
 		game_stats.push_back(game_stat);
@@ -3818,7 +3828,7 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	query += "SELECT ";
 	query += "	`gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
 	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
-	query += "	`created_at` ";
+	query += "	`score0`, `score1`, `created_at` ";
 	query += "FROM ";
 	query += "	`GameStats` ";
 	query += "WHERE ";
@@ -3839,6 +3849,8 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	uint8_t    output_country_t1;
 	uint8_t    output_victory_t0;
 	uint8_t    output_victory_t1;
+	int16_t    output_score0;
+	int16_t    output_score1;
 	MYSQL_TIME output_created_at;
 	
 	// Allocate input binds
@@ -3848,7 +3860,7 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(14, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(16, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[0].buffer = &output_gametype;
 	output_bind[0].is_unsigned = true;
@@ -3888,8 +3900,14 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	output_bind[12].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[12].buffer = &output_victory_t1;
 	output_bind[12].is_unsigned = true;
-	output_bind[13].buffer_type = MYSQL_TYPE_DATETIME;
-	output_bind[13].buffer = &output_created_at;
+	output_bind[13].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[13].buffer = &output_score0;
+	output_bind[13].is_unsigned = false;
+	output_bind[14].buffer_type = MYSQL_TYPE_SHORT;
+	output_bind[14].buffer = &output_score1;
+	output_bind[14].is_unsigned = false;
+	output_bind[15].buffer_type = MYSQL_TYPE_DATETIME;
+	output_bind[15].buffer = &output_created_at;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -3929,6 +3947,8 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 		game_stat.SetTeam2Country(output_country_t1);
 		game_stat.SetTeam1Victory(output_victory_t0);
 		game_stat.SetTeam2Victory(output_victory_t1);
+		game_stat.SetTeam1Score(output_score0);
+		game_stat.SetTeam2Score(output_score1);
 		game_stat.SetCreatedAt(output_created_at);
 	}
 
@@ -3948,10 +3968,12 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	std::string query = "";
 	query += "INSERT INTO `GameStats` ";
 	query += "	(`gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
-	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`) ";
+	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
+	query += "	`score0`, `score1`) ";
 	query += "VALUES ";
 	query += "	(?, ?, ?, ?, ?, ?, ?, ";
-	query += "	?, ?, ?, ?, ?, ?)";
+	query += "	?, ?, ?, ?, ?, ?, ";
+	query += "	?, ?)";
 	
 	uint8_t     input_gametype   = game_stat.GetGameType();
 	std::string input_gamver     = game_stat.GetGameVersion();
@@ -3966,9 +3988,11 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	uint8_t     input_country_t1 = game_stat.GetTeam2Country();
 	uint8_t     input_victory_t0 = game_stat.GetTeam1Victory();
 	uint8_t     input_victory_t1 = game_stat.GetTeam2Victory();
+	int16_t     input_score0     = game_stat.GetTeam1Score();
+	int16_t     input_score1     = game_stat.GetTeam2Score();
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(13, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(15, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[0].buffer = &input_gametype;
 	input_bind[0].is_unsigned = true;
@@ -4008,7 +4032,13 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	input_bind[12].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[12].buffer = &input_victory_t1;
 	input_bind[12].is_unsigned = true;
-	
+	input_bind[13].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[13].buffer = &input_score0;
+	input_bind[13].is_unsigned = false;
+	input_bind[14].buffer_type = MYSQL_TYPE_SHORT;
+	input_bind[14].buffer = &input_score1;
+	input_bind[14].is_unsigned = false;
+
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	

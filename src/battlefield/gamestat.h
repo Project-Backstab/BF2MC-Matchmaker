@@ -60,9 +60,10 @@ namespace Battlefield
 			int             _clanid_t1  = 0;  /**< The clan ID for team 2. */
 			uint8_t         _country_t0 = 0;  /**< The country ID for team 1. */
 			uint8_t         _country_t1 = 0;  /**< The country ID for team 2. */
-			
 			uint8_t         _victory_t0 = 0;  /**< The victory state for team 1 (see: enum Battlefield::GameStat::VictoryState). */
 			uint8_t         _victory_t1 = 0;  /**< The victory state for team 2 (see: enum Battlefield::GameStat::VictoryState). */
+			int16_t         _score0     = 0;  /**< Score of team 1. */
+			int16_t         _score1     = 0;  /**< Score of team 2. */
 
 			std::string     _created_at = ""; /**< The datetime when the game statistics were created. */
 			GameStatPlayers _players;         /**< The list of players involved in the game. */
@@ -84,6 +85,8 @@ namespace Battlefield
 			uint8_t     GetTeam2Country() const  { return this->_country_t1; }
 			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
 			uint8_t     GetTeam2Victory() const  { return this->_victory_t1; }
+			int16_t     GetTeam1Score() const    { return this->_score0;     }
+			int16_t     GetTeam2Score() const    { return this->_score1;     }
 			
 			std::string     GetCreatedAt() const { return this->_created_at; }
 			GameStatPlayers GetPlayers() const   { return this->_players;    }
@@ -116,6 +119,10 @@ namespace Battlefield
 			bool SetTeam1Victory(const std::string str_victory_t0);
 			bool SetTeam2Victory(uint8_t victory_t1);
 			bool SetTeam2Victory(const std::string str_victory_t1);
+			bool SetTeam1Score(int16_t score0);
+			bool SetTeam1Score(const std::string& str_score0);
+			bool SetTeam2Score(int16_t score1);
+			bool SetTeam2Score(const std::string& str_score1);
 			
 			bool SetCreatedAt(MYSQL_TIME created_at);
 			void AddPlayer(const GameStatPlayer& gsplayer);
