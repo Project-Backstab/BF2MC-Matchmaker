@@ -1585,7 +1585,7 @@ bool Database::insertClan(Battlefield::Clan& clan)
 	input_bind[3].buffer_length = input_info.size();
 	input_bind[4].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[4].buffer = const_cast<uint8_t*>(&input_region);
-	input_bind[4].is_unsigned = false;
+	input_bind[4].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1656,7 +1656,7 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	input_bind[2].buffer_length = input_info.size();
 	input_bind[3].buffer_type = MYSQL_TYPE_TINY;
 	input_bind[3].buffer = const_cast<uint8_t*>(&input_region);
-	input_bind[3].is_unsigned = false;
+	input_bind[3].is_unsigned = true;
 	input_bind[4].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[4].buffer = const_cast<uint32_t*>(&input_score);
 	input_bind[4].is_unsigned = true;
