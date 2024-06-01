@@ -1704,7 +1704,7 @@ bool Database::disableClan(const Battlefield::Clan& clan)
 	query += "UPDATE ";
 	query += "	`Clans` ";
 	query += "SET ";
-	query += "	`disable' = 1 ";
+	query += "	`disable` = 1 ";
 	query += "WHERE ";
 	query += "	`clanid` = ?";
 	
