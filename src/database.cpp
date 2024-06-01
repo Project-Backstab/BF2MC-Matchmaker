@@ -6006,6 +6006,13 @@ bool Database::_connect()
 
 	this->_connection = mysql_init(nullptr);
 
+	if (mysql_options(this->_connection, MYSQL_SET_CHARSET_NAME, "utf8mb4") != 0)
+	{
+		Logger::error("Failed to set MySQL character set to utf8mb4: " + std::string(mysql_error(this->_connection)));
+		
+		return false;
+	}
+
 	if (!mysql_real_connect(
 			this->_connection,
 			g_settings["database"]["host"].asString().c_str(),
