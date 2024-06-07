@@ -1466,6 +1466,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	uint32_t   output_losses;
 	uint32_t   output_draws;
 	MYSQL_TIME output_created_at;
+	uint8_t    output_disable;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -1477,7 +1478,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	input_bind[1].buffer_length = input_tag.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(11, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(12, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_clanid;
 	output_bind[0].is_unsigned = false;
@@ -1510,6 +1511,9 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 	output_bind[9].is_unsigned = true;
 	output_bind[10].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[10].buffer = &output_created_at;	
+	output_bind[11].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[11].buffer = &output_disable;
+	output_bind[11].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -1542,6 +1546,7 @@ bool Database::queryClanByNameOrTag(Battlefield::Clan& clan)
 		clan.SetLosses(output_losses);
 		clan.SetDraws(output_draws);
 		clan.SetCreatedAt(output_created_at);
+		clan.SetDisable(output_disable);
 	}
 
 	// Cleanup
