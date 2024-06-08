@@ -955,7 +955,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 	}
 	
 	it = url_variables.find("name");
-	if(it != url_variables.end())
+	if(it != url_variables.end() && Util::UTF8::isValid(it->second))
 	{
 		clan.SetName(it->second);
 		clan.SetTag(it->second);
