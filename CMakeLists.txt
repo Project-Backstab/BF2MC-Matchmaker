@@ -42,6 +42,20 @@ add_executable(bf2mc
     src/qr/client.cpp
     src/net/socket.cpp
     src/database.cpp
+    src/database/chat.cpp
+    src/database/clan_rank.cpp
+    src/database/clan.cpp
+    src/database/game_server_player.cpp
+    src/database/game_server.cpp
+    src/database/game_stat_player.cpp
+    src/database/game_stat.cpp
+    src/database/leaderboard_clan.cpp
+    src/database/leaderboard_rank.cpp
+    src/database/leaderboard_ratio.cpp
+    src/database/leaderboard_type.cpp
+    src/database/player_friend.cpp
+    src/database/player_stat.cpp
+    src/database/player.cpp
     src/util.cpp
     src/logger.cpp
     src/gamespy.cpp
