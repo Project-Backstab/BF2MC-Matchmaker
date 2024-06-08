@@ -6,6 +6,7 @@
 #include <numeric>
 #include <random>
 #include <chrono>
+#include <algorithm>
 #include <mysql/mysql_time.h>
 
 #include <util.h>
@@ -221,6 +222,60 @@ std::string Util::Url::Decode(const std::string& str)
 	return ret;
 }
 
+// Util::UTF8
+
+bool Util::UTF8::isValid(const std::string& str)
+{
+	size_t i = 0;
+
+	while (i < str.size())
+	{
+		unsigned char c = str[i];
+
+		// ASCII
+		if (c < 0x80)
+		{
+			i += 1;
+		}
+		// 2-byte sequence
+		else if ((c & 0xE0) == 0xC0)
+		{
+			if (i + 1 >= str.size() ||
+				(str[i + 1] & 0xC0) != 0x80)
+				return false;
+			
+			i += 2;
+		}
+		// 3-byte sequence
+		else if ((c & 0xF0) == 0xE0)
+		{
+			if (i + 2 >= str.size() ||
+				(str[i + 1] & 0xC0) != 0x80 ||
+				(str[i + 2] & 0xC0) != 0x80)
+				return false;
+			
+			i += 3;
+		}
+		// 4-byte sequence
+		else if ((c & 0xF8) == 0xF0)
+		{
+			if (i + 3 >= str.size() ||
+				(str[i + 1] & 0xC0) != 0x80 ||
+				(str[i + 2] & 0xC0) != 0x80 ||
+				(str[i + 3] & 0xC0) != 0x80)
+				return false;
+			
+			i += 4;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 // Util
 
 std::string Util::MD5hash(const std::string& input)
@@ -324,3 +379,11 @@ int Util::countSetBits(uint32_t num)
 	return count;
 }
 
+std::string Util::tolower(const std::string &str)
+{
+	std::string lstr = str;
+
+	std::transform(lstr.begin(), lstr.end(), lstr.begin(), [](unsigned char c){ return std::tolower(c); });
+
+	return lstr;
+}

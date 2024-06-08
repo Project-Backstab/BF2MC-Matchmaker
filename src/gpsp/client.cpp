@@ -114,7 +114,9 @@ void GPSP::Client::onRequest(const std::string& request)
 
 void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 {
-	if(parameter.size() != 11)
+	if(parameter.size() != 11 ||
+		!Util::UTF8::isValid(parameter[3]) ||
+		!Util::UTF8::isValid(parameter[5]))
 	{
 		return;
 	}
@@ -216,14 +218,13 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 
 void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 {
-	if(parameter.size() != 7)
+	if(parameter.size() != 7 ||
+		!Util::UTF8::isValid(parameter[3]))
 	{
 		return;
 	}
 	
-	std::string email = parameter[3];
-	// Convert email to lowercase
-	std::transform(email.begin(), email.end(), email.begin(), [](unsigned char c){ return std::tolower(c); });
+	std::string email = Util::tolower(parameter[3]);
 	
 	Logger::info(this->GetAddress() + " --> Valid: " + email, Server::Type::GPSP);
 
@@ -274,19 +275,19 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 
 void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 {
-	if(parameter.size() != 17)
+	if(parameter.size() != 17 ||
+		!Util::UTF8::isValid(parameter[3]) ||
+		!Util::UTF8::isValid(parameter[5]) ||
+		!Util::UTF8::isValid(parameter[7]) ||
+		!Util::UTF8::isValid(parameter[13]))
 	{
 		return;
 	}
 	
-	std::string nick = parameter[3];
-	
 	// Fix: Else account with capital email address is stored in database.
 	// If this happends then he cant login anymore because magicly the ps2 desides that it cant send capital email address xD
-	std::string email = parameter[5];
-	// Convert email to lowercase
-	std::transform(email.begin(), email.end(), email.begin(), [](unsigned char c){ return std::tolower(c); });
-	
+	std::string nick = parameter[3];
+	std::string email = Util::tolower(parameter[5]);
 	std::string password = parameter[7];
 	std::string uniquenick = parameter[13];
 	
@@ -391,7 +392,8 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 
 void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 {
-	if(parameter.size() != 13)
+	if(parameter.size() != 13 ||
+		!Util::UTF8::isValid(parameter[9]))
 	{
 		return;
 	}

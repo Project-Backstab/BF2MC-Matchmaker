@@ -135,6 +135,25 @@ namespace Util
 		std::string GetTimeZone();
 	}
 	
+	namespace UTF8
+	{
+		/**
+		 * @brief Checks if a given string is a valid UTF-8 encoded string.
+		 *
+		 * This function iterates over each byte in the string and verifies that
+		 * it follows the UTF-8 encoding rules:
+		 * - ASCII characters (0x00-0x7F) occupy a single byte.
+		 * - Multi-byte sequences:
+		 *   - 2-byte sequence starts with 110xxxxx followed by 10xxxxxx.
+		 *   - 3-byte sequence starts with 1110xxxx followed by two 10xxxxxx.
+		 *   - 4-byte sequence starts with 11110xxx followed by three 10xxxxxx.
+		 *
+		 * @param str The input string to be checked.
+		 * @return true if the string is a valid UTF-8 encoded string, false otherwise.
+		 */
+		bool isValid(const std::string& str);
+	}
+
 	/**
 	 * @brief Calculate the MD5 hash of a string.
 	 * 
@@ -184,6 +203,8 @@ namespace Util
 	 * @return The number of set bits.
 	 */
 	int countSetBits(uint32_t num);
+
+	std::string tolower(const std::string &str);
 }
 
 #endif // UTIL_H
