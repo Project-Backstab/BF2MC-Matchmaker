@@ -12,6 +12,13 @@ class MYSQL;
 class MYSQL_STMT;
 class MYSQL_BIND;
 
+#define UTF8_MAX_BYTES_PER_CHAR 4
+
+/*
+	Calculate total bytes for VARCHAR(N)
+*/
+#define VARCHAR_LEN(N) ((N * UTF8_MAX_BYTES_PER_CHAR) + 1)
+
 class Database
 {
 	private:
