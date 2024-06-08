@@ -8,6 +8,7 @@
 #include <chrono>
 #include <algorithm>
 #include <mysql/mysql_time.h>
+#include <algorithm>
 
 #include <util.h>
 
@@ -386,4 +387,12 @@ std::string Util::tolower(const std::string &str)
 	std::transform(lstr.begin(), lstr.end(), lstr.begin(), [](unsigned char c){ return std::tolower(c); });
 
 	return lstr;
+}
+
+bool Util::isAscii(const std::string& str)
+{
+	return std::all_of(str.begin(), str.end(), [](unsigned char c)
+	{
+		return c < 0x80;
+	});
 }

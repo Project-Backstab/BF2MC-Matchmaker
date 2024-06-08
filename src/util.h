@@ -204,7 +204,28 @@ namespace Util
 	 */
 	int countSetBits(uint32_t num);
 
+	/**
+	 * @brief Converts all characters in the given string to lowercase.
+	 *
+	 * This function creates a new string where all uppercase characters in the input
+	 * string are converted to their lowercase equivalents. It uses the std::transform
+	 * algorithm and the std::tolower function from <cctype> to perform the conversion.
+	 *
+	 * @param str The input string to be converted to lowercase.
+	 * @return A new string with all characters converted to lowercase.
+	 */
 	std::string tolower(const std::string &str);
+
+	/**
+	 * @brief Checks if a given string contains only ASCII characters.
+	 *
+	 * This function uses the std::all_of algorithm to check if all characters
+	 * in the string are within the ASCII range (0x00-0x7F).
+	 *zaaaaazzsaeZZsawa
+	 * @param str The input string to be checked.
+	 * @return true if the string contains only ASCII characters, false otherwise.
+	 */
+	bool isAscii(const std::string& str);
 }
 
 #endif // UTIL_H

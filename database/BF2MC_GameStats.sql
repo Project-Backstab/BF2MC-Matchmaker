@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `GameStats`;
 CREATE TABLE `GameStats` (
   `id` int NOT NULL AUTO_INCREMENT,
   `gametype` tinyint unsigned NOT NULL DEFAULT '0',
-  `gamver` varchar(20) NOT NULL DEFAULT '',
-  `hostname` varchar(45) NOT NULL DEFAULT '',
+  `gamver` varchar(20) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
+  `hostname` varchar(45) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
   `mapid` tinyint unsigned NOT NULL DEFAULT '0',
   `numplayers` tinyint unsigned NOT NULL DEFAULT '0',
   `pplayers` tinyint unsigned NOT NULL DEFAULT '0',
@@ -42,7 +42,7 @@ CREATE TABLE `GameStats` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30538 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31410 DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +54,4 @@ CREATE TABLE `GameStats` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-31 21:12:42
+-- Dump completed on 2024-06-08 11:56:44

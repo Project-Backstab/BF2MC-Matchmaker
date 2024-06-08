@@ -177,10 +177,10 @@ void GPCM::Client::requestChallenge()
 void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 21 ||
-		!Util::UTF8::isValid(parameter[3]) ||
-		!Util::UTF8::isValid(parameter[5]) ||
-		!Util::UTF8::isValid(parameter[7]) ||
-		!Util::UTF8::isValid(parameter[19]))
+		!Util::isAscii(parameter[3]) ||
+		!Util::isAscii(parameter[5]) ||
+		!Util::isAscii(parameter[7]) ||
+		!Util::isAscii(parameter[19]))
 	{
 		return;
 	}
@@ -304,8 +304,8 @@ void GPCM::Client::requestInviteTo(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9 ||
-		!Util::UTF8::isValid(parameter[5]) ||
-		!Util::UTF8::isValid(parameter[7]))
+		!Util::isAscii(parameter[5]) ||
+		!Util::isAscii(parameter[7]))
 	{
 		return;
 	}
@@ -398,8 +398,8 @@ void GPCM::Client::requestGetProfile(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9 ||
-		!Util::UTF8::isValid(parameter[5]) ||
-		!Util::UTF8::isValid(parameter[7]))
+		!Util::isAscii(parameter[5]) ||
+		!Util::isAscii(parameter[7]))
 	{
 		return;
 	}
@@ -440,7 +440,7 @@ void GPCM::Client::requestStatus(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9 ||
-		!Util::UTF8::isValid(parameter[5]) ||
+		!Util::isAscii(parameter[5]) ||
 		!Util::UTF8::isValid(parameter[7]))
 	{
 		return;
@@ -480,8 +480,8 @@ void GPCM::Client::requestBm(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestAddBuddy(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9 ||
-		!Util::UTF8::isValid(parameter[5]) ||
-		!Util::UTF8::isValid(parameter[7]))
+		!Util::isAscii(parameter[5]) ||
+		!Util::isAscii(parameter[7]))
 	{
 		return;
 	}
@@ -582,7 +582,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 7 ||
-		!Util::UTF8::isValid(parameter[5]))
+		!Util::isAscii(parameter[5]))
 	{
 		return;
 	}
@@ -615,7 +615,7 @@ void GPCM::Client::requestRevoke(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 7 ||
-		!Util::UTF8::isValid(parameter[5]))
+		!Util::isAscii(parameter[5]))
 	{
 		return;
 	}
@@ -661,7 +661,7 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 void GPCM::Client::requestPlayerInvite(const GameSpy::Parameter& parameter)
 {
 	if(parameter.size() != 9 ||
-		!Util::UTF8::isValid(parameter[5]))
+		!Util::isAscii(parameter[5]))
 	{
 		return;
 	}

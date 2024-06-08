@@ -217,7 +217,7 @@ void Webserver::Client::requestAPIGames(const atomizes::HTTPMessage& http_reques
 	
 	// Get Game Stats
 	auto it = url_variables.find("date");
-	if (it != url_variables.end() && Util::UTF8::isValid(it->second))
+	if (it != url_variables.end() && Util::isAscii(it->second))
 	{
 		std::string date = it->second;
 		
@@ -254,7 +254,7 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	}
 	
 	it = url_variables.find("uniquenick");
-	if (it != url_variables.end() && Util::UTF8::isValid(it->second))
+	if (it != url_variables.end() && Util::isAscii(it->second))
 	{
 		player.SetUniquenick(it->second);
 		

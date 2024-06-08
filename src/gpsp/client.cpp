@@ -115,8 +115,8 @@ void GPSP::Client::onRequest(const std::string& request)
 void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 11 ||
-		!Util::UTF8::isValid(parameter[3]) ||
-		!Util::UTF8::isValid(parameter[5]))
+		!Util::isAscii(parameter[3]) ||
+		!Util::isAscii(parameter[5]))
 	{
 		return;
 	}
@@ -219,7 +219,7 @@ void GPSP::Client::requestNicks(const GameSpy::Parameter& parameter) const
 void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 7 ||
-		!Util::UTF8::isValid(parameter[3]))
+		!Util::isAscii(parameter[3]))
 	{
 		return;
 	}
@@ -276,10 +276,10 @@ void GPSP::Client::requestValid(const GameSpy::Parameter& parameter) const
 void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 17 ||
-		!Util::UTF8::isValid(parameter[3]) ||
-		!Util::UTF8::isValid(parameter[5]) ||
-		!Util::UTF8::isValid(parameter[7]) ||
-		!Util::UTF8::isValid(parameter[13]))
+		!Util::isAscii(parameter[3]) ||
+		!Util::isAscii(parameter[5]) ||
+		!Util::isAscii(parameter[7]) ||
+		!Util::isAscii(parameter[13]))
 	{
 		return;
 	}
@@ -393,7 +393,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 {
 	if(parameter.size() != 13 ||
-		!Util::UTF8::isValid(parameter[9]))
+		!Util::isAscii(parameter[9]))
 	{
 		return;
 	}

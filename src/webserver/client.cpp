@@ -955,7 +955,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 	}
 	
 	it = url_variables.find("name");
-	if(it != url_variables.end() && Util::UTF8::isValid(it->second))
+	if(it != url_variables.end() && Util::isAscii(it->second))
 	{
 		clan.SetName(it->second);
 		clan.SetTag(it->second);
@@ -1566,7 +1566,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_req
 	if(player.GetProfileId() != -1 || clan.GetClanId() != -1)
 	{
 		auto it = url_variables.find("message");
-		if (it != url_variables.end() && Util::UTF8::isValid(it->second))
+		if (it != url_variables.end() && Util::isAscii(it->second))
 		{
 			std::string message = it->second;
 			
@@ -1742,7 +1742,7 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 {
 	for(const auto &url_variable : url_variables)
 	{
-		if(!Util::UTF8::isValid(url_variable.second))
+		if(!Util::isAscii(url_variable.second))
 			return false;
 		
 		if(url_variable.first == "name" && !is_update)

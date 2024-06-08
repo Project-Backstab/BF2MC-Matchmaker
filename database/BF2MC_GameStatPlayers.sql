@@ -25,9 +25,9 @@ DROP TABLE IF EXISTS `GameStatPlayers`;
 CREATE TABLE `GameStatPlayers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `gamestatid` int NOT NULL DEFAULT '-1',
-  `auth` varchar(32) NOT NULL DEFAULT '',
+  `auth` varchar(32) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
   `pid` int NOT NULL DEFAULT '-1',
-  `machine_id` varchar(16) NOT NULL DEFAULT '',
+  `machine_id` varchar(16) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
   `team` int NOT NULL DEFAULT '-1',
   `score` int NOT NULL DEFAULT '0',
   `rank` int unsigned NOT NULL DEFAULT '1',
@@ -62,7 +62,7 @@ CREATE TABLE `GameStatPlayers` (
   UNIQUE KEY `idGameStatPlayers_UNIQUE` (`id`),
   KEY `gamestatid_idx` (`gamestatid`) /*!80000 INVISIBLE */,
   CONSTRAINT `FK_GameStatPlayer_gamestatid` FOREIGN KEY (`gamestatid`) REFERENCES `GameStats` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=65492 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70777 DEFAULT CHARSET=ascii;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -74,4 +74,4 @@ CREATE TABLE `GameStatPlayers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-24  8:56:43
+-- Dump completed on 2024-06-08 11:56:35
