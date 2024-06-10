@@ -11,12 +11,12 @@
 
 typedef struct _GOACryptState
 {
-    unsigned char cards[256];       // A permutation of 0-255.
-    unsigned char rotor;            // Index that rotates smoothly
-    unsigned char ratchet;                    // Index that moves erratically
-    unsigned char avalanche;                  // Index heavily data dependent
-    unsigned char last_plain;                 // Last plain text byte
-    unsigned char last_cipher;                // Last cipher text byte
+	unsigned char cards[256];       // A permutation of 0-255.
+	unsigned char rotor;            // Index that rotates smoothly
+	unsigned char ratchet;                    // Index that moves erratically
+	unsigned char avalanche;                  // Index heavily data dependent
+	unsigned char last_plain;                 // Last plain text byte
+	unsigned char last_cipher;                // Last cipher text byte
 } GOACryptState;
 
 

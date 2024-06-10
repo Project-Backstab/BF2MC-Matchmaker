@@ -18,40 +18,40 @@ struct MYSQL_TIME;
 namespace Battlefield
 {
 	/**
-     * @brief Forward declaration of the GameServer class.
-     * 
-     * This forward declaration allows the use of the GameServer class in contexts where only the class name needs to be known,
-     * such as declaring pointers or references to GameServer objects, without the need to include the full definition of the class.
-     * 
-     * The GameServer class represents a game server in the Battlefield game.
-     */
-    class GameServer;
+	 * @brief Forward declaration of the GameServer class.
+	 * 
+	 * This forward declaration allows the use of the GameServer class in contexts where only the class name needs to be known,
+	 * such as declaring pointers or references to GameServer objects, without the need to include the full definition of the class.
+	 * 
+	 * The GameServer class represents a game server in the Battlefield game.
+	 */
+	class GameServer;
 
-    /**
-     * @brief Forward declaration of the GameServerPlayer class.
-     * 
-     * This forward declaration allows the use of the GameServerPlayer class in contexts where only the class name needs to be known,
-     * such as declaring pointers or references to GameServerPlayer objects, without the need to include the full definition of the class.
-     * 
-     * The GameServerPlayer class represents a player connected to a game server in the Battlefield game.
-     */
-    class GameServerPlayer;
+	/**
+	 * @brief Forward declaration of the GameServerPlayer class.
+	 * 
+	 * This forward declaration allows the use of the GameServerPlayer class in contexts where only the class name needs to be known,
+	 * such as declaring pointers or references to GameServerPlayer objects, without the need to include the full definition of the class.
+	 * 
+	 * The GameServerPlayer class represents a player connected to a game server in the Battlefield game.
+	 */
+	class GameServerPlayer;
 	
 	/**
-     * @brief Type definition for a collection of GameServer objects.
-     * 
-     * This type definition creates an alias GameServers for std::vector<GameServer>,
-     * allowing convenient usage of collections of GameServer objects.
-     */
-    typedef std::vector<GameServer> GameServers;
+	 * @brief Type definition for a collection of GameServer objects.
+	 * 
+	 * This type definition creates an alias GameServers for std::vector<GameServer>,
+	 * allowing convenient usage of collections of GameServer objects.
+	 */
+	typedef std::vector<GameServer> GameServers;
 
-    /**
-     * @brief Type definition for a collection of GameServerPlayer objects.
-     * 
-     * This type definition creates an alias GameServerPlayers for std::vector<GameServerPlayer>,
-     * allowing convenient usage of collections of GameServerPlayer objects.
-     */
-    typedef std::vector<GameServerPlayer> GameServerPlayers;
+	/**
+	 * @brief Type definition for a collection of GameServerPlayer objects.
+	 * 
+	 * This type definition creates an alias GameServerPlayers for std::vector<GameServerPlayer>,
+	 * allowing convenient usage of collections of GameServerPlayer objects.
+	 */
+	typedef std::vector<GameServerPlayer> GameServerPlayers;
 	
 	/**
 	 * @brief Class representing game server information.

@@ -9,8 +9,8 @@
 namespace Browsing
 {
 	/**
-     * @brief Client class for handling browsing requests.
-     */
+	 * @brief Client class for handling browsing requests.
+	 */
 	class Client : public Net::Socket
 	{
 		private:

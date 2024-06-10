@@ -486,9 +486,9 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	
 	int         input_gamestatid = game_stat.GetId();
 	std::string input_auth       = gsplayer.GetAuth();
-    int         input_pid        = gsplayer.GetProfileId();
+	int         input_pid        = gsplayer.GetProfileId();
 	std::string input_machine_id = gsplayer.GetMachineId();
-    int         input_team       = gsplayer.GetTeam();
+	int         input_team       = gsplayer.GetTeam();
 	int32_t     input_score      = gsplayer.GetScore();
 	uint32_t    input_rank       = gsplayer.GetRank();
 	uint32_t    input_pph        = gsplayer.GetPPH();

@@ -18,16 +18,16 @@ struct MYSQL_TIME;
 namespace Battlefield
 {
 	/**
-     * @brief Forward declarations for classes related to game statistics.
-     */
-    class GameStat;        /**< Forward declaration for GameStat class. */
-    class GameStatPlayer;  /**< Forward declaration for GameStatPlayer class. */
+	 * @brief Forward declarations for classes related to game statistics.
+	 */
+	class GameStat;        /**< Forward declaration for GameStat class. */
+	class GameStatPlayer;  /**< Forward declaration for GameStatPlayer class. */
 
-    /**
-     * @brief Type definitions for collections of game statistics.
-     */
-    typedef std::vector<GameStat> GameStats;              /**< Collection of game statistics. */
-    typedef std::vector<GameStatPlayer> GameStatPlayers;  /**< Collection of game stat players. */
+	/**
+	 * @brief Type definitions for collections of game statistics.
+	 */
+	typedef std::vector<GameStat> GameStats;              /**< Collection of game statistics. */
+	typedef std::vector<GameStatPlayer> GameStatPlayers;  /**< Collection of game stat players. */
 
 	/**
 	 * @brief Represents game statistics.
@@ -138,7 +138,7 @@ namespace Battlefield
 	{
 		private:
 			int         _id         = -1;        /**< The ID of the player's game statistics. */
-    
+			
 			// Player reference
 			std::string _auth       = "";        /**< The player's authentication token. */
 			int         _pid        = -1;        /**< The player's profile ID. */

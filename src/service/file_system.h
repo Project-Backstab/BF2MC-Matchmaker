@@ -13,7 +13,7 @@ namespace Service
 	{
 		private:
 			std::map<std::string, std::string> _files;  /**< File paths and their data. */
-    mutable std::mutex                         _mutex;  /**< Mutex for thread safety. */
+			mutable std::mutex                 _mutex;  /**< Mutex for thread safety. */
 		
 		public:
 			File_System();

@@ -116,30 +116,30 @@ void start_websocket_server()
 void start_file_system()
 {
 	g_file_system = new class Service::File_System();
-	
+
 	// Load "data/gamescripts" files in memory
 	for (const auto& entry : std::filesystem::recursive_directory_iterator("../data/gamescripts"))
 	{
-        if (entry.is_regular_file())
+		if (entry.is_regular_file())
 		{
 			// load file in memory
 			g_file_system->Load(entry.path());
-        }
-    }
-	
+		}
+	}
+
 	Logger::info("Load all files in memory.", Service::File_System);
-	
+
 	// Example code how to use
 	/*
 	std::string data;
-	
+
 	if(!g_file_system->GetFile("../data/gamescripts/bfmc/ps2/en/PS2news_en_US.txt", data))
 	{
 		Logger::error("Oepsie doepsie");
 	}
-	
+
 	Logger::debug("data = " + data);
-	
+
 	g_file_system->UnLoadAll();
 	*/
 }

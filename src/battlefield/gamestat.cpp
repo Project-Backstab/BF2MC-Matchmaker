@@ -295,9 +295,9 @@ bool Battlefield::GameStat::SetTeam2Score(const std::string& str_score1)
 
 bool Battlefield::GameStat::SetCreatedAt(MYSQL_TIME created_at)
 {
-    this->_created_at = Util::Time::GetDateTime(created_at);
-	
-    return true;
+	this->_created_at = Util::Time::GetDateTime(created_at);
+
+	return true;
 }
 
 void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)

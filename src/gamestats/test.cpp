@@ -587,8 +587,8 @@ void GameStats::Client::Test()
 
 	// Example where 2 packets are combined. The example_I2_request has the /final/ at the end. This is indication that are not more packets are needed.
 	std::vector<unsigned char> combined_request;
-    combined_request.insert(combined_request.end(), example_I1_request.begin(), example_I1_request.end());
-    combined_request.insert(combined_request.end(), example_I2_request.begin(), example_I2_request.end());
+	combined_request.insert(combined_request.end(), example_I1_request.begin(), example_I1_request.end());
+	combined_request.insert(combined_request.end(), example_I2_request.begin(), example_I2_request.end());
 	Logger::debug(Decrypt(combined_request));
 }
 

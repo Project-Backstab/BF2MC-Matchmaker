@@ -39,7 +39,7 @@ namespace GameSpy
 	 * @param parameter The vector of strings to convert.
 	 * @return A single string representing the response.
 	 */
-	std::string        Parameter2Response(const GameSpy::Parameter& parameter);
+	std::string Parameter2Response(const GameSpy::Parameter& parameter);
 
 	/**
 	 * @brief Generate a login response.

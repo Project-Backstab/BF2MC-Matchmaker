@@ -158,27 +158,27 @@ void Websocket::Client::_LogTransaction(const std::string& direction, const std:
 
 std::string Websocket::Client::_GetSocketAcceptKey(const std::string& websocket_key)
 {
-    std::string GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-    std::string concatenated = websocket_key + GUID;
+	std::string GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+	std::string concatenated = websocket_key + GUID;
 
-    unsigned char hash[SHA_DIGEST_LENGTH];
-    SHA1(reinterpret_cast<const unsigned char*>(concatenated.c_str()), concatenated.length(), hash);
+	unsigned char hash[SHA_DIGEST_LENGTH];
+	SHA1(reinterpret_cast<const unsigned char*>(concatenated.c_str()), concatenated.length(), hash);
 
-    BIO* b64 = BIO_new(BIO_f_base64());
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    BIO* bio = BIO_new(BIO_s_mem());
-    BIO_push(b64, bio);
-    BIO_write(b64, hash, SHA_DIGEST_LENGTH);
-    BIO_flush(b64);
+	BIO* b64 = BIO_new(BIO_f_base64());
+	BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
+	BIO* bio = BIO_new(BIO_s_mem());
+	BIO_push(b64, bio);
+	BIO_write(b64, hash, SHA_DIGEST_LENGTH);
+	BIO_flush(b64);
 
-    BUF_MEM* bptr;
-    BIO_get_mem_ptr(b64, &bptr);
+	BUF_MEM* bptr;
+	BIO_get_mem_ptr(b64, &bptr);
 
-    std::string websocket_accept_key(bptr->data, bptr->length - 1); // Exclude the newline character
+	std::string websocket_accept_key(bptr->data, bptr->length - 1); // Exclude the newline character
 
-    BIO_free_all(b64);
+	BIO_free_all(b64);
 
-    return websocket_accept_key + "=";
+	return websocket_accept_key + "=";
 }
 
 std::vector<char> Websocket::Client::_UnmaskPayload(const std::vector<char>& key, const std::vector<char>& payload)

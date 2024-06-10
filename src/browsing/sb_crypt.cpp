@@ -17,26 +17,26 @@ static unsigned char keyrand(GOACryptState *state,
 							 unsigned char *rsum,
 							 unsigned *keypos)
 {
-    unsigned int u,         // Value from 0 to limit to return.
-        retry_limiter;      // No infinite loops allowed.
-	
-    if (!limit) return 0;   // Avoid divide by zero error.
+	unsigned int u,         // Value from 0 to limit to return.
+		retry_limiter;      // No infinite loops allowed.
 
-    retry_limiter = 0;
-    do
+	if (!limit) return 0;   // Avoid divide by zero error.
+
+	retry_limiter = 0;
+	do
 	{
-        *rsum = (unsigned char)(state->cards[*rsum] + user_key[(*keypos)++]);
-        if (*keypos >= keysize)
+		*rsum = (unsigned char)(state->cards[*rsum] + user_key[(*keypos)++]);
+		if (*keypos >= keysize)
 		{
-            *keypos = 0;            // Recycle the user key.
-            *rsum = (unsigned char)(*rsum + keysize);   // key "aaaa" != key "aaaaaaaa"
+			*keypos = 0;            // Recycle the user key.
+			*rsum = (unsigned char)(*rsum + keysize);   // key "aaaa" != key "aaaaaaaa"
 		}
-        u = mask & *rsum;
-        if (++retry_limiter > 11)
-            u %= limit;     // Prevent very rare long loops.
+		u = mask & *rsum;
+		if (++retry_limiter > 11)
+			u %= limit;     // Prevent very rare long loops.
 	}
-    while (u > limit);
-    return (unsigned char)(u);
+	while (u > limit);
+	return (unsigned char)(u);
 }
 
 static const unsigned char cards_ascending[256] = {
@@ -83,90 +83,90 @@ void GOAHashInit(GOACryptState *state)
 
 void GOACryptInit(GOACryptState *state, unsigned char *key, unsigned char keysize)
 {
-    // Key size may be up to 256 bytes.
-    // Pass phrases may be used directly, with longer length
-    // compensating for the low entropy expected in such keys.
-    // Alternatively, shorter keys hashed from a pass phrase or
-    // generated randomly may be used. For random keys, lengths
-    // of from 4 to 16 bytes are recommended, depending on how
-    // secure you want this to be.
-	
-    unsigned int i;
-    unsigned char toswap, swaptemp, rsum;
-    unsigned keypos, mask;
-	
-    // If we have been given no key, assume the default hash setup.
-	
-    if (keysize < 1)
+	// Key size may be up to 256 bytes.
+	// Pass phrases may be used directly, with longer length
+	// compensating for the low entropy expected in such keys.
+	// Alternatively, shorter keys hashed from a pass phrase or
+	// generated randomly may be used. For random keys, lengths
+	// of from 4 to 16 bytes are recommended, depending on how
+	// secure you want this to be.
+
+	unsigned int i;
+	unsigned char toswap, swaptemp, rsum;
+	unsigned keypos, mask;
+
+	// If we have been given no key, assume the default hash setup.
+
+	if (keysize < 1)
 	{
-        GOAHashInit(state);
-        return;
+		GOAHashInit(state);
+		return;
 	}
-	
-    // Start with state->cards all in order, one of each.
+
+	// Start with state->cards all in order, one of each.
 	memcpy(state->cards, cards_ascending, sizeof(cards_ascending));
-	
-    // Swap the card at each position with some other card.
-    toswap = 0;
-    keypos = 0;         // Start with first byte of user key.
-    rsum = 0;
+
+	// Swap the card at each position with some other card.
+	toswap = 0;
+	keypos = 0;         // Start with first byte of user key.
+	rsum = 0;
 	mask = 255;
 	// FM: Original code did "i>=0", but when i==0 the statements inside the loop body have no effect.
-    for (i=255;i>0;i--)
+	for (i=255;i>0;i--)
 	{
-        toswap = keyrand(state, i, mask, key, keysize, &rsum, &keypos);
+		toswap = keyrand(state, i, mask, key, keysize, &rsum, &keypos);
 		SWAP(state->cards[i], state->cards[toswap], swaptemp);
 		if ((i & (i - 1)) == 0)
 			mask >>= 1;
 	}
-	
-    // Initialize the indices and data dependencies.
-    // Indices are set to different values instead of all 0
-    // to reduce what is known about the state of the state->cards
-    // when the first byte is emitted.
-	
-    state->rotor = state->cards[1];
-    state->ratchet = state->cards[3];
-    state->avalanche = state->cards[5];
-    state->last_plain = state->cards[7];
-    state->last_cipher = state->cards[rsum];
-	
-    toswap = swaptemp = rsum = 0;
-    keypos = 0;
+
+	// Initialize the indices and data dependencies.
+	// Indices are set to different values instead of all 0
+	// to reduce what is known about the state of the state->cards
+	// when the first byte is emitted.
+
+	state->rotor = state->cards[1];
+	state->ratchet = state->cards[3];
+	state->avalanche = state->cards[5];
+	state->last_plain = state->cards[7];
+	state->last_cipher = state->cards[rsum];
+
+	toswap = swaptemp = rsum = 0;
+	keypos = 0;
 }
 
 unsigned char GOAEncryptByte(GOACryptState *state, unsigned char byte)
 {
-    // Picture a single enigma rotor with 256 positions, rewired
-    // on the fly by card-shuffling.
-	
-    // This cipher is a variant of one invented and written
-    // by Michael Paul Johnson in November, 1993.
-	
-    unsigned char swaptemp;
-	
-    // Shuffle the deck a little more.
+	// Picture a single enigma rotor with 256 positions, rewired
+	// on the fly by card-shuffling.
+
+	// This cipher is a variant of one invented and written
+	// by Michael Paul Johnson in November, 1993.
+
+	unsigned char swaptemp;
+
+	// Shuffle the deck a little more.
 	state->ratchet = (unsigned char)(state->ratchet + state->cards[state->rotor++]);
-    swaptemp = state->cards[state->last_cipher];
-    state->cards[state->last_cipher] = state->cards[state->ratchet];
-    state->cards[state->ratchet] = state->cards[state->last_plain];
-    state->cards[state->last_plain] = state->cards[state->rotor];
-    state->cards[state->rotor] = swaptemp;
-    state->avalanche = (unsigned char )(state->avalanche + state->cards[swaptemp]);
-	
-    // Output one byte from the state in such a way as to make it
-    // very hard to figure out which one you are looking at.
+	swaptemp = state->cards[state->last_cipher];
+	state->cards[state->last_cipher] = state->cards[state->ratchet];
+	state->cards[state->ratchet] = state->cards[state->last_plain];
+	state->cards[state->last_plain] = state->cards[state->rotor];
+	state->cards[state->rotor] = swaptemp;
+	state->avalanche = (unsigned char )(state->avalanche + state->cards[swaptemp]);
+
+	// Output one byte from the state in such a way as to make it
+	// very hard to figure out which one you are looking at.
 	/*
-    state->last_cipher = b^state->state->cards[(state->state->cards[state->ratchet] + state->state->cards[state->rotor]) & 0xFF] ^
+	state->last_cipher = b^state->state->cards[(state->state->cards[state->ratchet] + state->state->cards[state->rotor]) & 0xFF] ^
 	state->state->cards[state->state->cards[(state->state->cards[state->last_plain] +
 	state->state->cards[state->last_cipher] +
 	state->state->cards[state->avalanche])&0xFF]];
 	*/
-    state->last_cipher = (unsigned char)(byte ^
+	state->last_cipher = (unsigned char)(byte ^
 		state->cards[(state->cards[state->avalanche] + state->cards[state->rotor]) & 0xFF] ^
 		state->cards[state->cards[(state->cards[state->last_plain] + state->cards[state->last_cipher] + state->cards[state->ratchet]) & 0xFF]]);
-    state->last_plain = byte;
-    return state->last_cipher;
+	state->last_plain = byte;
+	return state->last_cipher;
 }
 
 void GOAEncrypt(GOACryptState *state, unsigned char *bp, size_t len)
@@ -204,21 +204,21 @@ void GOAEncrypt(GOACryptState *state, unsigned char *bp, size_t len)
 
 unsigned char GOADecryptByte(GOACryptState *state, unsigned char byte)
 {
-    unsigned char swaptemp;
-	
-    // Shuffle the deck a little more.
-    state->ratchet = (unsigned char)(state->ratchet + state->cards[state->rotor++]);
-    swaptemp = state->cards[state->last_cipher];
-    state->cards[state->last_cipher] = state->cards[state->ratchet];
-    state->cards[state->ratchet] = state->cards[state->last_plain];
-    state->cards[state->last_plain] = state->cards[state->rotor];
-    state->cards[state->rotor] = swaptemp;
-    state->avalanche = (unsigned char)(state->avalanche + state->cards[swaptemp]);
-	
-    // Output one byte from the state in such a way as to make it
-    // very hard to figure out which one you are looking at.
+	unsigned char swaptemp;
+
+	// Shuffle the deck a little more.
+	state->ratchet = (unsigned char)(state->ratchet + state->cards[state->rotor++]);
+	swaptemp = state->cards[state->last_cipher];
+	state->cards[state->last_cipher] = state->cards[state->ratchet];
+	state->cards[state->ratchet] = state->cards[state->last_plain];
+	state->cards[state->last_plain] = state->cards[state->rotor];
+	state->cards[state->rotor] = swaptemp;
+	state->avalanche = (unsigned char)(state->avalanche + state->cards[swaptemp]);
+
+	// Output one byte from the state in such a way as to make it
+	// very hard to figure out which one you are looking at.
 	/*
-    state->last_plain = b^state->cards[(state->cards[state->ratchet] + state->cards[state->rotor]) & 0xFF] ^
+	state->last_plain = b^state->cards[(state->cards[state->ratchet] + state->cards[state->rotor]) & 0xFF] ^
 	state->cards[state->cards[(state->cards[state->last_plain] +
 	state->cards[state->last_cipher] +
 	state->cards[state->avalanche])&0xFF]];
@@ -227,8 +227,8 @@ unsigned char GOADecryptByte(GOACryptState *state, unsigned char byte)
 	state->last_plain = (unsigned char)(byte ^
 		state->cards[(state->cards[state->avalanche] + state->cards[state->rotor]) & 0xFF] ^
 		state->cards[state->cards[(state->cards[state->last_plain] + state->cards[state->last_cipher] + state->cards[state->ratchet])&0xFF]]);
-    state->last_cipher = byte;
-    return state->last_plain;
+	state->last_cipher = byte;
+	return state->last_plain;
 }
 
 void GOADecrypt(GOACryptState *state, unsigned char *bp, size_t len)
@@ -276,10 +276,10 @@ void GOADecrypt(GOACryptState *state, unsigned char *bp, size_t len)
 void GOAHashFinal(GOACryptState *state, unsigned char *outputhash,      // Destination
 				  unsigned char hashlength) // Size of hash.
 {
-    int i;
-	
-    for (i=255;i>=0;i--)
-        GOAEncryptByte(state, (unsigned char) i);
-    for (i=0;i<hashlength;i++)
-        outputhash[i] = GOAEncryptByte(state, 0);
+	int i;
+
+	for (i=255;i>=0;i--)
+		GOAEncryptByte(state, (unsigned char) i);
+	for (i=0;i<hashlength;i++)
+		outputhash[i] = GOAEncryptByte(state, 0);
 }

@@ -153,43 +153,43 @@ void Util::Url::GetElements(const std::string& url, std::string& url_base, Util:
 
 std::string Util::Url::Encode(const std::string& str)
 {
-    std::string new_str = "";
-    char c;
-    int ic;
-    const char* chars = str.c_str();
-    char bufHex[10];
-    int len = strlen(chars);
+	std::string new_str = "";
+	char c;
+	int ic;
+	const char* chars = str.c_str();
+	char bufHex[10];
+	int len = strlen(chars);
 
-    for(int i = 0; i < len; i++)
+	for(int i = 0; i < len; i++)
 	{
-        c = chars[i];
-        ic = c;
+		c = chars[i];
+		ic = c;
 		
-        // uncomment this if you want to encode spaces with +
-        /*if (c==' ') new_str += '+';   
-        else */
+		// uncomment this if you want to encode spaces with +
+		/*if (c==' ') new_str += '+';   
+		else */
 		if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
 		{
 			new_str += c;
 		}
-        else
+		else
 		{
-            sprintf(bufHex,"%X",c);
-            
+			sprintf(bufHex,"%X",c);
+			
 			if(ic < 16) 
 			{
-                new_str += "%0"; 
+				new_str += "%0"; 
 			}
-            else
+			else
 			{
-                new_str += "%";
+				new_str += "%";
 			}
 			
-            new_str += bufHex;
-        }
-    }
-	
-    return new_str;
+			new_str += bufHex;
+		}
+	}
+
+	return new_str;
  }
 
 std::string Util::Url::Decode(const std::string& str)

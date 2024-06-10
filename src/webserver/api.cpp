@@ -576,11 +576,11 @@ void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& ht
 	}
 
 	// Random generator
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator(seed);
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
 
 	// Create random integer functions with ranges
-    std::uniform_int_distribution<int> gen_random_clan_id(1, total_clans);
+	std::uniform_int_distribution<int> gen_random_clan_id(1, total_clans);
 	std::uniform_int_distribution<int> gen_random_team_win(0, 1);
 	std::uniform_int_distribution<int> gen_random_victory(1, 3);
 

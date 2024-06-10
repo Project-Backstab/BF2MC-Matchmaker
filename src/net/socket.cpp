@@ -49,8 +49,8 @@ std::string Net::Socket::GetAddress() const
 std::string Net::Socket::GetSocketType() const
 {
 	int socket_type;
-    socklen_t optlen = sizeof(socket_type);
-    
+	socklen_t optlen = sizeof(socket_type);
+
 	// Get socket type
 	getsockopt(this->_socket, SOL_SOCKET, SO_TYPE, &socket_type, &optlen);
 	

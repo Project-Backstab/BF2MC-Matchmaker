@@ -7,11 +7,11 @@
 namespace GameStats
 {
 	/**
-     * @brief Represents a client for game statistics.
-     * 
-     * This class extends the Net::Socket class to handle client
-     * connections and requests for game statistics.
-     */
+	 * @brief Represents a client for game statistics.
+	 * 
+	 * This class extends the Net::Socket class to handle client
+	 * connections and requests for game statistics.
+	 */
 	class Client : public Net::Socket
 	{	
 		public:

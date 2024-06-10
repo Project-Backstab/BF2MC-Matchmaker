@@ -701,9 +701,9 @@ bool Battlefield::GameServer::SetTeam2Score(const std::string& str_score1)
 
 bool Battlefield::GameServer::SetUpdatedAt(MYSQL_TIME updated_at)
 {
-    this->_updated_at = Util::Time::GetDateTime(updated_at);
-	
-    return true;
+	this->_updated_at = Util::Time::GetDateTime(updated_at);
+
+	return true;
 }
 
 bool Battlefield::GameServer::SetVerified(bool verified)
