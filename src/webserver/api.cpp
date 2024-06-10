@@ -1068,7 +1068,7 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 	json_results["gsplayers"] = json_gsplayers;
 
 	// Update player stats on database
-	//g_database->updatePlayerStats(player);
+	g_database->updatePlayerStats(player);
 
 	this->Send(json_results);
 
