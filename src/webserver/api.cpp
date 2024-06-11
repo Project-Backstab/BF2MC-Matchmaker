@@ -245,10 +245,8 @@ void Webserver::Client::requestAPIPlayer(const atomizes::HTTPMessage& http_reque
 	
 	// Get player profileid
 	auto it = url_variables.find("profileid");
-	if (it != url_variables.end())
+	if (it != url_variables.end() && player.SetProfileId(it->second))
 	{
-		player.SetProfileId(it->second);
-		
 		// Get player information from database
 		g_database->queryPlayerByProfileId(player);
 	}
@@ -333,14 +331,14 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	
 	// Get player profileid
 	auto it = url_variables.find("clanid");
-	if (it != url_variables.end())
+	if (it != url_variables.end() || !clan.SetClanId(it->second))
 	{
-		clan.SetClanId(it->second);
-		
-		// Get clan information from database
-		g_database->queryClanByClanId(clan);
+		return;
 	}
 	
+	// Get clan information from database
+	g_database->queryClanByClanId(clan);
+
 	// Get clan ranks information from database
 	g_database->queryClanRanksByClanId(clan);
 	
@@ -903,15 +901,14 @@ void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_re
 		return;
 	}
 
+	Battlefield::Player player;
+
 	// Get profile id
 	it = url_variables.find("profileid");
-	if (it == url_variables.end())
+	if (it == url_variables.end() || !player.SetProfileId(it->second))
 	{
 		return;
 	}
-
-	Battlefield::Player player;
-	player.SetProfileId(it->second);
 
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
@@ -953,9 +950,9 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	// Get profile id
 	Battlefield::Player player;
 	it = url_variables.find("profileid");
-	if (it != url_variables.end())
+	if (it == url_variables.end() || !player.SetProfileId(it->second))
 	{
-		player.SetProfileId(it->second);
+		return;
 	}
 	
 	Json::Value json_results;
@@ -995,18 +992,17 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 		return;
 	}
 
+	Battlefield::Player player;
+	Battlefield::GameStatPlayers gsplayers;
+
 	// Get profile id
 	it = url_variables.find("profileid");
-	if (it == url_variables.end())
+	if (it == url_variables.end() || !player.SetProfileId(it->second))
 	{
 		return;	
 	}
 
-	Battlefield::Player player;
-	Battlefield::GameStatPlayers gsplayers;
-
 	// Get all games results that the player has played
-	player.SetProfileId(it->second);
 	g_database->queryGameStatPlayersByProfileId(player, gsplayers);
 
 	Json::Value json_results;
