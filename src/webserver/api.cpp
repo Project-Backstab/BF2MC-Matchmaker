@@ -199,7 +199,8 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 		json_player["ttb"]      = gsplayer.GetTotalTopPlayer();
 		json_player["mv"]       = gsplayer.GetTotalVictories();
 		json_player["ngp"]      = gsplayer.GetTotalGameSessions();
-		
+		json_player["disable"]  = gsplayer.IsDisabled();
+
 		json_players.append(json_player);
 	}
 	json_game_stat["players"] = json_players;
