@@ -329,15 +329,14 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		//Logger::debug("=============================");
 	}
 	
-	// Insert GameStat in database
-	g_database->insertGameStat(game_stat);
-	//game_stat.Debug();
-	
 	// Update players stats
 	for(Battlefield::GameStatPlayer gsplayer : game_stat.GetPlayers())
 	{
-		gsplayer.UpdatePlayerStats();
+		gsplayer.UpdatePlayerStats(game_stat);
 	}
+
+	// Insert GameStat in database
+	g_database->insertGameStat(game_stat);
 
 	// Update Clan stats
 	if(game_stat.GetTeam1ClanId() != 0 && game_stat.GetTeam2ClanId() != 0)

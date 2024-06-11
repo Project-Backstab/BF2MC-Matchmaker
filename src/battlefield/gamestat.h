@@ -127,6 +127,7 @@ namespace Battlefield
 			bool SetCreatedAt(MYSQL_TIME created_at);
 			void AddPlayer(const GameStatPlayer& gsplayer);
 			
+			void disablePlayer(int profileid);
 			void UpdateClanStats();
 			void Debug();
 	};
@@ -282,7 +283,7 @@ namespace Battlefield
 			/**
 			 * @brief Updates the player's statistics in the player stat class.
 			 */
-			void UpdatePlayerStats();
+			void UpdatePlayerStats(Battlefield::GameStat& game_stat);
 			
 			void Debug();
 	};

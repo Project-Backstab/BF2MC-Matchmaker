@@ -305,6 +305,15 @@ void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)
 	this->_players.push_back(gsplayer);
 }
 
+void Battlefield::GameStat::disablePlayer(int profileid)
+{
+	for(Battlefield::GameStatPlayer& gsplayer : this->_players)
+	{
+		if(gsplayer.GetProfileId() == profileid)
+			gsplayer.SetDisable(true);
+	}
+}
+
 void Battlefield::GameStat::UpdateClanStats()
 {
 	Battlefield::Clan clan1;
@@ -1029,7 +1038,7 @@ bool Battlefield::GameStatPlayer::SetDisable(uint8_t disable)
 	return this->SetDisable(disable == 1);
 }
 
-void Battlefield::GameStatPlayer::UpdatePlayerStats()
+void Battlefield::GameStatPlayer::UpdatePlayerStats(Battlefield::GameStat& game_stat)
 {
 	Battlefield::Player player;
 		
@@ -1042,6 +1051,8 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats()
 
 	if(player.isRestricted())
 	{
+		game_stat.disablePlayer(this->GetProfileId());
+
 		Logger::info("Player '" + player.GetUniquenick() + "' is restricted for stats progress.");
 		return;
 	}
