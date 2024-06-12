@@ -69,27 +69,29 @@ namespace Battlefield
 			GameStatPlayers _players;         /**< The list of players involved in the game. */
 			
 		public:
-			int         GetId() const            { return this->_id;         }
-			uint8_t     GetGameType() const      { return this->_gametype;   }
-			std::string GetGameVersion() const   { return this->_gamver;     }
-			std::string GetHostName() const      { return this->_hostname;   }
-			uint8_t     GetMapId() const         { return this->_mapid;      }
-			uint8_t     GetNumPlayers() const    { return this->_numplayers; }
-			uint8_t     GetPPlayers() const      { return this->_pplayers;   }
-			uint16_t    GetTimePlayed() const    { return this->_tplayed;    }
+			int          GetId() const                { return this->_id;         }
+			uint8_t      GetGameType() const          { return this->_gametype;   }
+			std::string  GetGameVersion() const       { return this->_gamver;     }
+			std::string  GetHostName() const          { return this->_hostname;   }
+			uint8_t      GetMapId() const             { return this->_mapid;      }
+			uint8_t      GetNumPlayers() const        { return this->_numplayers; }
+			uint8_t      GetPPlayers() const          { return this->_pplayers;   }
+			uint16_t     GetTimePlayed() const        { return this->_tplayed;    }
 
 			// Team
-			int         GetTeam1ClanId() const   { return this->_clanid_t0;  }
-			int         GetTeam2ClanId() const   { return this->_clanid_t1;  }
-			uint8_t     GetTeam1Country() const  { return this->_country_t0; }
-			uint8_t     GetTeam2Country() const  { return this->_country_t1; }
-			uint8_t     GetTeam1Victory() const  { return this->_victory_t0; }
-			uint8_t     GetTeam2Victory() const  { return this->_victory_t1; }
-			int16_t     GetTeam1Score() const    { return this->_score0;     }
-			int16_t     GetTeam2Score() const    { return this->_score1;     }
+			int          GetTeam1ClanId() const       { return this->_clanid_t0;  }
+			int          GetTeam2ClanId() const       { return this->_clanid_t1;  }
+			uint8_t      GetTeam1Country() const      { return this->_country_t0; }
+			uint8_t      GetTeam2Country() const      { return this->_country_t1; }
+			uint8_t      GetTeam1Victory() const      { return this->_victory_t0; }
+			uint8_t      GetTeam2Victory() const      { return this->_victory_t1; }
+			VictoryState GetTeam1VictoryEnum() const  { return static_cast<VictoryState>(this->_victory_t0); }
+			VictoryState GetTeam2VictoryEnum() const  { return static_cast<VictoryState>(this->_victory_t1); }
+			int16_t      GetTeam1Score() const        { return this->_score0;     }
+			int16_t      GetTeam2Score() const        { return this->_score1;     }
 			
-			std::string     GetCreatedAt() const { return this->_created_at; }
-			GameStatPlayers GetPlayers() const   { return this->_players;    }
+			std::string     GetCreatedAt() const     { return this->_created_at;  }
+			GameStatPlayers GetPlayers() const       { return this->_players;     }
 			
 			bool SetId(int id);
 			bool SetId(const std::string str_id);

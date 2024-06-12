@@ -326,8 +326,8 @@ void Battlefield::GameStat::UpdateClanStats()
 	g_database->queryClanByClanId(clan2);
 
 	// Convert victory to enums
-	Battlefield::GameStat::VictoryState clan1victory = static_cast<Battlefield::GameStat::VictoryState>(this->GetTeam1Victory());
-	Battlefield::GameStat::VictoryState clan2victory = static_cast<Battlefield::GameStat::VictoryState>(this->GetTeam2Victory());
+	VictoryState clan1victory = this->GetTeam1VictoryEnum();
+	VictoryState clan2victory = this->GetTeam2VictoryEnum();
 
 	double K = Battlefield::Clan::ELO_WEIGHT;
 	double R1 = 1.0;
@@ -336,21 +336,21 @@ void Battlefield::GameStat::UpdateClanStats()
 	// Extract victory state and patch values
 	switch(clan1victory)
 	{
-		case Battlefield::GameStat::VictoryState::Minor:
+		case VictoryState::Minor:
 			K *= 2;
 			R1 = 1.0;
 			clan1.SetWins(clan1.GetWins() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Major:
+		case VictoryState::Major:
 			K *= 4;
 			R1 = 1.0;
 			clan1.SetWins(clan1.GetWins() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Lost:
+		case VictoryState::Lost:
 			R1 = 0.0;
 			clan1.SetLosses(clan1.GetLosses() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Draw:
+		case VictoryState::Draw:
 			R1 = 1.0;
 			clan1.SetDraws(clan1.GetDraws() + 1);
 		break;
@@ -358,21 +358,21 @@ void Battlefield::GameStat::UpdateClanStats()
 
 	switch(clan2victory)
 	{
-		case Battlefield::GameStat::VictoryState::Minor:
+		case VictoryState::Minor:
 			K *= 2;
 			R2 = 1.0;
 			clan2.SetWins(clan2.GetWins() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Major:
+		case VictoryState::Major:
 			K *= 4;
 			R2 = 1.0;
 			clan2.SetWins(clan2.GetWins() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Lost:
+		case VictoryState::Lost:
 			R2 = 0.0;
 			clan2.SetLosses(clan2.GetLosses() + 1);
 		break;
-		case Battlefield::GameStat::VictoryState::Draw:
+		case VictoryState::Draw:
 			R2 = 1.0;
 			clan2.SetDraws(clan2.GetDraws() + 1);
 		break;

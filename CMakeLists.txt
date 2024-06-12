@@ -31,7 +31,10 @@ add_executable(bf2mc
     src/gpsp/client.cpp
     src/gpcm/client.cpp
     src/webserver/client.cpp
-    src/webserver/api.cpp
+    src/webserver/request/api.cpp
+    src/webserver/request/api_admin.cpp
+    src/webserver/request/clan.cpp
+    src/webserver/request/status.cpp
     src/browsing/client.cpp
     src/browsing/sb_crypt.cpp
     src/browsing/test.cpp
