@@ -1075,41 +1075,8 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats(Battlefield::GameStat& game_
 		return;
 	}
 
-	player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + this->GetBoatsDestroyed()          ); // bod
-	player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + this->GetHAVsDestroyed()           ); // havd
-	player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + this->GetHelicoptersDestroyed()    ); // hed
-	player.SetKillsAssualtKit(         player.GetKillsAssualtKit()         + this->GetKillsAssualtKit()         ); // k1
-	player.SetKillsSniperKit(          player.GetKillsSniperKit()          + this->GetKillsSniperKit()          ); // k2
-	player.SetKillsSpecialOpKit(       player.GetKillsSpecialOpKit()       + this->GetKillsSpecialOpKit()       ); // k3
-	player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + this->GetKillsCombatEngineerKit()  ); // k4
-	player.SetKillsSupportKit(         player.GetKillsSupportKit()         + this->GetKillsSupportKit()         ); // k5
-	player.SetKills(                   player.GetKills()                   + this->GetKills()                   ); // kills
-	player.SetDeaths(                  player.GetDeaths()                  + this->GetDeaths()                  ); // deaths
-	player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + this->GetLAVsDestroyed()           ); // lavd
-	player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + this->GetMAVsDestroyed()           ); // mavd
-	player.SetTotalVictories(          player.GetTotalVictories()          + this->GetTotalVictories()          ); // mv
-	player.SetTotalGameSessions(       player.GetTotalGameSessions()       + this->GetTotalGameSessions()       ); // ngp
-	player.SetDeathsAssualtKit(        player.GetSpawnsAssualtKit()        + this->GetSpawnsAssualtKit()        ); // s1
-	player.SetDeathsSniperKit(         player.GetSpawnsSniperKit()         + this->GetSpawnsSniperKit()         ); // s2
-	player.SetDeathsSpecialOpKit(      player.GetSpawnsSpecialOpKit()      + this->GetSpawnsSpecialOpKit()      ); // s3
-	player.SetDeathsCombatEngineerKit( player.GetSpawnsCombatEngineerKit() + this->GetSpawnsCombatEngineerKit() ); // s4
-	player.SetDeathsSupportKit(        player.GetSpawnsSupportKit()        + this->GetSpawnsSupportKit()        ); // s5
-	player.SetScore(                   player.GetScore()                   + this->GetScore()                   ); // score
-	player.SetSuicides(                player.GetSuicides()                + this->GetSuicides()                ); // suicides
-	player.SetTime(                    player.GetTime()                    + this->GetTime()                    ); // time
-	player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + this->GetTotalTopPlayer()          ); // ttb
-	
-	player.SetVehiclesDestroyed(
-		player.GetLAVsDestroyed() +
-		player.GetMAVsDestroyed() +
-		player.GetHAVsDestroyed() +
-		player.GetHelicoptersDestroyed() +
-		player.GetBoatsDestroyed()
-	);
-
-	player.SetMedals(this->GetMedals()); // medals
-	player.SetPPH(this->GetPPH());       // pph
-	//player.SetRank(this->GetRank());     // rank
+	// Update player stats
+	player.Update(*this);
 	
 	// Update player stats on database
 	g_database->updatePlayerStats(player);
@@ -1148,3 +1115,4 @@ void Battlefield::GameStatPlayer::Debug()
 	Logger::debug("mv = "       + std::to_string(this->GetTotalVictories()));
 	Logger::debug("ngp = "      + std::to_string(this->GetTotalGameSessions()));
 }
+

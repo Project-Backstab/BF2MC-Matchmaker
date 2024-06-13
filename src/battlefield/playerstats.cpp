@@ -2,6 +2,8 @@
 #include <util.h>
 #include <logger.h>
 
+#include <battlefield/gamestat.h>
+
 #include <battlefield/playerstats.h>
 
 std::unordered_map<std::string, Battlefield::PlayerStats::SetterFunc> Battlefield::PlayerStats::SetterMap = {
@@ -310,7 +312,64 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 	return true;
 }
 
-void Battlefield::PlayerStats::calcNewPPH(uint32_t time, int32_t score)
+void Battlefield::PlayerStats::Update(const Battlefield::GameStatPlayer& gsplayer)
+{
+	// Calculate new pph
+	this->_calcNewPPH(gsplayer.GetTime(), gsplayer.GetScore());
+
+	this->SetBoatsDestroyed(          this->_bod      + gsplayer.GetBoatsDestroyed()          ); // bod
+	this->SetHAVsDestroyed(           this->_havd     + gsplayer.GetHAVsDestroyed()           ); // havd
+	this->SetHelicoptersDestroyed(    this->_hed      + gsplayer.GetHelicoptersDestroyed()    ); // hed
+	this->SetKillsAssualtKit(         this->_k1       + gsplayer.GetKillsAssualtKit()         ); // k1
+	this->SetKillsSniperKit(          this->_k2       + gsplayer.GetKillsSniperKit()          ); // k2
+	this->SetKillsSpecialOpKit(       this->_k3       + gsplayer.GetKillsSpecialOpKit()       ); // k3
+	this->SetKillsCombatEngineerKit(  this->_k4       + gsplayer.GetKillsCombatEngineerKit()  ); // k4
+	this->SetKillsSupportKit(         this->_k5       + gsplayer.GetKillsSupportKit()         ); // k5
+	this->SetKills(                   this->_kills    + gsplayer.GetKills()                   ); // kills
+	this->SetDeaths(                  this->_deaths   + gsplayer.GetDeaths()                  ); // deaths
+	this->SetLAVsDestroyed(           this->_lavd     + gsplayer.GetLAVsDestroyed()           ); // lavd
+	this->SetMAVsDestroyed(           this->_mavd     + gsplayer.GetMAVsDestroyed()           ); // mavd
+	this->SetTotalVictories(          this->_mv       + gsplayer.GetTotalVictories()          ); // mv
+	this->SetTotalGameSessions(       this->_ngp      + gsplayer.GetTotalGameSessions()       ); // ngp
+	this->SetDeathsAssualtKit(        this->_s1       + gsplayer.GetSpawnsAssualtKit()        ); // s1
+	this->SetDeathsSniperKit(         this->_s2       + gsplayer.GetSpawnsSniperKit()         ); // s2
+	this->SetDeathsSpecialOpKit(      this->_s3       + gsplayer.GetSpawnsSpecialOpKit()      ); // s3
+	this->SetDeathsCombatEngineerKit( this->_s4       + gsplayer.GetSpawnsCombatEngineerKit() ); // s4
+	this->SetDeathsSupportKit(        this->_s5       + gsplayer.GetSpawnsSupportKit()        ); // s5
+	this->SetScore(                   this->_score    + gsplayer.GetScore()                   ); // score
+	this->SetSuicides(                this->_suicides + gsplayer.GetSuicides()                ); // suicides
+	this->SetTime(                    this->_time     + gsplayer.GetTime()                    ); // time
+	this->SetTotalTopPlayer(          this->_ttb      + gsplayer.GetTotalTopPlayer()          ); // ttb
+
+	this->SetVehiclesDestroyed(
+		this->_lavd +
+		this->_mavd +
+		this->_havd +
+		this->_hed +
+		this->_bod
+	);
+	
+	this->SetMedals(gsplayer.GetMedals()); // medals
+}
+
+void Battlefield::PlayerStats::_calcRank()
+{
+	int pph = this->_pph / 100;
+	int total_medals = Util::countSetBits(this->_medals);
+	int new_rank = 1;
+
+	for(int i = 1; i < RankScores.size(); i++)
+	{
+		if(this->_score >= RankScores[i] && pph >= RankPph[i] && total_medals >= RankMedals[i])
+			new_rank = i + 1;
+		else
+			break;
+	}
+
+	this->_ran = new_rank;
+}
+
+void Battlefield::PlayerStats::_calcNewPPH(uint32_t time, int32_t score)
 {
 	const int PPH_TIME_SPAN = 5;
 	const int PPH_FACTOR = 100;
@@ -360,22 +419,5 @@ void Battlefield::PlayerStats::calcNewPPH(uint32_t time, int32_t score)
 
 	// Set new pph
 	this->SetPPH(new_pph);
-}
-
-void Battlefield::PlayerStats::_calcRank()
-{
-	int pph = this->_pph / 100;
-	int total_medals = Util::countSetBits(this->_medals);
-	int new_rank = 1;
-
-	for(int i = 1; i < RankScores.size(); i++)
-	{
-		if(this->_score >= RankScores[i] && pph >= RankPph[i] && total_medals >= RankMedals[i])
-			new_rank = i + 1;
-		else
-			break;
-	}
-
-	this->_ran = new_rank;
 }
 

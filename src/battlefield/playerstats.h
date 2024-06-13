@@ -9,6 +9,8 @@
 
 namespace Battlefield
 {
+	class GameStatPlayer;
+
 	/**
 	 * @brief Contains player status information.
 	 */
@@ -129,13 +131,21 @@ namespace Battlefield
 			bool SetTotalVictories(uint32_t total);
 			bool SetTotalGameSessions(uint32_t total);
 
-			void calcNewPPH(uint32_t time, int32_t score);
-		
+			/**
+			 * @brief Update player stats based on played game
+			 */
+			void Update(const Battlefield::GameStatPlayer& gsplayer);
+
 		private:
 			/**
 			 * @brief Calculates the rank based on score, points per hour (pph), and medals.
 			 */
 			void _calcRank();
+
+			/**
+			 * @brief Calculates the pph based on game time, game score and current player stats.
+			 */
+			void _calcNewPPH(uint32_t time, int32_t score);
 	};
 }
 

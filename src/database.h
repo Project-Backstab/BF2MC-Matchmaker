@@ -511,6 +511,17 @@ class Database
 		bool queryGameStatPlayers(Battlefield::GameStat& game_stat);
 		
 		/**
+		 * @brief Counts the number of game statistic players for a player by their profile ID.
+		 *
+		 * This function counts the number of game statistic players for a player identified by their profile ID.
+		 *
+		 * @param player The player object containing the profile ID to query.
+		 * @param output_total[out] Reference to a uint32_t where the count will be stored.
+		 * @return bool True if the query is successful and the count is obtained, false otherwise.
+		 */
+		bool countGameStatPlayersByProfileId(const Battlefield::Player& player, uint32_t& output_total);
+
+		/**
 		 * @brief Queries game statistics for a player by their profile ID.
 		 *
 		 * This function retrieves game statistics for a player identified by their profile ID.
@@ -519,7 +530,8 @@ class Database
 		 * @param gsplayers[out] Reference to a Battlefield::GameStatPlayers object where the result will be stored.
 		 * @return bool True if the query is successful and game statistics are found for the player, false otherwise.
 		 */
-		bool queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers);
+		bool queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers,
+				uint32_t limit = 250, uint32_t offset = 0);
 
 	private:
 		/**

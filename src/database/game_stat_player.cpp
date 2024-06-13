@@ -244,7 +244,67 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	return true;
 }
 
-bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers)
+bool Database::countGameStatPlayersByProfileId(const Battlefield::Player& player, uint32_t& output_total)
+{
+	std::string query = "";
+	query += "SELECT ";
+	query += "	COUNT(*) ";
+	query += "FROM ";
+	query += "	`GameStatPlayers` ";
+	query += "WHERE ";
+	query += "	`pid` = ?";
+
+	int input_profileid = player.GetProfileId();
+	
+	// Allocate input binds
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[0].buffer = &input_profileid;
+	input_bind[0].is_unsigned = false;
+
+	// Allocate output binds
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(33, sizeof(MYSQL_BIND));
+	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[0].buffer = &output_total;
+	output_bind[0].is_unsigned = true;
+
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query, input_bind) ||
+		!this->_execute(statement, output_bind)
+	)
+	{
+		// Cleanup
+		free(input_bind);
+		free(output_bind);
+		
+		return false;
+	}
+
+	while(true)
+	{
+		int status = mysql_stmt_fetch(statement);
+
+		if (status == 1 || status == MYSQL_NO_DATA)
+		{
+			break;
+		}
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	free(input_bind);
+	free(output_bind);
+	
+	return true;
+}
+
+bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers,
+		uint32_t limit, uint32_t offset)
 {
 	std::string query = "";
 	query += "SELECT ";
@@ -255,7 +315,8 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	query += "FROM ";
 	query += "	`GameStatPlayers` ";
 	query += "WHERE ";
-	query += "	`pid` = ?";
+	query += "	`pid` = ? ";
+	query += "LIMIT ? OFFSET ?";
 
 	int input_profileid = player.GetProfileId();
 
@@ -294,10 +355,16 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	uint8_t  output_disable;
 
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(3, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[0].buffer = &input_profileid;
 	input_bind[0].is_unsigned = false;
+	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[1].buffer = &limit;
+	input_bind[1].is_unsigned = true;
+	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[2].buffer = &offset;
+	input_bind[2].is_unsigned = true;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(33, sizeof(MYSQL_BIND));
@@ -655,3 +722,4 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	
 	return true;
 }
+

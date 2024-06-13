@@ -1,6 +1,7 @@
 #include <atomizes.hpp>
 #include <json/json.h>
 #include <random>
+#include <thread>
 #include <chrono>
 
 #include <logger.h>
@@ -247,7 +248,6 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 	}
 
 	Battlefield::Player player;
-	Battlefield::GameStatPlayers gsplayers;
 
 	// Get profile id
 	it = url_variables.find("profileid");
@@ -256,67 +256,47 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 		return;	
 	}
 
-	// Get all games results that the player has played
-	g_database->queryGameStatPlayersByProfileId(player, gsplayers);
-
 	Json::Value json_results;
 	Json::Value json_gsplayers(Json::arrayValue);
 
-	for(const Battlefield::GameStatPlayer& gsplayer : gsplayers)
+	// Get total games needs to be process
+	uint32_t total;
+	g_database->countGameStatPlayersByProfileId(player, total);
+	json_results["total"] = total;
+
+	for(uint32_t offset = 0; offset < total; offset += 250)
 	{
-		if(gsplayer.IsDisabled())
-			continue;
+		Battlefield::GameStatPlayers gsplayers;
 		
-		// Calculate new pph
-		player.calcNewPPH(gsplayer.GetTime(), gsplayer.GetScore());
+		// Sleep for 50 milliseconds
+    	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-		player.SetBoatsDestroyed(          player.GetBoatsDestroyed()          + gsplayer.GetBoatsDestroyed()          ); // bod
-		player.SetHAVsDestroyed(           player.GetHAVsDestroyed()           + gsplayer.GetHAVsDestroyed()           ); // havd
-		player.SetHelicoptersDestroyed(    player.GetHelicoptersDestroyed()    + gsplayer.GetHelicoptersDestroyed()    ); // hed
-		player.SetKillsAssualtKit(         player.GetKillsAssualtKit()         + gsplayer.GetKillsAssualtKit()         ); // k1
-		player.SetKillsSniperKit(          player.GetKillsSniperKit()          + gsplayer.GetKillsSniperKit()          ); // k2
-		player.SetKillsSpecialOpKit(       player.GetKillsSpecialOpKit()       + gsplayer.GetKillsSpecialOpKit()       ); // k3
-		player.SetKillsCombatEngineerKit(  player.GetKillsCombatEngineerKit()  + gsplayer.GetKillsCombatEngineerKit()  ); // k4
-		player.SetKillsSupportKit(         player.GetKillsSupportKit()         + gsplayer.GetKillsSupportKit()         ); // k5
-		player.SetKills(                   player.GetKills()                   + gsplayer.GetKills()                   ); // kills
-		player.SetDeaths(                  player.GetDeaths()                  + gsplayer.GetDeaths()                  ); // deaths
-		player.SetLAVsDestroyed(           player.GetLAVsDestroyed()           + gsplayer.GetLAVsDestroyed()           ); // lavd
-		player.SetMAVsDestroyed(           player.GetMAVsDestroyed()           + gsplayer.GetMAVsDestroyed()           ); // mavd
-		player.SetTotalVictories(          player.GetTotalVictories()          + gsplayer.GetTotalVictories()          ); // mv
-		player.SetTotalGameSessions(       player.GetTotalGameSessions()       + gsplayer.GetTotalGameSessions()       ); // ngp
-		player.SetDeathsAssualtKit(        player.GetSpawnsAssualtKit()        + gsplayer.GetSpawnsAssualtKit()        ); // s1
-		player.SetDeathsSniperKit(         player.GetSpawnsSniperKit()         + gsplayer.GetSpawnsSniperKit()         ); // s2
-		player.SetDeathsSpecialOpKit(      player.GetSpawnsSpecialOpKit()      + gsplayer.GetSpawnsSpecialOpKit()      ); // s3
-		player.SetDeathsCombatEngineerKit( player.GetSpawnsCombatEngineerKit() + gsplayer.GetSpawnsCombatEngineerKit() ); // s4
-		player.SetDeathsSupportKit(        player.GetSpawnsSupportKit()        + gsplayer.GetSpawnsSupportKit()        ); // s5
-		player.SetScore(                   player.GetScore()                   + gsplayer.GetScore()                   ); // score
-		player.SetSuicides(                player.GetSuicides()                + gsplayer.GetSuicides()                ); // suicides
-		player.SetTime(                    player.GetTime()                    + gsplayer.GetTime()                    ); // time
-		player.SetTotalTopPlayer(          player.GetTotalTopPlayer()          + gsplayer.GetTotalTopPlayer()          ); // ttb
+		// Get games that the player has played in the limit and offset range
+		g_database->queryGameStatPlayersByProfileId(player, gsplayers, 250, offset);
 
-		player.SetVehiclesDestroyed(
-			player.GetLAVsDestroyed() +
-			player.GetMAVsDestroyed() +
-			player.GetHAVsDestroyed() +
-			player.GetHelicoptersDestroyed() +
-			player.GetBoatsDestroyed()
-		);
-		
-		player.SetMedals(gsplayer.GetMedals()); // medals
-		
-		// Give json feedback
-		Json::Value json_gsplayer;
+		for(const Battlefield::GameStatPlayer& gsplayer : gsplayers)
+		{
+			if(gsplayer.IsDisabled())
+				continue;
+			
+			// Update player stats with gsplayer
+			player.Update(gsplayer);
+			
+			// Give json feedback
+			Json::Value json_gsplayer;
 
-		json_gsplayer["id"] = gsplayer.GetId();
-		json_gsplayer["medals"] = player.GetMedals();
-		json_gsplayer["score"] = player.GetScore();
-		json_gsplayer["pph"] = player.GetPPH();
-		json_gsplayer["rank"] = player.GetRank();
+			json_gsplayer["id"] = gsplayer.GetId();
+			json_gsplayer["medals"] = player.GetMedals();
+			json_gsplayer["score"] = player.GetScore();
+			json_gsplayer["pph"] = player.GetPPH();
+			json_gsplayer["rank"] = player.GetRank();
 
-		json_gsplayers.append(json_gsplayer);
+			json_gsplayers.append(json_gsplayer);
+		}
 	}
-	json_results["gsplayers"] = json_gsplayers;
 
+	json_results["gsplayers"] = json_gsplayers;
+	
 	// Update player stats on database
 	g_database->updatePlayerStats(player);
 
