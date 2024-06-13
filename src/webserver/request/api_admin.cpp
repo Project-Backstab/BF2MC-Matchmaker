@@ -251,7 +251,7 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 
 	// Get profile id
 	it = url_variables.find("profileid");
-	if (it == url_variables.end() || !player.SetProfileId(it->second))
+	if (it == url_variables.end() || !player.SetProfileId(it->second) && player.GetProfileId() > 0)
 	{
 		return;	
 	}
