@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <functional>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
@@ -46,7 +48,7 @@ namespace Battlefield
 				Minor = 2,     /**< Minor victory. */
 				Draw = 3       /**< The game ended in a draw. */
 			};
-			
+		
 		private:
 			int             _id         = -1; /**< The unique identifier for the game statistics. */
 			uint8_t         _gametype   = 0;  /**< The type of game (see: enum Battlefield::GameType). */
@@ -67,7 +69,12 @@ namespace Battlefield
 
 			std::string     _created_at = ""; /**< The datetime when the game statistics were created. */
 			GameStatPlayers _players;         /**< The list of players involved in the game. */
-			
+		
+		public:
+			using SetterFunc = std::function<void(Battlefield::GameStat& game_stat, const std::string&)>;
+
+			static std::unordered_map<std::string, SetterFunc> SetterMap;
+
 		public:
 			int          GetId() const                { return this->_id;         }
 			uint8_t      GetGameType() const          { return this->_gametype;   }
@@ -92,35 +99,35 @@ namespace Battlefield
 			
 			std::string     GetCreatedAt() const     { return this->_created_at;  }
 			GameStatPlayers GetPlayers() const       { return this->_players;     }
-			
+		
 			bool SetId(int id);
-			bool SetId(const std::string str_id);
+			bool SetId(const std::string& str_id);
 			bool SetGameType(uint8_t gametype);
-			bool SetGameType(const std::string str_gametype);
-			bool SetGameVersion(const std::string gamver);
-			bool SetHostName(const std::string hostname);
+			bool SetGameType(const std::string& str_gametype);
+			bool SetGameVersion(const std::string& gamver);
+			bool SetHostName(const std::string& hostname);
 			bool SetMapId(uint8_t mapid);
-			bool SetMapId(const std::string str_mapid);
+			bool SetMapId(const std::string& str_mapid);
 			bool SetNumPlayers(uint8_t numplayers);
-			bool SetNumPlayers(const std::string str_numplayers);
+			bool SetNumPlayers(const std::string& str_numplayers);
 			bool SetPPlayers(uint8_t pplayers);
-			bool SetPPlayers(const std::string str_pplayers);
+			bool SetPPlayers(const std::string& str_pplayers);
 			bool SetTimePlayed(uint16_t tplayed);
-			bool SetTimePlayed(const std::string str_tplayed);
+			bool SetTimePlayed(const std::string& str_tplayed);
 			
 			// Team
 			bool SetTeam1ClanId(int clanid_t0);
-			bool SetTeam1ClanId(const std::string str_clanid_t0);
+			bool SetTeam1ClanId(const std::string& str_clanid_t0);
 			bool SetTeam2ClanId(int clanid_t1);
-			bool SetTeam2ClanId(const std::string str_clanid_t1);
+			bool SetTeam2ClanId(const std::string& str_clanid_t1);
 			bool SetTeam1Country(uint8_t country_t0);
-			bool SetTeam1Country(const std::string str_country_t0);
+			bool SetTeam1Country(const std::string& str_country_t0);
 			bool SetTeam2Country(uint8_t country_t1);
-			bool SetTeam2Country(const std::string str_country_t1);
+			bool SetTeam2Country(const std::string& str_country_t1);
 			bool SetTeam1Victory(uint8_t victory_t0);
-			bool SetTeam1Victory(const std::string str_victory_t0);
+			bool SetTeam1Victory(const std::string& str_victory_t0);
 			bool SetTeam2Victory(uint8_t victory_t1);
-			bool SetTeam2Victory(const std::string str_victory_t1);
+			bool SetTeam2Victory(const std::string& str_victory_t1);
 			bool SetTeam1Score(int16_t score0);
 			bool SetTeam1Score(const std::string& str_score0);
 			bool SetTeam2Score(int16_t score1);

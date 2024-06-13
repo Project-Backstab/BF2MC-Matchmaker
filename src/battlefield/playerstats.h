@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 #include <battlefield.h>
+#include <unordered_map>
+#include <functional>
 
 namespace Battlefield
 {
@@ -43,6 +45,12 @@ namespace Battlefield
 			uint32_t  _mv        = 0;   /**< Total major victories achieved by the player. */
 			uint32_t  _ngp       = 0;   /**< Total participated game sessions by the player. */
 		
+		public:
+			// Define the map type for convenience
+			using SetterFunc = std::function<bool(Battlefield::PlayerStats&, uint32_t)>;
+
+			static std::unordered_map<std::string, SetterFunc> SetterMap;
+
 		public:
 			/**
 			 * @brief Performs an example operation using the PlayerStats class.

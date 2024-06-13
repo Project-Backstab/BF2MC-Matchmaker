@@ -310,7 +310,7 @@ atomizes::HTTPMessage Webserver::Client::_defaultResponseHeader(bool isPlainText
 	return http_response;
 }
 
-bool Webserver::Client::_readFile(const std::string &file_name, std::string& data) const
+bool Webserver::Client::_readFile(const std::string& file_name, std::string& data) const
 {
 	bool finished = false;
 
@@ -397,31 +397,21 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 {
 	for(const auto &url_variable : url_variables)
 	{
-		if(!Util::isAscii(url_variable.second))
-			return false;
+		std::string key = url_variable.first;
+		std::string value = Util::Url::Decode(url_variable.second);
 		
-		if(url_variable.first == "name" && !is_update)
+		if(key == "authtoken")
+			continue;
+
+		if(!Util::isAscii(value) || (key == "name" && is_update))
 		{
-			clan.SetName(url_variable.second);
+			return false;
 		}
-		else if(url_variable.first == "tag")
+
+		auto it = Battlefield::Clan::SetterMap.find(key);
+		if(it == Battlefield::Clan::SetterMap.end() || !it->second(clan, value))
 		{
-			if(!clan.SetTag(url_variable.second))
-			{
-				return false;
-			}
-		}
-		else if(url_variable.first == "homepage")
-		{
-			clan.SetHomepage(Util::Url::Decode(url_variable.second));
-		}
-		else if(url_variable.first == "info")
-		{
-			clan.SetInfo(Util::Url::Decode(url_variable.second));
-		}
-		else if(url_variable.first == "region")
-		{
-			clan.SetRegion(url_variable.second);
+			return false;
 		}
 	}
 

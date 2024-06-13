@@ -14,7 +14,7 @@
 
 // Util::Buffer
 
-bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, std::string &str)
+bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, std::string& str)
 {	
 	str.clear();
 	
@@ -32,7 +32,7 @@ bool Util::Buffer::ReadString(const std::vector<char>& buffer, size_t& offset, s
 	return false;
 }
 
-bool Util::Buffer::ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string &str)
+bool Util::Buffer::ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string& str)
 {
 	std::vector<char> buffer2(buffer.begin(), buffer.end());
 	
@@ -380,7 +380,7 @@ int Util::countSetBits(uint32_t num)
 	return count;
 }
 
-std::string Util::tolower(const std::string &str)
+std::string Util::tolower(const std::string& str)
 {
 	std::string lstr = str;
 

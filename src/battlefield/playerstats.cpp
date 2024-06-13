@@ -4,6 +4,28 @@
 
 #include <battlefield/playerstats.h>
 
+std::unordered_map<std::string, Battlefield::PlayerStats::SetterFunc> Battlefield::PlayerStats::SetterMap = {
+	{"pph",      [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetPPH(value); }},
+	{"vehicles", [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetVehiclesDestroyed(value); }},
+	{"lavd",     [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetLAVsDestroyed(value); }},
+	{"mavd",     [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetMAVsDestroyed(value); }},
+	{"havd",     [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetHAVsDestroyed(value); }},
+	{"hed",      [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetHelicoptersDestroyed(value); }},
+	{"bod",      [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetBoatsDestroyed(value); }},
+	{"kills",    [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKills(value); }},
+	{"deaths",   [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeaths(value); }},
+	{"k1",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKillsAssualtKit(value); }},
+	{"s1",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeathsAssualtKit(value); }},
+	{"k2",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKillsSniperKit(value); }},
+	{"s2",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeathsSniperKit(value); }},
+	{"k3",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKillsSpecialOpKit(value); }},
+	{"s3",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeathsSpecialOpKit(value); }},
+	{"k4",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKillsCombatEngineerKit(value); }},
+	{"s4",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeathsCombatEngineerKit(value); }},
+	{"k5",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetKillsSupportKit(value); }},
+	{"s5",       [](Battlefield::PlayerStats& player, uint32_t value) { return player.SetDeathsSupportKit(value); }}
+};
+
 void Battlefield::PlayerStats::useExample()
 {
 	this->SetScore(41476);

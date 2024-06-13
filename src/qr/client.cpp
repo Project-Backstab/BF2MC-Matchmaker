@@ -161,46 +161,11 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		// Read value
 		Util::Buffer::ReadString(request, offset, value);
 		
-		if(     key == "localip0")      game_server.SetLocalIp(value);
-		else if(key == "localport")     game_server.SetLocalPort(value);
-		else if(key == "natneg")        game_server.SetNatNeg(value);
-		else if(key == "gamename")      game_server.SetGameName(value);
-		else if(key == "hostname")      game_server.SetHostName(value);
-		else if(key == "hostport")      game_server.SetHostPort(value);
-		else if(key == "gamever")       game_server.SetGameVersion(value);
-		else if(key == "cl")            game_server.SetClientVersion(value);
-		else if(key == "rv")            game_server.SetRV(value);
-		else if(key == "map")           game_server.SetMap(value);
-		else if(key == "mc")            game_server.SetMapCycling(value);
-		else if(key == "mapname")       game_server.SetMapName(value);
-		else if(key == "gc")            game_server.SetGC(value);
-		else if(key == "gametype")      game_server.SetGameType(value);
-		else if(key == "gamevariant")   game_server.SetGameVariant(value);
-		else if(key == "numplayers")    game_server.SetNumPlayers(value);
-		else if(key == "maxplayers")    game_server.SetMaxPlayers(value);
-		else if(key == "numteams")      game_server.SetNumTeams(value);
-		else if(key == "gamemode")      game_server.SetGameMode(value);
-		else if(key == "teamplay")      game_server.SetTeamplay(value);
-		else if(key == "fraglimit")     game_server.SetFlagLimit(value);
-		else if(key == "teamfraglimit") game_server.SetTeamFragLimit(value);
-		else if(key == "timelimit")     game_server.SetTimeLimit(value);
-		else if(key == "timeelapsed")   game_server.SetTimeElapsed(value);
-		else if(key == "password")      game_server.SetPassword(value);
-		else if(key == "nr")            game_server.SetMinRank(value);
-		else if(key == "xr")            game_server.SetMaxRank(value);
-		else if(key == "ff")            game_server.SetFriendlyFire(value);
-		else if(key == "sr")            game_server.SetStatsTracking(value);
-		else if(key == "rc")            game_server.SetReconfigurable(value);
-		else if(key == "ni")            game_server.SetMinIpRange(value);
-		else if(key == "xi")            game_server.SetMaxIpRange(value);
-		else if(key == "qm")            game_server.SetQM(value);
-		else if(key == "region")        game_server.SetRegion(value);
-		else if(key == "c0")            game_server.SetClan1Id(value);
-		else if(key == "c1")            game_server.SetClan2Id(value);
-		else if(key == "n0")            game_server.SetClan1Name(value);
-		else if(key == "n1")            game_server.SetClan2Name(value);
-		else if(key == "c0c")           game_server.SetClan1Claimed(value);
-		else if(key == "c1c")           game_server.SetClan2Claimed(value);
+		auto it = Battlefield::GameServer::SetterMap.find(key);
+		if(it != Battlefield::GameServer::SetterMap.end())
+		{
+			it->second(game_server, value);
+		}
 		
 		// Debug
 		//Logger::debug(key + " = " + value);

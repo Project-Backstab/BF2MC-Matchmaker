@@ -7,7 +7,7 @@
 
 #include <database.h>
 
-bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string date)
+bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string& date)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 

@@ -4,6 +4,8 @@
 #include <string>
 #include <cstdint>
 #include <map>
+#include <unordered_map>
+#include <functional>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
@@ -81,98 +83,19 @@ namespace Battlefield
 			};
 		
 		private:
-			/**
-			 * @brief The unique identifier of the clan.
-			 * 
-			 * This private member variable stores the unique identifier of the clan.
-			 */
-			int          _clanid     = -1;
-
-			/**
-			 * @brief The name of the clan.
-			 * 
-			 * This private member variable stores the name of the clan.
-			 */
-			std::string  _name       = "";
-
-			/**
-			 * @brief The tag of the clan.
-			 * 
-			 * This private member variable stores the tag of the clan.
-			 */
-			std::string  _tag        = "";
-
-			/**
-			 * @brief The homepage URL of the clan.
-			 * 
-			 * This private member variable stores the homepage URL of the clan.
-			 */
-			std::string  _homepage   = "";
-
-			/**
-			 * @brief Additional information about the clan.
-			 * 
-			 * This private member variable stores additional information about the clan.
-			 */
-			std::string  _info       = "";
-
-			/**
-			 * @brief The region associated with the clan.
-			 * 
-			 * This private member variable stores the region associated with the clan.
-			 */
-			Regions      _region     = Regions::America;
-			
-			/**
-			 * @brief The score of the clan.
-			 * 
-			 * This private member variable stores the score of the clan.
-			 */
-			uint32_t     _score      = 0;
-
-			/**
-			 * @brief The number of wins of the clan.
-			 * 
-			 * This private member variable stores the number of wins of the clan.
-			 */
-			uint32_t     _wins       = 0;
-
-			/**
-			 * @brief The number of losses of the clan.
-			 * 
-			 * This private member variable stores the number of losses of the clan.
-			 */
-			uint32_t     _losses     = 0;
-
-			/**
-			 * @brief The number of draws of the clan.
-			 * 
-			 * This private member variable stores the number of draws of the clan.
-			 */
-			uint32_t     _draws      = 0;
-			
-			/**
-			 * @brief The creation timestamp of the clan.
-			 * 
-			 * This private member variable stores the creation timestamp of the clan.
-			 */
-			std::string  _created_at = "";
-			
-			/**
-			 * @brief Disable option for the clan.
-			 * 
-			 * This private member variable is a boolean flag that, when set to true,
-			 * disables the clan. By default, it is set to false, meaning the clan is
-			 * enabled.
-			 */
-			bool         _disable   = false; /**< Disable option to not let player progress stats. */
-
-			/**
-			 * @brief The map of member IDs to ranks within the clan.
-			 * 
-			 * This private member variable stores the map of member IDs to ranks within the clan.
-			 */
-			std::map<int, Ranks> _ranks;
+			int          _clanid     = -1;               /**< The unique identifier of the clan. */
+			std::string  _name       = "";               /**< The name of the clan. */
+			std::string  _tag        = "";               /**< The tag of the clan. */
+			std::string  _homepage   = "";               /**< The homepage URL of the clan. */
+			std::string  _info       = "";               /**< Additional information about the clan. */
+			Regions      _region     = Regions::America; /**< The region associated with the clan. */
+			uint32_t     _score      = 0;                /**< The score of the clan. */
+			uint32_t     _wins       = 0;                /**< The number of wins of the clan. */
+			uint32_t     _losses     = 0;                /**< The number of losses of the clan. */
+			uint32_t     _draws      = 0;                /**< The number of draws of the clan. */
+			std::string  _created_at = "";               /**< The creation timestamp of the clan. */
+			bool         _disable    = false;            /**< Disable option to not let player progress stats. */
+			std::map<int, Ranks> _ranks;                 /**< The map of member IDs to ranks within the clan. */
 		
 		public:
 			/**
@@ -192,6 +115,11 @@ namespace Battlefield
 			 */
 			static const int ELO_MAX_RANGE = 1000;
 
+			using SetterFunc = std::function<bool(Battlefield::Clan& clan, const std::string&)>;
+
+			static std::unordered_map<std::string, SetterFunc> SetterMap;
+
+		public:
 			int                         GetClanId() const    { return this->_clanid;     }
 			std::string                 GetName() const      { return this->_name;       }
 			std::string                 GetTag() const       { return this->_tag;        }

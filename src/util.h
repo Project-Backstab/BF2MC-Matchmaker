@@ -29,7 +29,7 @@ namespace Util
 		 * @param str The string to store the read value.
 		 * @return True if the string was successfully read, false otherwise.
 		 */
-		bool ReadString(const std::vector<char>& buffer, size_t& offset, std::string &str);
+		bool ReadString(const std::vector<char>& buffer, size_t& offset, std::string& str);
 
 		/**
 		 * @brief Read a string from a buffer of unsigned chars.
@@ -41,7 +41,7 @@ namespace Util
 		 * @param str The string to store the read value.
 		 * @return True if the string was successfully read, false otherwise.
 		 */
-		bool ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string &str);
+		bool ReadString(const std::vector<unsigned char>& buffer, size_t& offset, std::string& str);
 		
 		/**
 		 * @brief Convert a buffer of chars to a string.
@@ -214,7 +214,7 @@ namespace Util
 	 * @param str The input string to be converted to lowercase.
 	 * @return A new string with all characters converted to lowercase.
 	 */
-	std::string tolower(const std::string &str);
+	std::string tolower(const std::string& str);
 
 	/**
 	 * @brief Checks if a given string contains only ASCII characters.

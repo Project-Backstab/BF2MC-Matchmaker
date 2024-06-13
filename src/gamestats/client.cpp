@@ -232,22 +232,11 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		if (key.find("auth_") != std::string::npos)
 			break;
 		
-		// Update
-		if(key == "gametype")        game_stat.SetGameType(value);
-		else if(key == "gamver")     game_stat.SetGameVersion(value);
-		else if(key == "hostname")   game_stat.SetHostName(value);
-		else if(key == "mapid")      game_stat.SetMapId(value);
-		else if(key == "numplayers") game_stat.SetNumPlayers(value);
-		else if(key == "pplayers")   game_stat.SetPPlayers(value);
-		else if(key == "tplayed")    game_stat.SetTimePlayed(value);
-		else if(key == "clanid_t0")  game_stat.SetTeam1ClanId(value);
-		else if(key == "clanid_t1")  game_stat.SetTeam2ClanId(value);
-		else if(key == "country_t0") game_stat.SetTeam1Country(value);
-		else if(key == "country_t1") game_stat.SetTeam2Country(value);
-		else if(key == "victory_t0") game_stat.SetTeam1Victory(value);
-		else if(key == "victory_t1") game_stat.SetTeam2Victory(value);
-		else if(key == "score0")     game_stat.SetTeam1Score(value);
-		else if(key == "score1")     game_stat.SetTeam2Score(value);
+		// Update using the map
+		auto it = Battlefield::GameStat::SetterMap.find(key);
+		if (it != Battlefield::GameStat::SetterMap.end()) {
+			it->second(game_stat, value);
+		}
 		
 		// Debug
 		//Logger::debug(key + " = " + value);

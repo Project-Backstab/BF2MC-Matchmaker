@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <functional>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
@@ -185,6 +187,12 @@ namespace Battlefield
 
 			std::vector<GameServerPlayer> _players; /**< Vector containing information about players currently in the server. */
 		
+		public:
+			// Define the map type for convenience
+			using SetterFunc = std::function<bool(Battlefield::GameServer&, const std::string&)>;
+
+			static std::unordered_map<std::string, SetterFunc> SetterMap;
+
 		public:
 			int            GetId() const             { return this->_id;            }
 			std::string    GetIp() const             { return this->_ip;            }
@@ -398,18 +406,18 @@ namespace Battlefield
 			int         GetProfileId() const { return this->_profileid; }
 			
 			bool SetId(int id);
-			bool SetName(const std::string name);
+			bool SetName(const std::string& name);
 			bool SetScore(int16_t score);
-			bool SetScore(const std::string str_score);
-			bool SetSkill(const std::string skill);
+			bool SetScore(const std::string& str_score);
+			bool SetSkill(const std::string& skill);
 			bool SetPing(uint8_t ping);
-			bool SetPing(const std::string str_ping);
+			bool SetPing(const std::string& str_ping);
 			bool SetTeam(uint8_t team);
-			bool SetTeam(const std::string str_team);
+			bool SetTeam(const std::string& str_team);
 			bool SetDeaths(uint16_t deaths);
-			bool SetDeaths(const std::string str_deaths);
+			bool SetDeaths(const std::string& str_deaths);
 			bool SetProfileId(int profileid);
-			bool SetProfileId(const std::string str_profileid);
+			bool SetProfileId(const std::string& str_profileid);
 	};
 }
 

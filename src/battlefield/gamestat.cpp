@@ -13,13 +13,31 @@
 
 // GameStat
 
+std::unordered_map<std::string, Battlefield::GameStat::SetterFunc> Battlefield::GameStat::SetterMap = {
+	{"gametype",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetGameType(value); }},
+	{"gamver",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetGameVersion(value); }},
+	{"hostname",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetHostName(value); }},
+	{"mapid",       [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetMapId(value); }},
+	{"numplayers",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetNumPlayers(value); }},
+	{"pplayers",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetPPlayers(value); }},
+	{"tplayed",     [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTimePlayed(value); }},
+	{"clanid_t0",   [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1ClanId(value); }},
+	{"clanid_t1",   [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2ClanId(value); }},
+	{"country_t0",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Country(value); }},
+	{"country_t1",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Country(value); }},
+	{"victory_t0",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Victory(value); }},
+	{"victory_t1",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Victory(value); }},
+	{"score0",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Score(value); }},
+	{"score1",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Score(value); }}
+};
+
 bool Battlefield::GameStat::SetId(int id)
 {
 	this->_id = id;
 	return true;
 }
 
-bool Battlefield::GameStat::SetId(const std::string str_id)
+bool Battlefield::GameStat::SetId(const std::string& str_id)
 {
 	try
 	{
@@ -38,7 +56,7 @@ bool Battlefield::GameStat::SetGameType(uint8_t gametype)
 	return true;
 }
 
-bool Battlefield::GameStat::SetGameType(const std::string str_gametype)
+bool Battlefield::GameStat::SetGameType(const std::string& str_gametype)
 {
 	try
 	{
@@ -51,13 +69,13 @@ bool Battlefield::GameStat::SetGameType(const std::string str_gametype)
 	return false;
 }
 
-bool Battlefield::GameStat::SetGameVersion(const std::string gamver)
+bool Battlefield::GameStat::SetGameVersion(const std::string& gamver)
 {
 	this->_gamver = gamver;
 	return true;
 }
 
-bool Battlefield::GameStat::SetHostName(const std::string hostname)
+bool Battlefield::GameStat::SetHostName(const std::string& hostname)
 {
 	this->_hostname = hostname;
 	return true;
@@ -69,7 +87,7 @@ bool Battlefield::GameStat::SetMapId(uint8_t mapid)
 	return true;
 }
 
-bool Battlefield::GameStat::SetMapId(const std::string str_mapid)
+bool Battlefield::GameStat::SetMapId(const std::string& str_mapid)
 {
 	try
 	{
@@ -88,7 +106,7 @@ bool Battlefield::GameStat::SetNumPlayers(uint8_t numplayers)
 	return true;
 }
 
-bool Battlefield::GameStat::SetNumPlayers(const std::string str_numplayers)
+bool Battlefield::GameStat::SetNumPlayers(const std::string& str_numplayers)
 {
 	try
 	{
@@ -107,7 +125,7 @@ bool Battlefield::GameStat::SetPPlayers(uint8_t pplayers)
 	return true;
 }
 
-bool Battlefield::GameStat::SetPPlayers(const std::string str_pplayers)
+bool Battlefield::GameStat::SetPPlayers(const std::string& str_pplayers)
 {
 	try
 	{
@@ -126,7 +144,7 @@ bool Battlefield::GameStat::SetTimePlayed(uint16_t tplayed)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTimePlayed(const std::string str_tplayed)
+bool Battlefield::GameStat::SetTimePlayed(const std::string& str_tplayed)
 {
 	try
 	{
@@ -147,7 +165,7 @@ bool Battlefield::GameStat::SetTeam1ClanId(int clanid_t0)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam1ClanId(const std::string str_clanid_t0)
+bool Battlefield::GameStat::SetTeam1ClanId(const std::string& str_clanid_t0)
 {
 	try
 	{
@@ -166,7 +184,7 @@ bool Battlefield::GameStat::SetTeam2ClanId(int clanid_t1)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam2ClanId(const std::string str_clanid_t1)
+bool Battlefield::GameStat::SetTeam2ClanId(const std::string& str_clanid_t1)
 {
 	try
 	{
@@ -185,7 +203,7 @@ bool Battlefield::GameStat::SetTeam1Country(uint8_t country_t0)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam1Country(const std::string str_country_t0)
+bool Battlefield::GameStat::SetTeam1Country(const std::string& str_country_t0)
 {
 	try
 	{
@@ -204,7 +222,7 @@ bool Battlefield::GameStat::SetTeam2Country(uint8_t country_t1)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam2Country(const std::string str_country_t1)
+bool Battlefield::GameStat::SetTeam2Country(const std::string& str_country_t1)
 {
 	try
 	{
@@ -223,7 +241,7 @@ bool Battlefield::GameStat::SetTeam1Victory(uint8_t victory_t0)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam1Victory(const std::string str_victory_t0)
+bool Battlefield::GameStat::SetTeam1Victory(const std::string& str_victory_t0)
 {
 	try
 	{
@@ -242,7 +260,7 @@ bool Battlefield::GameStat::SetTeam2Victory(uint8_t victory_t1)
 	return true;
 }
 
-bool Battlefield::GameStat::SetTeam2Victory(const std::string str_victory_t1)
+bool Battlefield::GameStat::SetTeam2Victory(const std::string& str_victory_t1)
 {
 	try
 	{

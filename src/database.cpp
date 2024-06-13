@@ -56,7 +56,7 @@ bool Database::_init(MYSQL_STMT** statement)
 	return true;
 }
 
-bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
+bool Database::_prepare(MYSQL_STMT* statement, const std::string& query)
 {
 	if (mysql_stmt_prepare(statement, query.c_str(), query.size()) != 0)
 	{
@@ -71,7 +71,7 @@ bool Database::_prepare(MYSQL_STMT* statement, const std::string query)
 	return true;
 }
 
-bool Database::_prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BIND* input_bind)
+bool Database::_prepare(MYSQL_STMT* statement, const std::string& query, MYSQL_BIND* input_bind)
 {
 	if(!this->_prepare(statement, query))
 	{

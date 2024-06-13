@@ -1,5 +1,6 @@
 #include <iostream>
 #include <mysql/mysql.h>
+#include <string>
 
 #include <settings.h>
 #include <logger.h>
@@ -22,12 +23,12 @@ bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, con
 	query += "	`ratio` DESC ";
 	query += "LIMIT ? OFFSET ?";
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_ratio;
-	int  output_k;
-	int  output_s;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	int      output_ratio;
+	uint32_t output_k;
+	uint32_t output_s;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -53,11 +54,11 @@ bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, con
 	output_bind[3].buffer = const_cast<int*>(&output_ratio);
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_k);
-	output_bind[4].is_unsigned = false;
+	output_bind[4].buffer = const_cast<uint32_t*>(&output_k);
+	output_bind[4].is_unsigned = true;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_s);
-	output_bind[5].is_unsigned = false;
+	output_bind[5].buffer = const_cast<uint32_t*>(&output_s);
+	output_bind[5].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -88,19 +89,15 @@ bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, con
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(k == "kills")   { player.SetKills(output_k); }
-		else if(k == "k1") { player.SetKillsAssualtKit(output_k); }
-		else if(k == "k2") { player.SetKillsSniperKit(output_k); }
-		else if(k == "k3") { player.SetKillsSpecialOpKit(output_k); }
-		else if(k == "k4") { player.SetKillsCombatEngineerKit(output_k); }
-		else if(k == "k5") { player.SetKillsSupportKit(output_k); }
-		
-		if(s == "deaths")  { player.SetDeaths(output_s); }
-		else if(s == "s1") { player.SetDeathsAssualtKit(output_s); }
-		else if(s == "s2") { player.SetDeathsSniperKit(output_s); }
-		else if(s == "s3") { player.SetDeathsSpecialOpKit(output_s); }
-		else if(s == "s4") { player.SetDeathsCombatEngineerKit(output_s); }
-		else if(s == "s5") { player.SetDeathsSupportKit(output_s); }
+		auto it = Battlefield::PlayerStats::SetterMap.find(k);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_k);
+		}
+
+		it = Battlefield::PlayerStats::SetterMap.find(s);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_s);
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -147,12 +144,12 @@ bool Database::queryLeaderboardRatioByProfileid(Battlefield::RankPlayers& rank_p
 	
 	int input_profileid = profileid;
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_ratio;
-	int  output_k;
-	int  output_s;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	int      output_ratio;
+	uint32_t output_k;
+	uint32_t output_s;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -178,11 +175,11 @@ bool Database::queryLeaderboardRatioByProfileid(Battlefield::RankPlayers& rank_p
 	output_bind[3].buffer = const_cast<int*>(&output_ratio);
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_k);
-	output_bind[4].is_unsigned = false;
+	output_bind[4].buffer = const_cast<uint32_t*>(&output_k);
+	output_bind[4].is_unsigned = true;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_s);
-	output_bind[5].is_unsigned = false;
+	output_bind[5].buffer = const_cast<uint32_t*>(&output_s);
+	output_bind[5].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -213,19 +210,15 @@ bool Database::queryLeaderboardRatioByProfileid(Battlefield::RankPlayers& rank_p
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(k == "kills")   { player.SetKills(output_k); }
-		else if(k == "k1") { player.SetKillsAssualtKit(output_k); }
-		else if(k == "k2") { player.SetKillsSniperKit(output_k); }
-		else if(k == "k3") { player.SetKillsSpecialOpKit(output_k); }
-		else if(k == "k4") { player.SetKillsCombatEngineerKit(output_k); }
-		else if(k == "k5") { player.SetKillsSupportKit(output_k); }
-		
-		if(s == "deaths")  { player.SetDeaths(output_s); }
-		else if(s == "s1") { player.SetDeathsAssualtKit(output_s); }
-		else if(s == "s2") { player.SetDeathsSniperKit(output_s); }
-		else if(s == "s3") { player.SetDeathsSpecialOpKit(output_s); }
-		else if(s == "s4") { player.SetDeathsCombatEngineerKit(output_s); }
-		else if(s == "s5") { player.SetDeathsSupportKit(output_s); }
+		auto it = Battlefield::PlayerStats::SetterMap.find(k);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_k);
+		}
+
+		it = Battlefield::PlayerStats::SetterMap.find(s);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_s);
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -269,12 +262,12 @@ bool Database::queryLeaderboardRatioByFriends(Battlefield::RankPlayers& rank_pla
 	query += "	`ratio` DESC ";
 	query += "LIMIT 10;";
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_ratio;
-	int  output_k;
-	int  output_s;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	int      output_ratio;
+	uint32_t output_k;
+	uint32_t output_s;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
@@ -291,11 +284,11 @@ bool Database::queryLeaderboardRatioByFriends(Battlefield::RankPlayers& rank_pla
 	output_bind[3].buffer = const_cast<int*>(&output_ratio);
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_k);
-	output_bind[4].is_unsigned = false;
+	output_bind[4].buffer = const_cast<uint32_t*>(&output_k);
+	output_bind[4].is_unsigned = true;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_s);
-	output_bind[5].is_unsigned = false;
+	output_bind[5].buffer = const_cast<uint32_t*>(&output_s);
+	output_bind[5].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -325,19 +318,15 @@ bool Database::queryLeaderboardRatioByFriends(Battlefield::RankPlayers& rank_pla
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(k == "kills")   { player.SetKills(output_k); }
-		else if(k == "k1") { player.SetKillsAssualtKit(output_k); }
-		else if(k == "k2") { player.SetKillsSniperKit(output_k); }
-		else if(k == "k3") { player.SetKillsSpecialOpKit(output_k); }
-		else if(k == "k4") { player.SetKillsCombatEngineerKit(output_k); }
-		else if(k == "k5") { player.SetKillsSupportKit(output_k); }
-		
-		if(s == "deaths")  { player.SetDeaths(output_s); }
-		else if(s == "s1") { player.SetDeathsAssualtKit(output_s); }
-		else if(s == "s2") { player.SetDeathsSniperKit(output_s); }
-		else if(s == "s3") { player.SetDeathsSpecialOpKit(output_s); }
-		else if(s == "s4") { player.SetDeathsCombatEngineerKit(output_s); }
-		else if(s == "s5") { player.SetDeathsSupportKit(output_s); }
+		auto it = Battlefield::PlayerStats::SetterMap.find(k);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_k);
+		}
+
+		it = Battlefield::PlayerStats::SetterMap.find(s);
+		if (it != Battlefield::PlayerStats::SetterMap.end()) {
+			it->second(player, output_s);
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}

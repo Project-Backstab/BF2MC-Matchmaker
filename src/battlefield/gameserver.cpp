@@ -8,6 +8,49 @@
 
 #include <battlefield/gameserver.h>
 
+std::unordered_map<std::string, Battlefield::GameServer::SetterFunc> Battlefield::GameServer::SetterMap = {
+	{"localip0",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetLocalIp(value); }},
+	{"localport",     [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetLocalPort(value); }},
+	{"natneg",        [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetNatNeg(value); }},
+	{"gamename",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGameName(value); }},
+	{"hostname",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetHostName(value); }},
+	{"hostport",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetHostPort(value); }},
+	{"gamever",       [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGameVersion(value); }},
+	{"cl",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClientVersion(value); }},
+	{"rv",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetRV(value); }},
+	{"map",           [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMap(value); }},
+	{"mc",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMapCycling(value); }},
+	{"mapname",       [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMapName(value); }},
+	{"gc",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGC(value); }},
+	{"gametype",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGameType(value); }},
+	{"gamevariant",   [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGameVariant(value); }},
+	{"numplayers",    [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetNumPlayers(value); }},
+	{"maxplayers",    [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMaxPlayers(value); }},
+	{"numteams",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetNumTeams(value); }},
+	{"gamemode",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetGameMode(value); }},
+	{"teamplay",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetTeamplay(value); }},
+	{"fraglimit",     [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetFlagLimit(value); }},
+	{"teamfraglimit", [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetTeamFragLimit(value); }},
+	{"timelimit",     [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetTimeLimit(value); }},
+	{"timeelapsed",   [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetTimeElapsed(value); }},
+	{"password",      [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetPassword(value); }},
+	{"nr",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMinRank(value); }},
+	{"xr",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMaxRank(value); }},
+	{"ff",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetFriendlyFire(value); }},
+	{"sr",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetStatsTracking(value); }},
+	{"rc",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetReconfigurable(value); }},
+	{"ni",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMinIpRange(value); }},
+	{"xi",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetMaxIpRange(value); }},
+	{"qm",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetQM(value); }},
+	{"region",        [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetRegion(value); }},
+	{"c0",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan1Id(value); }},
+	{"c1",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan2Id(value); }},
+	{"n0",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan1Name(value); }},
+	{"n1",            [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan2Name(value); }},
+	{"c0c",           [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan1Claimed(value); }},
+	{"c1c",           [](Battlefield::GameServer& game_server, const std::string& value) { return game_server.SetClan2Claimed(value); }},
+};
+
 void Battlefield::GameServer::useExample()
 {
 	this->SetIp("168.119.189.149");
@@ -807,7 +850,7 @@ bool Battlefield::GameServerPlayer::SetId(int id)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetName(const std::string name)
+bool Battlefield::GameServerPlayer::SetName(const std::string& name)
 {
 	this->_name = name;
 	return true;
@@ -819,7 +862,7 @@ bool Battlefield::GameServerPlayer::SetScore(int16_t score)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetScore(const std::string str_score)
+bool Battlefield::GameServerPlayer::SetScore(const std::string& str_score)
 {
 	try
 	{
@@ -832,7 +875,7 @@ bool Battlefield::GameServerPlayer::SetScore(const std::string str_score)
 	return false;
 }
 
-bool Battlefield::GameServerPlayer::SetSkill(const std::string skill)
+bool Battlefield::GameServerPlayer::SetSkill(const std::string& skill)
 {
 	this->_skill = skill;
 	return true;
@@ -844,7 +887,7 @@ bool Battlefield::GameServerPlayer::SetPing(uint8_t ping)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetPing(const std::string str_ping)
+bool Battlefield::GameServerPlayer::SetPing(const std::string& str_ping)
 {
 	try
 	{
@@ -863,7 +906,7 @@ bool Battlefield::GameServerPlayer::SetTeam(uint8_t team)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetTeam(const std::string str_team)
+bool Battlefield::GameServerPlayer::SetTeam(const std::string& str_team)
 {
 	try
 	{
@@ -882,7 +925,7 @@ bool Battlefield::GameServerPlayer::SetDeaths(uint16_t deaths)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetDeaths(const std::string str_deaths)
+bool Battlefield::GameServerPlayer::SetDeaths(const std::string& str_deaths)
 {
 	try
 	{
@@ -901,7 +944,7 @@ bool Battlefield::GameServerPlayer::SetProfileId(int profileid)
 	return true;
 }
 
-bool Battlefield::GameServerPlayer::SetProfileId(const std::string str_profileid)
+bool Battlefield::GameServerPlayer::SetProfileId(const std::string& str_profileid)
 {
 	try
 	{

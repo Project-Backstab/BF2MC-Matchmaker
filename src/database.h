@@ -473,7 +473,7 @@ class Database
 		 * @param date The date for which to query the game statistics. Must be in "yyyy-MM-dd" format.
 		 * @return True if the game statistics are successfully queried, false otherwise.
 		 */
-		bool queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string date);
+		bool queryGameStatsByDate(Battlefield::GameStats& game_stats, const std::string& date);
 
 		/**
 		 * @brief Queries a game statistic by its ID.
@@ -774,7 +774,7 @@ class Database
 		 * @param query The query string to be prepared.
 		 * @return True if the statement is successfully prepared with the query, false otherwise.
 		 */
-		bool _prepare(MYSQL_STMT* statement, const std::string query);
+		bool _prepare(MYSQL_STMT* statement, const std::string& query);
 
 		/**
 		 * @brief Prepares a MySQL statement with a query and binds input parameters.
@@ -788,7 +788,7 @@ class Database
 		 * @param input_bind An array of MySQL bind structures representing the input parameters to be bound to the statement.
 		 * @return True if the statement is successfully prepared, and input parameters are bound, false otherwise.
 		 */
-		bool _prepare(MYSQL_STMT* statement, const std::string query, MYSQL_BIND* input_bind);
+		bool _prepare(MYSQL_STMT* statement, const std::string& query, MYSQL_BIND* input_bind);
 		
 		/**
 		 * @brief Executes a prepared MySQL statement.

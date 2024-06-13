@@ -22,10 +22,10 @@ bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, cons
 	query += "	`" + type + "` DESC ";
 	query += "LIMIT ? OFFSET ?";
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_value;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	uint32_t output_value;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -48,8 +48,8 @@ bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, cons
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_value);
-	output_bind[3].is_unsigned = false;
+	output_bind[3].buffer = const_cast<uint32_t*>(&output_value);
+	output_bind[3].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -80,20 +80,17 @@ bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, cons
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(type == "score")         { player.SetScore(output_value);                  }
-		else if(type == "pph")      { player.SetPPH(output_value);                    }
-		else if(type == "kills")    { player.SetKills(output_value);                  }
-		else if(type == "vehicles") { player.SetVehiclesDestroyed(output_value);      }
-		else if(type == "lavd")     { player.SetLAVsDestroyed(output_value);          }
-		else if(type == "mavd")     { player.SetMAVsDestroyed(output_value);          }
-		else if(type == "havd")     { player.SetHAVsDestroyed(output_value);          }
-		else if(type == "hed")      { player.SetHelicoptersDestroyed(output_value);   }
-		else if(type == "bod")      { player.SetBoatsDestroyed(output_value);         }
-		else if(type == "k1")       { player.SetKillsAssualtKit(output_value);        }
-		else if(type == "k2")       { player.SetKillsSniperKit(output_value);         }
-		else if(type == "k3")       { player.SetKillsSpecialOpKit(output_value);      }
-		else if(type == "k4")       { player.SetKillsCombatEngineerKit(output_value); }
-		else if(type == "k5")       { player.SetKillsSupportKit(output_value);        }
+		if(type == "score")
+		{
+			player.SetScore(static_cast<int32_t>(output_value));
+		}
+		else
+		{
+			auto it = Battlefield::PlayerStats::SetterMap.find(type);
+			if (it != Battlefield::PlayerStats::SetterMap.end()) {
+				it->second(player, output_value);
+			}
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -139,10 +136,10 @@ bool Database::queryLeaderboardTypeByProfileid(Battlefield::RankPlayers& rank_pl
 	
 	int input_profileid = profileid;
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_value;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	uint32_t output_value;
 	
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
@@ -165,8 +162,8 @@ bool Database::queryLeaderboardTypeByProfileid(Battlefield::RankPlayers& rank_pl
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_value);
-	output_bind[3].is_unsigned = false;
+	output_bind[3].buffer = const_cast<uint32_t*>(&output_value);
+	output_bind[3].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -197,20 +194,17 @@ bool Database::queryLeaderboardTypeByProfileid(Battlefield::RankPlayers& rank_pl
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(type == "score")         { player.SetScore(output_value);                  }
-		else if(type == "pph")      { player.SetPPH(output_value);                    }
-		else if(type == "kills")    { player.SetKills(output_value);                  }
-		else if(type == "vehicles") { player.SetVehiclesDestroyed(output_value);      }
-		else if(type == "lavd")     { player.SetLAVsDestroyed(output_value);          }
-		else if(type == "mavd")     { player.SetMAVsDestroyed(output_value);          }
-		else if(type == "havd")     { player.SetHAVsDestroyed(output_value);          }
-		else if(type == "hed")      { player.SetHelicoptersDestroyed(output_value);   }
-		else if(type == "bod")      { player.SetBoatsDestroyed(output_value);         }
-		else if(type == "k1")       { player.SetKillsAssualtKit(output_value);        }
-		else if(type == "k2")       { player.SetKillsSniperKit(output_value);         }
-		else if(type == "k3")       { player.SetKillsSpecialOpKit(output_value);      }
-		else if(type == "k4")       { player.SetKillsCombatEngineerKit(output_value); }
-		else if(type == "k5")       { player.SetKillsSupportKit(output_value);        }
+		if(type == "score")
+		{
+			player.SetScore(static_cast<int32_t>(output_value));
+		}
+		else
+		{
+			auto it = Battlefield::PlayerStats::SetterMap.find(type);
+			if (it != Battlefield::PlayerStats::SetterMap.end()) {
+				it->second(player, output_value);
+			}
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
@@ -250,10 +244,10 @@ bool Database::queryLeaderboardTypeByFriends(Battlefield::RankPlayers& rank_play
 	query += "	`" + type + "` DESC ";
 	query += "LIMIT 10;";
 	
-	int  output_rank;
-	int  output_profileid;
-	char output_uniquenick[VARCHAR_LEN(32)];
-	int  output_value;
+	int      output_rank;
+	int      output_profileid;
+	char     output_uniquenick[VARCHAR_LEN(32)];
+	uint32_t output_value;
 	
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
@@ -267,8 +261,8 @@ bool Database::queryLeaderboardTypeByFriends(Battlefield::RankPlayers& rank_play
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_value);
-	output_bind[3].is_unsigned = false;
+	output_bind[3].buffer = const_cast<uint32_t*>(&output_value);
+	output_bind[3].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -297,20 +291,17 @@ bool Database::queryLeaderboardTypeByFriends(Battlefield::RankPlayers& rank_play
 		player.SetProfileId(output_profileid);
 		player.SetUniquenick(output_uniquenick);
 		
-		if(type == "score")         { player.SetScore(output_value);                  }
-		else if(type == "pph")      { player.SetPPH(output_value);                    }
-		else if(type == "kills")    { player.SetKills(output_value);                  }
-		else if(type == "vehicles") { player.SetVehiclesDestroyed(output_value);      }
-		else if(type == "lavd")     { player.SetLAVsDestroyed(output_value);          }
-		else if(type == "mavd")     { player.SetMAVsDestroyed(output_value);          }
-		else if(type == "havd")     { player.SetHAVsDestroyed(output_value);          }
-		else if(type == "hed")      { player.SetHelicoptersDestroyed(output_value);   }
-		else if(type == "bod")      { player.SetBoatsDestroyed(output_value);         }
-		else if(type == "k1")       { player.SetKillsAssualtKit(output_value);        }
-		else if(type == "k2")       { player.SetKillsSniperKit(output_value);         }
-		else if(type == "k3")       { player.SetKillsSpecialOpKit(output_value);      }
-		else if(type == "k4")       { player.SetKillsCombatEngineerKit(output_value); }
-		else if(type == "k5")       { player.SetKillsSupportKit(output_value);        }
+		if(type == "score")
+		{
+			player.SetScore(static_cast<int32_t>(output_value));
+		}
+		else
+		{
+			auto it = Battlefield::PlayerStats::SetterMap.find(type);
+			if (it != Battlefield::PlayerStats::SetterMap.end()) {
+				it->second(player, output_value);
+			}
+		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
 	}
