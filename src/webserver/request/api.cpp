@@ -332,7 +332,7 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	json_clan["tag"]        = clan.GetTag();
 	json_clan["homepage"]   = clan.GetHomepage();
 	json_clan["info"]       = clan.GetInfo();
-	json_clan["region"]     = static_cast<uint8_t>(clan.GetRegion());
+	json_clan["region"]     = clan.GetRegion();
 	json_clan["created_at"] = clan.GetCreatedAt();
 	
 	// Secret
@@ -643,8 +643,8 @@ void Webserver::Client::requestAPIClanSimulation(const atomizes::HTTPMessage& ht
 		Battlefield::Clan* clan1 = &(clans[game_stat.GetTeam1ClanId() - 1]);
 		Battlefield::Clan* clan2 = &(clans[game_stat.GetTeam2ClanId() - 1]);
 		
-		Battlefield::GameStat::VictoryState clan1victory = static_cast<Battlefield::GameStat::VictoryState>(game_stat.GetTeam1Victory());
-		Battlefield::GameStat::VictoryState clan2victory = static_cast<Battlefield::GameStat::VictoryState>(game_stat.GetTeam2Victory());
+		Battlefield::GameStat::VictoryState clan1victory = game_stat.GetTeam1VictoryEnum();
+		Battlefield::GameStat::VictoryState clan2victory = game_stat.GetTeam2VictoryEnum();
 
 		double K = Battlefield::Clan::ELO_WEIGHT;
 		double R1 = 1.0;

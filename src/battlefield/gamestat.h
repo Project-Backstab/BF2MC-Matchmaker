@@ -40,9 +40,8 @@ namespace Battlefield
 			/**
 			 * @brief Enumerates the victory states for a game.
 			 */
-			enum class VictoryState
+			enum class VictoryState : uint8_t
 			{
-				Unknown = -1,  /**< Victory state is unknown. */
 				Lost = 0,      /**< The game was lost. */
 				Major = 1,     /**< Major victory. */
 				Minor = 2,     /**< Minor victory. */

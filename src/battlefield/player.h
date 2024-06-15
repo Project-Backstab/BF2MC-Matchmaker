@@ -51,16 +51,6 @@ namespace Battlefield
 			std::vector<int>    _friends;                  /**< List of profile IDs of the player's friends. */
 		
 		public:
-			/**
-			 * @brief Performs an example operation using the Player class.
-			 * 
-			 * This member function demonstrates an example operation using the Player class.
-			 * It serves as a placeholder for illustrating the usage of the Player class.
-			 * 
-			 * @note This is just an example function and does not perform any meaningful operation.
-			 */
-			void useExample();
-			
 			int              GetProfileId() const   { return this->_profileid;     }
 			int              GetUserId() const      { return this->_userid;        }
 			std::string      GetNick() const        { return this->_nick;          }
@@ -93,6 +83,16 @@ namespace Battlefield
 			bool SetRestricted(uint8_t restricted);
 			
 			bool AddFriend(int profileid);
+
+			/**
+			 * @brief Performs an example operation using the Player class.
+			 * 
+			 * This member function demonstrates an example operation using the Player class.
+			 * It serves as a placeholder for illustrating the usage of the Player class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
+			void useExample();
 	};
 }
 

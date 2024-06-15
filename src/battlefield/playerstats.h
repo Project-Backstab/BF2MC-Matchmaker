@@ -54,16 +54,6 @@ namespace Battlefield
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 
 		public:
-			/**
-			 * @brief Performs an example operation using the PlayerStats class.
-			 * 
-			 * This member function demonstrates an example operation using the PlayerStats class.
-			 * It serves as a placeholder for illustrating the usage of the PlayerStats class.
-			 * 
-			 * @note This is just an example function and does not perform any meaningful operation.
-			 */
-			void useExample();
-			
 			int32_t  GetScore() const                   { return this->_score;    }
 			uint32_t GetRank() const                    { return this->_ran;      }
 			uint32_t GetPPH() const                     { return this->_pph;      }
@@ -135,6 +125,16 @@ namespace Battlefield
 			 * @brief Update player stats based on played game
 			 */
 			void Update(const Battlefield::GameStatPlayer& gsplayer);
+
+			/**
+			 * @brief Performs an example operation using the PlayerStats class.
+			 * 
+			 * This member function demonstrates an example operation using the PlayerStats class.
+			 * It serves as a placeholder for illustrating the usage of the PlayerStats class.
+			 * 
+			 * @note This is just an example function and does not perform any meaningful operation.
+			 */
+			void useExample();
 
 		private:
 			/**

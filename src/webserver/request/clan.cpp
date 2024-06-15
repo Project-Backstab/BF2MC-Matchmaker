@@ -63,7 +63,7 @@ void Webserver::Client::requestClanInfo(const atomizes::HTTPMessage& http_reques
 		response += "tag," + clan.GetTag() + "\r\n";
 		response += "homepage," + clan.GetHomepage() + "\r\n";
 		response += "info," + clan.GetInfo() + "\r\n";
-		response += "region," + std::to_string(static_cast<uint8_t>(clan.GetRegion())) + "\r\n";
+		response += "region," + std::to_string(clan.GetRegion()) + "\r\n";
 		response += "lastreportdate,69_1337_69\r\n";
 		
 		response += "rating," + std::to_string(clan.GetScore()) + "\r\n";

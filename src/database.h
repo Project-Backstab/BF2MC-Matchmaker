@@ -64,6 +64,20 @@ class Database
 		bool queryPlayerByProfileId(Battlefield::Player& player);
 
 		/**
+		 * @brief Queries a player and stats by their profile ID.
+		 * 
+		 * This function retrieves information about a player and stats from the Battlefield database
+		 * based on their profile ID. It requires that the player's profile ID is set before
+		 * executing this call using the SetProfileId function.
+		 * 
+		 * @param player The player object to query. Requires the profile ID to be set.
+		 * @return True if the player information is successfully queried, false otherwise.
+		 * 
+		 * @pre The player's profile ID must be set using the SetProfileId function.
+		 */
+		bool queryPlayerAndPlayerStatsByProfileId(Battlefield::Player& player);
+
+		/**
 		 * @brief Queries a player by their unique nickname.
 		 * 
 		 * This function retrieves information about a player from the Battlefield database
@@ -240,6 +254,20 @@ class Database
 		bool queryClanByClanId(Battlefield::Clan& clan);
 
 		/**
+		 * @brief Queries 2 clans by there clan ID.
+		 * 
+		 * This function retrieves information about two clans from the Battlefield database
+		 * based on its clan ID. It populates the provided clans objects with the queried clan data.
+		 * 
+		 * @param clan1 The first clan object to populate with the queried clan data. Requires the clan ID to be set using SetClanId.
+		 * @param clan2 The second clan object to populate with the queried clan data. Requires the clan ID to be set using SetClanId.
+		 * @return True if the clan information is successfully queried, false otherwise.
+		 * 
+		 * @pre The clan's ID must be set using the SetClanId function.
+		 */
+		bool queryClansByClanId(Battlefield::Clan& clan1, Battlefield::Clan& clan2);
+
+		/**
 		 * @brief Queries a clan by a player's profile ID.
 		 * 
 		 * This function retrieves information about the clan of a player from the Battlefield database
@@ -284,6 +312,17 @@ class Database
 		 * @return True if the clan is successfully updated in the database, false otherwise.
 		 */
 		bool updateClan(const Battlefield::Clan& clan);
+
+		/**
+		 * @brief Updates two clans in the database.
+		 * 
+		 * This function updates the specified clans in the Battlefield database.
+		 * 
+		 * @param clan1 The first clan object to update in the database.
+		 * @param clan2 The second clan object to update in the database.
+		 * @return True if the clans are successfully updated in the database, false otherwise.
+		 */
+		bool updateClans(const Battlefield::Clan& clan1, const Battlefield::Clan& clan2);
 
 		/**
 		 * @brief Disable a clan from the database.

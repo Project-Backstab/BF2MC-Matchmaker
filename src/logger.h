@@ -12,7 +12,7 @@ namespace Logger
 	/**
 	 * @brief Enumeration for different logging modes.
 	 */
-	enum Mode
+	enum Mode : uint8_t
 	{
 		Development = 0x1, ///< Verbose logging mode.
 		Production = 0x2,  ///< Standard logging mode.

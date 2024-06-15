@@ -72,12 +72,12 @@ namespace Battlefield
 			 * For more information, see: 
 			 * https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
 			 */
-			enum class Regions
+			enum class Regions : uint64_t
 			{
+				Unknown  = 0,    /**< Unknown region code */
 				America  = 1,    /**< America region code */
 				Asia     = 2048, /**< Asia region code */
-				Europe   = 65536,/**< Europe region code */
-				Unknown  = -1    /**< Unknown region code */
+				Europe   = 65536 /**< Europe region code */
 			};
 
 			/**
@@ -85,12 +85,12 @@ namespace Battlefield
 			 */
 			enum class MapCyclingOptions : uint8_t
 			{
+				Unknown = 0,               /**< Unknown map cycling option. */
 				LevelMapWithMapName = 1,   /**< Level map with map name. */
 				AllMaps = 2,               /**< All maps. */
 				AssaultMaps = 3,           /**< Assault maps. */
 				IncursionMaps = 4,         /**< Incursion maps. */
-				DominationMaps = 5,        /**< Domination maps. */
-				Unknown = 0                /**< Unknown map cycling option. */
+				DominationMaps = 5         /**< Domination maps. */
 			};
 	
 		private:

@@ -12,7 +12,7 @@ namespace Battlefield
 	/**
 	 * @brief Represents various military ranks.
 	 */
-	enum class Ranks
+	enum class Ranks : uint32_t
 	{
 		Private                     = 1,
 		Private_1st_Class           = 2,
@@ -39,7 +39,7 @@ namespace Battlefield
 	/**
 	 * @brief Represents various military medals.
 	 */
-	enum class Medals
+	enum class Medals : uint32_t
 	{
 		The_Service_Cross             = 1 << 0,
 		The_Bronze_Star               = 1 << 1,
@@ -64,7 +64,7 @@ namespace Battlefield
 	 * @note to-do: Start a server. Setup a account with stats that are close to gain a ribbon.
 	 * Then progress one game to get the ribbon. Then watch "medals" value what bit is changed.
 	 */
-	enum class Ribbons
+	enum class Ribbons : uint32_t
 	{
 		Ribbon_A                      = 1 << 22,
 		Ribbon_B                      = 1 << 23,
@@ -79,11 +79,11 @@ namespace Battlefield
 	/**
 	 * @brief Represents various game modes you can play in a game
 	*/
-	enum class GameType
+	enum class GameType : uint8_t
 	{
-		Unknown         = -1,
-		Conquest        = 1,
-		CaptureTheFlag  = 2
+		Unknown         = 0x0,
+		Conquest        = 0x1,
+		CaptureTheFlag  = 0x2,
 	};
 
 	/**

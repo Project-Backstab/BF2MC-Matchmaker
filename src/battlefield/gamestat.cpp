@@ -339,9 +339,10 @@ void Battlefield::GameStat::UpdateClanStats()
 
 	// Get clan information out of database
 	clan1.SetClanId(this->GetTeam1ClanId());
-	g_database->queryClanByClanId(clan1);
 	clan2.SetClanId(this->GetTeam2ClanId());
-	g_database->queryClanByClanId(clan2);
+	//g_database->queryClanByClanId(clan1);
+	//g_database->queryClanByClanId(clan2);
+	g_database->queryClansByClanId(clan1, clan2);
 
 	// Convert victory to enums
 	VictoryState clan1victory = this->GetTeam1VictoryEnum();
@@ -421,9 +422,10 @@ void Battlefield::GameStat::UpdateClanStats()
 	clan1.SetScore(std::max(0, static_cast<int>(std::floor(score1) + clan1.GetScore())));
 	clan2.SetScore(std::max(0, static_cast<int>(std::floor(score2) + clan2.GetScore())));
 
-	//Send updated clan to database
-	g_database->updateClan(clan1);
-	g_database->updateClan(clan2);
+	//Send updated clans to database
+	//g_database->updateClan(clan1);
+	//g_database->updateClan(clan2);
+	g_database->updateClans(clan1, clan2);
 }
 
 void Battlefield::GameStat::Debug()
@@ -1060,12 +1062,11 @@ void Battlefield::GameStatPlayer::UpdatePlayerStats(Battlefield::GameStat& game_
 {
 	Battlefield::Player player;
 		
-	// Get player stats from database
+	// Get player and player stats from database
 	player.SetProfileId(this->GetProfileId());
-	g_database->queryPlayerByProfileId(player);
-	g_database->queryPlayerStatsByProfileId(player);
-	// to-do: Optimalisation?!
-	//g_database->queryPlayerAndPlayerStatsByProfileId(player);
+	//g_database->queryPlayerByProfileId(player);
+	//g_database->queryPlayerStatsByProfileId(player);
+	g_database->queryPlayerAndPlayerStatsByProfileId(player);
 
 	if(player.isRestricted())
 	{

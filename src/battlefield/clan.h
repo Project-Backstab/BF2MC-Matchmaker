@@ -60,7 +60,7 @@ namespace Battlefield
 			 * This enum class defines different regions associated with clans.
 			 * Each region corresponds to a specific geographical area.
 			 */
-			enum class Regions
+			enum class Regions : uint8_t
 			{
 				America   =  0x1, /**< The Americas region. */
 				Europe    =  0x2, /**< The Europe region. */
@@ -120,19 +120,20 @@ namespace Battlefield
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 
 		public:
-			int                         GetClanId() const    { return this->_clanid;     }
-			std::string                 GetName() const      { return this->_name;       }
-			std::string                 GetTag() const       { return this->_tag;        }
-			std::string                 GetHomepage() const  { return this->_homepage;   }
-			std::string                 GetInfo() const      { return this->_info;       }
-			Regions                     GetRegion() const    { return this->_region;     }
-			uint32_t                    GetScore() const     { return this->_score;      }
-			uint32_t                    GetWins() const      { return this->_wins;       }
-			uint32_t                    GetLosses() const    { return this->_losses;     }
-			uint32_t                    GetDraws() const     { return this->_draws;      }
-			std::string                 GetCreatedAt() const { return this->_created_at; }
-			bool                        IsDisabled() const   { return this->_disable;    }
-			const std::map<int, Ranks>  GetRanks() const     { return this->_ranks;      }
+			int                         GetClanId() const     { return this->_clanid;     }
+			std::string                 GetName() const       { return this->_name;       }
+			std::string                 GetTag() const        { return this->_tag;        }
+			std::string                 GetHomepage() const   { return this->_homepage;   }
+			std::string                 GetInfo() const       { return this->_info;       }
+			uint8_t                     GetRegion() const     { return static_cast<uint8_t>(this->_region); }
+			Regions                     GetRegionEnum() const { return this->_region;     }
+			uint32_t                    GetScore() const      { return this->_score;      }
+			uint32_t                    GetWins() const       { return this->_wins;       }
+			uint32_t                    GetLosses() const     { return this->_losses;     }
+			uint32_t                    GetDraws() const      { return this->_draws;      }
+			std::string                 GetCreatedAt() const  { return this->_created_at; }
+			bool                        IsDisabled() const    { return this->_disable;    }
+			const std::map<int, Ranks>  GetRanks() const      { return this->_ranks;      }
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
