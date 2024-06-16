@@ -246,6 +246,8 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 
 bool Database::countGameStatPlayersByProfileId(const Battlefield::Player& player, uint32_t& output_total)
 {
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
+
 	std::string query = "";
 	query += "SELECT ";
 	query += "	COUNT(*) ";
@@ -306,6 +308,8 @@ bool Database::countGameStatPlayersByProfileId(const Battlefield::Player& player
 bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player, Battlefield::GameStatPlayers& gsplayers,
 		uint32_t limit, uint32_t offset)
 {
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
+	
 	std::string query = "";
 	query += "SELECT ";
 	query += "	`id`, `auth`, `machine_id`, `team`, `score`, `rank`, `pph`, `kills`, ";
