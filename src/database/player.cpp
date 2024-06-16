@@ -126,13 +126,13 @@ bool Database::queryPlayerAndPlayerStatsByProfileId(Battlefield::Player& player)
 	query += "FROM ";
 	query += "	`Players`, `PlayerStats` ";
 	query += "WHERE ";
-	query += "	`Players`.`profileid` = ?";
+	query += "	`Players`.`profileid` = ? ";
 	query += "AND ";
 	query += "	`Players`.`profileid` = `PlayerStats`.`profileid`";
 
 	int        input_profileid = player.GetProfileId();
 	
-	int        output_userid = 0;
+	int        output_userid;
 	char       output_nick[VARCHAR_LEN(41)];
 	char       output_uniquenick[VARCHAR_LEN(32)];
 	char       output_email[VARCHAR_LEN(50)];
