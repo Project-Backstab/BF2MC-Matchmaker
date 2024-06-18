@@ -664,7 +664,7 @@ bool Database::updateClans(const Battlefield::Clan& clan1, const Battlefield::Cl
 	query += "	`draws` = CASE ";
 	query += "		WHEN `id` = ? THEN ?";
 	query += "		WHEN `id` = ? THEN ?";
-	query += "	END";
+	query += "	END ";
 	query += "WHERE id IN (?, ?);";
 
 	int          input_clanid1   = clan1.GetClanId();
