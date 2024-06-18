@@ -383,7 +383,7 @@ void Battlefield::PlayerStats::_calcNewPPH(uint32_t time, int32_t score)
 	// In case we only played less then a one hour
 	if(total_hours < 1.0)
 	{
-		new_pph = total_score;
+		new_pph = total_score * 100;
 	}
 	// In case we played less then 5 hours total
 	else if(total_hours < PPH_TIME_SPAN)
