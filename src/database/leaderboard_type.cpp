@@ -88,7 +88,7 @@ bool Database::queryLeaderboardType(Battlefield::RankPlayers& rank_players, cons
 		{
 			auto it = Battlefield::PlayerStats::SetterMap.find(type);
 			if (it != Battlefield::PlayerStats::SetterMap.end()) {
-				it->second(player, output_value);
+				(player.*(it->second))(output_value);
 			}
 		}
 		
@@ -202,7 +202,7 @@ bool Database::queryLeaderboardTypeByProfileid(Battlefield::RankPlayers& rank_pl
 		{
 			auto it = Battlefield::PlayerStats::SetterMap.find(type);
 			if (it != Battlefield::PlayerStats::SetterMap.end()) {
-				it->second(player, output_value);
+				(player.*(it->second))(output_value);
 			}
 		}
 		
@@ -299,7 +299,7 @@ bool Database::queryLeaderboardTypeByFriends(Battlefield::RankPlayers& rank_play
 		{
 			auto it = Battlefield::PlayerStats::SetterMap.find(type);
 			if (it != Battlefield::PlayerStats::SetterMap.end()) {
-				it->second(player, output_value);
+				(player.*(it->second))(output_value);
 			}
 		}
 		

@@ -5,11 +5,11 @@
 #include <battlefield/clan.h>
 
 std::unordered_map<std::string, Battlefield::Clan::SetterFunc> Battlefield::Clan::SetterMap = {
-	{"name",     [](Battlefield::Clan& clan, const std::string& value) { return clan.SetName(value); }},
-	{"tag",      [](Battlefield::Clan& clan, const std::string& value) { return clan.SetTag(value); }},
-	{"homepage", [](Battlefield::Clan& clan, const std::string& value) { return clan.SetHomepage(value); }},
-	{"info",     [](Battlefield::Clan& clan, const std::string& value) { return clan.SetInfo(value); }},
-	{"region",   [](Battlefield::Clan& clan, const std::string& value) { return clan.SetRegion(value); }},
+	{"name",      &Battlefield::Clan::SetName      },
+	{"tag",       &Battlefield::Clan::SetTag       },
+	{"homepage",  &Battlefield::Clan::SetHomepage  },
+	{"info",      &Battlefield::Clan::SetInfo      },
+	{"region",    &Battlefield::Clan::SetRegion    },
 };
 
 void Battlefield::Clan::useExample()

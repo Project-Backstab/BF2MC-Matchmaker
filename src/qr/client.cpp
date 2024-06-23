@@ -164,7 +164,7 @@ void QR::Client::requestHeartbeat(const std::vector<unsigned char>& request) con
 		auto it = Battlefield::GameServer::SetterMap.find(key);
 		if(it != Battlefield::GameServer::SetterMap.end())
 		{
-			it->second(game_server, value);
+			(game_server.*(it->second))(value);
 		}
 		
 		// Debug

@@ -14,21 +14,21 @@
 // GameStat
 
 std::unordered_map<std::string, Battlefield::GameStat::SetterFunc> Battlefield::GameStat::SetterMap = {
-	{"gametype",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetGameType(value); }},
-	{"gamver",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetGameVersion(value); }},
-	{"hostname",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetHostName(value); }},
-	{"mapid",       [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetMapId(value); }},
-	{"numplayers",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetNumPlayers(value); }},
-	{"pplayers",    [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetPPlayers(value); }},
-	{"tplayed",     [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTimePlayed(value); }},
-	{"clanid_t0",   [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1ClanId(value); }},
-	{"clanid_t1",   [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2ClanId(value); }},
-	{"country_t0",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Country(value); }},
-	{"country_t1",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Country(value); }},
-	{"victory_t0",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Victory(value); }},
-	{"victory_t1",  [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Victory(value); }},
-	{"score0",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam1Score(value); }},
-	{"score1",      [](Battlefield::GameStat& game_stat, const std::string& value) { game_stat.SetTeam2Score(value); }}
+	{"gametype",    &Battlefield::GameStat::SetGameType     },
+	{"gamver",      &Battlefield::GameStat::SetGameVersion  },
+	{"hostname",    &Battlefield::GameStat::SetHostName     },
+	{"mapid",       &Battlefield::GameStat::SetMapId        },
+	{"numplayers",  &Battlefield::GameStat::SetNumPlayers   },
+	{"pplayers",    &Battlefield::GameStat::SetPPlayers     },
+	{"tplayed",     &Battlefield::GameStat::SetTimePlayed   },
+	{"clanid_t0",   &Battlefield::GameStat::SetTeam1ClanId  },
+	{"clanid_t1",   &Battlefield::GameStat::SetTeam2ClanId  },
+	{"country_t0",  &Battlefield::GameStat::SetTeam1Country },
+	{"country_t1",  &Battlefield::GameStat::SetTeam2Country },
+	{"victory_t0",  &Battlefield::GameStat::SetTeam1Victory },
+	{"victory_t1",  &Battlefield::GameStat::SetTeam2Victory },
+	{"score0",      &Battlefield::GameStat::SetTeam1Score   },
+	{"score1",      &Battlefield::GameStat::SetTeam2Score   },
 };
 
 bool Battlefield::GameStat::SetId(int id)

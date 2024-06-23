@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <map>
 #include <unordered_map>
-#include <functional>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
@@ -115,7 +114,7 @@ namespace Battlefield
 			 */
 			static const int ELO_MAX_RANGE = 1000;
 
-			using SetterFunc = std::function<bool(Battlefield::Clan& clan, const std::string&)>;
+			typedef bool (Battlefield::Clan::*SetterFunc)(const std::string&);
 
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 

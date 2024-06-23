@@ -235,7 +235,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		// Update using the map
 		auto it = Battlefield::GameStat::SetterMap.find(key);
 		if (it != Battlefield::GameStat::SetterMap.end()) {
-			it->second(game_stat, value);
+			(game_stat.*(it->second))(value);
 		}
 		
 		// Debug

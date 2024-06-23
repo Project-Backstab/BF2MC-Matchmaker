@@ -91,12 +91,12 @@ bool Database::queryLeaderboardRatio(Battlefield::RankPlayers& rank_players, con
 		
 		auto it = Battlefield::PlayerStats::SetterMap.find(k);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_k);
+			(player.*(it->second))(output_k);
 		}
 
 		it = Battlefield::PlayerStats::SetterMap.find(s);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_s);
+			(player.*(it->second))(output_s);
 		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
@@ -212,12 +212,12 @@ bool Database::queryLeaderboardRatioByProfileid(Battlefield::RankPlayers& rank_p
 		
 		auto it = Battlefield::PlayerStats::SetterMap.find(k);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_k);
+			(player.*(it->second))(output_k);
 		}
 
 		it = Battlefield::PlayerStats::SetterMap.find(s);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_s);
+			(player.*(it->second))(output_s);
 		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));
@@ -320,12 +320,12 @@ bool Database::queryLeaderboardRatioByFriends(Battlefield::RankPlayers& rank_pla
 		
 		auto it = Battlefield::PlayerStats::SetterMap.find(k);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_k);
+			(player.*(it->second))(output_k);
 		}
 
 		it = Battlefield::PlayerStats::SetterMap.find(s);
 		if (it != Battlefield::PlayerStats::SetterMap.end()) {
-			it->second(player, output_s);
+			(player.*(it->second))(output_s);
 		}
 		
 		rank_players.insert(std::make_pair(output_rank, player));

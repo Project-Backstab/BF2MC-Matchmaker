@@ -5,7 +5,6 @@
 #include <vector>
 #include <battlefield.h>
 #include <unordered_map>
-#include <functional>
 
 namespace Battlefield
 {
@@ -51,8 +50,7 @@ namespace Battlefield
 			uint32_t  _sflags    = 0;   /**< Total saved flags by the player. */
 		
 		public:
-			// Define the map type for convenience
-			using SetterFunc = std::function<bool(Battlefield::PlayerStats&, uint32_t)>;
+			typedef bool (Battlefield::PlayerStats::*SetterFunc)(uint32_t);
 
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 

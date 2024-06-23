@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <functional>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
@@ -188,8 +187,7 @@ namespace Battlefield
 			std::vector<GameServerPlayer> _players; /**< Vector containing information about players currently in the server. */
 		
 		public:
-			// Define the map type for convenience
-			using SetterFunc = std::function<bool(Battlefield::GameServer&, const std::string&)>;
+			typedef bool (Battlefield::GameServer::*SetterFunc)(const std::string&);
 
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 
