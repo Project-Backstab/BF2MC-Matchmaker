@@ -87,7 +87,8 @@ void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http
 
 		json_session["authtoken"] = session.authtoken;
 		json_session["challenge"] = session.challenge;
-		json_session["profileid"] = std::to_string(session.profileid) + " (" + player.GetUniquenick() + ")";
+		json_session["profileid"] = session.profileid;
+		json_session["uniquenick"] = player.GetUniquenick();
 		json_session["status"] = session.status;
 
 		json_client["session"] = json_session;
