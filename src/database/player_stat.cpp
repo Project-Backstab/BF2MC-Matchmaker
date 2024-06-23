@@ -255,7 +255,7 @@ bool Database::updatePlayerStats(const Battlefield::Player& player)
 	query += "	`ngp` = ?, ";
 	query += "	`cflags` = ?, ";
 	query += "	`nflags` = ?, ";
-	query += "	'sflags` = ? ";
+	query += "	`sflags` = ? ";
 	query += "WHERE ";
 	query += "	`profileid` = ?";
 	
