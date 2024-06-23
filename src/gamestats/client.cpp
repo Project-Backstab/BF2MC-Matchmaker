@@ -344,8 +344,15 @@ bool GameStats::Client::_GetKeyAndPlayerIndex(const std::string& input, std::str
 		return false;
 	}
 
-	key = input.substr(0, pos);
-	player_index = std::stoi(input.substr(pos + 1));
+	try
+	{
+		key = input.substr(0, pos);
+		player_index = std::stoi(input.substr(pos + 1));
+	}
+	catch(...)
+	{
+		return false;
+	};
 
 	return true;
 }
