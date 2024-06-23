@@ -184,6 +184,10 @@ namespace Battlefield
 			uint32_t  _ttb       = 0;     /**< Total times top player by the player. */
 			uint32_t  _mv        = 0;     /**< Total major victories achieved by the player. */
 			uint32_t  _ngp       = 0;     /**< Total participated game sessions by the player. */
+			uint32_t  _cflags    = 0;     /**< Total captured flags by the player. */
+			uint32_t  _nflags    = 0;     /**< Total neutralized flags by the player. */
+			uint32_t  _sflags    = 0;     /**< Total saved flags by the player. */
+			
 			bool      _disable   = false; /**< Disable option to not let player progress stats. */
 
 		public:
@@ -220,6 +224,9 @@ namespace Battlefield
 			uint32_t    GetTotalTopPlayer() const          { return this->_ttb;        }
 			uint32_t    GetTotalVictories() const          { return this->_mv;         }
 			uint32_t    GetTotalGameSessions() const       { return this->_ngp;        }
+			uint32_t    GetCapturedFlags() const           { return this->_cflags;     }
+			uint32_t    GetNeutralizedFlags() const        { return this->_nflags;     }
+			uint32_t    GetSavedFlags() const              { return this->_sflags;     }
 			bool 		IsDisabled() const                 { return this->_disable;    }
 
 			bool SetId(int id);
@@ -285,6 +292,12 @@ namespace Battlefield
 			bool SetTotalVictories(const std::string& str_mv);
 			bool SetTotalGameSessions(uint32_t ngp);
 			bool SetTotalGameSessions(const std::string& str_ngp);
+			bool SetCapturedFlags(uint32_t cflags);
+			bool SetCapturedFlags(const std::string& str_cflags);
+			bool SetNeutralizedFlags(uint32_t nflags);
+			bool SetNeutralizedFlags(const std::string& str_nflags);
+			bool SetSavedFlags(uint32_t sflags);
+			bool SetSavedFlags(const std::string& str_sflags);
 			bool SetDisable(bool disable);
 			bool SetDisable(uint8_t disable);
 

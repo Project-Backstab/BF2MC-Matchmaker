@@ -301,6 +301,9 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 			else if(key == "ttb_"        + std::to_string(player_index)) gsplayer.SetTotalTopPlayer(value);
 			else if(key == "mv_"         + std::to_string(player_index)) gsplayer.SetTotalVictories(value);
 			else if(key == "ngp_"        + std::to_string(player_index)) gsplayer.SetTotalGameSessions(value);
+			else if(key == "cflags_"     + std::to_string(player_index)) gsplayer.SetCapturedFlags(value);
+			else if(key == "nflags_"     + std::to_string(player_index)) gsplayer.SetNeutralizedFlags(value);
+			else if(key == "sflags_"     + std::to_string(player_index)) gsplayer.SetSavedFlags(value);
 			
 			// Debug
 			//Logger::debug(key + " = " + value);

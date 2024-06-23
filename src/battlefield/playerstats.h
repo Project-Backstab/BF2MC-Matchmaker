@@ -46,6 +46,9 @@ namespace Battlefield
 			uint32_t  _ttb       = 0;   /**< Total times top player by the player. */
 			uint32_t  _mv        = 0;   /**< Total major victories achieved by the player. */
 			uint32_t  _ngp       = 0;   /**< Total participated game sessions by the player. */
+			uint32_t  _cflags    = 0;   /**< Total captured flags by the player. */
+			uint32_t  _nflags    = 0;   /**< Total neutralized flags by the player. */
+			uint32_t  _sflags    = 0;   /**< Total saved flags by the player. */
 		
 		public:
 			// Define the map type for convenience
@@ -83,6 +86,9 @@ namespace Battlefield
 			uint32_t GetTotalTopPlayer() const          { return this->_ttb;      }
 			uint32_t GetTotalVictories() const          { return this->_mv;       }
 			uint32_t GetTotalGameSessions() const       { return this->_ngp;      }
+			uint32_t GetCapturedFlags() const           { return this->_cflags;   }
+			uint32_t GetNeutralizedFlags() const        { return this->_nflags;   }
+			uint32_t GetSavedFlags() const              { return this->_sflags;   }
 			
 			double GetRatio() const;
 			double GetRatioAssualtKit() const;
@@ -120,6 +126,9 @@ namespace Battlefield
 			bool SetTotalTopPlayer(uint32_t total);
 			bool SetTotalVictories(uint32_t total);
 			bool SetTotalGameSessions(uint32_t total);
+			bool SetCapturedFlags(uint32_t cflags);
+			bool SetNeutralizedFlags(uint32_t nflags);
+			bool SetSavedFlags(uint32_t sflags);
 
 			/**
 			 * @brief Update player stats based on played game

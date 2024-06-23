@@ -93,13 +93,13 @@ bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(3, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_clanid);
+	input_bind[0].buffer = &input_clanid;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].buffer = &input_profileid;
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[2].buffer = const_cast<uint8_t*>(&input_rank);
+	input_bind[2].buffer = &input_rank;
 	input_bind[2].is_unsigned = true;
 
 	// Prepare and execute with binds
@@ -146,13 +146,13 @@ bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(3, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[0].buffer = const_cast<uint8_t*>(&input_rank);
+	input_bind[0].buffer = &input_rank;
 	input_bind[0].is_unsigned = true;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_clanid);
+	input_bind[1].buffer = &input_clanid;
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&input_profileid);
+	input_bind[2].buffer = &input_profileid;
 	input_bind[2].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -196,10 +196,10 @@ bool Database::removeClanRank(const Battlefield::Clan& clan, const Battlefield::
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_clanid);
+	input_bind[0].buffer = &input_clanid;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].buffer = &input_profileid;
 	input_bind[1].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -240,7 +240,7 @@ bool Database::removeClanRanksByClanId(const Battlefield::Clan& clan)
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_clanid);
+	input_bind[0].buffer = &input_clanid;
 	input_bind[0].is_unsigned = false;
 
 	// Prepare and execute with binds

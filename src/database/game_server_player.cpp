@@ -133,7 +133,7 @@ bool Database::_insertGameServerPlayer(const Battlefield::GameServer& game_serve
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(9, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_id);
+	input_bind[0].buffer = &input_id;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[1].buffer = const_cast<char*>(&(input_name[0]));
@@ -154,7 +154,7 @@ bool Database::_insertGameServerPlayer(const Battlefield::GameServer& game_serve
 	input_bind[6].buffer = &input_deaths;
 	input_bind[6].is_unsigned = true;
 	input_bind[7].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[7].buffer = const_cast<int*>(&input_profileid);
+	input_bind[7].buffer = &input_profileid;
 	input_bind[7].is_unsigned = false;
 	
 	// Prepare and execute with binds

@@ -513,7 +513,7 @@ bool Database::insertClan(Battlefield::Clan& clan)
 	input_bind[3].buffer = const_cast<char*>(&(input_info[0]));
 	input_bind[3].buffer_length = input_info.size();
 	input_bind[4].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[4].buffer = const_cast<uint8_t*>(&input_region);
+	input_bind[4].buffer = &input_region;
 	input_bind[4].is_unsigned = true;
 
 	// Prepare and execute with binds
@@ -584,22 +584,22 @@ bool Database::updateClan(const Battlefield::Clan& clan)
 	input_bind[2].buffer = const_cast<char*>(&(input_info[0]));
 	input_bind[2].buffer_length = input_info.size();
 	input_bind[3].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[3].buffer = const_cast<uint8_t*>(&input_region);
+	input_bind[3].buffer = &input_region;
 	input_bind[3].is_unsigned = true;
 	input_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[4].buffer = const_cast<uint32_t*>(&input_score);
+	input_bind[4].buffer = &input_score;
 	input_bind[4].is_unsigned = true;
 	input_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[5].buffer = const_cast<uint32_t*>(&input_wins);
+	input_bind[5].buffer = &input_wins;
 	input_bind[5].is_unsigned = true;
 	input_bind[6].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[6].buffer = const_cast<uint32_t*>(&input_losses);
+	input_bind[6].buffer = &input_losses;
 	input_bind[6].is_unsigned = true;
 	input_bind[7].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[7].buffer = const_cast<uint32_t*>(&input_draws);
+	input_bind[7].buffer = &input_draws;
 	input_bind[7].is_unsigned = true;
 	input_bind[8].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[8].buffer = const_cast<int*>(&input_clanid);
+	input_bind[8].buffer = &input_clanid;
 	input_bind[8].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -690,113 +690,114 @@ bool Database::updateClans(const Battlefield::Clan& clan1, const Battlefield::Cl
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(34, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[0].buffer = &input_clanid1;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[1].buffer = const_cast<char*>(&(input_tag1[0]));
 	input_bind[1].buffer_length = input_tag1.size();
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[2].buffer = &input_clanid2;
 	input_bind[2].is_unsigned = false;
 	input_bind[3].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[3].buffer = const_cast<char*>(&(input_tag2[0]));
 	input_bind[3].buffer_length = input_tag2.size();
 	
 	input_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[4].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[4].buffer = &input_clanid1;
 	input_bind[4].is_unsigned = false;
 	input_bind[5].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[5].buffer = const_cast<char*>(&(input_homepage1[0]));
 	input_bind[5].buffer_length = input_homepage1.size();
 	input_bind[6].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[6].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[6].buffer = &input_clanid2;
 	input_bind[6].is_unsigned = false;
 	input_bind[7].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[7].buffer = const_cast<char*>(&(input_homepage2[0]));
 	input_bind[7].buffer_length = input_homepage2.size();
 	
 	input_bind[8].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[8].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[8].buffer = &input_clanid1;
 	input_bind[8].is_unsigned = false;
 	input_bind[9].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[9].buffer = const_cast<char*>(&(input_info1[0]));
 	input_bind[9].buffer_length = input_info1.size();
 	input_bind[10].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[10].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[10].buffer = &input_clanid2;
 	input_bind[10].is_unsigned = false;
 	input_bind[11].buffer_type = MYSQL_TYPE_STRING;
 	input_bind[11].buffer = const_cast<char*>(&(input_info2[0]));
 	input_bind[11].buffer_length = input_info2.size();
 
 	input_bind[12].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[12].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[12].buffer = &input_clanid1;
 	input_bind[12].is_unsigned = false;
 	input_bind[13].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[13].buffer = const_cast<uint8_t*>(&input_region1);
+	input_bind[13].buffer = &input_region1;
 	input_bind[13].is_unsigned = true;
 	input_bind[14].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[14].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[14].buffer = &input_clanid2;
 	input_bind[14].is_unsigned = false;
 	input_bind[15].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[15].buffer = const_cast<uint8_t*>(&input_region2);
+	input_bind[15].buffer = &input_region2;
 	input_bind[15].is_unsigned = true;
 
 	input_bind[16].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[16].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[16].buffer = &input_clanid1;
 	input_bind[16].is_unsigned = false;
 	input_bind[17].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[17].buffer = const_cast<uint32_t*>(&input_score1);
+	input_bind[17].buffer = &input_score1;
 	input_bind[17].is_unsigned = true;
 	input_bind[18].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[18].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[18].buffer = &input_clanid2;
 	input_bind[18].is_unsigned = false;
 	input_bind[19].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[19].buffer = const_cast<uint32_t*>(&input_score2);
+	input_bind[19].buffer = &input_score2;
 	input_bind[19].is_unsigned = true;
 
 	input_bind[20].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[20].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[20].buffer = &input_clanid1;
 	input_bind[20].is_unsigned = false;
 	input_bind[21].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[21].buffer = const_cast<uint32_t*>(&input_wins1);
+	input_bind[21].buffer = &input_wins1;
 	input_bind[21].is_unsigned = true;
 	input_bind[22].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[22].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[22].buffer = &input_clanid2;
 	input_bind[22].is_unsigned = false;
 	input_bind[23].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[23].buffer = const_cast<uint32_t*>(&input_wins2);
+	input_bind[23].buffer = &input_wins2;
 	input_bind[23].is_unsigned = true;
 
 	input_bind[24].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[24].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[24].buffer = &input_clanid1;
 	input_bind[24].is_unsigned = false;
 	input_bind[25].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[25].buffer = const_cast<uint32_t*>(&input_losses1);
+	input_bind[25].buffer = &input_losses1;
 	input_bind[25].is_unsigned = true;
 	input_bind[26].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[26].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[26].buffer = &input_clanid2;
 	input_bind[26].is_unsigned = false;
 	input_bind[27].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[27].buffer = const_cast<uint32_t*>(&input_losses2);
+	input_bind[27].buffer = &input_losses2;
 	input_bind[27].is_unsigned = true;
 
 	input_bind[28].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[28].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[28].buffer = &input_clanid1;
 	input_bind[28].is_unsigned = false;
 	input_bind[29].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[29].buffer = const_cast<uint32_t*>(&input_draws1);
+	input_bind[29].buffer = &input_draws1;
 	input_bind[29].is_unsigned = true;
 	input_bind[30].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[30].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[30].buffer = &input_clanid2;
 	input_bind[30].is_unsigned = false;
 	input_bind[31].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[31].buffer = const_cast<uint32_t*>(&input_draws2);
+	input_bind[31].buffer = &input_draws2;
 	input_bind[31].is_unsigned = true;
+
 	input_bind[32].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[32].buffer = const_cast<int*>(&input_clanid1);
+	input_bind[32].buffer = &input_clanid1;
 	input_bind[32].is_unsigned = false;
 	input_bind[33].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[33].buffer = const_cast<int*>(&input_clanid2);
+	input_bind[33].buffer = &input_clanid2;
 	input_bind[33].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -839,7 +840,7 @@ bool Database::disableClan(const Battlefield::Clan& clan)
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_clanid);
+	input_bind[0].buffer = &input_clanid;
 	input_bind[0].is_unsigned = false;
 
 	// Prepare and execute with binds

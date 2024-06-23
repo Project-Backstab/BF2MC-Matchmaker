@@ -312,6 +312,24 @@ bool Battlefield::PlayerStats::SetTotalGameSessions(uint32_t total)
 	return true;
 }
 
+bool Battlefield::PlayerStats::SetCapturedFlags(uint32_t cflags)
+{
+	this->_cflags = cflags;
+	return true;
+}
+
+bool Battlefield::PlayerStats::SetNeutralizedFlags(uint32_t nflags)
+{
+	this->_nflags = nflags;
+	return true;
+}
+
+bool Battlefield::PlayerStats::SetSavedFlags(uint32_t sflags)
+{
+	this->_sflags = sflags;
+	return true;
+}
+
 void Battlefield::PlayerStats::Update(const Battlefield::GameStatPlayer& gsplayer)
 {
 	// Calculate new pph
@@ -340,6 +358,9 @@ void Battlefield::PlayerStats::Update(const Battlefield::GameStatPlayer& gsplaye
 	this->SetSuicides(                this->_suicides + gsplayer.GetSuicides()                ); // suicides
 	this->SetTime(                    this->_time     + gsplayer.GetTime()                    ); // time
 	this->SetTotalTopPlayer(          this->_ttb      + gsplayer.GetTotalTopPlayer()          ); // ttb
+	this->SetCapturedFlags(           this->_cflags   + gsplayer.GetCapturedFlags()           ); // cflags
+	this->SetNeutralizedFlags(        this->_nflags   + gsplayer.GetNeutralizedFlags()        ); // nflags
+	this->SetSavedFlags(              this->_sflags   + gsplayer.GetSavedFlags()              ); // sflags
 
 	this->SetVehiclesDestroyed(
 		this->_lavd +

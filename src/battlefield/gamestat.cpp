@@ -1047,6 +1047,63 @@ bool Battlefield::GameStatPlayer::SetTotalGameSessions(const std::string& str_ng
 	return false;
 }
 
+bool Battlefield::GameStatPlayer::SetCapturedFlags(uint32_t cflags)
+{
+	this->_cflags = cflags;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetCapturedFlags(const std::string& str_cflags)
+{
+	try
+	{
+		uint32_t cflags = std::stoul(str_cflags);
+		
+		return this->SetCapturedFlags(cflags);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
+bool Battlefield::GameStatPlayer::SetNeutralizedFlags(uint32_t nflags)
+{
+	this->_nflags = nflags;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetNeutralizedFlags(const std::string& str_nflags)
+{
+	try
+	{
+		uint32_t nflags = std::stoul(str_nflags);
+		
+		return this->SetNeutralizedFlags(nflags);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
+bool Battlefield::GameStatPlayer::SetSavedFlags(uint32_t sflags)
+{
+	this->_sflags = sflags;
+	return true;
+}
+
+bool Battlefield::GameStatPlayer::SetSavedFlags(const std::string& str_sflags)
+{
+	try
+	{
+		uint32_t sflags = std::stoul(str_sflags);
+		
+		return this->SetSavedFlags(sflags);
+	}
+	catch(...) {};
+	
+	return false;
+}
+
 bool Battlefield::GameStatPlayer::SetDisable(bool disable)
 {
 	this->_disable = disable;

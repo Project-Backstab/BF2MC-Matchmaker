@@ -16,7 +16,7 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	query += "	`id`, `auth`, `pid`, `machine_id`, `team`, `score`, `rank`, `pph`, `kills`, ";
 	query += "	`deaths`, `suicides`, `time`, `lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
 	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
-	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `disable` ";
+	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `cflags`, `nflags`, `sflags`, `disable` ";
 	query += "FROM ";
 	query += "	`GameStatPlayers` ";
 	query += "WHERE ";
@@ -57,6 +57,9 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	uint32_t output_ttb;
 	uint32_t output_mv;
 	uint32_t output_ngp;
+	uint32_t output_cflags;
+	uint32_t output_nflags;
+	uint32_t output_sflags;
 	uint8_t  output_disable;
 
 	// Allocate input binds
@@ -66,7 +69,7 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(34, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(37, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -166,9 +169,18 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 	output_bind[32].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[32].buffer = &output_ngp;
 	output_bind[32].is_unsigned = true;
-	output_bind[33].buffer_type = MYSQL_TYPE_TINY;
-	output_bind[33].buffer = &output_disable;
+	output_bind[33].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[33].buffer = &output_cflags;
 	output_bind[33].is_unsigned = true;
+	output_bind[34].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[34].buffer = &output_nflags;
+	output_bind[34].is_unsigned = true;
+	output_bind[35].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[35].buffer = &output_sflags;
+	output_bind[35].is_unsigned = true;
+	output_bind[36].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[36].buffer = &output_disable;
+	output_bind[36].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -230,6 +242,9 @@ bool Database::queryGameStatPlayers(Battlefield::GameStat& game_stat)
 		gsplayer.SetTotalTopPlayer(output_ttb);
 		gsplayer.SetTotalVictories(output_mv);
 		gsplayer.SetTotalGameSessions(output_ngp);
+		gsplayer.SetCapturedFlags(output_cflags);
+		gsplayer.SetNeutralizedFlags(output_nflags);
+		gsplayer.SetSavedFlags(output_sflags);
 		gsplayer.SetDisable(output_disable);
 		
 		game_stat.AddPlayer(gsplayer);
@@ -315,7 +330,7 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	query += "	`id`, `auth`, `machine_id`, `team`, `score`, `rank`, `pph`, `kills`, ";
 	query += "	`deaths`, `suicides`, `time`, `lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
 	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
-	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `disable` ";
+	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `cflags`, `nflags`, `sflags`, `disable` ";
 	query += "FROM ";
 	query += "	`GameStatPlayers` ";
 	query += "WHERE ";
@@ -356,6 +371,9 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	uint32_t output_ttb;
 	uint32_t output_mv;
 	uint32_t output_ngp;
+	uint32_t output_cflags;
+	uint32_t output_nflags;
+	uint32_t output_sflags;
 	uint8_t  output_disable;
 
 	// Allocate input binds
@@ -371,7 +389,7 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	input_bind[2].is_unsigned = true;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(33, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(36, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -468,9 +486,18 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 	output_bind[31].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[31].buffer = &output_ngp;
 	output_bind[31].is_unsigned = true;
-	output_bind[32].buffer_type = MYSQL_TYPE_TINY;
-	output_bind[32].buffer = &output_disable;
+	output_bind[32].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[32].buffer = &output_cflags;
 	output_bind[32].is_unsigned = true;
+	output_bind[33].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[33].buffer = &output_nflags;
+	output_bind[33].is_unsigned = true;
+	output_bind[34].buffer_type = MYSQL_TYPE_LONG;
+	output_bind[34].buffer = &output_sflags;
+	output_bind[34].is_unsigned = true;
+	output_bind[35].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[35].buffer = &output_disable;
+	output_bind[35].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -532,6 +559,9 @@ bool Database::queryGameStatPlayersByProfileId(const Battlefield::Player& player
 		gsplayer.SetTotalTopPlayer(output_ttb);
 		gsplayer.SetTotalVictories(output_mv);
 		gsplayer.SetTotalGameSessions(output_ngp);
+		gsplayer.SetCapturedFlags(output_cflags);
+		gsplayer.SetNeutralizedFlags(output_nflags);
+		gsplayer.SetSavedFlags(output_sflags);
 		gsplayer.SetDisable(output_disable);
 
 		gsplayers.push_back(gsplayer);
@@ -553,12 +583,12 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	query += "	(`gamestatid`, `auth`, `pid`, `machine_id`, `team`, `score`, `rank`, `pph`, ";
 	query += "	`kills`, `deaths`, `suicides`, `time`, `lavd`, `mavd`, `havd`, `hed`, `pld`, `bod`, ";
 	query += "	`k1`, `s1`, `k2`, `s2`, `k3`, `s3`, `k4`, `s4`, `k5`, `s5`, ";
-	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `disable`) ";
+	query += "	`tk`, `medals`, `ttb`, `mv`, `ngp`, `cflags`, `nflags`, `sflags`, `disable`) ";
 	query += "VALUES ";
 	query += "	(?, ?, ?, ?, ?, ?, ?, ?, ";
 	query += "	?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
 	query += "	?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ";
-	query += "	?, ?, ?, ?, ?, ?);";
+	query += "	?, ?, ?, ?, ?, ?, ?, ?, ?);";
 	
 	int         input_gamestatid = game_stat.GetId();
 	std::string input_auth       = gsplayer.GetAuth();
@@ -593,10 +623,13 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	uint32_t    input_ttb        = gsplayer.GetTotalTopPlayer();
 	uint32_t    input_mv         = gsplayer.GetTotalVictories();
 	uint32_t    input_ngp        = gsplayer.GetTotalGameSessions();
+	uint32_t    input_cflags     = gsplayer.GetCapturedFlags();
+	uint32_t    input_nflags     = gsplayer.GetNeutralizedFlags();
+	uint32_t    input_sflags     = gsplayer.GetSavedFlags();
 	uint8_t     input_disable    = gsplayer.IsDisabled() ? 1 : 0;
 	
 	// Allocate input binds
-	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(34, sizeof(MYSQL_BIND));
+	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(37, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[0].buffer = &input_gamestatid;
 	input_bind[0].is_unsigned = false;
@@ -696,9 +729,18 @@ bool Database::_insertGameStatPlayer(const Battlefield::GameStat& game_stat, Bat
 	input_bind[32].buffer_type = MYSQL_TYPE_LONG;
 	input_bind[32].buffer = &input_ngp;
 	input_bind[32].is_unsigned = true;
-	input_bind[33].buffer_type = MYSQL_TYPE_TINY;
-	input_bind[33].buffer = &input_disable;
+	input_bind[33].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[33].buffer = &input_cflags;
 	input_bind[33].is_unsigned = true;
+	input_bind[34].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[34].buffer = &input_nflags;
+	input_bind[34].is_unsigned = true;
+	input_bind[35].buffer_type = MYSQL_TYPE_LONG;
+	input_bind[35].buffer = &input_sflags;
+	input_bind[35].is_unsigned = true;
+	input_bind[36].buffer_type = MYSQL_TYPE_TINY;
+	input_bind[36].buffer = &input_disable;
+	input_bind[36].is_unsigned = true;
 
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;

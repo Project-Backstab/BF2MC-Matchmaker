@@ -29,10 +29,10 @@ bool Database::queryPlayerFriendsByProfileId(Battlefield::Player& player)
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].buffer = &input_profileid;
 	input_bind[0].is_unsigned = false;	
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_profileid);
+	input_bind[1].buffer = &input_profileid;
 	input_bind[1].is_unsigned = false;	
 
 	// Allocate output binds
@@ -97,10 +97,10 @@ bool Database::insertPlayerFriend(const Battlefield::Player& player, const Battl
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(2, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].buffer = &input_profileid;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
+	input_bind[1].buffer = &input_target_profileid;
 	input_bind[1].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -144,16 +144,16 @@ bool Database::removePlayerFriend(const Battlefield::Player& player, const Battl
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(4, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[0].buffer = const_cast<int*>(&input_profileid);
+	input_bind[0].buffer = &input_profileid;
 	input_bind[0].is_unsigned = false;
 	input_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[1].buffer = const_cast<int*>(&input_target_profileid);
+	input_bind[1].buffer = &input_target_profileid;
 	input_bind[1].is_unsigned = false;
 	input_bind[2].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[2].buffer = const_cast<int*>(&input_profileid);
+	input_bind[2].buffer = &input_profileid;
 	input_bind[2].is_unsigned = false;
 	input_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	input_bind[3].buffer = const_cast<int*>(&input_target_profileid);
+	input_bind[3].buffer = &input_target_profileid;
 	input_bind[3].is_unsigned = false;
 
 	// Prepare and execute with binds

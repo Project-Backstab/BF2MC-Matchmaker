@@ -43,22 +43,22 @@ bool Database::queryLeaderboardRank(Battlefield::RankPlayers& rank_players,
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].buffer = &output_rank;
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].buffer = &output_profileid;
 	output_bind[1].is_unsigned = false;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_score);
+	output_bind[3].buffer = &output_score;
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_ran);
+	output_bind[4].buffer = &output_ran;
 	output_bind[4].is_unsigned = false;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_pph);
+	output_bind[5].buffer = &output_pph;
 	output_bind[5].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -158,22 +158,22 @@ bool Database::queryLeaderboardRankByProfileId(Battlefield::RankPlayers& rank_pl
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].buffer = &output_rank;
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].buffer = &output_profileid;
 	output_bind[1].is_unsigned = false;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_score);
+	output_bind[3].buffer = &output_score;
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_ran);
+	output_bind[4].buffer = &output_ran;
 	output_bind[4].is_unsigned = false;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_pph);
+	output_bind[5].buffer = &output_pph;
 	output_bind[5].is_unsigned = false;
 
 	// Prepare and execute with binds
@@ -260,22 +260,22 @@ bool Database::queryLeaderboardRankByFriends(Battlefield::RankPlayers& rank_play
 	// Allocate output binds
 	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(6, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[0].buffer = const_cast<int*>(&output_rank);
+	output_bind[0].buffer = &output_rank;
 	output_bind[0].is_unsigned = false;
 	output_bind[1].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[1].buffer = const_cast<int*>(&output_profileid);
+	output_bind[1].buffer = &output_profileid;
 	output_bind[1].is_unsigned = false;
 	output_bind[2].buffer_type = MYSQL_TYPE_VAR_STRING;
 	output_bind[2].buffer = &output_uniquenick;
 	output_bind[2].buffer_length = VARCHAR_LEN(32);
 	output_bind[3].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[3].buffer = const_cast<int*>(&output_score);
+	output_bind[3].buffer = &output_score;
 	output_bind[3].is_unsigned = false;
 	output_bind[4].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[4].buffer = const_cast<int*>(&output_ran);
+	output_bind[4].buffer = &output_ran;
 	output_bind[4].is_unsigned = false;
 	output_bind[5].buffer_type = MYSQL_TYPE_LONG;
-	output_bind[5].buffer = const_cast<int*>(&output_pph);
+	output_bind[5].buffer = &output_pph;
 	output_bind[5].is_unsigned = false;
 
 	// Prepare and execute with binds
