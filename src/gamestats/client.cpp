@@ -232,7 +232,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		if (key.find("auth_") != std::string::npos)
 			break;
 		
-		// Update using the map
+		// Update game stat
 		auto it = Battlefield::GameStat::SetterMap.find(key);
 		if (it != Battlefield::GameStat::SetterMap.end()) {
 			(game_stat.*(it->second))(value);
@@ -248,9 +248,13 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	//game_stat.Debug();
 	//Logger::debug("=============================");
 	
-	// Get player index out of key "auth_"
-	uint8_t player_index = this->_GetPlayerIndex(key);
-	
+	// Get player index out of key
+	int player_index;
+	this->_GetKeyAndPlayerIndex(parameter[offset], key, player_index);
+
+	// Copy player index 
+	int previous_player_index = player_index;
+
 	// Read Game stat player information
 	while(parameter.size() > offset + 1)
 	{
@@ -261,49 +265,21 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		
 		while(parameter.size() > offset + 1)
 		{
-			key = parameter[offset];
+			// Get key and player index
+			this->_GetKeyAndPlayerIndex(parameter[offset], key, player_index);
+
+			// Get value
 			value = parameter[offset + 1];
 			
-			// If we found the new auth_ key then we create new GameStatPlayer
-			if (key.find("auth_") != std::string::npos && key != "auth_" + std::to_string(player_index))
+			// If we found the new player_index then we create new GameStatPlayer
+			if (previous_player_index != player_index)
 				break;
 			
-			// Update
-			if(     key == "auth_"       + std::to_string(player_index)) gsplayer.SetAuth(value);
-			else if(key == "pid_"        + std::to_string(player_index)) gsplayer.SetProfileId(value);
-			else if(key == "machine_id_" + std::to_string(player_index)) gsplayer.SetMachineId(value);
-			else if(key == "team_"       + std::to_string(player_index)) gsplayer.SetTeam(value);
-			else if(key == "score_"      + std::to_string(player_index)) gsplayer.SetScore(value);
-			else if(key == "rank_"       + std::to_string(player_index)) gsplayer.SetRank(value);
-			else if(key == "pph_"        + std::to_string(player_index)) gsplayer.SetPPH(value);
-			else if(key == "kills_"      + std::to_string(player_index)) gsplayer.SetKills(value);
-			else if(key == "deaths_"     + std::to_string(player_index)) gsplayer.SetDeaths(value);
-			else if(key == "suicides_"   + std::to_string(player_index)) gsplayer.SetSuicides(value);
-			else if(key == "time_"       + std::to_string(player_index)) gsplayer.SetTime(value);
-			else if(key == "lavd_"       + std::to_string(player_index)) gsplayer.SetLAVsDestroyed(value);
-			else if(key == "mavd_"       + std::to_string(player_index)) gsplayer.SetMAVsDestroyed(value);
-			else if(key == "havd_"       + std::to_string(player_index)) gsplayer.SetHAVsDestroyed(value);
-			else if(key == "hed_"        + std::to_string(player_index)) gsplayer.SetHelicoptersDestroyed(value);
-			else if(key == "pld_"        + std::to_string(player_index)) gsplayer.SetPlanesDestroyed(value);
-			else if(key == "bod_"        + std::to_string(player_index)) gsplayer.SetBoatsDestroyed(value);
-			else if(key == "k1_"         + std::to_string(player_index)) gsplayer.SetKillsAssualtKit(value);
-			else if(key == "s1_"         + std::to_string(player_index)) gsplayer.SetDeathsAssualtKit(value);
-			else if(key == "k2_"         + std::to_string(player_index)) gsplayer.SetKillsSniperKit(value);
-			else if(key == "s2_"         + std::to_string(player_index)) gsplayer.SetDeathsSniperKit(value);
-			else if(key == "k3_"         + std::to_string(player_index)) gsplayer.SetKillsSpecialOpKit(value);
-			else if(key == "s3_"         + std::to_string(player_index)) gsplayer.SetDeathsSpecialOpKit(value);
-			else if(key == "k4_"         + std::to_string(player_index)) gsplayer.SetKillsCombatEngineerKit(value);
-			else if(key == "s4_"         + std::to_string(player_index)) gsplayer.SetDeathsCombatEngineerKit(value);
-			else if(key == "k5_"         + std::to_string(player_index)) gsplayer.SetKillsSupportKit(value);
-			else if(key == "s5_"         + std::to_string(player_index)) gsplayer.SetDeathsSupportKit(value);
-			else if(key == "tk_"         + std::to_string(player_index)) gsplayer.SetTeamKills(value);
-			else if(key == "medals_"     + std::to_string(player_index)) gsplayer.SetMedals(value);
-			else if(key == "ttb_"        + std::to_string(player_index)) gsplayer.SetTotalTopPlayer(value);
-			else if(key == "mv_"         + std::to_string(player_index)) gsplayer.SetTotalVictories(value);
-			else if(key == "ngp_"        + std::to_string(player_index)) gsplayer.SetTotalGameSessions(value);
-			else if(key == "cflags_"     + std::to_string(player_index)) gsplayer.SetCapturedFlags(value);
-			else if(key == "nflags_"     + std::to_string(player_index)) gsplayer.SetNeutralizedFlags(value);
-			else if(key == "sflags_"     + std::to_string(player_index)) gsplayer.SetSavedFlags(value);
+			// Update game stat player
+			auto it = Battlefield::GameStatPlayer::SetterMap.find(key);
+			if (it != Battlefield::GameStatPlayer::SetterMap.end()) {
+				(gsplayer.*(it->second))(value);
+			}
 			
 			// Debug
 			//Logger::debug(key + " = " + value);
@@ -313,8 +289,8 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 		
 		game_stat.AddPlayer(gsplayer);
 		
-		// Get new player index
-		player_index = this->_GetPlayerIndex(key);
+		// Save previous player index
+		previous_player_index = player_index;
 		
 		// Debug
 		//gsplayer.Debug();
@@ -357,20 +333,21 @@ void GameStats::Client::_LogTransaction(const std::string& direction, const std:
 			Server::Type::GameStats, show_console);
 }
 
-uint8_t GameStats::Client::_GetPlayerIndex(std::string key)
+bool GameStats::Client::_GetKeyAndPlayerIndex(const std::string& input, std::string& key, int& player_index)
 {
-	uint8_t player_index = 0;
-	
-	// Remove first 5 characters
-	key.erase(0, 5);
-	
-	try
+	player_index = -1;
+	key = "";
+
+	size_t pos = input.find('_');
+	if (pos == std::string::npos)
 	{
-		player_index = static_cast<uint8_t>(std::stoul(key));
+		return false;
 	}
-	catch(...) {};
-	
-	return player_index;
+
+	key = input.substr(0, pos);
+	player_index = std::stoi(input.substr(pos + 1));
+
+	return true;
 }
 
 // Static functions

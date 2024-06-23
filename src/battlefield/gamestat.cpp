@@ -448,6 +448,44 @@ void Battlefield::GameStat::Debug()
 
 // GameStatPlayer
 
+std::unordered_map<std::string, Battlefield::GameStatPlayer::SetterFunc> Battlefield::GameStatPlayer::SetterMap = {
+	{ "auth",        &Battlefield::GameStatPlayer::SetAuth                     },
+	{ "pid",         &Battlefield::GameStatPlayer::SetProfileId                },
+	{ "machine_id",  &Battlefield::GameStatPlayer::SetMachineId                },
+	{ "team",        &Battlefield::GameStatPlayer::SetTeam                     },
+	{ "score",       &Battlefield::GameStatPlayer::SetScore                    },
+	{ "rank",        &Battlefield::GameStatPlayer::SetRank                     },
+	{ "pph",         &Battlefield::GameStatPlayer::SetPPH                      },
+	{ "kills",       &Battlefield::GameStatPlayer::SetKills                    },
+	{ "deaths",      &Battlefield::GameStatPlayer::SetDeaths                   },
+	{ "suicides",    &Battlefield::GameStatPlayer::SetSuicides                 },
+	{ "time",        &Battlefield::GameStatPlayer::SetTime                     },
+	{ "lavd",        &Battlefield::GameStatPlayer::SetLAVsDestroyed            },
+	{ "mavd",        &Battlefield::GameStatPlayer::SetMAVsDestroyed            },
+	{ "havd",        &Battlefield::GameStatPlayer::SetHAVsDestroyed            },
+	{ "hed",         &Battlefield::GameStatPlayer::SetHelicoptersDestroyed     },
+	{ "pld",         &Battlefield::GameStatPlayer::SetPlanesDestroyed          },
+	{ "bod",         &Battlefield::GameStatPlayer::SetBoatsDestroyed           },
+	{ "k1",          &Battlefield::GameStatPlayer::SetKillsAssualtKit          },
+	{ "s1",          &Battlefield::GameStatPlayer::SetDeathsAssualtKit         },
+	{ "k2",          &Battlefield::GameStatPlayer::SetKillsSniperKit           },
+	{ "s2",          &Battlefield::GameStatPlayer::SetDeathsSniperKit          },
+	{ "k3",          &Battlefield::GameStatPlayer::SetKillsSpecialOpKit        },
+	{ "s3",          &Battlefield::GameStatPlayer::SetDeathsSpecialOpKit       },
+	{ "k4",          &Battlefield::GameStatPlayer::SetKillsCombatEngineerKit   },
+	{ "s4",          &Battlefield::GameStatPlayer::SetDeathsCombatEngineerKit  },
+	{ "k5",          &Battlefield::GameStatPlayer::SetKillsSupportKit          },
+	{ "s5",          &Battlefield::GameStatPlayer::SetDeathsSupportKit         },
+	{ "tk",          &Battlefield::GameStatPlayer::SetTeamKills                },
+	{ "medals",      &Battlefield::GameStatPlayer::SetMedals                   },
+	{ "ttb",         &Battlefield::GameStatPlayer::SetTotalTopPlayer           },
+	{ "mv",          &Battlefield::GameStatPlayer::SetTotalVictories           },
+	{ "ngp",         &Battlefield::GameStatPlayer::SetTotalGameSessions        },
+	{ "cflags",      &Battlefield::GameStatPlayer::SetCapturedFlags            },
+	{ "nflags",      &Battlefield::GameStatPlayer::SetNeutralizedFlags         },
+	{ "sflags",      &Battlefield::GameStatPlayer::SetSavedFlags               },
+};
+
 bool Battlefield::GameStatPlayer::SetId(int id)
 {
 	this->_id = id;

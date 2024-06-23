@@ -110,15 +110,14 @@ namespace GameStats
 			void _LogTransaction(const std::string& direction, const std::string& response) const;
 
 			/**
-			 * @brief Get the player index based on a key.
-			 * 
-			 * This function retrieves the player index based on the provided key.
-			 * The key could be a player ID, name, or other unique identifier.
+			 * @brief Get the key and the player index from string input.
 			 *
-			 * @param key The key used to identify the player.
-			 * @return The index of the player.
+			 * @param input The input to extract the key and player index.
+			 * @param key The key to return
+			 * @param player_index The player_index to return
+			 * @return True/False if extraction went well.
 			 */
-			uint8_t _GetPlayerIndex(std::string key);
+			bool _GetKeyAndPlayerIndex(const std::string& input, std::string& key, int& player_index);
 			
 		public:
 			/**

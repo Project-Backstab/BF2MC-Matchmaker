@@ -190,6 +190,11 @@ namespace Battlefield
 			bool      _disable   = false; /**< Disable option to not let player progress stats. */
 
 		public:
+			typedef bool (Battlefield::GameStatPlayer::*SetterFunc)(const std::string&);
+
+			static std::unordered_map<std::string, SetterFunc> SetterMap;
+
+		public:
 			int         GetId() const                      { return this->_id;         }
 			std::string GetAuth() const                    { return this->_auth;       }
 			int         GetProfileId() const               { return this->_pid;        }
