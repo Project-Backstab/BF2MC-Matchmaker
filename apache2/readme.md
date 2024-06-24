@@ -13,6 +13,7 @@ sudo cp apache2/sites-available/bf2mc.com.conf /etc/apache2/sites-available/
 sudo cp apache2/sites-available/backend.bf2mc.com.conf /etc/apache2/sites-available/
 sudo cp apache2/sites-available/bfmc.gamespy.com.conf /etc/apache2/sites-available/
 sudo cp apache2/sites-available/easports.com.conf /etc/apache2/sites-available/
+sudo cp apache2/sites-available/bfmc.bfmcspy.net.conf /etc/apache2/sites-available/
 ```
 
 Enable all configs:
@@ -23,6 +24,7 @@ sudo a2ensite bf2mc.com.conf
 sudo a2ensite backend.bf2mc.com.conf
 sudo a2ensite bfmc.gamespy.com.conf
 sudo a2ensite easports.com.conf
+sudo a2ensite bfmc.bfmcspy.net.conf
 ```
 
 Enable all modules in apache:
