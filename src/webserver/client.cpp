@@ -136,6 +136,7 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	
 	// I like memes :D
 	{ "/",                                                    &Webserver::Client::requestMeme               },
+	{ "/index.html",                                          &Webserver::Client::requestMeme               },
 	{ "/favicon.ico",                                         &Webserver::Client::requestEmpty              },
 	
 	// API
