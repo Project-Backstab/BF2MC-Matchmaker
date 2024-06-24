@@ -248,18 +248,18 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	//game_stat.Debug();
 	//Logger::debug("=============================");
 	
-	// Get player index out of key
-	int player_index;
-	this->_GetKeyAndPlayerIndex(parameter[offset], key, player_index);
-
-	// Copy player index 
-	int previous_player_index = player_index;
-
 	// Read Game stat player information
 	while(parameter.size() > offset + 1)
 	{
 		Battlefield::GameStatPlayer gsplayer;
 		
+		// Get key and player index out of parameter
+		int player_index;
+		this->_GetKeyAndPlayerIndex(parameter[offset], key, player_index);
+
+		// Copy player index 
+		int previous_player_index = player_index;
+
 		// Debug
 		//Logger::debug("player_index = " + std::to_string(player_index));
 		
@@ -338,7 +338,7 @@ bool GameStats::Client::_GetKeyAndPlayerIndex(const std::string& input, std::str
 	player_index = -1;
 	key = "";
 
-	size_t pos = input.find('_');
+	size_t pos = input.rfind('_');
 	if (pos == std::string::npos)
 	{
 		return false;
