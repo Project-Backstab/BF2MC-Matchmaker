@@ -16,6 +16,11 @@ The following domains needs to be redirected to this server:
 
 Read [here](dns/Readme.md) more about it how to install your own DNS.
 
+## Apache server
+
+To let the PS2 connect to our webservices we use apache2 as our proxy tunnel.
+
+Read [here](apache2/readme.md) more about it how to install your own Apache server.
 
 ## Clone Project
 
@@ -67,11 +72,6 @@ sudo ufw allow 29920/tcp
 For MySQL:
 ```
 sudo ufw allow from <myip> to any port 3306
-```
-
-If you want to avoid to run the application as sudo you must Preroute port 80 to 8080
-```
-sudo iptables -A PREROUTING -t nat -i <network interface> -p tcp --dport 80 -j REDIRECT --to-port 8080
 ```
 
 ## Run
