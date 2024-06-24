@@ -4,6 +4,7 @@ On ubuntu 22.04:
 ```
 sudo apt-get update 
 sudo apt-get install apache2
+sudo apt-get install certbot
 ```
 
 Copy the confige files over:
@@ -30,7 +31,9 @@ sudo a2enmod proxy_http
 sudo a2enmod rewrite
 ```
 
-And restart apache2
+Get HTTPS certificates
 ```
-easports.com.conf
+sudo systemctl stop apache2
+sudo certbot certonly --standalone -d bf2mc.com
+sudo systemctl start apache2
 ```
