@@ -76,7 +76,7 @@ bool Database::queryClanRanksByClanId(Battlefield::Clan& clan)
 	return true;
 }
 
-bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank)
+bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Rank rank)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 
@@ -125,7 +125,7 @@ bool Database::insertClanRank(const Battlefield::Clan& clan, const Battlefield::
 	return true;
 }
 
-bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank)
+bool Database::updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Rank rank)
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
 	

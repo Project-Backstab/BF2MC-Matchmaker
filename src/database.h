@@ -361,7 +361,7 @@ class Database
 		 * @param rank The rank to insert for the player within the clan.
 		 * @return True if the rank is successfully inserted into the database, false otherwise.
 		 */
-		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
+		bool insertClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Rank rank);
 
 		/**
 		 * @brief Updates the rank of a player within a clan in the database.
@@ -376,7 +376,7 @@ class Database
 		 * @param rank The new rank to assign to the player within the clan.
 		 * @return True if the rank is successfully updated in the database, false otherwise.
 		 */
-		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Ranks rank);
+		bool updateClanRank(const Battlefield::Clan& clan, const Battlefield::Player& player, Battlefield::Clan::Rank rank);
 
 		/**
 		 * @brief Removes the rank of a player within a clan from the database.

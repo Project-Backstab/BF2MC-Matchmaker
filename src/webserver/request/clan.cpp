@@ -208,7 +208,7 @@ void Webserver::Client::requestCreateClan(const atomizes::HTTPMessage& http_requ
 				g_database->insertClan(new_clan);
 				
 				// Make player leader of clan
-				g_database->insertClanRank(new_clan, player, Battlefield::Clan::Ranks::Leader);
+				g_database->insertClanRank(new_clan, player, Battlefield::Clan::Rank::Leader);
 				
 				http_response.SetMessageBody("OK");        // Clan succesfull created!
 			}
@@ -254,10 +254,10 @@ void Webserver::Client::requestUpdateClan(const atomizes::HTTPMessage &http_requ
 		// Get all ranks in clan
 		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
+		Battlefield::Clan::Rank rank = clan.GetRank(player.GetProfileId());
 		
 		// If rank is clan leader
-		if(rank == Battlefield::Clan::Ranks::Leader)
+		if(rank == Battlefield::Clan::Rank::Leader)
 		{
 			// Copy url variables into clan
 			if(this->_updateClanInformation(clan, url_variables, true))
@@ -320,10 +320,10 @@ void Webserver::Client::requestDisband(const atomizes::HTTPMessage& http_request
 		// Get all ranks in clan
 		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
+		Battlefield::Clan::Rank rank = clan.GetRank(player.GetProfileId());
 		
 		// If rank is clan leader
-		if(rank == Battlefield::Clan::Ranks::Leader)
+		if(rank == Battlefield::Clan::Rank::Leader)
 		{
 			// Remove all clan ranks
 			g_database->removeClanRanksByClanId(clan);
@@ -382,7 +382,7 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 		g_database->queryClanByProfileId(target_clan, target_player);
 		
 		// Get new rank
-		Battlefield::Clan::Ranks new_rank = Battlefield::Clan::Ranks::Unknown;
+		Battlefield::Clan::Rank new_rank = Battlefield::Clan::Rank::Unknown;
 		
 		// Convert url variable rank
 		auto it2 = url_variables.find("rank");
@@ -396,23 +396,23 @@ void Webserver::Client::requestChangeRank(const atomizes::HTTPMessage& http_requ
 			target_player.GetProfileId() != -1 &&          // Valid target player profileid must be supplied
 			target_clan.GetClanId() != -1 &&               // target player must be in a clan
 			clan.GetClanId() == target_clan.GetClanId() && // player and target player must be in the same clan
-			new_rank != Battlefield::Clan::Ranks::Unknown
+			new_rank != Battlefield::Clan::Rank::Unknown
 		)
 		{
 			// Get all ranks in clan
 			g_database->queryClanRanksByClanId(clan);
 			
 			// Get clan ranks
-			Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
-			Battlefield::Clan::Ranks target_rank = clan.GetRank(target_player.GetProfileId());
+			Battlefield::Clan::Rank rank = clan.GetRank(player.GetProfileId());
+			Battlefield::Clan::Rank target_rank = clan.GetRank(target_player.GetProfileId());
 			
 			// Check rank is higher
-			if(rank == Battlefield::Clan::Ranks::Leader)
+			if(rank == Battlefield::Clan::Rank::Leader)
 			{
-				if(new_rank == Battlefield::Clan::Ranks::Leader)
+				if(new_rank == Battlefield::Clan::Rank::Leader)
 				{
 					// Demote rank
-					g_database->updateClanRank(clan, player, Battlefield::Clan::Ranks::Co_Leader);
+					g_database->updateClanRank(clan, player, Battlefield::Clan::Rank::Co_Leader);
 				}
 				
 				// give target player new rank
@@ -472,10 +472,10 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 		// Get all ranks in clan
 		g_database->queryClanRanksByClanId(clan);
 		
-		Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
+		Battlefield::Clan::Rank rank = clan.GetRank(player.GetProfileId());
 		
 		// If the player rank is not Co-Leader or higher
-		if(rank <= Battlefield::Clan::Ranks::Co_Leader)
+		if(rank <= Battlefield::Clan::Rank::Co_Leader)
 		{
 			Battlefield::Player target_player;
 			Battlefield::Clan target_clan;
@@ -499,7 +499,7 @@ void Webserver::Client::requestAddMember(const atomizes::HTTPMessage& http_reque
 				}
 				
 				// Add target player to clan
-				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Ranks::Member);
+				g_database->insertClanRank(clan, target_player, Battlefield::Clan::Rank::Member);
 				
 				// Send to the accepted clan member a clan update call
 				GPCM::Client::SendBuddyMessage(
@@ -570,15 +570,15 @@ void Webserver::Client::requestDeleteMember(const atomizes::HTTPMessage& http_re
 			g_database->queryClanRanksByClanId(clan);
 			
 			// Get clan ranks
-			Battlefield::Clan::Ranks rank = clan.GetRank(player.GetProfileId());
-			Battlefield::Clan::Ranks target_rank = clan.GetRank(target_player.GetProfileId());
+			Battlefield::Clan::Rank rank = clan.GetRank(player.GetProfileId());
+			Battlefield::Clan::Rank target_rank = clan.GetRank(target_player.GetProfileId());
 			
 			// Check rank is higher or it tries to remove itself as a none leader. Leader can only disband clan.
 			if(
 				rank < target_rank ||
 				(
 					player.GetProfileId() == target_player.GetProfileId() &&
-					rank != Battlefield::Clan::Ranks::Leader
+					rank != Battlefield::Clan::Rank::Leader
 				)
 			)
 			{
@@ -654,7 +654,7 @@ void Webserver::Client::requestClanMessage(const atomizes::HTTPMessage& http_req
 			// Get all ranks in clan
 			g_database->queryClanRanksByClanId(clan);
 			
-			std::map<int, Battlefield::Clan::Ranks> ranks = clan.GetRanks();
+			Battlefield::Clan::Ranks ranks = clan.GetRanks();
 			int player_profileid = player.GetProfileId();
 			
 			for(const auto& rank : ranks)

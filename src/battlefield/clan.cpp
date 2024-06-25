@@ -19,7 +19,7 @@ void Battlefield::Clan::useExample()
 	this->SetTag("SOS");
 	this->SetHomepage("UMBRELLA");
 	this->SetInfo("G%2dVIRUS");
-	this->SetRegion(Regions::Europe);
+	this->SetRegion(Region::Europe);
 }
 
 bool Battlefield::Clan::SetClanId(int clanid)
@@ -100,7 +100,7 @@ bool Battlefield::Clan::SetInfo(const std::string& info)
 	return true;
 }
 
-bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
+bool Battlefield::Clan::SetRegion(Battlefield::Clan::Region region)
 {
 	this->_region = region;
 	return true;
@@ -108,9 +108,9 @@ bool Battlefield::Clan::SetRegion(Battlefield::Clan::Regions region)
 
 bool Battlefield::Clan::SetRegion(uint8_t int_region)
 {
-	if(int_region >= static_cast<uint8_t>(Regions::America) && int_region <= static_cast<uint8_t>(Regions::Asia))
+	if(int_region >= static_cast<uint8_t>(Region::America) && int_region <= static_cast<uint8_t>(Region::Asia))
 	{
-		Battlefield::Clan::Regions region = static_cast<Regions>(int_region);
+		Battlefield::Clan::Region region = static_cast<Region>(int_region);
 		
 		return this->SetRegion(region);
 	}
@@ -173,7 +173,7 @@ bool Battlefield::Clan::SetDisable(uint8_t disable)
 	return this->SetDisable(disable == 1);
 }
 
-void Battlefield::Clan::AddRank(int profileid, Ranks rank)
+void Battlefield::Clan::AddRank(int profileid, Rank rank)
 {
 	this->_ranks.insert(std::make_pair(profileid, rank));
 }
@@ -183,7 +183,7 @@ void Battlefield::Clan::AddRank(int profileid, uint8_t int_rank)
 	this->AddRank(profileid, convertRank(int_rank));
 }
 
-Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
+Battlefield::Clan::Rank Battlefield::Clan::GetRank(int profileid) const
 {
 	auto it = this->_ranks.find(profileid);
 	if (it != this->_ranks.end())
@@ -191,12 +191,12 @@ Battlefield::Clan::Ranks Battlefield::Clan::GetRank(int profileid) const
 		return it->second;
 	}
 	
-	return Ranks::Unknown;
+	return Rank::Unknown;
 }
 
 // Static
 
-Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_rank)
+Battlefield::Clan::Rank Battlefield::Clan::convertRank(const std::string& str_rank)
 {
 	try
 	{
@@ -206,20 +206,20 @@ Battlefield::Clan::Ranks Battlefield::Clan::convertRank(const std::string& str_r
 	}
 	catch(...) {};
 	
-	return Ranks::Unknown;
+	return Rank::Unknown;
 }
 
-Battlefield::Clan::Ranks Battlefield::Clan::convertRank(uint8_t int_rank)
+Battlefield::Clan::Rank Battlefield::Clan::convertRank(uint8_t int_rank)
 {
-	if(int_rank >= static_cast<uint8_t>(Ranks::Leader) && int_rank <= static_cast<uint8_t>(Ranks::Member))
+	if(int_rank >= static_cast<uint8_t>(Rank::Leader) && int_rank <= static_cast<uint8_t>(Rank::Member))
 	{
-		return static_cast<Ranks>(int_rank);
+		return static_cast<Rank>(int_rank);
 	}
 	
-	return Ranks::Unknown;
+	return Rank::Unknown;
 }
 
-Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& str_region)
+Battlefield::Clan::Region Battlefield::Clan::convertRegion(const std::string& str_region)
 {
 	try
 	{
@@ -229,16 +229,16 @@ Battlefield::Clan::Regions Battlefield::Clan::convertRegion(const std::string& s
 	}
 	catch(...) {};
 	
-	return Regions::Unknown;
+	return Region::Unknown;
 }
 
-Battlefield::Clan::Regions Battlefield::Clan::convertRegion(uint8_t int_region)
+Battlefield::Clan::Region Battlefield::Clan::convertRegion(uint8_t int_region)
 {
-	if(int_region >= static_cast<uint8_t>(Regions::America) && int_region <= static_cast<uint8_t>(Regions::Asia))
+	if(int_region >= static_cast<uint8_t>(Region::America) && int_region <= static_cast<uint8_t>(Region::Asia))
 	{
-		return static_cast<Regions>(int_region);
+		return static_cast<Region>(int_region);
 	}
 	
-	return Regions::Unknown;
+	return Region::Unknown;
 }
 

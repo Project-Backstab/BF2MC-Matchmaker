@@ -54,12 +54,12 @@ namespace Battlefield
 	{
 		public:
 			/**
-			 * @brief Represents the regions associated with clans.
+			 * @brief Represents the region associated with a clan.
 			 * 
-			 * This enum class defines different regions associated with clans.
+			 * This enum class defines different region associated with a clan.
 			 * Each region corresponds to a specific geographical area.
 			 */
-			enum class Regions : uint8_t
+			enum class Region : uint8_t
 			{
 				America   =  0x1, /**< The Americas region. */
 				Europe    =  0x2, /**< The Europe region. */
@@ -73,13 +73,15 @@ namespace Battlefield
 			 * This enum class defines different ranks within a clan.
 			 * Each rank corresponds to a specific position or role within the clan hierarchy.
 			 */
-			enum class Ranks
+			enum class Rank : uint8_t
 			{
 				Leader     = 0x0, /**< The leader of the clan. */
 				Co_Leader  = 0x1, /**< A co-leader within the clan. */
 				Member     = 0x2, /**< A regular member of the clan. */
 				Unknown    = 0xf  /**< Unknown rank. */
 			};
+
+			typedef std::map<int, Battlefield::Clan::Rank> Ranks;
 		
 		private:
 			int          _clanid     = -1;               /**< The unique identifier of the clan. */
@@ -87,14 +89,14 @@ namespace Battlefield
 			std::string  _tag        = "";               /**< The tag of the clan. */
 			std::string  _homepage   = "";               /**< The homepage URL of the clan. */
 			std::string  _info       = "";               /**< Additional information about the clan. */
-			Regions      _region     = Regions::America; /**< The region associated with the clan. */
+			Region      _region      = Region::America;  /**< The region associated with the clan. */
 			uint32_t     _score      = 0;                /**< The score of the clan. */
 			uint32_t     _wins       = 0;                /**< The number of wins of the clan. */
 			uint32_t     _losses     = 0;                /**< The number of losses of the clan. */
 			uint32_t     _draws      = 0;                /**< The number of draws of the clan. */
 			std::string  _created_at = "";               /**< The creation timestamp of the clan. */
 			bool         _disable    = false;            /**< Disable option to not let player progress stats. */
-			std::map<int, Ranks> _ranks;                 /**< The map of member IDs to ranks within the clan. */
+			Ranks        _ranks;                         /**< The map of member IDs to ranks within the clan. */
 		
 		public:
 			/**
@@ -119,20 +121,20 @@ namespace Battlefield
 			static std::unordered_map<std::string, SetterFunc> SetterMap;
 
 		public:
-			int                         GetClanId() const     { return this->_clanid;     }
-			std::string                 GetName() const       { return this->_name;       }
-			std::string                 GetTag() const        { return this->_tag;        }
-			std::string                 GetHomepage() const   { return this->_homepage;   }
-			std::string                 GetInfo() const       { return this->_info;       }
-			uint8_t                     GetRegion() const     { return static_cast<uint8_t>(this->_region); }
-			Regions                     GetRegionEnum() const { return this->_region;     }
-			uint32_t                    GetScore() const      { return this->_score;      }
-			uint32_t                    GetWins() const       { return this->_wins;       }
-			uint32_t                    GetLosses() const     { return this->_losses;     }
-			uint32_t                    GetDraws() const      { return this->_draws;      }
-			std::string                 GetCreatedAt() const  { return this->_created_at; }
-			bool                        IsDisabled() const    { return this->_disable;    }
-			const std::map<int, Ranks>  GetRanks() const      { return this->_ranks;      }
+			int          GetClanId() const     { return this->_clanid;     }
+			std::string  GetName() const       { return this->_name;       }
+			std::string  GetTag() const        { return this->_tag;        }
+			std::string  GetHomepage() const   { return this->_homepage;   }
+			std::string  GetInfo() const       { return this->_info;       }
+			uint8_t      GetRegion() const     { return static_cast<uint8_t>(this->_region); }
+			Region       GetRegionEnum() const { return this->_region;     }
+			uint32_t     GetScore() const      { return this->_score;      }
+			uint32_t     GetWins() const       { return this->_wins;       }
+			uint32_t     GetLosses() const     { return this->_losses;     }
+			uint32_t     GetDraws() const      { return this->_draws;      }
+			std::string  GetCreatedAt() const  { return this->_created_at; }
+			bool         IsDisabled() const    { return this->_disable;    }
+			Ranks        GetRanks() const      { return this->_ranks;      }
 			
 			bool SetClanId(int clanid);
 			bool SetClanId(const std::string& clanid);
@@ -140,7 +142,7 @@ namespace Battlefield
 			bool SetTag(const std::string& tag);
 			bool SetHomepage(const std::string& homepage);
 			bool SetInfo(const std::string& info);
-			bool SetRegion(Battlefield::Clan::Regions region);
+			bool SetRegion(Battlefield::Clan::Region region);
 			bool SetRegion(uint8_t int_region);
 			bool SetRegion(const std::string& region);
 			bool SetScore(uint32_t score);
@@ -150,9 +152,9 @@ namespace Battlefield
 			bool SetCreatedAt(MYSQL_TIME created_at);
 			bool SetDisable(bool disable);
 			bool SetDisable(uint8_t disable);
-			void AddRank(int profileid, Ranks rank);
+			void AddRank(int profileid, Rank rank);
 			void AddRank(int profileid, uint8_t int_rank);
-			Ranks GetRank(int profileid) const;
+			Rank GetRank(int profileid) const;
 
 			/**
 			 * @brief Performs an example operation using the Clan class.
@@ -176,7 +178,7 @@ namespace Battlefield
 			 * @param rank A string representing the rank.
 			 * @return The enum value representing the rank.
 			 */
-			static Ranks convertRank(const std::string& rank);
+			static Rank convertRank(const std::string& rank);
 
 			/**
 			 * @brief Converts an integer representation of a rank to its corresponding enum value.
@@ -187,29 +189,29 @@ namespace Battlefield
 			 * @param int_rank An integer representing the rank.
 			 * @return The enum value representing the rank.
 			 */
-			static Ranks convertRank(uint8_t int_rank);
+			static Rank convertRank(uint8_t int_rank);
 
 			/**
 			 * @brief Converts a string representation of a region to its corresponding enum value.
 			 * 
 			 * This static member function converts a string representation of a region to its corresponding
-			 * enum value of the Regions enumeration.
+			 * enum value of the Region enumeration.
 			 * 
 			 * @param str_region A string representing the region.
 			 * @return The enum value representing the region.
 			 */
-			static Regions convertRegion(const std::string& str_region);
+			static Region convertRegion(const std::string& str_region);
 
 			/**
 			 * @brief Converts an integer representation of a region to its corresponding enum value.
 			 * 
 			 * This static member function converts an integer representation of a region to its corresponding
-			 * enum value of the Regions enumeration.
+			 * enum value of the Region enumeration.
 			 * 
 			 * @param int_region An integer representing the region.
 			 * @return The enum value representing the region.
 			 */
-			static Regions convertRegion(uint8_t int_region);
+			static Region convertRegion(uint8_t int_region);
 	};
 }
 

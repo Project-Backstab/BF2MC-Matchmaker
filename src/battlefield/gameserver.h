@@ -71,7 +71,7 @@ namespace Battlefield
 			 * For more information, see: 
 			 * https://documentation.help/GameSpy-SDK/Gamespy%20Server%20Browsing%20SDK.html#Appendix-Region-Codes-and-Usage
 			 */
-			enum class Regions : uint64_t
+			enum class Region : uint64_t
 			{
 				Unknown  = 0,    /**< Unknown region code */
 				America  = 1,    /**< America region code */
@@ -165,7 +165,7 @@ namespace Battlefield
 			 */
 			uint8_t     _qm            = 0;
 
-			uint64_t    _region        = 1;    /**< Server region. See Battlefield::GameServer::Regions enum for possible values. */
+			uint64_t    _region        = 1;    /**< Server region. See Battlefield::GameServer::Region enum for possible values. */
 			
 			// Clan
 			int         _c0            = -1;   /**< Clan ID for team 1. */
