@@ -665,7 +665,7 @@ bool Database::updateClans(const Battlefield::Clan& clan1, const Battlefield::Cl
 	query += "		WHEN `clanid` = ? THEN ?";
 	query += "		WHEN `clanid` = ? THEN ?";
 	query += "	END ";
-	query += "WHERE id IN (?, ?);";
+	query += "WHERE `clanid` IN (?, ?);";
 
 	int          input_clanid1   = clan1.GetClanId();
 	std::string  input_tag1      = clan1.GetTag();
