@@ -143,6 +143,7 @@ void Webserver::Client::requestAPIGame(const atomizes::HTTPMessage& http_request
 	json_game_stat["victory_t0"] = game_stat.GetTeam1Victory();
 	json_game_stat["victory_t1"] = game_stat.GetTeam2Victory();
 	json_game_stat["created_at"] = game_stat.GetCreatedAt();
+	json_game_stat["disable"]    = game_stat.IsDisabled();
 	
 	// Game server player information
 	Json::Value json_players(Json::arrayValue);

@@ -318,6 +318,17 @@ bool Battlefield::GameStat::SetCreatedAt(MYSQL_TIME created_at)
 	return true;
 }
 
+bool Battlefield::GameStat::SetDisable(bool disable)
+{
+	this->_disable = disable;
+	return true;
+}
+
+bool Battlefield::GameStat::SetDisable(uint8_t disable)
+{
+	return this->SetDisable(disable == 1);
+}
+
 void Battlefield::GameStat::AddPlayer(const GameStatPlayer& gsplayer)
 {
 	this->_players.push_back(gsplayer);

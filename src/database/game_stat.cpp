@@ -15,7 +15,7 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	query += "SELECT ";
 	query += "	`id`, `gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
 	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
-	query += "	`score0`, `score1`, `created_at` ";
+	query += "	`score0`, `score1`, `created_at`, `disable` ";
 	query += "FROM ";
 	query += "	`GameStats` ";
 	query += "WHERE ";
@@ -38,7 +38,8 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	int16_t    output_score0;
 	int16_t    output_score1;
 	MYSQL_TIME output_created_at;
-	
+	uint8_t    output_disable;
+
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_STRING;
@@ -46,7 +47,7 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	input_bind[0].buffer_length = date.size();
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(17, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(18, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_LONG;
 	output_bind[0].buffer = &output_id;
 	output_bind[0].is_unsigned = false;
@@ -97,7 +98,10 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 	output_bind[15].is_unsigned = false;
 	output_bind[16].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[16].buffer = &output_created_at;
-	
+	output_bind[17].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[17].buffer = &output_disable;
+	output_bind[17].is_unsigned = true;
+
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
 	
@@ -142,7 +146,8 @@ bool Database::queryGameStatsByDate(Battlefield::GameStats& game_stats, const st
 		game_stat.SetTeam1Score(output_score0);
 		game_stat.SetTeam2Score(output_score1);
 		game_stat.SetCreatedAt(output_created_at);
-		
+		game_stat.SetDisable(output_disable);
+
 		game_stats.push_back(game_stat);
 	}
 
@@ -163,7 +168,7 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	query += "SELECT ";
 	query += "	`gametype`, `gamver`, `hostname`, `mapid`, `numplayers`, `pplayers`, `tplayed`, ";
 	query += "	`clanid_t0`, `clanid_t1`, `country_t0`, `country_t1`, `victory_t0`, `victory_t1`, ";
-	query += "	`score0`, `score1`, `created_at` ";
+	query += "	`score0`, `score1`, `created_at`, `disable` ";
 	query += "FROM ";
 	query += "	`GameStats` ";
 	query += "WHERE ";
@@ -187,7 +192,8 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	int16_t    output_score0;
 	int16_t    output_score1;
 	MYSQL_TIME output_created_at;
-	
+	uint8_t    output_disable;
+
 	// Allocate input binds
 	MYSQL_BIND* input_bind = (MYSQL_BIND *)calloc(1, sizeof(MYSQL_BIND));
 	input_bind[0].buffer_type = MYSQL_TYPE_LONG;
@@ -195,7 +201,7 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	input_bind[0].is_unsigned = false;
 	
 	// Allocate output binds
-	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(16, sizeof(MYSQL_BIND));
+	MYSQL_BIND* output_bind = (MYSQL_BIND *)calloc(17, sizeof(MYSQL_BIND));
 	output_bind[0].buffer_type = MYSQL_TYPE_TINY;
 	output_bind[0].buffer = &output_gametype;
 	output_bind[0].is_unsigned = true;
@@ -243,6 +249,9 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 	output_bind[14].is_unsigned = false;
 	output_bind[15].buffer_type = MYSQL_TYPE_DATETIME;
 	output_bind[15].buffer = &output_created_at;
+	output_bind[16].buffer_type = MYSQL_TYPE_TINY;
+	output_bind[16].buffer = &output_disable;
+	output_bind[16].is_unsigned = true;
 	
 	// Prepare and execute with binds
 	MYSQL_STMT* statement;
@@ -285,6 +294,7 @@ bool Database::queryGameStatById(Battlefield::GameStat& game_stat)
 		game_stat.SetTeam1Score(output_score0);
 		game_stat.SetTeam2Score(output_score1);
 		game_stat.SetCreatedAt(output_created_at);
+		game_stat.SetDisable(output_disable);
 	}
 
 	// Cleanup

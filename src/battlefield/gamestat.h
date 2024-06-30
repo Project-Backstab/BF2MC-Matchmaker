@@ -64,8 +64,9 @@ namespace Battlefield
 			uint8_t         _victory_t1 = 0;  /**< The victory state for team 2 (see: enum Battlefield::GameStat::VictoryState). */
 			int16_t         _score0     = 0;  /**< Score of team 1. */
 			int16_t         _score1     = 0;  /**< Score of team 2. */
-
 			std::string     _created_at = ""; /**< The datetime when the game statistics were created. */
+			bool            _disable    = false; /**< Disable option to not let clan progress stats. */
+
 			GameStatPlayers _players;         /**< The list of players involved in the game. */
 		
 		public:
@@ -96,6 +97,8 @@ namespace Battlefield
 			int16_t      GetTeam2Score() const        { return this->_score1;     }
 			
 			std::string     GetCreatedAt() const     { return this->_created_at;  }
+			bool 		    IsDisabled() const       { return this->_disable;     }
+
 			GameStatPlayers GetPlayers() const       { return this->_players;     }
 		
 			bool SetId(int id);
@@ -130,8 +133,10 @@ namespace Battlefield
 			bool SetTeam1Score(const std::string& str_score0);
 			bool SetTeam2Score(int16_t score1);
 			bool SetTeam2Score(const std::string& str_score1);
-			
 			bool SetCreatedAt(MYSQL_TIME created_at);
+			bool SetDisable(bool disable);
+			bool SetDisable(uint8_t disable);
+			
 			void AddPlayer(const GameStatPlayer& gsplayer);
 			
 			void disablePlayer(int profileid);
@@ -186,7 +191,6 @@ namespace Battlefield
 			uint32_t  _cflags    = 0;     /**< Total captured flags by the player. */
 			uint32_t  _nflags    = 0;     /**< Total neutralized flags by the player. */
 			uint32_t  _sflags    = 0;     /**< Total saved flags by the player. */
-			
 			bool      _disable   = false; /**< Disable option to not let player progress stats. */
 
 		public:
