@@ -410,7 +410,7 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 		}
 
 		auto it = Battlefield::Clan::SetterMap.find(key);
-		if(it == Battlefield::Clan::SetterMap.end() || (clan.*(it->second))(value))
+		if(it == Battlefield::Clan::SetterMap.end() || !(clan.*(it->second))(value))
 		{
 			return false;
 		}
