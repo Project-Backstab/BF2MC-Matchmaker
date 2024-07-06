@@ -21,6 +21,7 @@ class Server : public Net::Socket
 			Browsing,  /**< Browsing server. TCP:28910, Domain: bfield1942ps2.available.gamespy.com and bfield1942ps2.ms7.gamespy.com */
 			GameStats, /**< Game statistics server. TCP:29920, Domain: bfield1942ps2.gamestats.bfmcspy.net */
 			Websocket, /**< Websocket server. TCP:55001 */
+			DNS,       /**< DNS server. UDP:53 */
 			None,      /**< No specific server type. */
 		};
 	

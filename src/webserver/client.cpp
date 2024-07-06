@@ -17,6 +17,13 @@
 
 #include <webserver/client.h>
 
+/*
+	To not let the executable run as admin you have to redirect port 80 to 8080.
+	
+	sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+	sudo iptables -D PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+*/
+
 typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const std::string&, const Util::Url::Variables&);
 
 static std::map<std::string, RequestActionFunc> mRequestActions = 

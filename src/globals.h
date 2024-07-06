@@ -51,6 +51,11 @@ extern Server*                      g_gamestats_server;
 extern Server*                      g_websocket_server;
 
 /**
+ * @brief Pointer to the global DNS Server instance.
+ */
+extern Server*                      g_dns_server;
+
+/**
  * @brief Pointer to the global File_System instance.
  */
 extern class Service::File_System*  g_file_system;

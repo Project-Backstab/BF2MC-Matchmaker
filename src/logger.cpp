@@ -44,6 +44,7 @@ std::string Logger::ToString(enum Server::Type type)
 		case Server::Type::GameStats: return "[GameStats]"; break;
 		case Server::Type::QR: return "[QR]"; break;
 		case Server::Type::Websocket: return "[Websocket]"; break;
+		case Server::Type::DNS: return "[DNS]"; break;
 		case Server::Type::None: return ""; break;
 	}
 	
