@@ -43,6 +43,7 @@ add_executable(bf2mc
     src/websocket/client.cpp
     src/service/file_system.cpp
     src/qr/client.cpp
+    src/dns/client.cpp
     src/net/socket.cpp
     src/database.cpp
     src/database/chat.cpp

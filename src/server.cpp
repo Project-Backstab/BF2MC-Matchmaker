@@ -18,6 +18,7 @@
 #include <gamestats/client.h>
 #include <qr/client.h>
 #include <websocket/client.h>
+#include <dns/client.h>
 
 #include <server.h>
 
@@ -57,6 +58,10 @@ Server::Server(Server::Type type)
 		break;
 		case Server::Type::Websocket:
 			port = g_settings["websocket"]["port"].asInt();
+		break;
+		case Server::Type::DNS:
+			port = g_settings["dns"]["port"].asInt();
+			socket_type = SOCK_DGRAM;
 		break;
 	}
 	
@@ -247,6 +252,7 @@ void Server::UDPListen()
 			switch(this->_type)
 			{
 				case Server::Type::QR:
+				{
 					QR::Client client = QR::Client(this->_socket, client_address);
 					
 					this->onClientConnect(client);
@@ -254,6 +260,18 @@ void Server::UDPListen()
 					client.onRequest(buffer);
 					
 					this->onClientDisconnect(client);
+				}
+				break;
+				case Server::Type::DNS:
+				{
+					DNS::Client client = DNS::Client(this->_socket, client_address);
+					
+					this->onClientConnect(client);
+					
+					client.onRequest(buffer);
+					
+					this->onClientDisconnect(client);
+				}
 				break;
 			}
 		}

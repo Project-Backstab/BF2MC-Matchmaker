@@ -29,6 +29,7 @@ Server*                 g_webserver_server;
 Server*                 g_browsing_server;
 Server*                 g_gamestats_server;
 Server*                 g_websocket_server;
+Server*                 g_dns_server;
 
 class Service::File_System*   g_file_system;
 
@@ -113,6 +114,12 @@ void start_websocket_server()
 	g_websocket_server->Listen();
 }
 
+void start_dns_server()
+{
+	g_dns_server = new Server(Server::Type::DNS);
+	g_dns_server->UDPListen();
+}
+
 void start_file_system()
 {
 	g_file_system = new class Service::File_System();
@@ -154,6 +161,7 @@ void signal_callback(int signum)
 	g_webserver_server->DisconnectAllClients();
 	g_browsing_server->DisconnectAllClients();
 	g_gamestats_server->DisconnectAllClients();
+	g_websocket_server->DisconnectAllClients();
 	
 	// Close services
 	g_qr_server->Close();
@@ -162,6 +170,8 @@ void signal_callback(int signum)
 	g_webserver_server->Close();
 	g_browsing_server->Close();
 	g_gamestats_server->Close();
+	g_websocket_server->Close();
+	g_dns_server->Close();
 	
 	g_file_system->UnLoadAll();
 	
@@ -190,6 +200,7 @@ int main(int argc, char const* argv[])
 	
 	// Start servers
 	std::thread t_db(&start_db);
+
 	std::thread t_qr(&start_qr_server);
 	std::thread t_gpsp(&start_gpsp_server);
 	std::thread t_gpcm(&start_gpcm_server);
@@ -201,21 +212,26 @@ int main(int argc, char const* argv[])
 	std::thread t_gamestats(&start_gamestats_server);
 	std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
 	std::thread t_websocket(&start_websocket_server);
+	std::thread t_dns(&start_dns_server);
+
 	std::thread t_file_system(&start_file_system);
 
 	t_db.detach();
+
 	t_qr.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
 	t_gpcm_heartbeat.detach();
-	t_webserver.detach();
-	t_webserver_heartbeat.detach();
 	t_browsing.detach();
 	t_browsing_heartbeat.detach();
 	t_gamestats.detach();
 	t_gamestats_heartbeat.detach();
-	t_file_system.detach();
+	t_webserver.detach();
+	t_webserver_heartbeat.detach();
 	t_websocket.detach();
+	t_dns.detach();
+
+	t_file_system.detach();
 
 	// Sleep ZZZZZZzzzzzZZZZZ
 	while(true)
