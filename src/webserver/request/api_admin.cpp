@@ -206,7 +206,7 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	// Get profile id
 	Battlefield::Player player;
 	it = url_variables.find("profileid");
-	if (it == url_variables.end())
+	if (it != url_variables.end())
 	{
 		player.SetProfileId(it->second);
 	}
