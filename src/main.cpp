@@ -211,8 +211,8 @@ int main(int argc, char const* argv[])
 	std::thread t_browsing_heartbeat(&Browsing::Client::Heartbeat);
 	std::thread t_gamestats(&start_gamestats_server);
 	std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
-	std::thread t_websocket(&start_websocket_server);
-	std::thread t_dns(&start_dns_server);
+	//std::thread t_websocket(&start_websocket_server);
+	//std::thread t_dns(&start_dns_server);
 
 	std::thread t_file_system(&start_file_system);
 
@@ -228,8 +228,8 @@ int main(int argc, char const* argv[])
 	t_gamestats_heartbeat.detach();
 	t_webserver.detach();
 	t_webserver_heartbeat.detach();
-	t_websocket.detach();
-	t_dns.detach();
+	//t_websocket.detach();
+	//t_dns.detach();
 
 	t_file_system.detach();
 

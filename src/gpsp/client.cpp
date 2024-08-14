@@ -355,6 +355,22 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	// Check if player exist with same email
 	if(players.size() >= 1)
 	{
+		// Check password with other accounts
+		if(players[0].GetPassword() != password)
+		{
+			std::string response = GameSpy::Parameter2Response({
+				"nur", "516",
+				"pid", std::to_string(new_player.GetProfileId()),
+				"final"
+			});
+			
+			this->Send(response);
+			
+			this->_LogTransaction("<--", response);
+			
+			return;
+		}
+
 		// Copy there userid
 		new_player.SetUserId(players[0].GetUserId());
 	}
