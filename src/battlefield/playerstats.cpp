@@ -397,7 +397,7 @@ void Battlefield::PlayerStats::_calcNewPPH(uint32_t time, int32_t score)
 	const int SECONDS_PER_HOUR = 60 * 60;
 	
 	double total_hours = static_cast<double>(this->_time + time) / SECONDS_PER_HOUR;
-	int32_t total_score = this->_score + score;
+	int32_t total_score = (this->_score + score < 0) ? 0 : this->_score + score;
 
 	uint32_t new_pph = 0;
 
