@@ -215,7 +215,7 @@ void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
 	this->Net::Socket::Send(http_response.ToString());
 }
 
-void Webserver::Client::Send(const Json::Value &value) const
+void Webserver::Client::Send(const Json::Value &value, uint16_t status_code) const
 {
 	// Create a JSON writer
 	Json::StreamWriterBuilder writer;
@@ -223,7 +223,7 @@ void Webserver::Client::Send(const Json::Value &value) const
 
 	// Create http response
 	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
-	http_response.SetStatusCode(200);
+	http_response.SetStatusCode(status_code);
 	http_response.SetMessageBody(jsonString);
 
 	//Logger::debug("json = " + jsonString);

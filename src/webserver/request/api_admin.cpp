@@ -16,14 +16,19 @@
 void Webserver::Client::requestAPIAdminClients(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
+	Json::Value json_results;
+
 	// Check password
 	auto it = url_variables.find("password");
 	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad password";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad password");
+
 		return;
 	}
-
-	Json::Value json_results;
 
 	// Browsing
 	Json::Value json_browsing(Json::arrayValue);
@@ -147,13 +152,16 @@ void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_re
 		const Util::Url::Variables& url_variables)
 {
 	Json::Value json_results;
-	
-	json_results["result"] = "FAIL";
 
 	// Check password
 	auto it = url_variables.find("password");
 	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad password";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad password");
+
 		return;
 	}
 
@@ -163,8 +171,16 @@ void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_re
 	it = url_variables.find("profileid");
 	if (it == url_variables.end() || !player.SetProfileId(it->second))
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad profileid";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad profileid");
+
 		return;
 	}
+
+	// By default send FAIL.
+	json_results["result"] = "FAIL";
 
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
@@ -188,10 +204,17 @@ void Webserver::Client::requestAPIAdminKick(const atomizes::HTTPMessage& http_re
 void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
+	Json::Value json_results;
+
 	// Check password
 	auto it = url_variables.find("password");
 	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad password";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad password");
+
 		return;
 	}
 
@@ -199,20 +222,58 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 	it = url_variables.find("message");
 	if (it == url_variables.end() || !Util::UTF8::isValid(it->second))
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad message";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad message");
+
 		return;
 	}
 	std::string message = it->second;
 
-	// Get profile id
-	Battlefield::Player player;
-	it = url_variables.find("profileid");
-	if (it != url_variables.end())
+	// Get to profileid
+	Battlefield::Player to_player;
+	it = url_variables.find("to");
+	if (
+		it != url_variables.end() &&                       // No "to" url parameter is provided.
+		(
+			!to_player.SetProfileId(it->second) ||             // Provided "to" parameter is wrong.
+			!g_database->queryPlayerByProfileId(to_player) ||  // Query player information went wrong
+			to_player.GetUserId() == -1                        // No to_player is found in database
+		)
+	)
 	{
-		player.SetProfileId(it->second);
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad to profileid";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad to profileid");
+
+		return;
+	}
+
+	// Get from profileid
+	Battlefield::Player from_player;
+	from_player.SetProfileId(1);
+
+	it = url_variables.find("from");
+	if (
+		it != url_variables.end() &&                       // No "from" url parameter is provided.
+		(
+			!from_player.SetProfileId(it->second) ||             // Provided "from" parameter is wrong.
+			!g_database->queryPlayerByProfileId(from_player) ||  // Query player information went wrong
+			from_player.GetUserId() == -1                        // No from_player is found in database
+		)
+	)
+	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad from profileid";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad from profileid");
+
+		return;
 	}
 	
-	Json::Value json_results;
-
+	Json::Value json_send(Json::arrayValue);
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())
 	{
 		std::shared_ptr<GPCM::Client> gpcm_client = std::dynamic_pointer_cast<GPCM::Client>(client);
@@ -220,18 +281,25 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 		// Find session
 		GPCM::Session session = gpcm_client->GetSession();
 
-		if(session.profileid == player.GetProfileId() || player.GetProfileId() == -1)
+		if(session.profileid == to_player.GetProfileId() || to_player.GetProfileId() == -1)
 		{
 			GPCM::Client::SendBuddyMessage(
-				1,
+				from_player.GetProfileId(),
 				session.profileid,
 				"1",
 				message
 			);
 
-			json_results["result"] = "OK";
+			Json::Value json_msg;
+
+			json_msg["from"] = from_player.GetProfileId();
+			json_msg["to"] = session.profileid;
+			json_send.append(json_msg);
 		}
 	}
+
+	json_results["result"] = "OK";
+	json_results["send"] = json_send;
 
 	this->Send(json_results);
 
@@ -241,10 +309,17 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMessage& http_request, const std::string& url_base,
 		const Util::Url::Variables& url_variables)
 {
+	Json::Value json_results;
+
 	// Check password
 	auto it = url_variables.find("password");
 	if (it == url_variables.end() || it->second != g_settings["webserver"]["password"].asString())
 	{
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad password";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad password");
+
 		return;
 	}
 
@@ -254,10 +329,14 @@ void Webserver::Client::requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMes
 	it = url_variables.find("profileid");
 	if (it == url_variables.end() || !player.SetProfileId(it->second) && player.GetProfileId() > 0)
 	{
-		return;	
+		json_results["result"] = "FAIL";
+		json_results["message"] = "Bad profileid";
+		this->Send(json_results, 403);
+		this->_LogTransaction("<--", "HTTP/1.1 403 Bad profileid");
+
+		return;
 	}
 
-	Json::Value json_results;
 	Json::Value json_gsplayers(Json::arrayValue);
 
 	// Get total games needs to be process

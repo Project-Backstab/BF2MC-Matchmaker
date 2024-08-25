@@ -61,7 +61,7 @@ namespace Webserver
 			 * 
 			 * @param value The JSON value to send.
 			 */
-			void Send(const Json::Value &value) const;
+			void Send(const Json::Value &value, uint16_t status_code = 200) const;
 			
 			/*
 				Events
