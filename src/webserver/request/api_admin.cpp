@@ -272,6 +272,24 @@ void Webserver::Client::requestAPIAdminMessage(const atomizes::HTTPMessage& http
 
 		return;
 	}
+
+	// Check "from" are friends with "to".
+	// Exception: BF2MC-Admin(profileid = 1) dont need to be checked.
+	if(it != url_variables.end() && from_player.GetProfileId() != 1)
+	{
+		if(
+			!g_database->queryPlayerFriendsByProfileId(from_player)	||
+			!from_player.isFriend(to_player.GetProfileId())
+		)
+		{
+			json_results["result"] = "FAIL";
+			json_results["message"] = "Bad friendship";
+			this->Send(json_results, 403);
+			this->_LogTransaction("<--", "HTTP/1.1 403 Bad friendship");
+
+			return;
+		}
+	}
 	
 	Json::Value json_send(Json::arrayValue);
 	for(std::shared_ptr<Net::Socket> client : g_gpcm_server->GetClients())

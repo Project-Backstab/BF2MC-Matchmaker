@@ -63,7 +63,8 @@ namespace Battlefield
 			std::vector<int> GetFriends() const     { return this->_friends;       }
 			bool             isVerified() const     { return this->_verified;      }
 			bool             isRestricted() const   { return this->_restricted;      }
-			
+			bool             isFriend(int profileid) const;
+
 			bool SetProfileId(int profileid);
 			bool SetProfileId(const std::string& str_profileid);
 			bool SetUserId(int userid);

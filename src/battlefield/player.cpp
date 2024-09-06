@@ -1,5 +1,6 @@
 #include <mysql/mysql_time.h>
 #include <regex>
+#include <algorithm>
 
 #include <util.h>
 
@@ -192,6 +193,13 @@ bool Battlefield::Player::SetRestricted(bool restricted)
 bool Battlefield::Player::SetRestricted(uint8_t restricted)
 {
 	return this->SetRestricted(restricted == 1);
+}
+
+bool Battlefield::Player::isFriend(int profileid) const
+{
+	std::vector<int>::const_iterator friend_it = std::find(this->_friends.begin(), this->_friends.end(), profileid);
+
+	return (friend_it != this->_friends.end());
 }
 
 bool Battlefield::Player::AddFriend(int profileid)
