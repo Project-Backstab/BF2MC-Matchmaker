@@ -322,7 +322,7 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	
 	// Get player profileid
 	auto it = url_variables.find("clanid");
-	if (it != url_variables.end() || !clan.SetClanId(it->second))
+	if (it == url_variables.end() || !clan.SetClanId(it->second))
 	{
 		return;
 	}

@@ -4,9 +4,9 @@ import time
 import socket
 import threading
 
-#GPCM_SERVER_HOST = '64.225.4.169' ## OpenSpy
+GPCM_SERVER_HOST = '157.230.90.177' ## OpenSpy
 #GPCM_SERVER_HOST = '128.140.0.23' ## BF2MC Backend
-GPCM_SERVER_HOST = '127.0.0.1'
+#GPCM_SERVER_HOST = '127.0.0.1'
 GPCM_SERVER_PORT = 29900
 
 LOGIN_UNIQUENICK = "IamLupo"
