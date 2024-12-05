@@ -341,12 +341,10 @@ void Webserver::Client::requestAPIClan(const atomizes::HTTPMessage& http_request
 	json_clan["info"]       = clan.GetInfo();
 	json_clan["region"]     = clan.GetRegion();
 	json_clan["created_at"] = clan.GetCreatedAt();
-	
-	// Secret
-	//json_clan["rating"] = clan.GetRating();
-	//json_clan["wins"]   = clan.GetWins();
-	//json_clan["losses"] = clan.GetLosses();
-	//json_clan["draws"]  = clan.GetDraws();
+	json_clan["score"]      = clan.GetScore();
+	json_clan["wins"]       = clan.GetWins();
+	json_clan["losses"]     = clan.GetLosses();
+	json_clan["draws"]      = clan.GetDraws();
 	
 	// Clan ranks information
 	Json::Value json_members(Json::arrayValue);
