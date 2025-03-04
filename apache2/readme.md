@@ -46,5 +46,11 @@ sudo certbot certonly --standalone -d bf2mc.com
 sudo certbot certonly --standalone -d doc.bf2mc.com
 sudo certbot certonly --standalone -d backend.bf2mc.com
 sudo certbot certonly --standalone -d backend.bfmcspy.net
+sudo certbot certonly --standalone -d fragalyzer.bf2mc.com
 sudo systemctl start apache2
+```
+
+On renewing the certificates:
+```
+sudo certbot renew
 ```

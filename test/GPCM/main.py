@@ -9,8 +9,8 @@ GPCM_SERVER_HOST = '157.230.90.177' ## OpenSpy
 #GPCM_SERVER_HOST = '127.0.0.1'
 GPCM_SERVER_PORT = 29900
 
-LOGIN_UNIQUENICK = "IamLupo"
-LOGIN_PASSWORD = "12345"
+LOGIN_UNIQUENICK = ""
+LOGIN_PASSWORD = ""
 
 def md5(input_string):
 	# Create an MD5 hash object
