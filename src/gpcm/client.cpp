@@ -169,9 +169,6 @@ void GPCM::Client::requestChallenge()
 		\login\\challenge\otMLwtUZyLCV85ERGzg5mVER8nknWX0B\uniquenick\IamLupo\response\b836c6a19b240bb9fb2a31179b28062b\firewall\1\port\0\productid\10307\gamename\bfield1942ps2\namespaceid\13\id\1\final\
 	Response:
 		\lc\2\sesskey\1\userid\64679\profileid\10036819\uniquenick\IamLupo\lt\ee5540bbd764b321378ccedd\proof\70eabd6f5b004fc0b42056ac3cef5c7b\id\1\final\
-	
-	To do:
-		- The client sends in the login request parameter "response". We have to figure out how this response is been generated.
 */
 
 void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
@@ -208,7 +205,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    "260",
+			"err",    std::to_string(GameSpy::ErrorCode::GP_LOGIN_BAD_PASSWORD),
 			"fatal",  "",
 			"errmsg", "The password provided was incorrect.",
 			"id",     "1",
@@ -558,7 +555,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    "1539",
+			"err",    std::to_string(GameSpy::ErrorCode::GP_ADDBUDDY_ALREADY_BUDDY),
 			"errmsg", "The profile requested is already a buddy.",
 			"final"
 		});
@@ -642,7 +639,7 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    "2817",
+			"err",    std::to_string(GameSpy::ErrorCode::GP_DELBUDDY_NOT_BUDDY),
 			"errmsg", "The buddy to be deleted is not a buddy. ",
 			"final"
 		});
