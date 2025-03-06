@@ -308,7 +308,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	if(nick.size() < 3 or uniquenick.size() < 3)
 	{
 		std::string response = GameSpy::Parameter2Response({
-			"nur", "516",
+			"nur", std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_NEWUSER_BAD_NICK)),
 			"pid", "-1",
 			"final"
 		});
@@ -331,7 +331,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		if(player.GetUniquenick() == uniquenick)
 		{
 			std::string response = GameSpy::Parameter2Response({
-				"nur", "516",
+				"nur", std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_NEWUSER_UNIQUENICK_INUSE)),
 				"pid", std::to_string(player.GetProfileId()),
 				"final"
 			});
@@ -359,7 +359,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 		if(players[0].GetPassword() != password)
 		{
 			std::string response = GameSpy::Parameter2Response({
-				"nur", "516",
+				"nur", std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_NEWUSER_BAD_PASSWORD)),
 				"pid", std::to_string(new_player.GetProfileId()),
 				"final"
 			});
@@ -387,7 +387,7 @@ void GPSP::Client::requestNewUser(const GameSpy::Parameter& parameter) const
 	g_database->insertPlayerStats(new_player);
 	
 	std::string response = GameSpy::Parameter2Response({
-		"nur", "0",
+		"nur", std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_GENERAL)),
 		"pid", std::to_string(new_player.GetProfileId()),
 		"final"
 	});
