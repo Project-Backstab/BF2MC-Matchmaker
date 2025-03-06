@@ -6,7 +6,7 @@
 
 namespace GameSpy
 {
-	typedef enum ErrorCode : uint16_t
+	enum class ErrorCode : uint16_t
 	{
 		// General error codes.
 		GP_GENERAL					= 0, // There was an unknown error. 

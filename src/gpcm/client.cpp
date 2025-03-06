@@ -205,7 +205,7 @@ void GPCM::Client::requestLogin(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    std::to_string(GameSpy::ErrorCode::GP_LOGIN_BAD_PASSWORD),
+			"err",    std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_LOGIN_BAD_PASSWORD)),
 			"fatal",  "",
 			"errmsg", "The password provided was incorrect.",
 			"id",     "1",
@@ -555,7 +555,7 @@ void GPCM::Client::requestAuthAdd(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    std::to_string(GameSpy::ErrorCode::GP_ADDBUDDY_ALREADY_BUDDY),
+			"err",    std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_ADDBUDDY_ALREADY_BUDDY)),
 			"errmsg", "The profile requested is already a buddy.",
 			"final"
 		});
@@ -639,7 +639,7 @@ void GPCM::Client::requestDeleteBuddy(const GameSpy::Parameter& parameter)
 	{
 		std::string response = GameSpy::Parameter2Response({
 			"error",  "",
-			"err",    std::to_string(GameSpy::ErrorCode::GP_DELBUDDY_NOT_BUDDY),
+			"err",    std::to_string(static_cast<uint16_t>(GameSpy::ErrorCode::GP_DELBUDDY_NOT_BUDDY)),
 			"errmsg", "The buddy to be deleted is not a buddy. ",
 			"final"
 		});
