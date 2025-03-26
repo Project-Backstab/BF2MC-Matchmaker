@@ -1,9 +1,16 @@
 ![http://bf2mc.com](images/BF2MC0_LOGO_no_colon.png)
 
-# Battlefield 2: Modern Combat Matchmaker server
+# Battlefield 2: Modern Combat Matchmaker Server
 
-This is a project to revive the online matchmaking services. This allows you to create a account and go online again. 
-It also has the possebility to save your stats and communicate with other players.
+This project aims to revive the online matchmaking services for Battlefield 2: Modern Combat on PlayStation 2.
+
+It enables players to create accounts and clans, add friends, and chat in-game. Additionally, we provide leaderboards for both players and clans. This project is essentially a recreation of the original GameSpy services, but with numerous enhancements and extra features.
+
+We've also developed an API that allows third parties to access player, game, and clan data collected by our system.
+
+We provide a documentation website about our project over [here](https://doc.bf2mc.com). You can find more details about all the source code we made.
+
+Note: This project does not include the BF2MC-GameServer, which is required to host game servers. That is a separate project.
 
 ## DNS
 
