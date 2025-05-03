@@ -396,6 +396,10 @@ void Battlefield::PlayerStats::_calcNewPPH(uint32_t time, int32_t score)
 	const int PPH_FACTOR = 100;
 	const int SECONDS_PER_HOUR = 60 * 60;
 	
+	// Don't calculate new pph when a name change is been done
+	if(score == -10000)
+		return;
+
 	double total_hours = static_cast<double>(this->_time + time) / SECONDS_PER_HOUR;
 	int32_t total_score = (this->_score + score < 0) ? 0 : this->_score + score;
 
