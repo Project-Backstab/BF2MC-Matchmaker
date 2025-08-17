@@ -2,7 +2,7 @@
 --
 -- Host: 128.140.0.23    Database: BF2MC
 -- ------------------------------------------------------
--- Server version	8.0.36-0ubuntu0.22.04.1
+-- Server version	8.0.42-0ubuntu0.22.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -242,6 +242,179 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CreateQuery1` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateQuery1`()
+BEGIN
+	CALL DropTableIfExists('new_table_query_1');
+    
+	CREATE TABLE new_table_query_1 AS
+	WITH 
+	-- Aggregate once for PlayerStats
+	ps AS (
+		SELECT 
+			COALESCE(SUM(vehicles), 1) AS total_vehicles,
+			SUM(kills) AS total_player_kills,
+			SUM(k1) AS total_assault_kills,
+			SUM(k2) AS total_sniper_kills,
+			SUM(k3) AS total_specops_kills,
+			SUM(k4) AS total_engineer_kills,
+			SUM(k5) AS total_support_kills
+		FROM PlayerStats
+	),
+	-- Aggregate once for GameStatPlayers
+	gsp AS (
+		SELECT
+			COUNT(DISTINCT CASE WHEN disable = 0 THEN gamestatid END) AS total_games_played,
+			COUNT(DISTINCT CASE WHEN ttb = 1 AND disable = 0 THEN pid END) AS unique_top_players
+		FROM GameStatPlayers
+	),
+	-- Active count for this week
+	active AS (
+		SELECT SUM(player_count) AS active_count
+		FROM (
+			-- Distinct machine_id this week
+			SELECT COUNT(DISTINCT machine_id) AS player_count
+			FROM GameStatPlayers gsp
+			JOIN GameStats gs ON gs.id = gsp.gamestatid
+			WHERE gsp.pid > 0
+			  AND LENGTH(gsp.machine_id) > 0
+			  AND YEAR(gs.created_at) = YEAR(NOW())
+			  AND WEEK(gs.created_at) = WEEK(NOW())
+
+			UNION ALL
+			-- Distinct pid with empty machine_id not in first set
+			SELECT COUNT(DISTINCT gsp.pid)
+			FROM GameStatPlayers gsp
+			JOIN GameStats gs ON gs.id = gsp.gamestatid
+			WHERE gsp.pid > 0
+			  AND gsp.machine_id = ''
+			  AND YEAR(gs.created_at) = YEAR(NOW())
+			  AND WEEK(gs.created_at) = WEEK(NOW())
+			  AND NOT EXISTS (
+				  SELECT 1
+				  FROM GameStatPlayers gsp_inner
+				  JOIN GameStats gs_inner ON gs_inner.id = gsp_inner.gamestatid
+				  WHERE gsp_inner.pid = gsp.pid
+					AND gsp_inner.pid > 0
+					AND gsp_inner.machine_id <> ''
+					AND YEAR(gs_inner.created_at) = YEAR(NOW())
+					AND WEEK(gs_inner.created_at) = WEEK(NOW())
+			  )
+		) AS sub
+	)
+	SELECT
+		ps.total_vehicles,
+		gsp.total_games_played,
+		ps.total_player_kills,
+		ps.total_assault_kills,
+		ps.total_sniper_kills,
+		ps.total_specops_kills,
+		ps.total_engineer_kills,
+		ps.total_support_kills,
+		active.active_count,
+		gsp.unique_top_players
+	FROM ps, gsp, active;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CreateQuery2` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateQuery2`()
+BEGIN
+	CALL DropTableIfExists('new_table_query_2');
+    
+	CREATE TABLE new_table_query_2 AS
+	SELECT
+		gs.*,
+		COALESCE(gsp.players, 0) AS players
+	FROM
+		GameStats gs
+	JOIN (
+		SELECT gamestatid, COUNT(DISTINCT pid) AS players
+		FROM GameStatPlayers
+		WHERE pid > 0
+		GROUP BY gamestatid
+	) gsp ON gsp.gamestatid = gs.id
+	WHERE
+		gs.numplayers > 0
+	ORDER BY
+		gs.id DESC
+	LIMIT 10;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CreateQuery3` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `CreateQuery3`()
+BEGIN
+	CALL DropTableIfExists('new_table_query_3');
+    
+	CREATE TABLE new_table_query_3 AS
+	SELECT 
+        hour,
+        hour_count,
+        ROUND(hour_count / DATEDIFF(CURRENT_DATE(), '2023-10-20'), 2) AS avg_hourly_matches,
+        ROUND (pplayers, 1) AS avg_players_per_game
+    FROM (
+        SELECT 
+            DATE_FORMAT(gs.created_at, '%H') AS hour,
+            COUNT(*) AS hour_count,
+            AVG(gs.pplayers) AS pplayers
+        FROM (
+            SELECT
+                DISTINCT gamestatid
+            FROM
+                GameStatPlayers
+            WHERE
+                `disable` = 0
+        ) AS gsp
+        JOIN GameStats gs ON gsp.gamestatid = gs.id
+        GROUP BY hour
+    ) AS subquery
+    GROUP BY
+        hour
+    ORDER BY
+        CASE
+            WHEN hour < 12 THEN hour + 24
+            ELSE hour
+        END;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `DropTableIfExists` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -269,6 +442,27 @@ BEGIN
         EXECUTE stmt;
         DEALLOCATE PREPARE stmt;
     END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `EventGameEnded` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`86.87.139.235` PROCEDURE `EventGameEnded`()
+BEGIN
+    CALL CreateQuery1();
+    CALL CreateQuery2();
+    CALL CreateQuery3();
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1602,4 +1796,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-08 11:56:49
+-- Dump completed on 2025-08-17 19:20:47
