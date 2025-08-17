@@ -535,7 +535,14 @@ class Database
 		 * @return True if the game statistic is successfully inserted into the database, false otherwise.
 		 */
 		bool insertGameStat(Battlefield::GameStat& game_stat);
-	
+
+		/**
+		 * @brief Game end event to trigger procedures for the new game stats for the website.
+		 * 
+		 * @return True if the game statistic is successfully executed the procedure.
+		 */
+		bool eventGameEnded();
+
 		// Game Stat Player
 		/**
 		 * @brief Queries the players associated with a game statistic.

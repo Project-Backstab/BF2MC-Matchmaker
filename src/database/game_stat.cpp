@@ -415,3 +415,28 @@ bool Database::insertGameStat(Battlefield::GameStat& game_stat)
 	
 	return true;
 }
+
+bool Database::eventGameEnded()
+{
+	std::lock_guard<std::mutex> guard(this->_mutex); // database lock
+
+	std::string query = "CALL EventGameEnded()";
+
+	// Prepare and execute with binds
+	MYSQL_STMT* statement;
+
+	if(
+		!this->_init(&statement) ||
+		!this->_prepare(statement, query) ||
+		!this->_execute(statement)
+	)
+	{	
+		return false;
+	}
+
+	// Cleanup
+	mysql_stmt_free_result(statement);
+	mysql_stmt_close(statement);
+	
+	return true;
+}

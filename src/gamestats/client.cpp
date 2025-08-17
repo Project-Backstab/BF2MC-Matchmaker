@@ -313,6 +313,7 @@ void GameStats::Client::requestUpdateGame(const GameSpy::Parameter& parameter)
 	}
 	
 	g_database->createLeaderboards();
+	g_database->eventGameEnded();
 }
 
 //	Private functions
