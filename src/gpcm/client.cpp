@@ -39,7 +39,7 @@ GPCM::Client::Client(int socket, struct sockaddr_in address)
 
 GPCM::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void GPCM::Client::Listen()
@@ -108,7 +108,9 @@ void GPCM::Client::Disconnect()
 	this->_SendNewStatus();
 
 	this->Close();
-	g_gpcm_server->onClientDisconnect(*this);
+	g_gpcm_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 GPCM::Session GPCM::Client::GetSession() const

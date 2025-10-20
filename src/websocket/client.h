@@ -1,6 +1,8 @@
 #ifndef WEBSOCKET_CLIENT_H
 #define WEBSOCKET_CLIENT_H
 
+#include <memory>
+
 #include <net/socket.h>
 #include <util.h>
 
@@ -20,7 +22,7 @@ namespace Json
 */
 namespace Websocket
 {
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<Net::Socket>
 	{
 		public:
 			Client(int socket, struct sockaddr_in address);

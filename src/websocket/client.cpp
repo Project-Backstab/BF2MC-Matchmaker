@@ -38,7 +38,7 @@ Websocket::Client::Client(int socket, struct sockaddr_in address)
 
 Websocket::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void Websocket::Client::Listen()
@@ -73,7 +73,9 @@ void Websocket::Client::Listen()
 void Websocket::Client::Disconnect()
 {
 	this->Close();
-	g_webserver_server->onClientDisconnect(*this);
+	g_websocket_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 void Websocket::Client::Send(const atomizes::HTTPMessage &http_response) const

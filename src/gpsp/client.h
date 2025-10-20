@@ -1,6 +1,8 @@
 #ifndef GPSP_CLIENT_H
 #define GPSP_CLIENT_H
 
+#include <memory>
+
 #include <gamespy.h>
 #include <net/socket.h>
 
@@ -9,7 +11,7 @@ namespace GPSP
 	/**
      * @brief Client class for GPSP protocol.
      */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<GPSP::Client>
 	{
 		public:
 			/**

@@ -31,7 +31,7 @@ GPSP::Client::Client(int socket, struct sockaddr_in address)
 
 GPSP::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void GPSP::Client::Listen()
@@ -67,7 +67,9 @@ void GPSP::Client::Listen()
 void GPSP::Client::Disconnect()
 {
 	this->Close();
-	g_gpsp_server->onClientDisconnect(*this);
+	g_gpsp_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 //	Events

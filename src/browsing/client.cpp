@@ -36,7 +36,7 @@ Browsing::Client::Client(int socket, struct sockaddr_in address)
 
 Browsing::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void Browsing::Client::Listen()
@@ -86,7 +86,9 @@ void Browsing::Client::Listen()
 void Browsing::Client::Disconnect()
 {
 	this->Close();
-	g_browsing_server->onClientDisconnect(*this);
+	g_browsing_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 // Events

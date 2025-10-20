@@ -23,7 +23,7 @@ namespace Battlefield
 
 namespace Webserver
 {
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<Webserver::Client>
 	{
 		public:
 			/**
@@ -328,6 +328,8 @@ namespace Webserver
 			 * @param url_variables The URL variables to be included in the request.
 			 */
 			void requestAPIAdminPlayerStatsRecalc(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
+
+			void requestXboxAPI(const atomizes::HTTPMessage& http_request, const std::string& url_base, const Util::Url::Variables& url_variables);
 
 		private:
 			/**

@@ -1,9 +1,10 @@
 #ifndef GPCM_CLIENT_H
 #define GPCM_CLIENT_H
 
+#include <memory>
+
 #include <gamespy.h>
 #include <net/socket.h>
-
 
 namespace GPCM
 {
@@ -30,7 +31,7 @@ namespace GPCM
 	 * This class extends the Net::Socket class to handle communication with GPCM clients.
 	 * It holds information about the client's session.
 	 */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<GPCM::Client>
 	{
 		private:
 			GPCM::Session       _session;        /**< The session information for the GPCM client. */

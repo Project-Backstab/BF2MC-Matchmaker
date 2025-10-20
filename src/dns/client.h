@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 #include <net/socket.h>
 
@@ -60,7 +61,7 @@ namespace DNS
 	 * This class extends the Net::Socket class to handle client
 	 * connections and requests for DNS.
 	 */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<DNS::Client>
 	{
 		public:
 			/**

@@ -1,6 +1,8 @@
 #ifndef GAMESTATS_CLIENT_H
 #define GAMESTATS_CLIENT_H
 
+#include <memory>
+
 #include <net/socket.h>
 #include <gamespy.h>
 
@@ -12,7 +14,7 @@ namespace GameStats
 	 * This class extends the Net::Socket class to handle client
 	 * connections and requests for game statistics.
 	 */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<GameStats::Client>
 	{	
 		public:
 			/**

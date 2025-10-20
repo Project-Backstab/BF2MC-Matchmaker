@@ -99,7 +99,7 @@ class Server : public Net::Socket
 		 * 
 		 * @param client The client socket that disconnected.
 		 */
-		void onClientDisconnect(const Net::Socket& client);
+		void onClientDisconnect(const std::shared_ptr<Net::Socket>& client);
 };
 
 #endif // SERVER_H

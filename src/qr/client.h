@@ -1,6 +1,8 @@
 #ifndef QR_CLIENT_H
 #define QR_CLIENT_H
 
+#include <memory>
+
 #include <gamespy.h>
 #include <net/socket.h>
 
@@ -9,7 +11,7 @@ namespace QR
 	/**
 	 * @brief Represents a client for QR protocol.
 	 */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<QR::Client>
 	{
 		public:
 			/**

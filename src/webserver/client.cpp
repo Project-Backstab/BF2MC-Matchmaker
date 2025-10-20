@@ -159,6 +159,9 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 	{ "/API/admin/kick",                                      &Webserver::Client::requestAPIAdminKick              },
 	{ "/API/admin/message",                                   &Webserver::Client::requestAPIAdminMessage           },
 	{ "/API/admin/playerstats/recalc",                        &Webserver::Client::requestAPIAdminPlayerStatsRecalc },
+
+	// XBOX
+	//{ "/api/v1/xbox",                                         &Webserver::Client::requestXboxAPI                   },
 };
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
@@ -170,7 +173,7 @@ Webserver::Client::Client(int socket, struct sockaddr_in address)
 
 Webserver::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void Webserver::Client::Listen()
@@ -207,7 +210,9 @@ void Webserver::Client::Listen()
 void Webserver::Client::Disconnect()
 {
 	this->Close();
-	g_webserver_server->onClientDisconnect(*this);
+	g_webserver_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 void Webserver::Client::Send(const atomizes::HTTPMessage &http_response) const
@@ -236,7 +241,9 @@ void Webserver::Client::Send(const Json::Value &value, uint16_t status_code) con
 
 void Webserver::Client::onRequest(const atomizes::HTTPMessage &http_request)
 {
-	if(http_request.GetMethod() == atomizes::MessageMethod::GET)
+	atomizes::MessageMethod http_method = http_request.GetMethod();
+	
+	if(http_method == atomizes::MessageMethod::GET || http_method == atomizes::MessageMethod::POST)
 	{
 		std::string url_base;
 		Util::Url::Variables url_variables;
@@ -285,6 +292,21 @@ void Webserver::Client::requestMeme(const atomizes::HTTPMessage& http_request, c
 		const Util::Url::Variables& url_variables)
 {
 	this->_SendFile("../data/meme/index.html");
+}
+
+void Webserver::Client::requestXboxAPI(const atomizes::HTTPMessage& http_request, const std::string& url_base,
+		const Util::Url::Variables& url_variables)
+{
+	atomizes::HTTPMessage http_response = this->_defaultResponseHeader();
+	
+	http_response.SetStatusCode(200);
+	http_response.SetMessageBody("\r\n");
+	
+	Logger::info(http_request.ToString());
+
+	this->Send(http_response);
+
+	this->_LogTransaction("<--", "HTTP/1.1 200 OK");
 }
 
 // Private functions

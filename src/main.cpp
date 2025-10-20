@@ -204,13 +204,13 @@ int main(int argc, char const* argv[])
 	std::thread t_qr(&start_qr_server);
 	std::thread t_gpsp(&start_gpsp_server);
 	std::thread t_gpcm(&start_gpcm_server);
-	std::thread t_gpcm_heartbeat(&GPCM::Client::Heartbeat);
+	//std::thread t_gpcm_heartbeat(&GPCM::Client::Heartbeat);
 	std::thread t_webserver(&start_webserver_server);
-	std::thread t_webserver_heartbeat(&Webserver::Client::Heartbeat);
+	//std::thread t_webserver_heartbeat(&Webserver::Client::Heartbeat);
 	std::thread t_browsing(&start_browsing_server);
-	std::thread t_browsing_heartbeat(&Browsing::Client::Heartbeat);
+	//std::thread t_browsing_heartbeat(&Browsing::Client::Heartbeat);
 	std::thread t_gamestats(&start_gamestats_server);
-	std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
+	//std::thread t_gamestats_heartbeat(&GameStats::Client::Heartbeat);
 	//std::thread t_websocket(&start_websocket_server);
 	//std::thread t_dns(&start_dns_server);
 
@@ -221,13 +221,13 @@ int main(int argc, char const* argv[])
 	t_qr.detach();
 	t_gpsp.detach();
 	t_gpcm.detach();
-	t_gpcm_heartbeat.detach();
+	//t_gpcm_heartbeat.detach();
 	t_browsing.detach();
-	t_browsing_heartbeat.detach();
+	//t_browsing_heartbeat.detach();
 	t_gamestats.detach();
-	t_gamestats_heartbeat.detach();
+	//t_gamestats_heartbeat.detach();
 	t_webserver.detach();
-	t_webserver_heartbeat.detach();
+	//t_webserver_heartbeat.detach();
 	//t_websocket.detach();
 	//t_dns.detach();
 

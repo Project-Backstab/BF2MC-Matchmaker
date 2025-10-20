@@ -259,7 +259,7 @@ void Server::UDPListen()
 					
 					client.onRequest(buffer);
 					
-					this->onClientDisconnect(client);
+					//this->onClientDisconnect(client);
 				}
 				break;
 				case Server::Type::DNS:
@@ -270,7 +270,7 @@ void Server::UDPListen()
 					
 					client.onRequest(buffer);
 					
-					this->onClientDisconnect(client);
+					//this->onClientDisconnect(client);
 				}
 				break;
 			}
@@ -351,7 +351,7 @@ void Server::onClientConnect(const std::shared_ptr<Net::Socket>& client) const
 	}
 }
 
-void Server::onClientDisconnect(const Net::Socket& client)
+void Server::onClientDisconnect(const std::shared_ptr<Net::Socket>& client)
 {
 	std::shared_lock<std::shared_mutex> guard2(g_settings_mutex); // settings lock (read)
 	
@@ -359,20 +359,14 @@ void Server::onClientDisconnect(const Net::Socket& client)
 	{
 		std::lock_guard<std::mutex> guard(this->_mutex); // server lock
 		
-		// Find shared pointer in clients list
-		auto it = std::find_if(this->_clients.begin(), this->_clients.end(),
-			[rawPtrToSearch = const_cast<Net::Socket*>(&client)](const std::shared_ptr<Net::Socket>& ptr)
-			{
-				return ptr.get() == rawPtrToSearch;
-			}
-		);
+		auto it = std::find(_clients.begin(), _clients.end(), client);
 		
 		// When found remove client
 		if (it != this->_clients.end())
 		{
 			if ((g_logger_mode & Logger::Mode::Development) != 0)
 			{
-				Logger::info("Client " + client.GetAddress() + " disconnected",
+				Logger::info("Client " + client.get()->GetAddress() + " disconnected",
 					this->_type, g_settings["show_client_disconnect"].asBool());
 			}
 
@@ -383,7 +377,7 @@ void Server::onClientDisconnect(const Net::Socket& client)
 	{
 		if ((g_logger_mode & Logger::Mode::Development) != 0)
 		{
-			Logger::info("Client " + client.GetAddress() + " disconnected",
+			Logger::info("Client " + client.get()->GetAddress() + " disconnected",
 				this->_type, g_settings["show_client_disconnect"].asBool());
 		}
 	}

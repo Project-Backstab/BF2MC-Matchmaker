@@ -33,7 +33,7 @@ GameStats::Client::Client(int socket, struct sockaddr_in address)
 
 GameStats::Client::~Client()
 {
-	this->Disconnect();
+	
 }
 
 void GameStats::Client::Listen()
@@ -98,7 +98,9 @@ void GameStats::Client::Listen()
 void GameStats::Client::Disconnect()
 {
 	this->Close();
-	g_gamestats_server->onClientDisconnect(*this);
+	g_gamestats_server->onClientDisconnect(
+		std::static_pointer_cast<Net::Socket>(shared_from_this())
+	);
 }
 
 

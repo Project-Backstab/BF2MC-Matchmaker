@@ -1,17 +1,18 @@
 #ifndef BROWSING_CLIENT_H
 #define BROWSING_CLIENT_H
 
+#include <memory>
+
 #include <gamespy.h>
 #include <net/socket.h>
 #include <battlefield/gameserver.h>
-
 
 namespace Browsing
 {
 	/**
 	 * @brief Client class for handling browsing requests.
 	 */
-	class Client : public Net::Socket
+	class Client : public Net::Socket, public std::enable_shared_from_this<Browsing::Client>
 	{
 		private:
 			/**
