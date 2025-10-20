@@ -379,9 +379,17 @@ void GameStats::Client::Heartbeat()
 				"final"
 			});
 			
-			gamestats_client.get()->Send(Encrypt(response));
-		
-			gamestats_client.get()->_LogTransaction("<--", response);
+			int result = gamestats_client->Send(Encrypt(response));
+			
+			if (result < 0)
+            {
+                Logger::warning("Heartbeat send failed", Server::Type::GameStats);
+                gamestats_client->Disconnect(); // <- important: closes socket
+            }
+            else
+            {
+                gamestats_client->_LogTransaction("<--", response);
+            }
 		}
 	}
 }

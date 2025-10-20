@@ -900,9 +900,17 @@ void GPCM::Client::Heartbeat()
 				"final"
 			});
 			
-			gpcm_client.get()->Send(response);
-		
-			gpcm_client.get()->_LogTransaction("<--", response);
+			int result = gpcm_client->Send(response);
+			
+			if (result < 0)
+            {
+                Logger::warning("Heartbeat send failed", Server::Type::GPCM);
+                gpcm_client->Disconnect(); // <- important: closes socket
+            }
+            else
+            {
+                gpcm_client->_LogTransaction("<--", response);
+            }
 		}
 	}
 }

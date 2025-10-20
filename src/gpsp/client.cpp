@@ -24,6 +24,9 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 
 GPSP::Client::Client(int socket, struct sockaddr_in address)
 {
+	struct timeval tv = {10, 0};
+	setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+	
 	this->_socket = socket;
 	this->_address = address;
 	this->UpdateLastRecievedTime();

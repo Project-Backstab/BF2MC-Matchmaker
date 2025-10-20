@@ -77,18 +77,18 @@ std::chrono::system_clock::time_point Net::Socket::GetLastRecievedTime() const
 	return this->_recieved_time;
 }
 
-void Net::Socket::Send(const std::string& msg) const
+ssize_t Net::Socket::Send(const std::string& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 	
-	ssize_t size = send(this->_socket, msg.c_str(), msg.size(), 0);
+	return send(this->_socket, msg.c_str(), msg.size(), 0);
 }
 
-void Net::Socket::Send(const std::vector<unsigned char>& msg) const
+ssize_t Net::Socket::Send(const std::vector<unsigned char>& msg) const
 {
 	std::lock_guard<std::mutex> guard(this->_mutex); // socket lock
 	
-	ssize_t size = send(this->_socket, &(msg[0]), msg.size(), 0);
+	return send(this->_socket, &(msg[0]), msg.size(), 0);
 }
 
 void Net::Socket::UDPSend(const std::string& msg) const

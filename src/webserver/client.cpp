@@ -166,6 +166,9 @@ static std::map<std::string, RequestActionFunc> mRequestActions =
 
 Webserver::Client::Client(int socket, struct sockaddr_in address)
 {
+	struct timeval tv = {10, 0};
+	setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+	
 	this->_socket = socket;
 	this->_address = address;
 	this->UpdateLastRecievedTime();
@@ -448,27 +451,4 @@ bool Webserver::Client::_updateClanInformation(Battlefield::Clan& clan,
 	return true;
 }
 
-// Static functions
-
-void Webserver::Client::Heartbeat()
-{
-	Logger::info("Heartbeat started", Server::Webserver);
-
-	while(true)
-	{
-		std::this_thread::sleep_for (std::chrono::seconds(60));
-
-		auto target_time = std::chrono::system_clock::now() - std::chrono::minutes(1);
-
-		for(std::shared_ptr<Net::Socket> client : g_webserver_server->GetClients())
-		{
-			auto last_recieved = client.get()->GetLastRecievedTime();
-
-			if (last_recieved <= target_time)
-			{
-				client.get()->Close();
-			}
-		}
-	}
-}
 

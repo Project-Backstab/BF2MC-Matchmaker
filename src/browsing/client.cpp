@@ -29,6 +29,9 @@ static std::map<uint8_t, RequestActionFunc> mRequestActions =
 
 Browsing::Client::Client(int socket, struct sockaddr_in address)
 {
+	struct timeval tv = {10, 0};
+	setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
+
 	this->_socket = socket;
 	this->_address = address;
 	this->UpdateLastRecievedTime();
@@ -916,34 +919,4 @@ bool Browsing::Client::_FilterServerClan(const std::string& filter, const Battle
 	}
 	
 	return false; // Don't remove server
-}
-
-// Static functions
-
-void Browsing::Client::Heartbeat()
-{
-	Logger::info("Heartbeat started", Server::Browsing);
-
-	while(true)
-	{
-		// Sleep for 60 seconds
-		std::this_thread::sleep_for (std::chrono::seconds(60));
-
-		// Calculate the target time (1 minute ago)
-		auto target_time = std::chrono::system_clock::now() - std::chrono::minutes(1);
-		
-		// Iterate through all connected clients
-		for(std::shared_ptr<Net::Socket> client : g_browsing_server->GetClients())
-		{
-			// Get the last received time of the client
-			std::chrono::system_clock::time_point last_recieved = client.get()->GetLastRecievedTime();
-
-			// Check if the last received time is older than the target time
-			if (last_recieved <= target_time)
-			{
-				// Close the client connection
-				client.get()->Close();
-			}
-		}
-	}
 }

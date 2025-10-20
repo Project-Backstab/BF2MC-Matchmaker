@@ -214,14 +214,6 @@ namespace Browsing
 			 * @brief Cracking function to find the secret key from a package.
 			 */
 			static void Crack();
-
-			/**
-			 * @brief Heartbeat function to manage client connections.
-			 *
-			 * This function periodically checks for client connections and closes
-			 * connections that have not sent any data in the last minute.
-			 */
-			static void Heartbeat();
 	};
 }
 

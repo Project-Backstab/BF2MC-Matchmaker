@@ -67,13 +67,13 @@ namespace Net
 			 * @brief Sends a message over the socket.
 			 * @param msg The message to send as a string.
 			 */
-			void Send(const std::string& msg) const;
+			ssize_t Send(const std::string& msg) const;
 			
 			/**
 			 * @brief Sends a message over the socket.
 			 * @param msg The message to send as a vector of unsigned chars.
 			 */
-			void Send(const std::vector<unsigned char>& msg) const;
+			ssize_t Send(const std::vector<unsigned char>& msg) const;
 			
 			/**
 			 * @brief Sends a UDP message over the socket.
