@@ -57,5 +57,6 @@
 		"show_responses": false
 	},
 	"show_client_connect": false,
-	"show_client_disconnect": false
+	"show_client_disconnect": false,
+	"logger_mode": "production"
 }

@@ -141,7 +141,8 @@ void GPCM::Client::onRequest(const std::string& request)
 	else
 	{
 		Logger::warning("action \"" + action + "\" not implemented!", Server::Type::GPCM);
-		
+		Logger::info("request = " + request);
+
 		this->Disconnect();
 	}
 }

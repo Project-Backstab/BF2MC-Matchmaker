@@ -57,6 +57,13 @@ void load_settings()
 		
 		ifs.close();
 	}
+
+	// Logger mode
+	auto it = Logger::ModeMap.find(g_settings["logger_mode"].asString());
+	if (it != Logger::ModeMap.end())
+	{
+		g_logger_mode = it->second;
+	}
 }
 
 void start_db()

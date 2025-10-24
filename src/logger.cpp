@@ -10,6 +10,12 @@ std::ofstream g_logger;
 std::mutex    g_logger_mutex;
 Logger::Mode  g_logger_mode = Logger::Mode::Production;
 
+std::unordered_map<std::string, Logger::Mode> Logger::ModeMap = {
+	{"development",  Logger::Mode::Development },
+	{"production",   Logger::Mode::Production  },
+	{"deployment",   Logger::Mode::Deployment  },
+};
+
 void Logger::Initialize()
 {
 	std::lock_guard<std::mutex> guard(g_logger_mutex); // logger lock

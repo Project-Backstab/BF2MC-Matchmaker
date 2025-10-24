@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <mutex>
+#include <unordered_map>
 
 #include <server.h>
 #include <service.h>
@@ -18,6 +19,8 @@ namespace Logger
 		Production = 0x2,  ///< Standard logging mode.
 		Deployment = 0x4   ///< Minimal logging mode.
 	};
+
+	extern std::unordered_map<std::string, Logger::Mode> ModeMap;
 	
 	/**
 	 * @brief Initializes the logger.
