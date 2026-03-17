@@ -81,6 +81,9 @@ void GPSP::Client::onRequest(const std::string& request)
 {
 	GameSpy::Parameter parameter = GameSpy::Request2Parameter(request);
 	
+	if(parameter.size() <= 0)
+		return;
+
 	// Find function name
 	std::string action = parameter[0];
 	
