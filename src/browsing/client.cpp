@@ -17,7 +17,7 @@
 
 typedef void (Browsing::Client::*RequestActionFunc)(const std::vector<unsigned char>&);
 
-static std::map<uint8_t, RequestActionFunc> mRequestActions = 
+static const std::unordered_map<uint8_t, RequestActionFunc> mRequestActions = 
 {
 	{ REQUEST_SERVER_LIST,    &Browsing::Client::requestServerList   },
 	{ REQUEST_SERVER_INFO,    &Browsing::Client::requestServerInfo   },
@@ -48,7 +48,7 @@ void Browsing::Client::Listen()
 	{
 		std::vector<unsigned char> buffer(4096, 0);
 		
-		int recv_size = read(this->_socket, &(buffer[0]), 4096);
+		int recv_size = read(this->_socket, buffer.data(), buffer.size());
 		
 		// If error or no data is recieved we end the connection
 		if(recv_size <= 0)
@@ -98,6 +98,9 @@ void Browsing::Client::Disconnect()
 
 void Browsing::Client::onRequest(const std::vector<unsigned char>& request)
 {
+	if(request.size() < 3)
+		return;
+	
 	uint16_t size = static_cast<uint16_t>(request[1]) | (static_cast<uint16_t>(request[0]) << 8);
 	uint8_t action = static_cast<uint8_t>(request[2]);
 	
@@ -538,7 +541,7 @@ void Browsing::Client::_BufferToRequests(const std::vector<unsigned char>& buffe
 	uint16_t request_size;
 	size_t offset = 0;
 	
-	while(offset < buffer.size())
+	while(offset + 1 < buffer.size())
 	{
 		std::vector<unsigned char> request;
 		
