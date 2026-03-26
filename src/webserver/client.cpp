@@ -26,7 +26,7 @@
 
 typedef void (Webserver::Client::*RequestActionFunc)(const atomizes::HTTPMessage&, const std::string&, const Util::Url::Variables&);
 
-static std::map<std::string, RequestActionFunc> mRequestActions = 
+static const std::map<std::string, RequestActionFunc> mRequestActions = 
 {
 	// www.easports.com
 	// News
@@ -186,7 +186,7 @@ void Webserver::Client::Listen()
 	atomizes::HTTPMessage http_request;
 	
 	// Read socket
-	int recv_size = read(this->_socket, &(buffer[0]), 4096);
+	int recv_size = read(this->_socket, buffer.data(), buffer.size());
 	
 	// If error or no data is recieved we end the connection
 	if(recv_size <= 0)

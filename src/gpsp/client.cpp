@@ -14,7 +14,7 @@
 
 typedef void (GPSP::Client::*RequestActionFunc)(const GameSpy::Parameter&) const;
 
-static std::map<std::string, RequestActionFunc> mRequestActions = 
+static const std::map<std::string, RequestActionFunc> mRequestActions = 
 {
 	{ "nicks",   &GPSP::Client::requestNicks   }, // Done
 	{ "valid",   &GPSP::Client::requestValid   }, // Done
@@ -44,7 +44,7 @@ void GPSP::Client::Listen()
 		std::string request;
 		std::vector<char> buffer(4096, 0);
 		
-		int recv_size = read(this->_socket, &(buffer[0]), 4096);
+		int recv_size = read(this->_socket, buffer.data(), buffer.size());
 		
 		// If error or no data is recieved we end the connection
 		if(recv_size <= 0)
@@ -445,9 +445,7 @@ void GPSP::Client::requestSearch(const GameSpy::Parameter& parameter) const
 			"lastname", "",
 			"email", "[hidden]",
 			"uniquenick", player.GetUniquenick(),
-			"namespaceid", "13",
-			"bsrdone", "",
-			"final"
+			"namespaceid", "13"
 		};
 	}
 	

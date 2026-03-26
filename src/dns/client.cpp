@@ -11,7 +11,7 @@
 	sudo iptables -D PREROUTING -t nat -i eth0 -p udp --dport 53 -j REDIRECT --to-port 5353
 */
 
-std::unordered_map<std::string, DNS::ConfigItem> DNS::Config = {
+static const std::unordered_map<std::string, DNS::ConfigItem> mRequestActions = {
 	// playstation.org
 	{ "gate1.us.dnas.playstation.org",        { DNS::QType::A, DNS::QClass::IN, 60, {  67, 222, 156, 250 } } },
 	{ "gate1.eu.dnas.playstation.org",        { DNS::QType::A, DNS::QClass::IN, 60, {  45,   7, 228, 197 } } },
@@ -30,10 +30,9 @@ std::unordered_map<std::string, DNS::ConfigItem> DNS::Config = {
 	{ "bfield1942ps2.available.gamespy.com",  { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
 	{ "bfield1942ps2.ms7.gamespy.com",        { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
 	{ "bfield1942ps2.master.gamespy.com",     { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
-	{ "bfield1942ps2.ms7.gamespy.com",        { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
+	{ "bfield1942ps2b.available.gamespy.com",  { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
 	{ "bfield1942ps2b.ms7.gamespy.com",       { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
 	{ "bfield1942ps2b.master.gamespy.com",    { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
-	{ "bfield1942ps2b.ms7.gamespy.com",       { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
 
 	// bfmcspy.net
 	{ "bfmc.bfmcspy.net",                     { DNS::QType::A, DNS::QClass::IN, 60, { 128, 140,   0,  23 } } },
@@ -98,19 +97,19 @@ void DNS::Client::Send(const std::vector<unsigned char>& request, const DNS::Con
 	response.push_back(0xC0); // indicates a pointer
 	response.push_back(0x0C); // the offset where the domain name starts.
 
-	// Type of the response (QType)
-	response.push_back(static_cast<uint8_t>(static_cast<uint16_t>(config_item.qtype) << 8));
-	response.push_back(static_cast<uint8_t>(config_item.qtype));
+	// QType (2 bytes, big endian)
+	response.push_back(static_cast<uint8_t>((static_cast<uint16_t>(config_item.qtype) >> 8) & 0xFF)); // high byte
+	response.push_back(static_cast<uint8_t>(static_cast<uint16_t>(config_item.qtype) & 0xFF));        // low byte
 
-	// Class of the response (QClass)
-	response.push_back(static_cast<uint8_t>(static_cast<uint16_t>(config_item.qclass) << 8));
-	response.push_back(static_cast<uint8_t>(config_item.qclass));
+	// QClass (2 bytes, big endian)
+	response.push_back(static_cast<uint8_t>((static_cast<uint16_t>(config_item.qclass) >> 8) & 0xFF));
+	response.push_back(static_cast<uint8_t>(static_cast<uint16_t>(config_item.qclass) & 0xFF));
 
-	// Time to live (ttl)
-	response.push_back(static_cast<uint8_t>(static_cast<uint32_t>(config_item.ttl) << 24));
-	response.push_back(static_cast<uint8_t>(static_cast<uint32_t>(config_item.ttl) << 16));
-	response.push_back(static_cast<uint8_t>(static_cast<uint32_t>(config_item.ttl) << 8));
-	response.push_back(static_cast<uint8_t>(config_item.ttl));
+	// TTL (4 bytes, big endian)
+	response.push_back(static_cast<uint8_t>((static_cast<uint32_t>(config_item.ttl) >> 24) & 0xFF));
+	response.push_back(static_cast<uint8_t>((static_cast<uint32_t>(config_item.ttl) >> 16) & 0xFF));
+	response.push_back(static_cast<uint8_t>((static_cast<uint32_t>(config_item.ttl) >> 8) & 0xFF));
+	response.push_back(static_cast<uint8_t>(static_cast<uint32_t>(config_item.ttl) & 0xFF));
 
 	// Data length
 	response.push_back(0x00);
@@ -205,8 +204,8 @@ void DNS::Client::onRequest(const std::vector<unsigned char>& request)
 	}
 
 	// Get config for domain name
-	auto it = DNS::Config.find(qname);
-	if(it != DNS::Config.end())
+	auto it = mRequestActions.find(qname);
+	if(it != mRequestActions.end())
 	{
 		this->Send(request, it->second);
 	}

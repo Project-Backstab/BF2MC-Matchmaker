@@ -53,8 +53,6 @@ namespace DNS
 		uint8_t ip[4];
 	};
 
-	extern std::unordered_map<std::string, ConfigItem> Config;
-
 	/**
 	 * @brief Represents a client for DNS.
 	 * 

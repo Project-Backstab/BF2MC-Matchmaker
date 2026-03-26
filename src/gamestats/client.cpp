@@ -16,7 +16,7 @@
 
 typedef void (GameStats::Client::*RequestActionFunc)(const GameSpy::Parameter&);
 
-static std::map<std::string, RequestActionFunc> mRequestActions = 
+static const std::map<std::string, RequestActionFunc> mRequestActions = 
 {
 	{ "auth",      &GameStats::Client::requestAuth },
 	{ "newgame",   &GameStats::Client::requestNewGame },
@@ -52,7 +52,7 @@ void GameStats::Client::Listen()
 		{
 			std::vector<unsigned char> buffer(16384, 0);
 
-			int v = read(this->_socket, &(buffer[0]), 16384);
+			int v = read(this->_socket, buffer.data(), buffer.size());
 		
 			// If error or no data is recieved we end the connection
 			if(v <= 0)

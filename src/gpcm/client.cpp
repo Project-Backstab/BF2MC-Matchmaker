@@ -15,7 +15,7 @@
 
 typedef void (GPCM::Client::*RequestActionFunc)(const GameSpy::Parameter&);
 
-static std::map<std::string, RequestActionFunc> mRequestActions = 
+static const std::map<std::string, RequestActionFunc> mRequestActions = 
 {
 	{ "login",      &GPCM::Client::requestLogin },        // Done
 	{ "inviteto",   &GPCM::Client::requestInviteTo },     // Done
@@ -58,7 +58,7 @@ void GPCM::Client::Listen()
 		{
 			std::vector<unsigned char> buffer(16384, 0);
 
-			int v = read(this->_socket, &(buffer[0]), 16384);
+			int v = read(this->_socket, buffer.data(), buffer.size());
 		
 			// If error or no data is recieved we end the connection
 			if(v <= 0)
