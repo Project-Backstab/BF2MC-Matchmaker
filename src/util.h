@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <stdint.h>
 
 /**
  * @brief Forward declaration of the MYSQL_TIME structure.
