@@ -536,23 +536,22 @@ void Browsing::Client::requestServerInfo(const std::vector<unsigned char>& reque
 // Private functions
 
 void Browsing::Client::_BufferToRequests(const std::vector<unsigned char>& buffer,
-		std::vector<std::vector<unsigned char>>& requests)
+    	std::vector<std::vector<unsigned char>>& requests)
 {
-	uint16_t request_size;
 	size_t offset = 0;
-	
-	while(offset + 1 < buffer.size())
+
+	while (offset + 1 < buffer.size())
 	{
-		std::vector<unsigned char> request;
-		
-		request_size = static_cast<uint16_t>(buffer[offset + 1]) | (static_cast<uint16_t>(buffer[offset + 0]) << 8);
-		
-		if(offset + request_size <= buffer.size())
+		uint16_t request_size = static_cast<uint16_t>(buffer[offset + 1]) | (static_cast<uint16_t>(buffer[offset]) << 8);
+
+		// Prevent infinite loop / malformed packet
+		// Prevent invalid or truncated packet
+		if (request_size == 0 || offset + request_size > buffer.size())
 		{
-			request.insert(request.end(), buffer.begin() + offset, buffer.begin() + offset + request_size);
-			
-			requests.push_back(request);
+			break;
 		}
+
+		requests.emplace_back(buffer.begin() + offset, buffer.begin() + offset + request_size);
 		
 		offset += request_size;
 	}
