@@ -52,5 +52,9 @@ sudo systemctl start apache2
 
 On renewing the certificates:
 ```
+sudo systemctl stop apache2
+sudo iptables -D PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 sudo certbot renew
+sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+sudo systemctl start apache2
 ```
